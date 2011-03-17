@@ -1,0 +1,351 @@
+a bunch of thyme.txt
+a hard day's night.txt
+after the ball.txt
+ain't no pleasing you.txt
+aisling ghear.txt
+all i have to do is dream.txt
+all i want is you.txt
+all my loving.txt
+all shook up.txt
+all the time in the world.txt
+all together now.txt
+all you need is love.txt
+always look on the bright side of life.txt
+always on my mind.txt
+america.txt
+american pie.txt
+an innocent man.txt
+and it stoned me.txt
+angels.txt
+annie's song.txt
+as time goes by.txt
+baby driver.txt
+babylon.txt
+back home in derry.txt
+back in the ussr.txt
+bad bad leroy brown.txt
+bare necessities.txt
+biddy mulligan.txt
+black is the colour.txt
+blackbird.txt
+blowing in the wind.txt
+blue eyes.txt
+blue moon.txt
+blue suede shoes.txt
+blueberry hill.txt
+boolavogue.txt
+bridge over troubled water.txt
+bright blue rose.txt
+bright eyes.txt
+brown-eyed girl.txt
+bye bye love.txt
+caledonia.txt
+campdown races.txt
+can't fight this feeling.txt
+can't get used to loosing you.txt
+can't help falling in love.txt
+candle in the wind.txt
+careless whisper.txt
+carolina rua.txt
+carrickfergus.txt
+cat's in the cradle.txt
+cavan girl.txt
+chapel of love.txt
+clare to here.txt
+cliffs of doneen.txt
+closer to 'fine'.txt
+colcannon.txt
+come to the bower.txt
+come together.txt
+continental ceili.txt
+cool for cats.txt
+country roads.txt
+courting in the kitchen.txt
+crazy dreams.txt
+crocodile rock.txt
+dancing queen.txt
+danny boy.txt
+day tripper.txt
+daydream believer.txt
+delerium tremens.txt
+desperado.txt
+diamantina drover.txt
+dicey reilly.txt
+dirty old town.txt
+don't forget your shovel.txt
+don't get married.txt
+don't look back in anger.txt
+Don't Stop.txt
+down at the twist and shout.txt
+drive my car.txt
+dublin in the rare ould times.txt
+easy and slow.txt
+eight days a week.txt
+el condor pasa.txt
+elanor rigby.txt
+every time that you walk in the room.txt
+everybody's trying to be my baby.txt
+fairytale of new york.txt
+faith.txt
+father and son.txt
+feet of a dancer.txt
+fiddlers green.txt
+fields of athenry.txt
+fiesta.txt
+finnegan's wake.txt
+fisherman's blues.txt
+follow me up to carlow.txt
+folsom prison blues.txt
+for no-one.txt
+forever autumn.txt
+forgiven, not forgotten.txt
+four strong winds.txt
+galway bay (makem&clancy).txt
+galway bay.txt
+galway girl.txt
+get back.txt
+girl.txt
+give me a home among the gum trees.txt
+gloria.txt
+good day sunshine.txt
+good riddance (time of your life).txt
+good year for the roses.txt
+goodnight saigon.txt
+got my mind set on you.txt
+Grace.txt
+greased lightnin'.txt
+green green grass of home.txt
+hard times come again no more.txt
+have i told you lately.txt
+heartbreak hotel.txt
+help me make it through the night.txt
+help.txt
+here comes the sun.txt
+here, there, and everywhere.txt
+hey jude.txt
+homes of donegal.txt
+homeward bound.txt
+honesty.txt
+honky tonk women.txt
+hopelessly devoted to you.txt
+hotel california.txt
+hound dog.txt
+i'll be there for you.txt
+i'll be your baby tonight.txt
+i'll never find another you.txt
+i'll sail this ship alone.txt
+i'll tell me ma.txt
+i'm a believer.txt
+i'm gonna be (500 miles).txt
+i've just seen a face.txt
+i can see clearly now.txt
+I do I do I do.txt
+i don't want to talk about it.txt
+i have a dream.txt
+i only want to be with you.txt
+i saw her standing there.txt
+I still miss someone.txt
+i wanna be like you(king of the swingers).txt
+i want to hold your hand.txt
+i will always love you.txt
+i will survive.txt
+if tomorrow never comes.txt
+if wishes were fishes.txt
+illegal smile.txt
+imagine.txt
+in a country churchyard.txt
+in my life.txt
+in the arms of an angel.txt
+in the city of chicago.txt
+in the ghetto.txt
+it's hard to be humble.txt
+it's only love.txt
+jailhouse rock.txt
+jambalaya.txt
+James Connolly (Black Family).txt
+james connolly.txt
+jersey girl.txt
+john o dreams.txt
+johnny b. goode.txt
+johnny i hardly knew ye.txt
+joxer goes to stuttgart.txt
+just a gigilo.txt
+just the way you are.txt
+karma chameleon.txt
+katie.txt
+keep the customer satisfied.txt
+knocking on heavens door.txt
+labelled with love.txt
+lady madonna.txt
+lannigan's ball.txt
+las vegas in the hills of donegal.txt
+layla.txt
+leaving liverpool.txt
+leaving nancy.txt
+leaving on a jet plane.txt
+leningrad.txt
+let it be.txt
+lilly marlene.txt
+lisdoonvarna.txt
+living next door to alice.txt
+love me do.txt
+love me tender.txt
+love of the common people.txt
+love somebody.txt
+lovin' you.txt
+lying eyes.txt
+maggie.txt
+Make you feel my love.txt
+marie's wedding.txt
+martha.txt
+mcalpine's fuliliers.txt
+michelle, ma belle.txt
+missing you.txt
+mo ghile mear.txt
+molly malone.txt
+moondance.txt
+mrs robinson.txt
+muirsheen durkin.txt
+mustang sally.txt
+my life.txt
+my way.txt
+mystic lipstick.txt
+n17.txt
+nancy spain.txt
+navigator.txt
+Níl sé ina lá.txt
+no frontiers.txt
+no woman no cry.txt
+norweigan wood.txt
+nothing but the same old story.txt
+now i'm easy.txt
+nowhere man.txt
+oh jean.txt
+oh suzannah!.txt
+oh! darling.txt
+only our rivers run free.txt
+ordinary man.txt
+oró 'sé do bheatha 'bhaile.txt
+parisienne walkways.txt
+past the point of rescue.txt
+patience.txt
+patricia the stripper.txt
+Pencil Full Of Lead.txt
+penny lane.txt
+piano man.txt
+please please me.txt
+raglan road.txt
+Raindrops Keep Falling On My Head.txt
+rainy night in soho.txt
+red is the rose.txt
+red rose cafe.txt
+revolution.txt
+ride on.txt
+rider in the rain.txt
+river of dreams.txt
+rivers of babylon.txt
+rock and roll kids.txt
+rock and roll music.txt
+rockin all over the world.txt
+roddy mccorley.txt
+roll over beethoven.txt
+sally mclenane.txt
+same old lang syne.txt
+scorn not his simplicity.txt
+seven drunken nights.txt
+she's always a woman.txt
+she's leaving home.txt
+she loves you.txt
+short people.txt
+sit down.txt
+slievenamon.txt
+slip slidin' away.txt
+some say the divil is dead.txt
+something.txt
+song for ireland.txt
+sonny's dream.txt
+sound of silence.txt
+space oddity.txt
+spancil hill.txt
+spanish train.txt
+spirit in the sky.txt
+Stand by me.txt
+star of the county down.txt
+starman.txt
+still crazy after all these years.txt
+strawberry fields forever.txt
+streams of whiskey.txt
+streets of london.txt
+Streets of New York.txt
+stuck in the middle with you.txt
+summer fly.txt
+summer in dublin.txt
+Suspicious Minds.txt
+sweet caroline.txt
+sweet little sixteen.txt
+take a chance on me.txt
+take it easy.txt
+the 59th street bridge song.txt
+the ballad of john and yoko.txt
+the band played waltzing matilda.txt
+the bare necessities.txt
+the black velvet band.txt
+the boxer.txt
+the boys of the county armagh.txt
+the carnival is over.txt
+the contender.txt
+the crack was ninety in the isle of man.txt
+the curragh of kildare.txt
+the ferryman.txt
+the foggy dew.txt
+the fool on the hill.txt
+the galway shawl.txt
+the irish rover.txt
+the lakes of ponchartrain.txt
+the long and winding road.txt
+the mad lady and me.txt
+the moonshiner.txt
+the oldest swinger in town.txt
+the ould orange flute.txt
+the ould triangle.txt
+the rocky road to dublin.txt
+the rose of tralee.txt
+the rose.txt
+the speed of the sound of lonliness.txt
+the times they are a-changin'.txt
+the town i loved so well.txt
+the voyage.txt
+the wanderer.txt
+the water is wide.txt
+the waxie's dargle.txt
+the wild colonial boy.txt
+the wild rover.txt
+this year's love.txt
+ticket to ride.txt
+time after time.txt
+twist and shout.txt
+two out of three ain't bad.txt
+under the boardwalk.txt
+uptown girl.txt
+vincent.txt
+walking in memphis.txt
+waterloo.txt
+What a Wondeful World.txt
+when i'm sixty-four.txt
+when i fall in love.txt
+when i see you smile.txt
+When Irish Eyes Are Smiling.txt
+when you were sweet 16.txt
+whiskey in the jar.txt
+wild world.txt
+will ye go, lassie, go.txt
+wind beneath my wings.txt
+with a little help from my friends.txt
+wonderful tonight.txt
+wonderwall.txt
+yesterday.txt
+ymca.txt
+you're the one that i want.txt
+You've got a friend in me.txt
+You've got a friend.txt
+you never can tell.txt
