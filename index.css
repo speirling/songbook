@@ -1,0 +1,59 @@
+body {
+    font-family: trebuchet, verdana, sans-serif;
+    font-size: 12px;
+}
+.title {
+    font-size:2em;
+}
+
+
+ul.menu {
+    display: block;
+    background-color: #aabbcc;
+}
+ul.menu li {
+    display: inline-block;
+}
+ul.menu li a {
+    color: black;
+    text-decoration: none;
+    display: inline-block;
+    width:9em;
+    height: 1.5em;
+    line-height:1.5em;
+    vertical-align:middle;
+    border:1px solid gray;
+    margin:2px;
+    text-align:center;
+    font-size: 0.9em;
+}
+ul.menu li a:hover {
+    background-color:#eef0ff;
+}
+.label, .data  {
+    display:inline-block;
+}
+
+.performed_by {
+    font-style: italic;
+}
+.performed_by .label {
+    color:gray;
+}
+.written_by {
+    font-style: italic;
+    
+}
+.written_by;,s- .label {
+    color:gray;
+}
+span.song {
+    display:block;
+}
+.song .title {
+    font-size:0.9em;
+}
+.song .detail {
+    font-size:0.8em;
+    color: gray;
+}
