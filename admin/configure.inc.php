@@ -12,7 +12,6 @@ define("SYSTEM_ID","Epeelo Songbook");
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //---------------------------------------------------------------------------------------------------------------------------------------
-//*Local XAMPP Paths
   define("URL_TO_DATASET_DEFINITIONS","songbook");
   define("ABSOLUTE_PATH_TO_DATASET_DEFINITIONS", $_SERVER['DOCUMENT_ROOT']."/".URL_TO_DATASET_DEFINITIONS);
 
@@ -30,9 +29,15 @@ define("SYSTEM_ID","Epeelo Songbook");
   //This could give far too much useful detail to hackers, so only leave it on for very short periods of time (when debugging)
   define("ALLOW_DEBUG_DISPLAY", true);
 
+  if($_SERVER['DOCUMENT_ROOT'] == "/fileserver/data/www/") { //fps
   	define("DATABASE_USERNAME", "root");
 	define("DATABASE_PASSWORD", "chancery");
 	define("DATABASE_SERVERHOST", "localhost");
+  } else { //Xampp
+    define("DATABASE_USERNAME","root");
+	define("DATABASE_PASSWORD","");
+	define("DATABASE_SERVERHOST","localhost");
+  }
 
 	define("ENABLE_DB_TRANSACTION_LOGGING", true);
 	define("LOG_DIRECTORY", "/songbook/acra_logs");
