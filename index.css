@@ -6,7 +6,10 @@ body {
     font-size:2em;
 }
 
-
+td {
+	vertical-align:top;
+	font-size: 0.6em;
+}
 ul.menu {
     display: block;
     background-color: #aabbcc;
@@ -44,7 +47,7 @@ ul.menu li a:hover {
     font-style: italic;
     
 }
-.written_by;,s- .label {
+.written_by;, .label {
     color:gray;
 }
 span.song {
@@ -56,4 +59,26 @@ span.song {
 .song .detail {
     font-size:0.8em;
     color: gray;
+}
+
+.content {
+	margin-top:1em;
+}
+
+.content td {
+	vertical-align:top;
+	font-size: 0.8em;
+}
+
+.line {
+	margin-top: 1em;
+}
+.chord {
+	display: inline-block;
+	position:relative;
+	bottom: 1.2em;
+	width:1px;
+	color: #660000;
+	font-size: 0.8em;
+	font-family: verdana;
 }
