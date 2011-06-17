@@ -58,8 +58,8 @@ switch ($action) {
         $display = $display.'<h1>List of playlists:</h1>';
 
         $display = $display.'<ul class=menu>';
-        $display = $display.'<li><a href="?action=addNewPlaylist'.$playlist.'">Add a new playlist</a></li> ';
-        $display = $display.'<li><a href="?action=editSong&playlist='.$playlist.'">Add new song</a></li> ';
+        $display = $display.'<li><a href="?action=addNewPlaylist">Add a new playlist</a></li> ';
+        $display = $display.'<li><a href="?action=editSong">Add new song</a></li> ';
         $display = $display.'</ul>';
 
         $directoryList = scandir(PLAYLIST_DIRECTORY);
