@@ -14,7 +14,7 @@ define("SYSTEM_ID","Epeelo Songbook");
 //---------------------------------------------------------------------------------------------------------------------------------------
 //*Local XAMPP Paths
   define("URL_TO_DATASET_DEFINITIONS","songbook");
-  define("ABSOLUTE_PATH_TO_DATASET_DEFINITIONS",$_SERVER['DOCUMENT_ROOT'].URL_TO_DATASET_DEFINITIONS);
+  define("ABSOLUTE_PATH_TO_DATASET_DEFINITIONS", $_SERVER['DOCUMENT_ROOT']."/".URL_TO_DATASET_DEFINITIONS);
 
   //The path to the acra_i scripts must be ABSOLUTE... so that the scripts can be held out of the scope of the current site
   //NOTE: If acra_i is outside the scope of the current site, then you can't use the standard javascript libraries... or else they will have to be held separate from acra_i.... or else you might have symbolic links or mapping in the httpd.conf file
