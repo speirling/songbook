@@ -185,7 +185,7 @@ switch ($action) {
     break;
 
     case 'editSong':
-        $display = $display.'<form action = ?action=displaySong&id='.$id.' method="post">';
+        $display = $display.'<form action = "?action=displaySong" method="post">';
         if(array_key_exists('id', $_GET)) {
             $display = $display.'<input type="hidden" name="update" id="update" value="editExistingSong"></input>';
             $id = $_GET['id'];
