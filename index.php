@@ -15,39 +15,11 @@ define("SBK_DATABASE_NAME", 'music_admin');
 define("SBK_TABLE_NAME", 'lyrics');
 define("SBK_KEYFIELD_NAME", 'id');
 
-$STANDARD_JAVASCRIPTS[] = '../acra_i/js/jquery.js';
-$STANDARD_JAVASCRIPTS[] = '../acra_i/js/jstree/jquery.jstree.js';
-
 $localJavascriptStatements = "
 $(document).ready(function() {
-	jQuery('.songlist').jstree().bind('loaded.jstree', function (event, data) {
-        jQuery(this).jstree('open_all');
-    });
-    jQuery('.songlist a').live('click', function(e) {
-    	location.href = jQuery(this).attr('href');
-    });
-
-    jQuery('.allsongs').jstree({
-	        'dnd' : {
-	            'drop_finish' : function () {
-	                alert('DROP');
-	            },
-	            'drag_check' : function (data) {
-	                if(data.r.attr('id') == 'phtml_1') {
-	                    return false;
-	                }
-	                return {
-	                    after : false,
-	                    before : false,
-	                    inside : true
-	                };
-	            },
-	            'drag_finish' : function (data) {
-	                alert('DRAG OK');
-	            }
-	        },
-	        'plugins' : [ 'themes', 'html_data', 'dnd' ]
-	    });
+	jQuery('#songlist ul, #allsongs ul').sortable({
+			connectWith: '.connectedSortable ul'
+		}).disableSelection();
 });
 ";
 $display = acradisp_standardHTMLheader('Songlists['.$action.']', array('index.css'), $STANDARD_JAVASCRIPTS, $localJavascriptStatements);
@@ -341,7 +313,7 @@ function sbk_add_songs_to_playlist($song_id_array, $sets, $playlist) {
 
 function sbk_convert_playlistXML_to_list($playlistContent) {
     $playlist_display = '';
-    $playlist_display = $playlist_display.'<div class="songlist">';
+    $playlist_display = $playlist_display.'<div id="songlist" class="connectedSortable">';
     //$playlist_display = $playlist_display.'<h1>'.$playlistContent['title'].'</h1>';
     $playlist_display = $playlist_display.'<ul>';
     foreach ($playlistContent->set as $thisSet) {
@@ -365,7 +337,7 @@ function sbk_convert_playlistXML_to_list($playlistContent) {
 function sbk_list_all_songs_in_database() {
         $result = acradb_get_query_result("select * from ".SBK_TABLE_NAME, SBK_DATABASE_NAME);
         $outputHTML = '';
-        $outputHTML = $outputHTML.'<div class="allsongs">';
+        $outputHTML = $outputHTML.'<div id="allsongs" class="connectedSortable">';
         $outputHTML = $outputHTML.'<ul>';
         while ($this_record = mysql_fetch_assoc($result)) {
             $outputHTML = $outputHTML.'<li class="song">';
