@@ -20,8 +20,25 @@ $(document).ready(function() {
 	jQuery('#songlist ul, #allsongs ul').sortable({
 			connectWith: '.connectedSortable ul'
 		}).disableSelection();
+
+	jQuery('#songlist li li').contextMenu('context-menu', {
+        'show lyrics': {
+            click: function(element){ location.href = '?action=displaySong&id=' + element.attr('id'); }
+        },
+        'edit song': {
+            click: function(element){ location.href = '?action=editSong&id=' + element.attr('id'); }
+        }
+      }
+	);
+
+	jQuery('#savePlaylist').click(function() {
+		jQuery('#playlist_input').html(jQuery('#songlist').html());
+		jQuery('#playlistForm').submit();
+	});
 });
+
 ";
+$STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.contextMenu/jquery.contextMenu.js";
 $display = acradisp_standardHTMLheader('Songlists['.$action.']', array('index.css'), $STANDARD_JAVASCRIPTS, $localJavascriptStatements);
 
 switch ($action) {
@@ -49,7 +66,7 @@ switch ($action) {
 
     case 'displayPlaylist':
         $playlist = $_GET['playlist'];
-        if (array_key_exists('update',$_POST)) {
+        if (array_key_exists('update', $_POST)) {
             switch ($_POST['update']) {
             case "PlaylistAddListOfSongs":
                 //p($_POST);
@@ -67,6 +84,9 @@ switch ($action) {
                 }
                 sbk_add_songs_to_playlist($song_id_array, $sets, $playlist) ;
             break;
+            case "replaceList":
+                sbk_convert_list_to_playlistXML($_POST['playlist_input']);
+            break;
             }
         }
         $display = $display.'<h1>Playlist: ['.$playlist.']</h1>';
@@ -79,6 +99,7 @@ switch ($action) {
         $display = $display.'</ul>';
 
         $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
+        $display = $display.'<a href="#" id="savePlaylist">Save</a><form id="playlistForm" method="post"><input type="hidden" name="update" value="replaceList" /><textarea id="playlist_input" name="playlist_input" style="display:none;"></textarea></form>';
         $display = $display.'<table><tr><td>';
         $display = $display.sbk_convert_playlistXML_to_list($playlistContent);
         $display = $display.'</td><td>';
@@ -243,10 +264,10 @@ switch ($action) {
     case 'outputWord':
         foreach($songList as $filename) {
             if(!is_dir($filename)) {
-           $sectionNumber = $sectionNumber + 1;
-             $lyrics_as_string = "<div class=Section".$sectionNumber.">";
-            $lineCount = 0;
-              $lyrics_as_array = file($dir."/".$filename);
+                $sectionNumber = $sectionNumber + 1;
+                $lyrics_as_string = "<div class=Section".$sectionNumber.">";
+                $lineCount = 0;
+                $lyrics_as_array = file($dir."/".$filename);
                 foreach($lyrics_as_array as $line) {
                     $lineCount = $lineCount + 1;
                     if($lineCount == 1) {
@@ -270,14 +291,14 @@ switch ($action) {
         }
 
         $songBook = $fileHeaderBeforeTitle.
-                        $title.
-                        $fileHeaderFromTitleToPageDefinitions.
-                        $PageDefinitions.
-                        $fileHeaderAfterPageDefinitions.
-                        $titlePage.
-                        $contentsPage.
-                        $songBookContent.
-                        $footer;
+                    $title.
+                    $fileHeaderFromTitleToPageDefinitions.
+                    $PageDefinitions.
+                    $fileHeaderAfterPageDefinitions.
+                    $titlePage.
+                    $contentsPage.
+                    $songBookContent.
+                    $footer;
 
         $fp = fopen($title.'.htm', 'w');
         if(fwrite($fp, $songBook)) {
@@ -312,35 +333,67 @@ function sbk_add_songs_to_playlist($song_id_array, $sets, $playlist) {
 }
 
 function sbk_convert_playlistXML_to_list($playlistContent) {
-    $playlist_display = '';
-    $playlist_display = $playlist_display.'<div id="songlist" class="connectedSortable">';
-    //$playlist_display = $playlist_display.'<h1>'.$playlistContent['title'].'</h1>';
-    $playlist_display = $playlist_display.'<ul>';
+    $outputHTML = '';
+    $outputHTML = $outputHTML.'<div id="songlist" class="connectedSortable">';
+    //$outputHTML = $outputHTML.'<h1>'.$playlistContent['title'].'</h1>';
+    $outputHTML = $outputHTML.'<ul>';
     foreach ($playlistContent->set as $thisSet) {
-        $playlist_display = $playlist_display.'<li class=>';
-        $playlist_display = $playlist_display.'<a href=" "><h2>'.$thisSet['label'].'</h2></a>';
-        $playlist_display = $playlist_display.'<ul class="set">';
-        foreach($thisSet->song as $thisSong){
+        $outputHTML = $outputHTML.'<li class="set">';
+        $outputHTML = $outputHTML.'<a href=" "><h2>'.$thisSet['label'].'</h2></a>';
+        $outputHTML = $outputHTML.'<ul>';
+        foreach($thisSet->song as $thisSong) {
             $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $thisSong['id']);
-            $playlist_display = $playlist_display.'<li id="'.$thisSong['id'].'"><a href="?action=displaySong&id='.$thisSong['id'].'">';
-            $playlist_display = $playlist_display.$this_record['title'];
-            $playlist_display = $playlist_display.' ('.$this_record['written_by'].' '.$this_record['performed_by'].')';
-            $playlist_display = $playlist_display.'</a></li>';
+            $outputHTML = $outputHTML.'<li class="song" id="'.$this_record['id'].'">';
+            //$outputHTML = $outputHTML.'<a href="?action=displaySong&id='.$thisSong['id'].'">';
+            $outputHTML = $outputHTML.'<span class="title">'.$this_record['title'].'</span>';
+            $outputHTML = $outputHTML.'<span class="detail"> (<span class="written_by">'.$this_record['written_by'].'</span> <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
+            //$outputHTML = $outputHTML.'</a>';
+            $outputHTML = $outputHTML.'</li>';
         }
-        $playlist_display = $playlist_display.'</ul>';
+        $outputHTML = $outputHTML.'</ul>';
     }
-    $playlist_display = $playlist_display.'</li>';
-    $playlist_display = $playlist_display.'</ul></div>';
-    return $playlist_display;
+    $outputHTML = $outputHTML.'</li>';
+    $outputHTML = $outputHTML.'</ul></div>';
+    return $outputHTML;
+}
+
+function sbk_convert_list_to_playlistXML($list) {
+    $list_object = simplexml_load_string($list);
+    p($list_object);
+    /*
+    $outputHTML = '';
+    $outputHTML = $outputHTML.'<div id="songlist" class="connectedSortable">';
+    //$outputHTML = $outputHTML.'<h1>'.$playlistContent['title'].'</h1>';
+    $outputHTML = $outputHTML.'<ul>';
+    foreach ($playlistContent->set as $thisSet) {
+        $outputHTML = $outputHTML.'<li class="set">';
+        $outputHTML = $outputHTML.'<a href=" "><h2>'.$thisSet['label'].'</h2></a>';
+        $outputHTML = $outputHTML.'<ul>';
+        foreach($thisSet->song as $thisSong) {
+            $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $thisSong['id']);
+            $outputHTML = $outputHTML.'<li class="song" id="'.$this_record['id'].'">';
+            //$outputHTML = $outputHTML.'<a href="?action=displaySong&id='.$thisSong['id'].'">';
+            $outputHTML = $outputHTML.'<span class="title">'.$this_record['title'].'</span>';
+            $outputHTML = $outputHTML.'<span class="detail"> (<span class="written_by">'.$this_record['written_by'].'</span> <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
+            //$outputHTML = $outputHTML.'</a>';
+            $outputHTML = $outputHTML.'</li>';
+        }
+        $outputHTML = $outputHTML.'</ul>';
+    }
+    $outputHTML = $outputHTML.'</li>';
+    $outputHTML = $outputHTML.'</ul></div>';
+    return $outputHTML;
+    */
 }
 
 function sbk_list_all_songs_in_database() {
         $result = acradb_get_query_result("select * from ".SBK_TABLE_NAME, SBK_DATABASE_NAME);
         $outputHTML = '';
         $outputHTML = $outputHTML.'<div id="allsongs" class="connectedSortable">';
+        //$outputHTML = $outputHTML.'<h1>All songs</h1>';
         $outputHTML = $outputHTML.'<ul>';
         while ($this_record = mysql_fetch_assoc($result)) {
-            $outputHTML = $outputHTML.'<li class="song">';
+            $outputHTML = $outputHTML.'<li class="song" id="'.$this_record['id'].'">';
             $outputHTML = $outputHTML.'<span class="title">'.$this_record['title'].'</span>';
             $outputHTML = $outputHTML.'<span class="detail"> (<span class="written_by">'.$this_record['written_by'].'</span> <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
             $outputHTML = $outputHTML.'</li>';
