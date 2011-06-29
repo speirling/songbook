@@ -8,7 +8,7 @@ body {
 
 td {
 	vertical-align:top;
-	font-size: 0.6em;
+	font-size: 0.8em;
 }
 ul.menu {
     display: block;
@@ -84,7 +84,7 @@ span.song {
 }
 
 
-.connectedSortable li {
+.playlist li {
 	margin: 3px;
 	padding: 0.4em;
 	border:1px solid silver;
@@ -92,11 +92,11 @@ span.song {
 	background-color: #f9fc8b;
 	cursor: move;
 }
-.connectedSortable li.ui-sortable-helper {
+.playlist li.ui-sortable-helper {
 	cursor: hand;
 	background-color: #e9ec7b;
 }
-.connectedSortable li li {
+.playlist li li {
 	background-color: #faffaa;
 }
 .context-menu {

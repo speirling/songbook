@@ -17,11 +17,11 @@ define("SBK_KEYFIELD_NAME", 'id');
 
 $localJavascriptStatements = "
 $(document).ready(function() {
-	jQuery('#songlist ul, #allsongs ul').sortable({
-			connectWith: '.connectedSortable ul'
+	jQuery('#playlist-holder ul, #allsongs ul').sortable({
+			connectWith: '.playlist ul'
 		}).disableSelection();
 
-	jQuery('#songlist li li').contextMenu('context-menu', {
+	jQuery('#playlist-holder li li, #allsongs li').contextMenu('context-menu', {
         'show lyrics': {
             click: function(element){ location.href = '?action=displaySong&id=' + element.attr('id'); }
         },
@@ -31,37 +31,43 @@ $(document).ready(function() {
       }
 	);
 
+	jQuery('#add-new-set').click(function () {
+        jQuery('#playlist>ul').append('<li class=\"set playlist\"><input class=\"set-title\" type=\"text\"></input></li>');
+	});
+
 	jQuery('#savePlaylist').click(function() {
-		jQuery('#playlist_input').html(jQuery('#songlist').html());
+		jQuery('#playlist_input').html(jQuery('#playlist').html());
 		jQuery('#playlistForm').submit();
 	});
 });
 
 ";
 $STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.contextMenu/jquery.contextMenu.js";
-$display = acradisp_standardHTMLheader('Songlists['.$action.']', array('index.css'), $STANDARD_JAVASCRIPTS, $localJavascriptStatements);
+$display = acradisp_standardHTMLheader('playlists['.$action.']', array('index.css'), $STANDARD_JAVASCRIPTS, $localJavascriptStatements);
 
 switch ($action) {
     case 'list':
     default:
         $display = $display.'<h1>List of playlists:</h1>';
 
-        $display = $display.'<ul class=menu>';
+        $display = $display.'<ul class="menu">';
         $display = $display.'<li><a href="?action=addNewPlaylist">Add a new playlist</a></li> ';
         $display = $display.'<li><a href="?action=editSong">Add new song</a></li> ';
         $display = $display.'</ul>';
 
         $directoryList = scandir(PLAYLIST_DIRECTORY);
+        $display = $display.'<ul class="playlist-list">';
         foreach($directoryList as $filename) {
             if(!is_dir($filename)) {
                 $path_parts = pathinfo($filename);
-                if($path_parts['extension'] == 'playlist') {
-                    $display = $display.'<a href="?action=displayPlaylist&playlist='.$path_parts['filename'].'">';
+                if($path_parts['extension'] === 'playlist' && $path_parts['filename'] != '') {
+                    $display = $display.'<li><a href="?action=displayPlaylist&playlist='.$path_parts['filename'].'">';
 		            $display = $display.$path_parts['filename'];
-		            $display = $display.'</a>';
+		            $display = $display.'</a></li>';
                 }
             }
         }
+        $display = $display.'</ul>';
     break;
 
     case 'displayPlaylist':
@@ -85,16 +91,20 @@ switch ($action) {
                 sbk_add_songs_to_playlist($song_id_array, $sets, $playlist) ;
             break;
             case "replaceList":
-                sbk_convert_list_to_playlistXML($_POST['playlist_input']);
+                $playlistContent = sbk_convert_list_to_playlistXML($_POST['playlist_input']);
+                p($playlistContent->asXML());
+                //$playlistContent->saveXML(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
             break;
             }
+        } elseif (array_key_exists('addNewSet', $GET)) {
+
         }
         $display = $display.'<h1>Playlist: ['.$playlist.']</h1>';
 
         $display = $display.'<ul class=menu>';
         $display = $display.'<li><a href="?action=editPlaylist&playlist='.$playlist.'">Edit this playlist</a></li> ';
         $display = $display.'<li><a href="?action=editSong&playlist='.$playlist.'">Add new song</a></li> ';
-        $display = $display.'<li><a href="?action=addSongToPlaylist&playlist='.$playlist.'">Add existing song</a></li> ';
+        $display = $display.'<li><a href="#" id="add-new-set" playlist="'.$playlist.'">Add a new set</a></li> ';
         $display = $display.'<li><a href="?action=list">List all playlists</a></li> ';
         $display = $display.'</ul>';
 
@@ -158,6 +168,7 @@ switch ($action) {
         $content = preg_replace('/\[(.*?)\]/','<span class="chord">$1</span>', $content);
         $content = preg_replace('/&nbsp;/', '&#160;', $content); //&nbsp; doesn't work in XML unless it's specifically declared.
         $contentHTML = '<div class="content"><div class="line">'.$content.'</div></div>';
+        /*
         $contentXML = new SimpleXMLElement($contentHTML);
         $line_count = 0;
         $formattedContentXML = new SimpleXMLElement('<div class="content"></div>');
@@ -172,7 +183,9 @@ switch ($action) {
             $new_line = $current_column->addChild('div', $this_line);
             $new_line->addAttribute('class', 'line');
         }
-        $display = $display.str_replace('<?xml version="1.0"?>','',$formattedContentXML->asXML());
+        $display = $display.str_replace('<?xml version="1.0"?>','',$formattedContentXML); //this loses the <span class="chord"></span>s!!!
+        */
+        $display = $display.str_replace('<?xml version="1.0"?>','',$contentHTML);
         //$display = $display.'<div class="meta-tags">'.$this_record['meta_tags'].'</div>';
         //$display = $display.'<div class="original-filename">'.$this_record['original_filename'].'</div>';
     break;
@@ -262,7 +275,7 @@ switch ($action) {
     break;
 
     case 'outputWord':
-        foreach($songList as $filename) {
+        foreach($playlist as $filename) {
             if(!is_dir($filename)) {
                 $sectionNumber = $sectionNumber + 1;
                 $lyrics_as_string = "<div class=Section".$sectionNumber.">";
@@ -334,12 +347,12 @@ function sbk_add_songs_to_playlist($song_id_array, $sets, $playlist) {
 
 function sbk_convert_playlistXML_to_list($playlistContent) {
     $outputHTML = '';
-    $outputHTML = $outputHTML.'<div id="songlist" class="connectedSortable">';
-    //$outputHTML = $outputHTML.'<h1>'.$playlistContent['title'].'</h1>';
-    $outputHTML = $outputHTML.'<ul>';
+    $outputHTML = $outputHTML.'<div id="playlist-holder">';
+    $outputHTML = $outputHTML.'<input class="playlist-title" type="text" value="'.$playlistContent['title'].'"></input></h1>';
+    $outputHTML = $outputHTML.'<ul title='.$playlistContent['title'].'>';
     foreach ($playlistContent->set as $thisSet) {
-        $outputHTML = $outputHTML.'<li class="set">';
-        $outputHTML = $outputHTML.'<a href=" "><h2>'.$thisSet['label'].'</h2></a>';
+        $outputHTML = $outputHTML.'<li class="set playlist">';
+        $outputHTML = $outputHTML.'<a href=" "><input class="set-title" type="text" value="'.$thisSet['label'].'"></input></a>';
         $outputHTML = $outputHTML.'<ul>';
         foreach($thisSet->song as $thisSong) {
             $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $thisSong['id']);
@@ -358,38 +371,30 @@ function sbk_convert_playlistXML_to_list($playlistContent) {
 }
 
 function sbk_convert_list_to_playlistXML($list) {
-    $list_object = simplexml_load_string($list);
-    p($list_object);
-    /*
-    $outputHTML = '';
-    $outputHTML = $outputHTML.'<div id="songlist" class="connectedSortable">';
-    //$outputHTML = $outputHTML.'<h1>'.$playlistContent['title'].'</h1>';
-    $outputHTML = $outputHTML.'<ul>';
-    foreach ($playlistContent->set as $thisSet) {
-        $outputHTML = $outputHTML.'<li class="set">';
-        $outputHTML = $outputHTML.'<a href=" "><h2>'.$thisSet['label'].'</h2></a>';
-        $outputHTML = $outputHTML.'<ul>';
-        foreach($thisSet->song as $thisSong) {
-            $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $thisSong['id']);
-            $outputHTML = $outputHTML.'<li class="song" id="'.$this_record['id'].'">';
-            //$outputHTML = $outputHTML.'<a href="?action=displaySong&id='.$thisSong['id'].'">';
-            $outputHTML = $outputHTML.'<span class="title">'.$this_record['title'].'</span>';
-            $outputHTML = $outputHTML.'<span class="detail"> (<span class="written_by">'.$this_record['written_by'].'</span> <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
-            //$outputHTML = $outputHTML.'</a>';
-            $outputHTML = $outputHTML.'</li>';
+    $list = str_replace('\&quot;', '', $list);
+    $list = str_replace('\"', '"', $list);
+    $list_object = simplexml_load_string('<container>'.$list.'</container>');
+
+    $playlistContent = new SimpleXMLElement('<?xml version="1.0" standalone="yes"?><songlist></songlist>');
+    $playlistContent->addAttribute('title', $list_object->h1);
+    foreach($list_object->ul->li as $thisSet) {
+        p("set", $thisSet->a);
+        $XMLset = $playlistContent->addChild('set');
+        $XMLset->addAttribute('label', $thisSet->a);
+        foreach($thisSet->ul[0]->li as $thisSong) {
+            $XMLsong = $XMLset->addChild('song','');
+            $XMLsong->addAttribute('id', $thisSong['id']);
         }
-        $outputHTML = $outputHTML.'</ul>';
     }
-    $outputHTML = $outputHTML.'</li>';
-    $outputHTML = $outputHTML.'</ul></div>';
-    return $outputHTML;
-    */
+
+    p($playlistContent);
+    return $playlistContent;
 }
 
 function sbk_list_all_songs_in_database() {
         $result = acradb_get_query_result("select * from ".SBK_TABLE_NAME, SBK_DATABASE_NAME);
         $outputHTML = '';
-        $outputHTML = $outputHTML.'<div id="allsongs" class="connectedSortable">';
+        $outputHTML = $outputHTML.'<div id="allsongs" class="playlist">';
         //$outputHTML = $outputHTML.'<h1>All songs</h1>';
         $outputHTML = $outputHTML.'<ul>';
         while ($this_record = mysql_fetch_assoc($result)) {
@@ -402,4 +407,5 @@ function sbk_list_all_songs_in_database() {
     	$outputHTML = $outputHTML.'</div>';
     	return $outputHTML;
 }
+
 ?>
