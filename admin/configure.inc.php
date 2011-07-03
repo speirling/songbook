@@ -12,7 +12,7 @@ define("SYSTEM_ID","Epeelo Songbook");
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //---------------------------------------------------------------------------------------------------------------------------------------
-  define("URL_TO_DATASET_DEFINITIONS","songbook");
+  define("URL_TO_DATASET_DEFINITIONS", "songbook");
   define("ABSOLUTE_PATH_TO_DATASET_DEFINITIONS", $_SERVER['DOCUMENT_ROOT']."/".URL_TO_DATASET_DEFINITIONS);
 
   //The path to the acra_i scripts must be ABSOLUTE... so that the scripts can be held out of the scope of the current site
@@ -55,6 +55,7 @@ define("SYSTEM_ID","Epeelo Songbook");
 
 	define("AJAXSEQUENTIALLIST_URL", "/songbook/admin/ajaxSequentialList.php");
 
+	define("ERROR_LOG_FILE", ABSOLUTE_PATH_TO_ACRA_SCRIPTS."/php_error_log.log");
 //-*/ //end of Local XAMPP
 //---------------------------------------------------------------------------------------------------------------------------------------
 
