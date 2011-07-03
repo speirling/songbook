@@ -1,7 +1,7 @@
 <?php
 require_once 'admin/configure.inc.php';
 require("wordHTML.php");
-error_log("Run songbook index-----------------");
+error_log("\n\n\n\n\n\n\n*******************************\nRun songbook index\n*******************************\n\n");
 define('PLAYLIST_DIRECTORY', 'playlists');
 $songBookContent = "";
 
@@ -36,7 +36,8 @@ $(document).ready(function() {
 	});
 
 	jQuery('#savePlaylist').click(function() {
-		jQuery('#playlist_input').html(jQuery('#playlist').html());
+		jQuery('#playlist-holder textarea').each(function(){jQuery(this).html(jQuery(this).val())});
+		jQuery('#playlist_input').val(jQuery('#playlist-holder').html());
 		jQuery('#playlistForm').submit();
 	});
 });
@@ -62,7 +63,8 @@ switch ($action) {
                 $path_parts = pathinfo($filename);
                 if($path_parts['extension'] === 'playlist' && $path_parts['filename'] != '') {
                     $display = $display.'<li><a href="?action=displayPlaylist&playlist='.$path_parts['filename'].'">';
-		            $display = $display.$path_parts['filename'];
+                    $thisPlaylistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$path_parts['filename'].'.playlist');
+		            $display = $display.$thisPlaylistContent['title'];
 		            $display = $display.'</a></li>';
                 }
             }
@@ -75,7 +77,6 @@ switch ($action) {
         if (array_key_exists('update', $_POST)) {
             switch ($_POST['update']) {
             case "PlaylistAddListOfSongs":
-                //p($_POST);
                 //couldn't get checkboxes as an array
                 $song_id_array = array();
                 $sets = array();
@@ -92,11 +93,10 @@ switch ($action) {
             break;
             case "replaceList":
                 $playlistContent = sbk_convert_list_to_playlistXML($_POST['playlist_input']);
-                p($playlistContent->asXML());
-                //$playlistContent->saveXML(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
+                $playlistContent->saveXML(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
             break;
             }
-        } elseif (array_key_exists('addNewSet', $GET)) {
+        } elseif (array_key_exists('addNewSet', $_GET)) {
 
         }
         $display = $display.'<h1>Playlist: ['.$playlist.']</h1>';
@@ -348,19 +348,17 @@ function sbk_add_songs_to_playlist($song_id_array, $sets, $playlist) {
 function sbk_convert_playlistXML_to_list($playlistContent) {
     $outputHTML = '';
     $outputHTML = $outputHTML.'<div id="playlist-holder">';
-    $outputHTML = $outputHTML.'<input class="playlist-title" type="text" value="'.$playlistContent['title'].'"></input></h1>';
+    $outputHTML = $outputHTML.'<textarea class="playlist-title">'.$playlistContent['title'].'</textarea>';
     $outputHTML = $outputHTML.'<ul title='.$playlistContent['title'].'>';
     foreach ($playlistContent->set as $thisSet) {
         $outputHTML = $outputHTML.'<li class="set playlist">';
-        $outputHTML = $outputHTML.'<a href=" "><input class="set-title" type="text" value="'.$thisSet['label'].'"></input></a>';
+        $outputHTML = $outputHTML.'<textarea class="set-title">'.$thisSet['label'].'</textarea>';
         $outputHTML = $outputHTML.'<ul>';
         foreach($thisSet->song as $thisSong) {
             $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $thisSong['id']);
             $outputHTML = $outputHTML.'<li class="song" id="'.$this_record['id'].'">';
-            //$outputHTML = $outputHTML.'<a href="?action=displaySong&id='.$thisSong['id'].'">';
             $outputHTML = $outputHTML.'<span class="title">'.$this_record['title'].'</span>';
             $outputHTML = $outputHTML.'<span class="detail"> (<span class="written_by">'.$this_record['written_by'].'</span> <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
-            //$outputHTML = $outputHTML.'</a>';
             $outputHTML = $outputHTML.'</li>';
         }
         $outputHTML = $outputHTML.'</ul>';
@@ -374,20 +372,18 @@ function sbk_convert_list_to_playlistXML($list) {
     $list = str_replace('\&quot;', '', $list);
     $list = str_replace('\"', '"', $list);
     $list_object = simplexml_load_string('<container>'.$list.'</container>');
-
     $playlistContent = new SimpleXMLElement('<?xml version="1.0" standalone="yes"?><songlist></songlist>');
-    $playlistContent->addAttribute('title', $list_object->h1);
+    $playlistContent->addAttribute('title', $list_object->textarea);
     foreach($list_object->ul->li as $thisSet) {
-        p("set", $thisSet->a);
+        p("set", (string)$thisSet->textarea);
         $XMLset = $playlistContent->addChild('set');
-        $XMLset->addAttribute('label', $thisSet->a);
+        $XMLset->addAttribute('label', $thisSet->textarea);
         foreach($thisSet->ul[0]->li as $thisSong) {
             $XMLsong = $XMLset->addChild('song','');
             $XMLsong->addAttribute('id', $thisSong['id']);
         }
     }
 
-    p($playlistContent);
     return $playlistContent;
 }
 
