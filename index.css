@@ -8,7 +8,6 @@ body {
 
 td {
 	vertical-align:top;
-	font-size: 0.8em;
 }
 ul.menu {
     display: block;
@@ -83,7 +82,22 @@ span.song {
 	font-family: verdana;
 }
 
+#playlist-holder textarea {
+	resize: none;
+	height: 1.8em;
+	border: 0px;
+}
 
+.playlist-title{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.5em;
+	font-weight: bold;
+}
+.set {
+	list-style-type: none;
+	border: 1px solid silver;
+	cursor: move;
+}
 .playlist li {
 	margin: 3px;
 	padding: 0.4em;
@@ -116,4 +130,14 @@ span.song {
 	color: black;
 	font-size: 0.8em;
 	text-decoration: none;
+}
+
+li.dummy {
+	border:0;
+	background-color:transparent;
+	cursor: pointer;
+	padding:0;
+	margin: 0;
+	font-size:3px;
+	line-height:3px;
 }

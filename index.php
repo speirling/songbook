@@ -17,9 +17,11 @@ define("SBK_KEYFIELD_NAME", 'id');
 
 $localJavascriptStatements = "
 $(document).ready(function() {
-	jQuery('#playlist-holder ul, #allsongs ul').sortable({
+	jQuery('#playlist-holder ul ul, #allsongs ul').sortable({
 			connectWith: '.playlist ul'
-		}).disableSelection();
+		});
+
+	jQuery('#playlist-holder>ul').sortable();
 
 	jQuery('#playlist-holder li li, #allsongs li').contextMenu('context-menu', {
         'show lyrics': {
@@ -32,11 +34,18 @@ $(document).ready(function() {
 	);
 
 	jQuery('#add-new-set').click(function () {
-        jQuery('#playlist>ul').append('<li class=\"set playlist\"><input class=\"set-title\" type=\"text\"></input></li>');
+		var newSet = jQuery('<li class=\"set playlist\"><textarea class=\"set-title\" type=\"text\">New Set</textarea></li>');
+		var newList = jQuery('<ul class=\"ui-sortable\"><li class=dummy>&nbsp;</li></ul>').sortable({
+			connectWith: '.playlist ul'
+		});
+		jQuery('#playlist-holder>ul').append(newSet);
+		newSet.append(newList);
 	});
 
 	jQuery('#savePlaylist').click(function() {
 		jQuery('#playlist-holder textarea').each(function(){jQuery(this).html(jQuery(this).val())});
+		jQuery('#playlist-holder li.song input.key').each(function(){jQuery(this).parent().attr('key', jQuery(this).val())}).remove();
+		jQuery('#playlist-holder li.song input.singer').each(function(){jQuery(this).parent().attr('singer', jQuery(this).val())}).remove();
 		jQuery('#playlist_input').val(jQuery('#playlist-holder').html());
 		jQuery('#playlistForm').submit();
 	});
@@ -130,12 +139,9 @@ switch ($action) {
 
                 $result = acradb_get_query_result($updatequery, SBK_DATABASE_NAME);
                 $id = mysql_insert_id();
-                //p($id, "added",$result, mysql_error(), $updatequery,$value_array);
                 if(array_key_exists('playlist', $_POST)) {
-                //p($id, $_POST['playlist']);
                     sbk_add_songs_to_playlist(array($id), $_POST['playlist']);
                 } else {
-                //p("no playlist specified");
                 }
             break;
 
@@ -354,9 +360,12 @@ function sbk_convert_playlistXML_to_list($playlistContent) {
         $outputHTML = $outputHTML.'<li class="set playlist">';
         $outputHTML = $outputHTML.'<textarea class="set-title">'.$thisSet['label'].'</textarea>';
         $outputHTML = $outputHTML.'<ul>';
+        $outputHTML = $outputHTML.'<li class="dummy">&nbsp;</li>';
         foreach($thisSet->song as $thisSong) {
             $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $thisSong['id']);
             $outputHTML = $outputHTML.'<li class="song" id="'.$this_record['id'].'">';
+            $outputHTML = $outputHTML.'<input type="text" class="key" value="'.$thisSong['key'].'"></input>';
+            $outputHTML = $outputHTML.'<input type="text" class="singer" value="'.$thisSong['singer'].'"></input>';
             $outputHTML = $outputHTML.'<span class="title">'.$this_record['title'].'</span>';
             $outputHTML = $outputHTML.'<span class="detail"> (<span class="written_by">'.$this_record['written_by'].'</span> <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
             $outputHTML = $outputHTML.'</li>';
@@ -369,18 +378,24 @@ function sbk_convert_playlistXML_to_list($playlistContent) {
 }
 
 function sbk_convert_list_to_playlistXML($list) {
+    p($list);
     $list = str_replace('\&quot;', '', $list);
     $list = str_replace('\"', '"', $list);
+    $list = preg_replace('/&nbsp;/', '&#160;', $list); //&nbsp; doesn't work in XML unless it's specifically declared.
     $list_object = simplexml_load_string('<container>'.$list.'</container>');
     $playlistContent = new SimpleXMLElement('<?xml version="1.0" standalone="yes"?><songlist></songlist>');
     $playlistContent->addAttribute('title', $list_object->textarea);
     foreach($list_object->ul->li as $thisSet) {
-        p("set", (string)$thisSet->textarea);
         $XMLset = $playlistContent->addChild('set');
         $XMLset->addAttribute('label', $thisSet->textarea);
         foreach($thisSet->ul[0]->li as $thisSong) {
-            $XMLsong = $XMLset->addChild('song','');
-            $XMLsong->addAttribute('id', $thisSong['id']);
+            $this_id = (string) $thisSong['id'];
+            if(is_numeric($this_id)) {
+                $XMLsong = $XMLset->addChild('song','');
+                $XMLsong->addAttribute('id', $this_id);
+                $XMLsong->addAttribute('key',(string) $thisSong['key']);
+                $XMLsong->addAttribute('singer',(string) $thisSong['singer']);
+            }
         }
     }
 
