@@ -146,7 +146,7 @@ switch ($action) {
             break;
 
             case "editExistingSong":
-                $id = $_POST['id'];
+                $id = $_POST['display_id'];
                 $value_array = acradb_convert_POST_data_into_recordValueArray($_POST, SBK_TABLE_NAME, SBK_DATABASE_NAME);
                 $updatequery = acradb_generate_update_query_from_value_array($value_array, SBK_TABLE_NAME, 'id');
                 $result = acradb_get_query_result($updatequery, SBK_DATABASE_NAME);
@@ -197,19 +197,48 @@ switch ($action) {
     break;
 
     case 'editSong':
-        $display = $display.'<form action = "?action=displaySong" method="post">';
-        if(array_key_exists('id', $_GET)) {
-            $display = $display.'<input type="hidden" name="update" id="update" value="editExistingSong"></input>';
-            $id = $_GET['id'];
-            $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $id);
+        $display = $display.'<form id="edit-song-form" action = "?action=displaySong" method="post">';
 
+        if (array_key_exists('update',$_POST)) {
+            switch ($_POST['update']) {
+            case "addNewSong":
+                //a new song has been added - submit to database before displaying
+                $value_array = acradb_convert_POST_data_into_recordValueArray($_POST, SBK_TABLE_NAME, SBK_DATABASE_NAME);
+                //p($value_array);
+                $updatequery = acradb_generate_insert_query_from_value_array($value_array, SBK_TABLE_NAME);
+
+                $result = acradb_get_query_result($updatequery, SBK_DATABASE_NAME);
+                $id = mysql_insert_id();
+                if(array_key_exists('playlist', $_POST)) {
+                    sbk_add_songs_to_playlist(array($id), $_POST['playlist']);
+                } else {
+                }
+            break;
+
+            case "editExistingSong":
+                $id = $_POST['display_id'];
+                $value_array = acradb_convert_POST_data_into_recordValueArray($_POST, SBK_TABLE_NAME, SBK_DATABASE_NAME);
+                $updatequery = acradb_generate_update_query_from_value_array($value_array, SBK_TABLE_NAME, 'id');
+                $result = acradb_get_query_result($updatequery, SBK_DATABASE_NAME);
+            break;
+            }
+        } elseif(array_key_exists('id', $_GET)) {
+            $id = $_GET['id'];
+        } else {
+            $id = false;
+        }
+
+        if($id) {
+            $display = $display.'<input type="hidden" name="update" id="update" value="editExistingSong"></input>';
+            $display = $display.'<input type="hidden" name="display_id" id="display-id" value="'.$id.'"></input>';
+            $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $id);
             $display = $display.'<h1>Edit song</h1>';
             $display = $display.'<ul class=menu>';
-            $display = $display.'<li><a href="?action=editSong&id='.($id - 1).'">Edit Previous</a></li>';
+            $display = $display.'<li><a href="#" onclick="jQuery(\'#edit-song-form input#display-id\').val('.($id-1).'); jQuery(\'#edit-song-form\').attr(\'action\',\'?action=editSong\').submit();">Edit Previous</a></li>';
             $display = $display.'<li><a href="?action=displaySong&id='.$id.'">Cancel edit</a></li>';
             $display = $display.'<li><a href="?action=editSong">Add a new song</a></li>';
             $display = $display.'<li><a href="?action=list">List playlists</a></li>';
-            $display = $display.'<li><a href="?action=editSong&id='.($id + 1).'">Edit Next</a></li>';
+            $display = $display.'<li><a href="#" onclick="jQuery(\'#edit-song-form input#display-id\').val('.($id+1).'); jQuery(\'#edit-song-form\').attr(\'action\',\'?action=editSong\').submit();">Edit Next</a></li>';
             $display = $display.'</ul>';
             $display = $display.'<input type="hidden" name="id" id="id" value="'.$id.'"></input>';
         } else {
@@ -230,6 +259,7 @@ switch ($action) {
                 'original_filename' => ''
             );
         }
+
         if(array_key_exists('playlist', $_GET)) {
             $display = $display.'<input type="hidden" name="playlist" id="update" value="'.$_GET['playlist'] .'"></input>';
         }
