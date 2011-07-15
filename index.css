@@ -88,7 +88,11 @@ span.song {
 	border: 0px;
 }
 
-.playlist-title{
+#playlist-holder .detail {
+	display: none;
+}
+
+.playlist-title {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 1.5em;
 	font-weight: bold;
@@ -140,4 +144,22 @@ li.dummy {
 	margin: 0;
 	font-size:3px;
 	line-height:3px;
+}
+
+.key {
+	width:2em;
+	font-weight: bold;
+	background-color: transparent;
+	border:0;
+}
+
+.singer {
+ 	width:5em;
+	background-color: transparent;
+	border:0;
+}
+
+.key:focus, .singer:focus {
+	border:1px solid silver;
+	background-color: white;
 }
