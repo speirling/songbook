@@ -93,4 +93,11 @@ define("EDITFORM_PRESENTATION", "inlineFixed")	;
 	if(file_exists($_SERVER['DOCUMENT_ROOT'].URL_TO_ACRA_SCRIPTS."/complete.php")) {require($_SERVER['DOCUMENT_ROOT'].URL_TO_ACRA_SCRIPTS."/complete.php");} else {die( __FILE__." line ".__LINE__." :: \n<br />The acra_i library cannot be accessed (at ".$_SERVER['DOCUMENT_ROOT'].URL_TO_ACRA_SCRIPTS.").\n<br />This script cannot continue. Sorry.");	}
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 
+
+define("SBK_DATABASE_NAME", 'music_admin');
+define("SBK_TABLE_NAME", 'lyrics');
+define("SBK_KEYFIELD_NAME", 'id');
+
+require("songbook_functions.php");
+
 ?>
