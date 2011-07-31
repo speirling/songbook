@@ -98,6 +98,6 @@ define("SBK_DATABASE_NAME", 'music_admin');
 define("SBK_TABLE_NAME", 'lyrics');
 define("SBK_KEYFIELD_NAME", 'id');
 
-require("songbook_functions.php");
+require($_SERVER['DOCUMENT_ROOT']."/songbook/songbook_functions.php");
 
 ?>

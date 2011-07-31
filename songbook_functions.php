@@ -68,14 +68,26 @@ function sbk_convert_list_to_playlistXML($list) {
     return $playlistContent;
 }
 
-function sbk_list_all_songs_in_database() {
-        $result = acradb_get_query_result("select * from ".SBK_TABLE_NAME, SBK_DATABASE_NAME);
+function sbk_list_all_songs_in_database($search_string = false) {
+    p($search_string);
+        $searchWHERE = '';
+        if($search_string) {
+            $searchWHERE = $searchWHERE.' WHERE ';
+            $searchWHERE = $searchWHERE.' `title` LIKE \'%'.$search_string.'%\' OR';
+            $searchWHERE = $searchWHERE.' `written_by` LIKE \'%'.$search_string.'%\' OR';
+            $searchWHERE = $searchWHERE.' `performed_by` LIKE \'%'.$search_string.'%\' OR';
+            $searchWHERE = $searchWHERE.' `content` LIKE \'%'.$search_string.'%\' OR';
+            $searchWHERE = $searchWHERE.' `meta_tags` LIKE \'%'.$search_string.'%\' ';
+        }
+        $result = acradb_get_query_result("select * from ".SBK_TABLE_NAME.$searchWHERE, SBK_DATABASE_NAME);
         $outputHTML = '';
-        $outputHTML = $outputHTML.'<div id="allsongs" class="playlist">';
-        //$outputHTML = $outputHTML.'<h1>All songs</h1>';
+        $outputHTML = $outputHTML.'<div id="allsongs">';
+        $outputHTML = $outputHTML.'<span class="numberofrecords">'.mysql_num_rows($result).'</span>';
         $outputHTML = $outputHTML.'<ul>';
         while ($this_record = mysql_fetch_assoc($result)) {
             $outputHTML = $outputHTML.'<li class="song" id="'.$this_record['id'].'">';
+            $outputHTML = $outputHTML.'<input class="key" type="text" value="">';
+            $outputHTML = $outputHTML.'<input class="singer" type="text" value="">';
             $outputHTML = $outputHTML.'<span class="title">'.$this_record['title'].'</span>';
             $outputHTML = $outputHTML.'<span class="detail"> (<span class="written_by">'.$this_record['written_by'].'</span> <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
             $outputHTML = $outputHTML.'</li>';
