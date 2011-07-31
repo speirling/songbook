@@ -5,10 +5,13 @@ body {
 .title {
     font-size:2em;
 }
-
+table, tbody, tr { position: relative; font-size: 1em;}
 td {
 	vertical-align:top;
+	position: relative;
+	font-size: 1em;
 }
+
 ul.menu {
     display: block;
     background-color: #aabbcc;
@@ -82,6 +85,11 @@ span.song {
 	font-family: verdana;
 }
 
+.displayPlaylist h3 {
+	margin: 0;
+	color: gray;
+	font-weight: normal;
+}
 #playlist-holder textarea {
 	resize: none;
 	height: 1.8em;
@@ -91,7 +99,9 @@ span.song {
 #playlist-holder .detail {
 	display: none;
 }
-
+.playlist {
+	font-size:0.8em;
+}
 .playlist-title {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 1.5em;
@@ -162,4 +172,69 @@ li.dummy {
 .key:focus, .singer:focus {
 	border:1px solid silver;
 	background-color: white;
+}
+#playlist-holder {
+	margin-right: 2em;
+}
+.all-song-list,
+#playlist-holder {
+	padding:1em;
+	border-radius:1em;
+	border:1px solid gray;
+}
+.all-song-list .pleasewait {
+	font-size: 0.8em;
+	color:silver;
+}
+.all-song-list form {
+	display:block;
+}
+.all-song-list form .label {
+	font-size:0.8em;
+	color:gray;
+}
+.all-song-list ul,
+form#allsongsearch {
+	padding-left:0;
+}
+
+.all-song-list li {
+	list-style-type: none;
+	cursor: pointer;
+}
+.displayPlaylist .all-song-list li {
+	cursor: move;
+}
+.all-song-list li input {
+	display: none;
+}
+.holder {
+	position: relative;
+	display: block;
+}
+#playlistForm {
+	position:absolute;
+	top:2.5em;
+	right:3em;
+}
+#playlistForm a#savePlaylist {
+	display: block;
+	background-color: transparent;
+	color: silver;
+	border-radius: 1em;
+	font-size: 0.8em;
+	text-decoration: none;
+	padding:0.3em;
+	padding-left:1.3em;
+	padding-right:1.3em;
+}
+#playlistForm a#savePlaylist:hover,
+.all-song-list li:hover {
+	background-color: #008080;
+	color: white;
+}
+#playlistForm .numberofrecords,
+.all-song-list .numberofrecords {
+	display: none;
+}
 }
