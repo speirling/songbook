@@ -1,6 +1,7 @@
 <?php
-require_once 'admin/configure.inc.php';
-require("wordHTML.php");
+require_once('admin/configure.inc.php');
+require_once("dompdf/dompdf_config.inc.php");
+
 error_log("\n\n\n\n\n\n\n*******************************\nRun songbook index\n*******************************\n\n");
 define('PLAYLIST_DIRECTORY', 'playlists');
 $songBookContent = "";
@@ -23,6 +24,7 @@ switch ($action) {
         $display = $display.'<ul class="menu">';
         $display = $display.'<li><a href="?action=addNewPlaylist">Add a new playlist</a></li> ';
         $display = $display.'<li><a href="?action=editSong">Add new song</a></li> ';
+        $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
         $display = $display.'</ul>';
 
         $directoryList = scandir(PLAYLIST_DIRECTORY);
@@ -158,7 +160,7 @@ switch ($action) {
         $display = $display.'<ul class=menu>';
         $display = $display.'<li><a href="?action=displaySong&id='.($id - 1).'">&laquo; Previous</a></li>';
         $display = $display.'<li><a href="?action=editSong&id='.$id.'">Edit this song</a></li>';
-        $display = $display.'<li><a href="?action=printSong&id='.$id.'">Print this song</a></li>';
+        $display = $display.'<li><a href="?action=pdfSong&id='.$id.'">.pdf</a></li>';
         $display = $display.'<li><a href="?action=editSong">Add a new song</a></li>';
         $display = $display.'<li><a href="?action=listAllPlaylists">List playlists</a></li>';
         $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
@@ -177,15 +179,20 @@ switch ($action) {
         $display = $display.str_replace('<?xml version="1.0"?>','',$contentHTML);
     break;
 
-    case 'printSong':
-        $number_of_lyric_lines_per_page = 33;
+    case 'pdfSong':
+        $number_of_lyric_lines_per_page = 65;
         $id = $_GET['id'];
 
         $this_record = acradb_get_single_record(SBK_DATABASE_NAME, SBK_TABLE_NAME, SBK_KEYFIELD_NAME, $id);
 
+        $display = '<html><head><title>'.$this_record['title'].'</title><link href="pdf.css" rel="stylesheet" type="text/css"></head><body class="pdf">';
+        $display = $display.'<table><tbody><tr><td>';
         $display = $display.'<div class="title">'.$this_record['title'].'</div>';
         $display = $display.'<div class="performed_by"><span class="label">performed by: </span><span class="data">'.$this_record['performed_by'].'</div></div>';
         $display = $display.'<div class="written_by"><span class="label">written by :</span><span class="data">'.$this_record['written_by'].'</div>';
+        $display = $display.'</td><td>';
+        $display = $display.'<span class="songnumber"><span class="label">Song no. </span><span class="data">'.$this_record['id'].'</span>';
+        $display = $display.'</td></tr></tbody></table>';
         $content = $this_record['content'];
         $content = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $content);
         $content = preg_replace('/<div class=\"line\">[\s]*?<\/div>/', '<div class="line">&nbsp;</div>', $content);
@@ -201,7 +208,11 @@ switch ($action) {
         $current_column = $table_row->addChild('td');
         $dom_current_column = dom_import_simplexml($current_column);
        foreach($contentXML->xpath('//div[@class="line"]') as $this_line) {
+           if(sizeof($this_line->xpath('span[@class="chord"]')) > 0) {
+            $line_count = $line_count + 2;
+           } else {
             $line_count = $line_count + 1;
+           }
             if(($line_count % $number_of_lyric_lines_per_page) === 0) {
                 $current_column = $table_row->addChild('td');
                 $dom_current_column = dom_import_simplexml($current_column);
@@ -210,9 +221,17 @@ switch ($action) {
             $dom_line = $dom_current_column->ownerDocument->importNode($dom_line, true);
             $dom_current_column->appendChild($dom_line);
         }
-
         $display = $display.str_replace('<?xml version="1.0"?'.'>','',$formattedContentXML->asXML());
         $display = str_replace("<span class=\"text\">\n</span>", '&nbsp;', $display);//the &#160; got lost somewhere along the way (DOM part?) and <span>&nbsp;</span> doesn't display on screen
+
+        $display = $display.'</body></html>';
+
+//*
+        $dompdf = new DOMPDF();
+        $dompdf->load_html($display);
+        $dompdf->render();
+        $dompdf->stream($this_record['title'].".pdf");
+//-*/
 
     break;
 
@@ -383,7 +402,9 @@ switch ($action) {
 $display = $display.'
 </body>
 </html>';
+
 echo $display;
+
 
 
 ?>
