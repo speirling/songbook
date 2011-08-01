@@ -69,7 +69,6 @@ function sbk_convert_list_to_playlistXML($list) {
 }
 
 function sbk_list_all_songs_in_database($search_string = false) {
-    p($search_string);
         $searchWHERE = '';
         if($search_string) {
             $searchWHERE = $searchWHERE.' WHERE ';

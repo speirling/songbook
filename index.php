@@ -178,7 +178,7 @@ switch ($action) {
     break;
 
     case 'printSong':
-        $number_of_lyric_lines_per_page = 60;
+        $number_of_lyric_lines_per_page = 33;
         $id = $_GET['id'];
 
         $this_record = acradb_get_single_record(SBK_DATABASE_NAME, SBK_TABLE_NAME, SBK_KEYFIELD_NAME, $id);
@@ -187,31 +187,33 @@ switch ($action) {
         $display = $display.'<div class="performed_by"><span class="label">performed by: </span><span class="data">'.$this_record['performed_by'].'</div></div>';
         $display = $display.'<div class="written_by"><span class="label">written by :</span><span class="data">'.$this_record['written_by'].'</div>';
         $content = $this_record['content'];
-        $content = preg_replace('/\n/','</div><div class="line">', $content);
+        $content = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $content);
         $content = preg_replace('/<div class=\"line\">[\s]*?<\/div>/', '<div class="line">&nbsp;</div>', $content);
-        $content = preg_replace('/\[(.*?)\]/','<span class="chord">$1</span>', $content);
+        $content = preg_replace('/\[(.*?)\]/','</span><span class="chord">$1</span><span class="text">', $content);
         $content = preg_replace('/&nbsp;/', '&#160;', $content); //&nbsp; doesn't work in XML unless it's specifically declared.
-        $contentHTML = '<div class="content"><div class="line">'.$content.'</div></div>';
-        /*
+        $contentHTML = '<div class="content"><div class="line"><span class="text">'.$content.'</span></div></div>';
+
         $contentXML = new SimpleXMLElement($contentHTML);
         $line_count = 0;
         $formattedContentXML = new SimpleXMLElement('<div class="content"></div>');
         $table = $formattedContentXML->addChild('table');
         $table_row = $table->addChild('tr');
         $current_column = $table_row->addChild('td');
-        foreach($contentXML->xpath('//div[@class="line"]') as $this_line) {
+        $dom_current_column = dom_import_simplexml($current_column);
+       foreach($contentXML->xpath('//div[@class="line"]') as $this_line) {
             $line_count = $line_count + 1;
             if(($line_count % $number_of_lyric_lines_per_page) === 0) {
                 $current_column = $table_row->addChild('td');
+                $dom_current_column = dom_import_simplexml($current_column);
             }
-            $new_line = $current_column->addChild('div', $this_line);
-            $new_line->addAttribute('class', 'line');
+            $dom_line = dom_import_simplexml($this_line);
+            $dom_line = $dom_current_column->ownerDocument->importNode($dom_line, true);
+            $dom_current_column->appendChild($dom_line);
         }
-        $display = $display.str_replace('<?xml version="1.0"?>','',$formattedContentXML); //this loses the <span class="chord"></span>s!!!
-        */
-        $display = $display.str_replace('<?xml version="1.0"?>','',$contentHTML);
-        //$display = $display.'<div class="meta-tags">'.$this_record['meta_tags'].'</div>';
-        //$display = $display.'<div class="original-filename">'.$this_record['original_filename'].'</div>';
+
+        $display = $display.str_replace('<?xml version="1.0"?'.'>','',$formattedContentXML->asXML());
+        $display = str_replace("<span class=\"text\">\n</span>", '&nbsp;', $display);//the &#160; got lost somewhere along the way (DOM part?) and <span>&nbsp;</span> doesn't display on screen
+
     break;
 
     case 'editSong':
