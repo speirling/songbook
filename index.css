@@ -5,13 +5,13 @@ body {
 .title {
     font-size:2em;
 }
-table, tbody, tr { position: relative; font-size: 1em;}
+/*table, tbody, tr { position: relative; font-size: 1em;}
 td {
 	vertical-align:top;
 	position: relative;
 	font-size: 1em;
 }
-
+*/
 ul.menu {
     display: block;
     background-color: #aabbcc;
@@ -49,7 +49,7 @@ ul.menu li a:hover {
     font-style: italic;
     
 }
-.written_by;, .label {
+.written_by .label {
     color:gray;
 }
 span.song {
@@ -237,4 +237,4 @@ form#allsongsearch {
 .all-song-list .numberofrecords {
 	display: none;
 }
-}
+
