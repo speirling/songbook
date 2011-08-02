@@ -96,4 +96,99 @@ function sbk_list_all_songs_in_database($search_string = false) {
     	return $outputHTML;
 }
 
+function sbk_getIDarray($playlistXML = false) {
+    $ID_array = Array();
+    if($playlistXML) {
+        foreach ($playlistXML->set as $this_set) {
+            foreach($this_set->song as $this_song) {
+                if(!in_array($this_song['id'], $ID_array)) {
+                    $ID_array[] = (string) $this_song['id'];
+                }
+            }
+        }
+    } else { //no playlist passed - get all IDs in the database
+        $result = acradb_get_query_result("select id from ".SBK_TABLE_NAME, SBK_DATABASE_NAME);
+        while ($this_record = mysql_fetch_assoc($result)) {
+            $ID_array[] = $this_record['id'];
+        }
+    }
+    return $ID_array;
+}
+
+function sbk_generate_index($ID_array) {
+    $html = '';
+    $index = Array(
+        'title' => Array(),
+        'writtenby' => Array(),
+        'performedby' => Array(),
+        'categories' => Array()
+    );
+    $id_csv = "(";
+
+    foreach ($ID_array as $this_id) {
+        $id_csv = $id_csv.$this_id.", ";
+    }
+    $id_csv = substr($id_csv, 0, -2);
+    $id_csv = $id_csv.")";
+
+    $result = acradb_get_query_result("select * from ".SBK_TABLE_NAME." WHERE id IN ".$id_csv, SBK_DATABASE_NAME);
+    while ($this_record = mysql_fetch_assoc($result)) {
+        $this_title = trim($this_record['title']);
+        $this_id = $this_record['id'];
+        $index['title'][$this_title] = $this_id;
+        $parts = explode(",",$this_record['written_by']);
+        foreach($parts as $this_writtenby) {
+            if($this_writtenby !== '') {
+                $index['writtenby'][trim($this_writtenby)][$this_title] = $this_id;
+            }
+        }
+        $parts = explode(",",$this_record['performed_by']);
+        foreach($parts as $this_performedby) {
+            if($this_performedby !== '') {
+                $index['performedby'][trim($this_performedby)][$this_title] = $this_id;
+            }
+        }
+        $parts = explode(",",$this_record['meta_tags']);
+        foreach($parts as $this_category) {
+            if($this_category !== '') {
+                $index['categories'][trim($this_category)][$this_title] = $this_id;
+            }
+        }
+    }
+    $html = $html.'<h1>Sorted by title</h1>';
+    ksort($index['title']);
+    foreach($index['title'] as $this_title => $this_id) {
+        $html = $html.'<div class="song"><span class="title">'.$this_title.'</span><span class="id">'.$this_id.'</span></div>';
+    }
+    $html = $html.'<h1>Sorted by composer</h1>';
+    ksort($index['writtenby']);
+    foreach($index['writtenby'] as $this_composer => $this_songarray) {
+        $html = $html.'<h2>'.$this_composer.'</h2>';
+        ksort($this_songarray);
+        foreach($this_songarray as $this_title => $this_id) {
+            $html = $html.'<div class="song"><span class="title">'.$this_title.'</span><span class="id">'.$this_id.'</span></div>';
+        }
+    }
+    $html = $html.'<h1>Sorted by performer</h1>';
+    ksort($index['performedby']);
+    foreach($index['performedby'] as $this_performer => $this_songarray) {
+        $html = $html.'<h2>'.$this_performer.'</h2>';
+        ksort($this_songarray);
+        foreach($this_songarray as $this_title => $this_id) {
+            $html = $html.'<div class="song"><span class="title">'.$this_title.'</span><span class="id">'.$this_id.'</span></div>';
+        }
+    }
+    $html = $html.'<h1>Sorted by category</h1>';
+    ksort($index['categories']);
+    foreach($index['categories'] as $this_category => $this_songarray) {
+        $html = $html.'<h2>'.$this_category.'</h2>';
+        ksort($this_songarray);
+        foreach($this_songarray as $this_title => $this_id) {
+            $html = $html.'<div class="song"><span class="title">'.$this_title.'</span><span class="id">'.$this_id.'</span></div>';
+        }
+    }
+
+
+    return $html;
+}
 ?>
