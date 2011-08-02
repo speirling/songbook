@@ -17,15 +17,39 @@ $STANDARD_JAVASCRIPTS[] = "index.js";
 $display = acradisp_standardHTMLheader('playlists['.$action.']', array('index.css'), $STANDARD_JAVASCRIPTS);
 
 switch ($action) {
+    case 'index':
+        if(array_key_exists('playlist', $_GET)) {
+            $playlist = $_GET['playlist'];
+        } else {
+            $playlist = false;
+        }
+        $display = $display.'<ul class="menu">';
+        $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
+        $display = $display.'<li><a href="?action=listAllPlaylists">List all playlists</a></li> ';
+        $display = $display.'</ul>';
+        if($playlist) {
+            $display = $display.'<h1>Index of '.$playlist.' playlist:</h1>';
+            $thisPlaylistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
+            $ID_array = sbk_getIDarray($thisPlaylistContent);
+        } else {
+            $display = $display.'<h1>Index of all songs in the database:</h1>';
+            $ID_array = sbk_getIDarray();
+        }
+
+        $display = $display.'<div class="song-index">';
+        $display = $display.sbk_generate_index($ID_array);
+        $display = $display.'</div>';
+    break;
+
     case 'listAllPlaylists':
     default:
-        $display = $display.'<h1>List of playlists:</h1>';
-
         $display = $display.'<ul class="menu">';
         $display = $display.'<li><a href="?action=addNewPlaylist">Add a new playlist</a></li> ';
         $display = $display.'<li><a href="?action=editSong">Add new song</a></li> ';
         $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
         $display = $display.'</ul>';
+
+        $display = $display.'<h1>List of playlists:</h1>';
 
         $directoryList = scandir(PLAYLIST_DIRECTORY);
         $display = $display.'<ul class="playlist-list">';
@@ -44,12 +68,13 @@ switch ($action) {
     break;
 
     case 'listAllSongs':
-        $display = $display.'<h1>List of songs in the database:</h1>';
-
         $display = $display.'<ul class="menu">';
         $display = $display.'<li><a href="?action=editSong">Add new song</a></li> ';
         $display = $display.'<li><a href="?action=listAllPlaylists">List all playlists</a></li> ';
+        $display = $display.'<li><a href="?action=index">index of all songs</a></li> ';
         $display = $display.'</ul>';
+
+        $display = $display.'<h1>List of songs in the database:</h1>';
 
         $display = $display.'<span class="listAllSongs">';
         $display = $display.'<h3>Available songs</h3>';

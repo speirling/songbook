@@ -23,7 +23,6 @@ ul.menu li a {
     color: black;
     text-decoration: none;
     display: inline-block;
-    width:9em;
     height: 1.5em;
     line-height:1.5em;
     vertical-align:middle;
@@ -31,6 +30,8 @@ ul.menu li a {
     margin:2px;
     text-align:center;
     font-size: 0.9em;
+	padding-left:2em;
+	padding-right:2em;
 }
 ul.menu li a:hover {
     background-color:#eef0ff;
