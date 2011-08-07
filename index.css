@@ -239,3 +239,30 @@ form#allsongsearch {
 	display: none;
 }
 
+
+
+.song-index {
+}
+.song-index h1 {
+	font-size: 1.4em;
+	color:#dd9999;
+}
+.song-index h2 {
+	font-size: 1.2em;
+	color:#9999dd;
+}
+.song-index .indent {
+	padding-left: 2em;
+}
+.song-index .song {
+	cursor: pointer;
+}
+.song-index .song:hover {
+	background-color: #008080;
+	color: white;
+}
+
+.song-index .song .title {
+	display: inline-block;
+	width: 30em;
+}

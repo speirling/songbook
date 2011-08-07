@@ -31,29 +31,35 @@ $(document).ready(function() {
 		jQuery('#playlist_input').val(jQuery('#playlist-holder').html());
 		jQuery('#playlistForm').submit();
 	});
-	function search_allsongs() {
-    	jQuery.get(
-		    '/songbook/allsongs_filterlist.php',
-		    {search_string: jQuery('#search_string').val()},
-    	    function (data) {
-    	    	jQuery('.all-song-list div#list').html(data);
-    	    	jQuery('.all-song-list #allsongsearch .number-of-records').html(jQuery('.all-song-list div#list .numberofrecords').html());
-    	    	if(jQuery('.displayPlaylist').length) {
-            		jQuery('#playlist-holder ul ul, #allsongs ul').sortable({
-            			connectWith: '.playlist ul'
-            		});
-        		}
-        		if(jQuery('.listAllSongs').length) {
-            		jQuery('#allsongs li').click(function () {
-            			location.href = '?action=displaySong&id=' + jQuery(this).attr('id');
-            		});
-        		}
-    	    }
-    	);
-    }
     search_allsongs();
 	jQuery('form#allsongsearch').submit(function () {
 		search_allsongs();
 		return false;
     });
+	jQuery('.song-index .song').click(function () {
+		location.href = '?action=displaySong&id=' + jQuery(this).attr('id');
+	});
 });
+
+
+
+function search_allsongs() {
+	jQuery.get(
+	    '/songbook/allsongs_filterlist.php',
+	    {search_string: jQuery('#search_string').val()},
+	    function (data) {
+	    	jQuery('.all-song-list div#list').html(data);
+	    	jQuery('.all-song-list #allsongsearch .number-of-records').html(jQuery('.all-song-list div#list .numberofrecords').html());
+	    	if(jQuery('.displayPlaylist').length) {
+        		jQuery('#playlist-holder ul ul, #allsongs ul').sortable({
+        			connectWith: '.playlist ul'
+        		});
+    		}
+    		if(jQuery('.listAllSongs').length) {
+        		jQuery('#allsongs li').click(function () {
+        			location.href = '?action=displaySong&id=' + jQuery(this).attr('id');
+        		});
+    		}
+	    }
+	);
+}
