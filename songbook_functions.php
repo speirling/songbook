@@ -138,55 +138,73 @@ function sbk_generate_index($ID_array) {
         $index['title'][$this_title] = $this_id;
         $parts = explode(",",$this_record['written_by']);
         foreach($parts as $this_writtenby) {
+            $this_writtenby = trim($this_writtenby);
             if($this_writtenby !== '') {
                 $index['writtenby'][trim($this_writtenby)][$this_title] = $this_id;
             }
         }
         $parts = explode(",",$this_record['performed_by']);
         foreach($parts as $this_performedby) {
+            $this_performedby = trim($this_performedby);
             if($this_performedby !== '') {
                 $index['performedby'][trim($this_performedby)][$this_title] = $this_id;
             }
         }
         $parts = explode(",",$this_record['meta_tags']);
         foreach($parts as $this_category) {
+            $this_category = trim($this_category);
             if($this_category !== '') {
                 $index['categories'][trim($this_category)][$this_title] = $this_id;
             }
         }
     }
     $html = $html.'<h1>Sorted by title</h1>';
+    $html = $html.'<div class="indent">';
     ksort($index['title']);
     foreach($index['title'] as $this_title => $this_id) {
-        $html = $html.'<div class="song"><span class="title">'.$this_title.'</span><span class="id">'.$this_id.'</span></div>';
+        $html = $html.'<div class="song" id="'.$this_id.'"><span class="title">'.$this_title.'</span><span class="id">'.$this_id.'</span></div>';
     }
+    $html = $html.'</div>';
+
     $html = $html.'<h1>Sorted by composer</h1>';
+    $html = $html.'<div class="indent">';
     ksort($index['writtenby']);
     foreach($index['writtenby'] as $this_composer => $this_songarray) {
         $html = $html.'<h2>'.$this_composer.'</h2>';
         ksort($this_songarray);
         foreach($this_songarray as $this_title => $this_id) {
-            $html = $html.'<div class="song"><span class="title">'.$this_title.'</span><span class="id">'.$this_id.'</span></div>';
+            $html = $html.'<div class="song" id="'.$this_id.'"><span class="title">'.$this_title.'</span><span class="id">'.$this_id.'</span></div>';
         }
     }
+    $html = $html.'</div>';
+
     $html = $html.'<h1>Sorted by performer</h1>';
+    $html = $html.'<div class="indent">';
     ksort($index['performedby']);
     foreach($index['performedby'] as $this_performer => $this_songarray) {
         $html = $html.'<h2>'.$this_performer.'</h2>';
         ksort($this_songarray);
         foreach($this_songarray as $this_title => $this_id) {
-            $html = $html.'<div class="song"><span class="title">'.$this_title.'</span><span class="id">'.$this_id.'</span></div>';
+            $html = $html.'<div class="song" id="'.$this_id.'"><span class="title">'.$this_title.'</span><span class="id">'.$this_id.'</span></div>';
         }
     }
+    $html = $html.'</div>';
+
     $html = $html.'<h1>Sorted by category</h1>';
+    $html = $html.'<div class="indent">';
     ksort($index['categories']);
     foreach($index['categories'] as $this_category => $this_songarray) {
         $html = $html.'<h2>'.$this_category.'</h2>';
+        $html = $html.'<div class="indent">';
         ksort($this_songarray);
         foreach($this_songarray as $this_title => $this_id) {
-            $html = $html.'<div class="song"><span class="title">'.$this_title.'</span><span class="id">'.$this_id.'</span></div>';
+            $html = $html.'<div class="song" id="'.$this_id.'"><span class="title">'.$this_title.'</span><span class="id">'.$this_id.'</span></div>';
         }
+        $html = $html.'</div>';
+
     }
+    $html = $html.'</div>';
+
 
 
     return $html;
