@@ -60,7 +60,7 @@ span.song {
     font-size:0.9em;
 }
 .song .detail {
-    font-size:0.9em;
+    font-size:0.8em;
     color: gray;
 }
 
@@ -85,11 +85,16 @@ span.song {
 	font-size: 0.8em;
 	font-family: verdana;
 }
-
+.displayPlaylist td {
+	vertical-align: top;
+}
 .displayPlaylist h3 {
 	margin: 0;
 	color: gray;
 	font-weight: normal;
+}
+.displayPlaylist .all-song-list {
+	font-size: 0.8em;
 }
 #playlist-holder textarea {
 	resize: none;
@@ -182,6 +187,7 @@ li.dummy {
 	padding:1em;
 	border-radius:1em;
 	border:1px solid gray;
+	height:80%;
 }
 .all-song-list .pleasewait {
 	font-size: 0.8em;
@@ -193,6 +199,11 @@ li.dummy {
 .all-song-list form .label {
 	font-size:0.8em;
 	color:gray;
+}
+.all-song-list #list,
+#playlistForm>ul {
+	overflow: auto;
+	height:400px;
 }
 .all-song-list ul,
 form#allsongsearch {

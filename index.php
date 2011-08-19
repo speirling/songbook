@@ -25,6 +25,7 @@ switch ($action) {
         }
         $display = $display.'<ul class="menu">';
         $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
+        $display = $display.'<li><a href="?action=index">index of all songs</a></li> ';
         $display = $display.'<li><a href="?action=listAllPlaylists">List all playlists</a></li> ';
         $display = $display.'</ul>';
         if($playlist) {
@@ -47,6 +48,7 @@ switch ($action) {
         $display = $display.'<li><a href="?action=addNewPlaylist">Add a new playlist</a></li> ';
         $display = $display.'<li><a href="?action=editSong">Add new song</a></li> ';
         $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
+        $display = $display.'<li><a href="?action=index">index of all songs</a></li> ';
         $display = $display.'</ul>';
 
         $display = $display.'<h1>List of playlists:</h1>';
@@ -65,6 +67,25 @@ switch ($action) {
             }
         }
         $display = $display.'</ul>';
+    break;
+
+    case 'addNewPlaylist':
+        if(array_key_exists('filename', $_POST)) {
+            sbk_create_blank_playlist($_POST['filename']);
+            $display = $display.acradisp_javascriptRedirectTo('?action=displayPlaylist&playlist='.$_POST['filename']);
+        } else {
+            $display = $display.'<ul class="menu">';
+            $display = $display.'<li><a href="?action=listAllPlaylists">List all playlists</a></li> ';
+            $display = $display.'<li><a href="?action=editSong">Add new song</a></li> ';
+            $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
+            $display = $display.'<li><a href="?action=index">index of all songs</a></li> ';
+            $display = $display.'</ul>';
+
+            $display = $display.'<h1>Add a new playlist:</h1>';
+            $display = $display.'<form id="filename-new-playlist" action="#" method="post">';
+            $display = $display.'<input type="text" name="filename" />';
+            $display = $display.'</form>';
+        }
     break;
 
     case 'listAllSongs':
@@ -96,6 +117,7 @@ switch ($action) {
     case 'displayPlaylist':
         $playlist = $_GET['playlist'];
         if (array_key_exists('update', $_POST)) {
+            p($_POST);
             switch ($_POST['update']) {
             case "PlaylistAddListOfSongs":
                 //couldn't get checkboxes as an array
@@ -122,11 +144,10 @@ switch ($action) {
         }
 
         $display = $display.'<ul class=menu>';
-        $display = $display.'<li><a href="?action=editPlaylist&playlist='.$playlist.'">Edit this playlist</a></li> ';
-        $display = $display.'<li><a href="?action=editSong&playlist='.$playlist.'">Add new song</a></li> ';
         $display = $display.'<li><a href="#" id="add-new-set" playlist="'.$playlist.'">Add a new set</a></li> ';
         $display = $display.'<li><a href="?action=listAllPlaylists">List all playlists</a></li> ';
         $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
+        $display = $display.'<li><a href="?action=index">index of all songs</a></li> ';
         $display = $display.'</ul>';
 
         $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
@@ -140,11 +161,7 @@ switch ($action) {
         $display = $display.'<h3>Available songs</h3>';
         $display = $display.'<div class="all-song-list">';
         $display = $display.'<form id="allsongsearch">';
-        $display = $display.'<span class="label">Filter: </span><input type="test" id="search_string"';
-        if($search_string) {
-            $display = $display.' value="'.$search_string.'"';
-        }
-        $display = $display.' />';
+        $display = $display.'<span class="label">Filter: </span><input type="test" id="search_string" value="" />';
         $display = $display.'<span class="label">Number of songs displayed: </span><span class="number-of-records"></span>';
         $display = $display.'</form>';
         $display = $display.'<div id="list"><span class="pleasewait">please wait...</span></div>';
@@ -189,6 +206,7 @@ switch ($action) {
         $display = $display.'<li><a href="?action=editSong">Add a new song</a></li>';
         $display = $display.'<li><a href="?action=listAllPlaylists">List playlists</a></li>';
         $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
+        $display = $display.'<li><a href="?action=index">index of all songs</a></li> ';
         $display = $display.'<li><a href="?action=displaySong&id='.($id + 1).'">Next &raquo;</a></li>';
         $display = $display.'</ul>';
 
@@ -296,14 +314,17 @@ switch ($action) {
             $display = $display.'<input type="hidden" name="update" id="update" value="editExistingSong"></input>';
             $display = $display.'<input type="hidden" name="display_id" id="display-id" value="'.$id.'"></input>';
             $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $id);
-            $display = $display.'<h1>Edit song</h1>';
             $display = $display.'<ul class=menu>';
             $display = $display.'<li><a href="#" onclick="jQuery(\'#edit-song-form input#display-id\').val('.($id-1).'); jQuery(\'#edit-song-form\').attr(\'action\',\'?action=editSong\').submit();">Edit Previous</a></li>';
             $display = $display.'<li><a href="?action=displaySong&id='.$id.'">Cancel edit</a></li>';
             $display = $display.'<li><a href="?action=editSong">Add a new song</a></li>';
             $display = $display.'<li><a href="?action=listAllPlaylists">List playlists</a></li>';
+            $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
+            $display = $display.'<li><a href="?action=index">index of all songs</a></li> ';
             $display = $display.'<li><a href="#" onclick="jQuery(\'#edit-song-form input#display-id\').val('.($id+1).'); jQuery(\'#edit-song-form\').attr(\'action\',\'?action=editSong\').submit();">Edit Next</a></li>';
             $display = $display.'</ul>';
+            $display = $display.'<h1>Edit song</h1>';
+            $display = $display.'<div class="song_id">Song ID: ['.$id.']</div>';
             $display = $display.'<input type="hidden" name="id" id="id" value="'.$id.'"></input>';
         } else {
             $display = $display.'<input type="hidden" name="update" id="update" value="addNewSong"></input>';
@@ -313,6 +334,8 @@ switch ($action) {
             }
             $display = $display.'<ul class=menu>';
             $display = $display.'<li><a href="?action=listAllPlaylists">List playlists</a></li>';
+            $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
+            $display = $display.'<li><a href="?action=index">index of all songs</a></li> ';
             $display = $display.'</ul>';
             $this_record = array(
                 'title' => '',
@@ -330,7 +353,7 @@ switch ($action) {
         $display = $display.'<div class="title">title: <input type="text" name="title" id="title" size=80 value="'.$this_record['title'].'"></input></div>';
         $display = $display.'<div class="performed_by"><span class=label>performed by: </span><input type="text" name="performed_by" id="performed_by" size=80 value="'.$this_record['performed_by'].'"></input></div>';
         $display = $display.'<div class="written_by"><span class=label>written by: </span><input type="text" name="written_by" id="written_by" size=80 value="'.$this_record['written_by'].'"></input></div>';
-        $display = $display.'<div class="content">content: <br /><textarea name="content" id="content" cols=80 rows=20>'.$this_record['content'].'</textarea></div>';
+        $display = $display.'<div class="content">content: <a id="remove_linebreaks" href="#">Remove double linebreaks</a><br /><textarea name="content" id="content" cols=80 rows=20>'.$this_record['content'].'</textarea></div>';
         $display = $display.'<div class="meta_tags"><input type="text" name="meta_tags" id="meta_tags" size=80 value="'.$this_record['meta_tags'].'"></input></div>';
         $display = $display.'<div class="original_filename"><input type="text" name="original_filename" id="original_filename" size=80 value="'.$this_record['original_filename'].'"></input></div>';
         $display = $display.'<input type=submit value="Save changes" />';
