@@ -21,7 +21,7 @@ function sbk_convert_playlistXML_to_list($playlistContent) {
     $outputHTML = '';
     $outputHTML = $outputHTML.'<div id="playlist-holder">';
     $outputHTML = $outputHTML.'<textarea class="playlist-title">'.$playlistContent['title'].'</textarea>';
-    $outputHTML = $outputHTML.'<ul title='.$playlistContent['title'].'>';
+    $outputHTML = $outputHTML.'<ul>';
     foreach ($playlistContent->set as $thisSet) {
         $outputHTML = $outputHTML.'<li class="set playlist">';
         $outputHTML = $outputHTML.'<textarea class="set-title">'.$thisSet['label'].'</textarea>';
@@ -44,7 +44,6 @@ function sbk_convert_playlistXML_to_list($playlistContent) {
 }
 
 function sbk_convert_list_to_playlistXML($list) {
-    p($list);
     $list = str_replace('\&quot;', '', $list);
     $list = str_replace('\"', '"', $list);
     $list = preg_replace('/&nbsp;/', '&#160;', $list); //&nbsp; doesn't work in XML unless it's specifically declared.
@@ -208,5 +207,10 @@ function sbk_generate_index($ID_array) {
 
 
     return $html;
+}
+
+function sbk_create_blank_playlist($filename) {
+    $playlistContent = new SimpleXMLElement('<?xml version="1.0" standalone="yes"?><songlist title="(Enter a title for the PLAYLIST here)"><set label="(Enter a label for this SET here)"></set></songlist>');
+    return $playlistContent->saveXML(PLAYLIST_DIRECTORY.'/'.$filename.'.playlist');
 }
 ?>

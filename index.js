@@ -25,9 +25,9 @@ $(document).ready(function() {
 	});
 
 	jQuery('#savePlaylist').click(function() {
-		jQuery('#playlist-holder textarea').each(function(){jQuery(this).html(jQuery(this).val())});
-		jQuery('#playlist-holder li.song input.key').each(function(){jQuery(this).parent().attr('key', jQuery(this).val())}).remove();
-		jQuery('#playlist-holder li.song input.singer').each(function(){jQuery(this).parent().attr('singer', jQuery(this).val())}).remove();
+		jQuery('#playlist-holder textarea').each(function(){jQuery(this).html(jQuery(this).val());});
+		jQuery('#playlist-holder li.song input.key').each(function(){jQuery(this).parent().attr('key', jQuery(this).val());}).remove();
+		jQuery('#playlist-holder li.song input.singer').each(function(){jQuery(this).parent().attr('singer', jQuery(this).val());}).remove();
 		jQuery('#playlist_input').val(jQuery('#playlist-holder').html());
 		jQuery('#playlistForm').submit();
 	});
@@ -39,6 +39,9 @@ $(document).ready(function() {
 	jQuery('.song-index .song').click(function () {
 		location.href = '?action=displaySong&id=' + jQuery(this).attr('id');
 	});
+	jQuery('a#remove_linebreaks').click(function(){
+		jQuery('textarea#content').html(jQuery('textarea#content').html().replace(/\n\n/gm, "\n"));
+	})
 });
 
 
