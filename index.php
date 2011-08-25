@@ -117,7 +117,6 @@ switch ($action) {
     case 'displayPlaylist':
         $playlist = $_GET['playlist'];
         if (array_key_exists('update', $_POST)) {
-            p($_POST);
             switch ($_POST['update']) {
             case "PlaylistAddListOfSongs":
                 //couldn't get checkboxes as an array
@@ -145,8 +144,10 @@ switch ($action) {
 
         $display = $display.'<ul class=menu>';
         $display = $display.'<li><a href="#" id="add-new-set" playlist="'.$playlist.'">Add a new set</a></li> ';
+        $display = $display.'<li><a href="?action=pdfPlaylist&playlist='.$playlist.'">pdf</a>';
         $display = $display.'<li><a href="?action=listAllPlaylists">List all playlists</a></li> ';
         $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
+        $display = $display.'<li><a href="?action=editSong">Add new song</a></li> ';
         $display = $display.'<li><a href="?action=index">index of all songs</a></li> ';
         $display = $display.'</ul>';
 
@@ -228,7 +229,7 @@ switch ($action) {
 
         $this_record = acradb_get_single_record(SBK_DATABASE_NAME, SBK_TABLE_NAME, SBK_KEYFIELD_NAME, $id);
 
-        $display = '<html><head><title>'.$this_record['title'].'</title><link href="pdf.css" rel="stylesheet" type="text/css"></head><body class="pdf">';
+        $display = '<html><head><title>'.$this_record['title'].'</title><link href="pdf.css" rel="stylesheet" type="text/css" /></head><body class="pdf">';
         $display = $display.'<table><tbody><tr><td>';
         $display = $display.'<div class="title">'.$this_record['title'].'</div>';
         $display = $display.'<div class="performed_by"><span class="label">performed by: </span><span class="data">'.$this_record['performed_by'].'</div></div>';
@@ -268,12 +269,32 @@ switch ($action) {
         $display = str_replace("<span class=\"text\">\n</span>", '&nbsp;', $display);//the &#160; got lost somewhere along the way (DOM part?) and <span>&nbsp;</span> doesn't display on screen
 
         $display = $display.'</body></html>';
-
 //*
         $dompdf = new DOMPDF();
         $dompdf->load_html($display);
         $dompdf->render();
         $dompdf->stream($this_record['title'].".pdf");
+//-*/
+
+    break;
+
+
+    case 'pdfPlaylist':
+        $number_of_lyric_lines_per_page = 65;
+        $playlist = $_GET['playlist'];
+        $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
+
+        $display = '<html><head><title>'.$playlistContent['title'].'</title><link href="pdf.css" rel="stylesheet" type="text/css" /></head><body class="pdf">';
+        $display = $display.sbk_convert_playlistXML_to_printable_list($playlistContent);
+        $display = preg_replace('/&nbsp;/', '&#160;', $display); //&nbsp; doesn't work in XML unless it's specifically declared.
+        $display = $display.'</body></html>';
+
+
+/*
+        $dompdf = new DOMPDF();
+        $dompdf->load_html($display);
+        $dompdf->render();
+        $dompdf->stream($playlistContent['title'].".pdf");
 //-*/
 
     break;
