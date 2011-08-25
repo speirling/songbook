@@ -7,10 +7,10 @@ $(document).ready(function() {
 
 	jQuery('#playlist-holder li li, #allsongs li').contextMenu('context-menu', {
         'show lyrics': {
-            click: function(element){ location.href = '?action=displaySong&id=' + element.attr('id'); }
+            click: function(element){ location.href = '?action=displaySong&id=' + element.attr('id').replace('id_', ''); }
         },
         'edit song': {
-            click: function(element){ location.href = '?action=editSong&id=' + element.attr('id'); }
+            click: function(element){ location.href = '?action=editSong&id=' + element.attr('id').replace('id_', ''); }
         }
       }
 	);

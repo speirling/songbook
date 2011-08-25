@@ -29,7 +29,7 @@ function sbk_convert_playlistXML_to_list($playlistContent) {
         $outputHTML = $outputHTML.'<li class="dummy">&nbsp;</li>';
         foreach($thisSet->song as $thisSong) {
             $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $thisSong['id']);
-            $outputHTML = $outputHTML.'<li class="song" id="'.$this_record['id'].'">';
+            $outputHTML = $outputHTML.'<li class="song" id="id_'.$this_record['id'].'">';
             $outputHTML = $outputHTML.'<input type="text" class="key" value="'.$thisSong['key'].'"></input>';
             $outputHTML = $outputHTML.'<input type="text" class="singer" value="'.$thisSong['singer'].'"></input>';
             $outputHTML = $outputHTML.'<span class="title">'.$this_record['title'].'</span>';
@@ -37,6 +37,31 @@ function sbk_convert_playlistXML_to_list($playlistContent) {
             $outputHTML = $outputHTML.'</li>';
         }
         $outputHTML = $outputHTML.'</ul>';
+    }
+    $outputHTML = $outputHTML.'</li>';
+    $outputHTML = $outputHTML.'</ul></div>';
+    return $outputHTML;
+}
+
+function sbk_convert_playlistXML_to_printable_list($playlistContent) {
+    $outputHTML = '';
+    $outputHTML = $outputHTML.'<div id="playlist-printable-holder">';
+    $outputHTML = $outputHTML.'<h1>'.$playlistContent['title'].'</h1>';
+    $outputHTML = $outputHTML.'<ul>';
+    foreach ($playlistContent->set as $thisSet) {
+        $outputHTML = $outputHTML.'<li class="set playlist">';
+        $outputHTML = $outputHTML.'<h2>'.$thisSet['label'].'</h2>';
+        $outputHTML = $outputHTML.'<ol>';
+        foreach($thisSet->song as $thisSong) {
+            $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $thisSong['id']);
+            $outputHTML = $outputHTML.'<li class="song" >';
+            $outputHTML = $outputHTML.'<span class="key" value="'.$thisSong['key'].'"></span>';
+            $outputHTML = $outputHTML.'<span class="singer" value="'.$thisSong['singer'].'"></span>';
+            $outputHTML = $outputHTML.'<span class="title">'.$this_record['title'].'</span>';
+            $outputHTML = $outputHTML.'<span class="detail"> (<span class="written_by">'.$this_record['written_by'].'</span> <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
+            $outputHTML = $outputHTML.'</li>';
+        }
+        $outputHTML = $outputHTML.'</ol>';
     }
     $outputHTML = $outputHTML.'</li>';
     $outputHTML = $outputHTML.'</ul></div>';
@@ -87,7 +112,7 @@ function sbk_list_all_songs_in_database($search_string = false) {
             $outputHTML = $outputHTML.'<input class="key" type="text" value="">';
             $outputHTML = $outputHTML.'<input class="singer" type="text" value="">';
             $outputHTML = $outputHTML.'<span class="title">'.$this_record['title'].'</span>';
-            $outputHTML = $outputHTML.'<span class="detail"> (<span class="written_by">'.$this_record['written_by'].'</span> <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
+            $outputHTML = $outputHTML.'<span class="detail"> (<span class="written_by">'.$this_record['written_by'].'</span> :: <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
             $outputHTML = $outputHTML.'</li>';
     	}
         $outputHTML = $outputHTML.'</ul>';
