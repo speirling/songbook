@@ -134,6 +134,7 @@ switch ($action) {
                 sbk_add_songs_to_playlist($song_id_array, $sets, $playlist) ;
             break;
             case "replaceList":
+                p($_POST['playlist_input']);
                 $playlistContent = sbk_convert_list_to_playlistXML($_POST['playlist_input']);
                 $playlistContent->saveXML(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
             break;
