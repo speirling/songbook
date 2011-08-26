@@ -80,6 +80,7 @@ function sbk_convert_list_to_playlistXML($list) {
         $XMLset->addAttribute('label', $thisSet->textarea);
         foreach($thisSet->ul[0]->li as $thisSong) {
             $this_id = (string) $thisSong['id'];
+            $this_id = str_replace('id_', '', $this_id);
             if(is_numeric($this_id)) {
                 $XMLsong = $XMLset->addChild('song','');
                 $XMLsong->addAttribute('id', $this_id);
@@ -108,7 +109,7 @@ function sbk_list_all_songs_in_database($search_string = false) {
         $outputHTML = $outputHTML.'<span class="numberofrecords">'.mysql_num_rows($result).'</span>';
         $outputHTML = $outputHTML.'<ul>';
         while ($this_record = mysql_fetch_assoc($result)) {
-            $outputHTML = $outputHTML.'<li class="song" id="'.$this_record['id'].'">';
+            $outputHTML = $outputHTML.'<li class="song" id="id_'.$this_record['id'].'">';
             $outputHTML = $outputHTML.'<input class="key" type="text" value="">';
             $outputHTML = $outputHTML.'<input class="singer" type="text" value="">';
             $outputHTML = $outputHTML.'<span class="title">'.$this_record['title'].'</span>';
