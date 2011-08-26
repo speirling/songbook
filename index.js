@@ -11,6 +11,9 @@ $(document).ready(function() {
         },
         'edit song': {
             click: function(element){ location.href = '?action=editSong&id=' + element.attr('id').replace('id_', ''); }
+        },
+        'remove from playlist': {
+            click: function(element){ element.remove(); }
         }
       }
 	);
