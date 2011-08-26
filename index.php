@@ -197,7 +197,7 @@ switch ($action) {
             break;
             }
         } else {
-            $id = $_GET['id'];
+            $id = str_replace('id_', '', $_GET['id']);
         }
         $this_record = acradb_get_single_record(SBK_DATABASE_NAME, SBK_TABLE_NAME, SBK_KEYFIELD_NAME, $id);
 
