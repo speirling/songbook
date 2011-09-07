@@ -239,4 +239,15 @@ function sbk_create_blank_playlist($filename) {
     $playlistContent = new SimpleXMLElement('<?xml version="1.0" standalone="yes"?><songlist title="(Enter a title for the PLAYLIST here)"><set label="(Enter a label for this SET here)"></set></songlist>');
     return $playlistContent->saveXML(PLAYLIST_DIRECTORY.'/'.$filename.'.playlist');
 }
+
+function sbk_convert_song_content_to_HTML($content) {
+        $contentHTML = str_replace(' ', '&#160;', $content);
+        $contentHTML = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $contentHTML);
+        $contentHTML = preg_replace('/<div class=\"line\"><span class=\"text\">[\s]*?<\/span><\/div>/', '<div class="line"><span class="text">&nbsp;</span></div>', $contentHTML);
+        $contentHTML = preg_replace('/\[(.*?)\]/','</span><span class="chord">$1</span><span class="text">', $contentHTML);
+        $contentHTML = preg_replace('/&nbsp;/', '&#160;', $contentHTML); //&nbsp; doesn't work in XML unless it's specifically declared.
+        $contentHTML = '<div class="content"><div class="line"><span class="text">'.$contentHTML.'</span></div></div>';
+
+        return $contentHTML;
+}
 ?>
