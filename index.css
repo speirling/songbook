@@ -201,7 +201,7 @@ li.dummy {
 	color:gray;
 }
 .all-song-list #list,
-#playlistForm>ul {
+#playlist-holder>ul {
 	overflow: auto;
 	height:400px;
 }

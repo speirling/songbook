@@ -215,17 +215,12 @@ switch ($action) {
         $display = $display.'<div class="title">'.$this_record['title'].'</div>';
         $display = $display.'<div class="performed_by"><span class="label">performed by: </span><span class="data">'.$this_record['performed_by'].'</div></div>';
         $display = $display.'<div class="written_by"><span class="label">written by :</span><span class="data">'.$this_record['written_by'].'</div>';
-        $content = $this_record['content'];
-        $content = preg_replace('/\n/','</div><div class="line">', $content);
-        $content = preg_replace('/<div class=\"line\">[\s]*?<\/div>/', '<div class="line">&nbsp;</div>', $content);
-        $content = preg_replace('/\[(.*?)\]/','<span class="chord">$1</span>', $content);
-        $content = preg_replace('/&nbsp;/', '&#160;', $content); //&nbsp; doesn't work in XML unless it's specifically declared.
-        $contentHTML = '<div class="content"><div class="line">'.$content.'</div></div>';
-        $display = $display.str_replace('<?xml version="1.0"?>','',$contentHTML);
+        $contentHTML = sbk_convert_song_content_to_HTML($this_record['content']);
+        $display = $display.$contentHTML;
     break;
 
     case 'pdfSong':
-        $number_of_lyric_lines_per_page = 65;
+        $number_of_lyric_lines_per_page = 60;
         $id = $_GET['id'];
 
         $this_record = acradb_get_single_record(SBK_DATABASE_NAME, SBK_TABLE_NAME, SBK_KEYFIELD_NAME, $id);
@@ -233,17 +228,12 @@ switch ($action) {
         $display = '<html><head><title>'.$this_record['title'].'</title><link href="pdf.css" rel="stylesheet" type="text/css" /></head><body class="pdf">';
         $display = $display.'<table><tbody><tr><td>';
         $display = $display.'<div class="title">'.$this_record['title'].'</div>';
-        $display = $display.'<div class="performed_by"><span class="label">performed by: </span><span class="data">'.$this_record['performed_by'].'</div></div>';
-        $display = $display.'<div class="written_by"><span class="label">written by :</span><span class="data">'.$this_record['written_by'].'</div>';
-        $display = $display.'</td><td>';
+        $display = $display.'<div class="written_by"><span class="data">'.$this_record['written_by'].'</div>';
+        $display = $display.'</td><td class="detail">';
         $display = $display.'<span class="songnumber"><span class="label">Song no. </span><span class="data">'.$this_record['id'].'</span>';
+        $display = $display.'<div class="performed_by"><span class="label">performed by: </span><span class="data">'.$this_record['performed_by'].'</div></div>';
         $display = $display.'</td></tr></tbody></table>';
-        $content = $this_record['content'];
-        $content = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $content);
-        $content = preg_replace('/<div class=\"line\">[\s]*?<\/div>/', '<div class="line">&nbsp;</div>', $content);
-        $content = preg_replace('/\[(.*?)\]/','</span><span class="chord">$1</span><span class="text">', $content);
-        $content = preg_replace('/&nbsp;/', '&#160;', $content); //&nbsp; doesn't work in XML unless it's specifically declared.
-        $contentHTML = '<div class="content"><div class="line"><span class="text">'.$content.'</span></div></div>';
+        $contentHTML = sbk_convert_song_content_to_HTML($this_record['content']);
 
         $contentXML = new SimpleXMLElement($contentHTML);
         $line_count = 0;
@@ -375,6 +365,7 @@ switch ($action) {
         $display = $display.'<div class="title">title: <input type="text" name="title" id="title" size=80 value="'.$this_record['title'].'"></input></div>';
         $display = $display.'<div class="performed_by"><span class=label>performed by: </span><input type="text" name="performed_by" id="performed_by" size=80 value="'.$this_record['performed_by'].'"></input></div>';
         $display = $display.'<div class="written_by"><span class=label>written by: </span><input type="text" name="written_by" id="written_by" size=80 value="'.$this_record['written_by'].'"></input></div>';
+        $display = $display.'<div class="base_key"><span class=label>base_key: </span><input type="text" name="base_key" id="base_key" size=10 value="'.$this_record['base_key'].'"></input></div>';
         $display = $display.'<div class="content">content: <a id="remove_linebreaks" href="#">Remove double linebreaks</a><br /><textarea name="content" id="content" cols=80 rows=20>'.$this_record['content'].'</textarea></div>';
         $display = $display.'<div class="meta_tags"><input type="text" name="meta_tags" id="meta_tags" size=80 value="'.$this_record['meta_tags'].'"></input></div>';
         $display = $display.'<div class="original_filename"><input type="text" name="original_filename" id="original_filename" size=80 value="'.$this_record['original_filename'].'"></input></div>';
