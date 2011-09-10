@@ -1,0 +1,83 @@
+
+body.pdf {
+	width: 720px;
+	position: relative;
+	font-family: Arial, Helvetica, sans-serif;
+	/*border:1px solid red;*/
+}
+body.pdf table {
+	width: 100%;
+}
+body.pdf td {
+	vertical-align: top;
+	width: 50%;
+}
+body.pdf td.detail {
+	text-align: right;
+}
+.line {
+	margin-top: 0.2em;
+	font-size:0.8em;
+}
+.chord {
+	display: inline-block;
+	/*position:relative;*/
+	padding-bottom: 1.3em;
+	width: 1px;
+	color: #660000;
+	font-size: 0.8em;
+	font-family: Helvetica;
+}
+
+.title {
+    font-size: 2em;
+	color:#004080;
+}
+.performed_by,
+.written_by {
+	font-size:0.8em;
+    color: gray;
+}
+.performed_by .label,
+.written_by .label {
+    font-style: italic;
+}
+.songnumber {
+	color: #4080c0;
+}
+.songnumber .data {
+	font-weight:bold;
+	font-size:1em;
+}
+.songnumber .label {
+	font-size:0.8em;
+}
+
+
+
+
+#playlist-printable-holder {
+	
+}
+#playlist-printable-holder .song {
+	font-size: 0.9em;
+	margin: 0.5em;
+}
+#playlist-printable-holder .song .key {
+	display: inline-block;
+	width:2em;
+	font-size: 1.2em;
+}
+#playlist-printable-holder .song .singer {
+	display: inline-block;
+	width:5em;
+	font-size: 0.8em;
+	text-align:center;
+}
+#playlist-printable-holder .song .title {
+	display: inline-block;
+	font-size: 1.2em;
+}
+#playlist-printable-holder .song .detail {
+	display: none;
+}
