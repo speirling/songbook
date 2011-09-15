@@ -3,7 +3,6 @@ require_once('admin/configure.inc.php');
 require_once("dompdf/dompdf_config.inc.php");
 
 error_log("\n\n\n\n\n\n\n*******************************\nRun songbook index\n*******************************\n\n");
-define('PLAYLIST_DIRECTORY', 'playlists');
 $songBookContent = "";
 
 if(array_key_exists('action', $_GET)) {
@@ -134,7 +133,6 @@ switch ($action) {
                 sbk_add_songs_to_playlist($song_id_array, $sets, $playlist) ;
             break;
             case "replaceList":
-                p($_POST['playlist_input']);
                 $playlistContent = sbk_convert_list_to_playlistXML($_POST['playlist_input']);
                 $playlistContent->saveXML(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
             break;
@@ -152,23 +150,32 @@ switch ($action) {
         $display = $display.'<li><a href="?action=index">index of all songs</a></li> ';
         $display = $display.'</ul>';
 
-        $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
-        $display = $display.'<table class="displayPlaylist"><tr><td>';
-        $display = $display.'<span class="holder">';
+        $display = $display.'<table class="displayPlaylist"><tr><td><span class="holder">';
         $display = $display.'<h3>Playlist</h3>';
         $display = $display.'<form id="playlistForm" method="post"><a href="#" id="savePlaylist">Save</a><input type="hidden" name="update" value="replaceList" /><textarea id="playlist_input" name="playlist_input" style="display:none;"></textarea></form>';
-        $display = $display.sbk_convert_playlistXML_to_list($playlistContent);
-        $display = $display.'</span>';
-        $display = $display.'</td><td>';
-        $display = $display.'<h3>Available songs</h3>';
-        $display = $display.'<div class="all-song-list">';
-        $display = $display.'<form id="allsongsearch">';
-        $display = $display.'<span class="label">Filter: </span><input type="test" id="search_string" value="" />';
-        $display = $display.'<span class="label">Number of songs displayed: </span><span class="number-of-records"></span>';
-        $display = $display.'</form>';
-        $display = $display.'<div id="list"><span class="pleasewait">please wait...</span></div>';
+        $display = $display.'<div id="playlist-holder">';
+        $display = $display.sbk_playlist_as_html($playlist);
         $display = $display.'</div>';
-        $display = $display.'</td></tr></table>';
+        $display = $display.'</span></td><td><span class="holder">';
+        $display = $display.'<h3>Available songs</h3>';
+        $display = $display.'<select class="playlist-chooser">';
+        $display = $display.'<option value="all">all songs</option>';
+        $directoryList = scandir(PLAYLIST_DIRECTORY);
+            foreach($directoryList as $filename) {
+                if(!is_dir($filename)) {
+                    $path_parts = pathinfo($filename);
+                    if($path_parts['extension'] === 'playlist' && $path_parts['filename'] != '') {
+                        $display = $display.'<option value="'.$path_parts['filename'].'">';
+                        $thisPlaylistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$path_parts['filename'].'.playlist');
+    		            $display = $display.$thisPlaylistContent['title'];
+    		            $display = $display.'</option>';
+                    }
+                }
+            }
+        $display = $display.'</select>';
+        $display = $display.'<div id="available-songs">';
+        $display = $display.'</div>';
+        $display = $display.'</span></td></tr></table>';
 
     break;
 

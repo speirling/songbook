@@ -19,7 +19,6 @@ function sbk_add_songs_to_playlist($song_id_array, $sets, $playlist) {
 
 function sbk_convert_playlistXML_to_list($playlistContent) {
     $outputHTML = '';
-    $outputHTML = $outputHTML.'<div id="playlist-holder">';
     $outputHTML = $outputHTML.'<textarea class="playlist-title">'.$playlistContent['title'].'</textarea>';
     $outputHTML = $outputHTML.'<ul>';
     foreach ($playlistContent->set as $thisSet) {
@@ -39,7 +38,7 @@ function sbk_convert_playlistXML_to_list($playlistContent) {
         $outputHTML = $outputHTML.'</ul>';
     }
     $outputHTML = $outputHTML.'</li>';
-    $outputHTML = $outputHTML.'</ul></div>';
+    $outputHTML = $outputHTML.'</ul>';
     return $outputHTML;
 }
 
@@ -249,5 +248,14 @@ function sbk_convert_song_content_to_HTML($content) {
         $contentHTML = '<div class="content"><div class="line"><span class="text">'.$contentHTML.'</span></div></div>';
 
         return $contentHTML;
+}
+
+function sbk_playlist_as_html($playlist) {
+    $display = '';
+    $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
+    p($playlistContent);
+    $display = $display.sbk_convert_playlistXML_to_list($playlistContent);
+
+    return $display;
 }
 ?>

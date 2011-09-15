@@ -99,5 +99,5 @@ define("SBK_TABLE_NAME", 'lyrics');
 define("SBK_KEYFIELD_NAME", 'id');
 
 require($_SERVER['DOCUMENT_ROOT']."/songbook/songbook_functions.php");
-
+define('PLAYLIST_DIRECTORY', 'playlists');
 ?>
