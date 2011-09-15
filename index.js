@@ -6,7 +6,7 @@ $(document).ready(function() {
 
 	jQuery('#playlist-holder>ul').sortable();
 
-	jQuery('#playlist-holder li li, .all-song-list li').contextMenu('context-menu', {
+	jQuery('#playlist-holder li li, #all-song-list li').contextMenu('context-menu', {
 	    'show lyrics': {
 	        click: function(element){ window.open('?action=displaySong&id=' + element.attr('id').replace('id_', '')); }
 	    },
@@ -33,17 +33,24 @@ $(document).ready(function() {
 		jQuery('#playlist_input').val(jQuery('#playlist-holder').html());
 		jQuery('#playlistForm').submit();
 	});
-    search_allsongs();
-	jQuery('form#allsongsearch').submit(function () {
-		search_allsongs();
-		return false;
-    });
+	create_filter_list(jQuery('#available-songs'));
+
 	jQuery('.song-index .song').click(function () {
 		location.href = '?action=displaySong&id=' + jQuery(this).attr('id');
 	});
-	jQuery('a#remove_linebreaks').click(function(){
+	jQuery('a#remove_linebreaks').click(function (){
 		jQuery('textarea#content').html(jQuery('textarea#content').html().replace(/\n\n/gm, "\n"));
-	})
+	});
+	
+	jQuery('.playlist-chooser').change(function () {
+		var value = jQuery(this).val(), container = jQuery('#available-songs');
+		
+		if (value === 'all') {
+			create_filter_list(container);
+		} else {
+			display_songpicker_from_playlist(container, value);
+		}
+	});
 });
 
 
@@ -53,8 +60,8 @@ function search_allsongs() {
 	    '/songbook/allsongs_filterlist.php',
 	    {search_string: jQuery('#search_string').val()},
 	    function (data) {
-	    	jQuery('.all-song-list div#list').html(data);
-	    	jQuery('.all-song-list #allsongsearch .number-of-records').html(jQuery('.all-song-list div#list .numberofrecords').html());
+	    	jQuery('div#all-song-list').html(data);
+	    	jQuery('#allsongsearch .number-of-records').html(jQuery('div#all-song-list .numberofrecords').html());
 	    	if(jQuery('.displayPlaylist').length) {
         		jQuery('#playlist-holder ul ul, #allsongs ul').sortable({
         			connectWith: '.playlist ul'
@@ -76,3 +83,48 @@ function search_allsongs() {
 	    }
 	);
 }
+
+function create_filter_list(container) {
+	var html = '<form id="allsongsearch">' +
+               '<span class="label">Filter: </span><input type="test" id="search_string" value="" />' + 
+               '<span class="label">Number of songs displayed: </span><span class="number-of-records"></span>' + 
+               '</form>' +
+               '<div id="all-song-list"><span class="pleasewait">please wait...</span></div>' +
+               '</div>';
+	container.html(html);
+	search_allsongs();	
+	jQuery('form#allsongsearch').submit(function () {
+		search_allsongs();
+		return false;
+    });
+}
+
+
+function display_songpicker_from_playlist(container, playlist) {
+	jQuery.get(
+		    '/songbook/display_playlist.php',
+		    {playlist: playlist},
+		    function (data) {
+		    	container.html(data);
+		    	if(jQuery('.displayPlaylist').length) {
+	        		jQuery('ul', container).sortable({
+	        			connectWith: '.playlist ul'
+	        		});
+	    		}
+	    		if(jQuery('li', container).length) {
+	        		jQuery('li', container).contextMenu('context-menu', {
+	        		    'show lyrics': {
+	        		        click: function(element){ window.open('?action=displaySong&id=' + element.attr('id').replace('id_', '')); }
+	        		    },
+	        		    'edit song': {
+	        		        click: function(element){ window.open('?action=editSong&id=' + element.attr('id').replace('id_', '')); }
+	        		    },
+	        		    'remove from playlist': {
+	        		        click: function(element){ element.remove(); }
+	        		    }
+	        		});
+	    		}
+		    }
+		);
+}
+
