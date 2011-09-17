@@ -18,13 +18,7 @@ $(document).ready(function() {
 	    }
 	});
 
-	jQuery('#add-new-set').click(function () {		
-			var newList = jQuery('<ul class=\"ui-sortable\"><li class=dummy>&nbsp;</li></ul>').sortable({
-				connectWith: '.playlist ul'
-		});
-		jQuery('#playlist-holder>ul').append(newSet);
-		newSet.append(newList);
-	});
+	jQuery('#add-new-set').click(add_new_setlist(jQuery('#playlist-holder>ul')));
 
 	jQuery('#savePlaylist').click(function() {
 		jQuery('#playlist-holder textarea').each(function(){jQuery(this).html(jQuery(this).val());});
@@ -53,7 +47,14 @@ $(document).ready(function() {
 	});
 });
 
-
+function add_new_setlist(container) {
+	var newSet = jQuery('<li class="set playlist"><textarea class="set-title" type="text">New Set</textarea></li>');
+	var newList = jQuery('<ul class="ui-sortable"><li class=dummy>&nbsp;</li></ul>').sortable({
+			connectWith: '.playlist ul'
+	});
+	container.append(newSet);
+	newSet.append(newList);
+}
 
 function search_allsongs() {
 	jQuery.get(

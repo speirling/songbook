@@ -227,7 +227,7 @@ switch ($action) {
     break;
 
     case 'pdfSong':
-        $number_of_lyric_lines_per_page = 60;
+        $number_of_lyric_lines_per_page = 58;
         $id = $_GET['id'];
 
         $this_record = acradb_get_single_record(SBK_DATABASE_NAME, SBK_TABLE_NAME, SBK_KEYFIELD_NAME, $id);
