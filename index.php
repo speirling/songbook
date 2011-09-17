@@ -206,8 +206,6 @@ switch ($action) {
         } else {
             $id = str_replace('id_', '', $_GET['id']);
         }
-        $this_record = acradb_get_single_record(SBK_DATABASE_NAME, SBK_TABLE_NAME, SBK_KEYFIELD_NAME, $id);
-
         $display = $display.'<ul class=menu>';
         $display = $display.'<li><a href="?action=displaySong&id='.($id - 1).'">&laquo; Previous</a></li>';
         $display = $display.'<li><a href="?action=editSong&id='.$id.'">Edit this song</a></li>';
@@ -219,11 +217,7 @@ switch ($action) {
         $display = $display.'<li><a href="?action=displaySong&id='.($id + 1).'">Next &raquo;</a></li>';
         $display = $display.'</ul>';
 
-        $display = $display.'<div class="title">'.$this_record['title'].'</div>';
-        $display = $display.'<div class="performed_by"><span class="label">performed by: </span><span class="data">'.$this_record['performed_by'].'</div></div>';
-        $display = $display.'<div class="written_by"><span class="label">written by :</span><span class="data">'.$this_record['written_by'].'</div>';
-        $contentHTML = sbk_convert_song_content_to_HTML($this_record['content']);
-        $display = $display.$contentHTML;
+        $display = $display.sbk_get_song_html($id);
     break;
 
     case 'pdfSong':
@@ -267,7 +261,7 @@ switch ($action) {
         $display = str_replace("<span class=\"text\">\n</span>", '&nbsp;', $display);//the &#160; got lost somewhere along the way (DOM part?) and <span>&nbsp;</span> doesn't display on screen
 
         $display = $display.'</body></html>';
-//*
+/*
         $dompdf = new DOMPDF();
         $dompdf->load_html($display);
         $dompdf->render();
