@@ -102,7 +102,7 @@ function sbk_list_all_songs_in_database($search_string = false) {
             $searchWHERE = $searchWHERE.' `content` LIKE \'%'.$search_string.'%\' OR';
             $searchWHERE = $searchWHERE.' `meta_tags` LIKE \'%'.$search_string.'%\' ';
         }
-        $result = acradb_get_query_result("select * from ".SBK_TABLE_NAME.$searchWHERE, SBK_DATABASE_NAME);
+        $result = acradb_get_query_result("select * from ".SBK_TABLE_NAME.$searchWHERE." order by `title`", SBK_DATABASE_NAME);
         $outputHTML = '';
         $outputHTML = $outputHTML.'<div id="allsongs">';
         $outputHTML = $outputHTML.'<span class="numberofrecords">'.mysql_num_rows($result).'</span>';
@@ -258,7 +258,6 @@ function sbk_playlist_as_html($playlist) {
 
     return $display;
 }
-
 
 function sbk_get_song_html($id){
     $display = '';

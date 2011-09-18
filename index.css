@@ -15,6 +15,7 @@ td {
 ul.menu {
     display: block;
     background-color: #aabbcc;
+	margin: 0;
 }
 ul.menu li {
     display: inline-block;
@@ -213,6 +214,9 @@ li.dummy {
 }
 #available-songs {
 	top:4em;
+}
+#available-songs.main-list {
+	top:7em;
 }
 #all-song-list .pleasewait {
 	font-size: 0.8em;
