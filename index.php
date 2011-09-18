@@ -15,6 +15,17 @@ $STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.contextMenu/jquery.con
 $STANDARD_JAVASCRIPTS[] = "index.js";
 $display = acradisp_standardHTMLheader('playlists['.$action.']', array('index.css'), $STANDARD_JAVASCRIPTS);
 
+$menu = '';
+$menu = $menu.'<ul class="menu">';
+$menu = $menu.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
+$menu = $menu.'<li><a href="?action=index">index of all songs</a></li> ';
+$menu = $menu.'<li><a href="?action=listAllPlaylists">List all playlists</a></li> ';
+$menu = $menu.'<li><a href="?action=addNewPlaylist">Add a new playlist</a></li> ';
+$menu = $menu.'<li><a href="?action=editSong">Add new song</a></li> ';
+$menu = $menu.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
+$menu = $menu.'<li><a href="?action=index">index of all songs</a></li> ';
+$menu = $menu.'</ul>';
+
 switch ($action) {
     case 'index':
         if(array_key_exists('playlist', $_GET)) {
@@ -22,11 +33,7 @@ switch ($action) {
         } else {
             $playlist = false;
         }
-        $display = $display.'<ul class="menu">';
-        $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
-        $display = $display.'<li><a href="?action=index">index of all songs</a></li> ';
-        $display = $display.'<li><a href="?action=listAllPlaylists">List all playlists</a></li> ';
-        $display = $display.'</ul>';
+        $display = $display.$menu;
         if($playlist) {
             $display = $display.'<h1>Index of '.$playlist.' playlist:</h1>';
             $thisPlaylistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
@@ -43,15 +50,9 @@ switch ($action) {
 
     case 'listAllPlaylists':
     default:
-        $display = $display.'<ul class="menu">';
-        $display = $display.'<li><a href="?action=addNewPlaylist">Add a new playlist</a></li> ';
-        $display = $display.'<li><a href="?action=editSong">Add new song</a></li> ';
-        $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
-        $display = $display.'<li><a href="?action=index">index of all songs</a></li> ';
-        $display = $display.'</ul>';
+        $display = $display.$menu;
 
         $display = $display.'<h1>List of playlists:</h1>';
-
         $directoryList = scandir(PLAYLIST_DIRECTORY);
         $display = $display.'<ul class="playlist-list">';
         foreach($directoryList as $filename) {
@@ -73,12 +74,7 @@ switch ($action) {
             sbk_create_blank_playlist($_POST['filename']);
             $display = $display.acradisp_javascriptRedirectTo('?action=displayPlaylist&playlist='.$_POST['filename']);
         } else {
-            $display = $display.'<ul class="menu">';
-            $display = $display.'<li><a href="?action=listAllPlaylists">List all playlists</a></li> ';
-            $display = $display.'<li><a href="?action=editSong">Add new song</a></li> ';
-            $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
-            $display = $display.'<li><a href="?action=index">index of all songs</a></li> ';
-            $display = $display.'</ul>';
+            $display = $display.$menu;
 
             $display = $display.'<h1>Add a new playlist:</h1>';
             $display = $display.'<form id="filename-new-playlist" action="#" method="post">';
@@ -88,28 +84,10 @@ switch ($action) {
     break;
 
     case 'listAllSongs':
-        $display = $display.'<ul class="menu">';
-        $display = $display.'<li><a href="?action=editSong">Add new song</a></li> ';
-        $display = $display.'<li><a href="?action=listAllPlaylists">List all playlists</a></li> ';
-        $display = $display.'<li><a href="?action=index">index of all songs</a></li> ';
-        $display = $display.'</ul>';
+        $display = $display.$menu;
 
         $display = $display.'<h1>List of songs in the database:</h1>';
-
-        $display = $display.'<span class="listAllSongs">';
-        $display = $display.'<h3>Available songs</h3>';
-        $display = $display.'<div class="all-song-list">';
-        $display = $display.'<form id="allsongsearch">';
-        $display = $display.'<span class="label">Filter: </span><input type="test" id="search_string"';
-        if($search_string) {
-            $display = $display.' value="'.$search_string.'"';
-        }
-        $display = $display.' />';
-        $display = $display.'<span class="label">Number of songs displayed: </span><span class="number-of-records"></span>';
-        $display = $display.'</form>';
-        $display = $display.'<div id="list"><span class="pleasewait">please wait...</span></div>';
-        $display = $display.'</div>';
-        $display = $display.'</span>';
+        $display = $display.'<div id="available-songs" class="main-list"></div>';
 
     break;
 
@@ -140,14 +118,10 @@ switch ($action) {
         } elseif (array_key_exists('addNewSet', $_GET)) {
 
         }
-
+        $display = $display.$menu;
         $display = $display.'<ul class=menu>';
         $display = $display.'<li><a href="#" id="add-new-set" playlist="'.$playlist.'">Add a new set</a></li> ';
         $display = $display.'<li><a href="?action=pdfPlaylist&playlist='.$playlist.'">pdf</a>';
-        $display = $display.'<li><a href="?action=listAllPlaylists">List all playlists</a></li> ';
-        $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
-        $display = $display.'<li><a href="?action=editSong">Add new song</a></li> ';
-        $display = $display.'<li><a href="?action=index">index of all songs</a></li> ';
         $display = $display.'</ul>';
 
         $display = $display.'<table class="displayPlaylist"><tr><td><span class="holder">';
@@ -173,8 +147,7 @@ switch ($action) {
                 }
             }
         $display = $display.'</select>';
-        $display = $display.'<div id="available-songs">';
-        $display = $display.'</div>';
+        $display = $display.'<div id="available-songs"></div>';
         $display = $display.'</span></td></tr></table>';
 
     break;
@@ -210,12 +183,9 @@ switch ($action) {
         $display = $display.'<li><a href="?action=displaySong&id='.($id - 1).'">&laquo; Previous</a></li>';
         $display = $display.'<li><a href="?action=editSong&id='.$id.'">Edit this song</a></li>';
         $display = $display.'<li><a href="?action=pdfSong&id='.$id.'">.pdf</a></li>';
-        $display = $display.'<li><a href="?action=editSong">Add a new song</a></li>';
-        $display = $display.'<li><a href="?action=listAllPlaylists">List playlists</a></li>';
-        $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
-        $display = $display.'<li><a href="?action=index">index of all songs</a></li> ';
         $display = $display.'<li><a href="?action=displaySong&id='.($id + 1).'">Next &raquo;</a></li>';
         $display = $display.'</ul>';
+        $display = $display.$menu;
 
         $display = $display.sbk_get_song_html($id);
     break;
@@ -299,7 +269,6 @@ switch ($action) {
             case "addNewSong":
                 //a new song has been added - submit to database before displaying
                 $value_array = acradb_convert_POST_data_into_recordValueArray($_POST, SBK_TABLE_NAME, SBK_DATABASE_NAME);
-                //p($value_array);
                 $updatequery = acradb_generate_insert_query_from_value_array($value_array, SBK_TABLE_NAME);
 
                 $result = acradb_get_query_result($updatequery, SBK_DATABASE_NAME);
@@ -330,12 +299,10 @@ switch ($action) {
             $display = $display.'<ul class=menu>';
             $display = $display.'<li><a href="#" onclick="jQuery(\'#edit-song-form input#display-id\').val('.($id-1).'); jQuery(\'#edit-song-form\').attr(\'action\',\'?action=editSong\').submit();">Edit Previous</a></li>';
             $display = $display.'<li><a href="?action=displaySong&id='.$id.'">Cancel edit</a></li>';
-            $display = $display.'<li><a href="?action=editSong">Add a new song</a></li>';
-            $display = $display.'<li><a href="?action=listAllPlaylists">List playlists</a></li>';
-            $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
-            $display = $display.'<li><a href="?action=index">index of all songs</a></li> ';
             $display = $display.'<li><a href="#" onclick="jQuery(\'#edit-song-form input#display-id\').val('.($id+1).'); jQuery(\'#edit-song-form\').attr(\'action\',\'?action=editSong\').submit();">Edit Next</a></li>';
             $display = $display.'</ul>';
+            $display = $display.$menu;
+
             $display = $display.'<h1>Edit song</h1>';
             $display = $display.'<div class="song_id">Song ID: ['.$id.']</div>';
             $display = $display.'<input type="hidden" name="id" id="id" value="'.$id.'"></input>';
@@ -345,11 +312,7 @@ switch ($action) {
             if(array_key_exists('playlist', $_GET)) {
                 $display = $display.'<h2>to playlist [' . $_GET['playlist'] . ']</h2>';
             }
-            $display = $display.'<ul class=menu>';
-            $display = $display.'<li><a href="?action=listAllPlaylists">List playlists</a></li>';
-            $display = $display.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
-            $display = $display.'<li><a href="?action=index">index of all songs</a></li> ';
-            $display = $display.'</ul>';
+            $display = $display.$menu;
             $this_record = array(
                 'title' => '',
                 'performed_by' => '',
@@ -372,92 +335,6 @@ switch ($action) {
         $display = $display.'<div class="original_filename"><input type="text" name="original_filename" id="original_filename" size=80 value="'.$this_record['original_filename'].'"></input></div>';
         $display = $display.'<input type=submit value="Save changes" />';
         $display = $display.'</form>';
-    break;
-
-    case 'addSongToPlaylist':
-
-        $playlist = $_GET['playlist'];
-        $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
-        $display = $display.'<form action = ?action=displayPlaylist&playlist='.$playlist.' method="post">';
-        $display = $display.'<input type="hidden" name="update" id="update" value="PlaylistAddListOfSongs"></input>';
-        $display = $display.'<h1>All available songs</h1>';
-
-        $display = $display.'<ul class=menu>';
-        $display = $display.'<li><a href="?action=displayPlaylist&playlist='.$playlist.'">View this playlist (cancel)</a></li> ';
-        $display = $display.'<li><a href="?action=listAllPlaylists">List all playlists (home)</a></li> ';
-        $display = $display.'</ul>';
-
-        $display = $display.'<input type=submit value="Save changes" />';
-
-        $result = acradb_get_query_result("select * from ".SBK_TABLE_NAME, SBK_DATABASE_NAME);
-        while ($this_record = mysql_fetch_assoc($result)) {
-            $display = $display.'<span class="song">';
-            foreach ($playlistContent->set as $thisSet) {
-                $display = $display.'['.$thisSet['label'].': <input type="checkbox" name="set_'.$thisSet['id'].'_song_'.$this_record['id'].'" value="'.$this_record['id'].'" />] ';
-            }
-            $display = $display.'<span class="title">'.$this_record['title'].'</span>';
-            $display = $display.'<span class="detail"> (<span class="written_by">'.$this_record['written_by'].'</span> <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
-            $display = $display.'</span>';
-    	}
-    	$display = $display.'<input type=submit value="Save changes" />';
-    	$display = $display.'</form>';
-    break;
-
-    case 'outputWord':
-        foreach($playlist as $filename) {
-            if(!is_dir($filename)) {
-                $sectionNumber = $sectionNumber + 1;
-                $lyrics_as_string = "<div class=Section".$sectionNumber.">";
-                $lineCount = 0;
-                $lyrics_as_array = file($dir."/".$filename);
-                foreach($lyrics_as_array as $line) {
-                    $lineCount = $lineCount + 1;
-                    if($lineCount == 1) {
-                        $lyrics_as_string .= "<h1>".$line."</h1>\n";
-                    } elseif($lineCount == 2) {
-                        $lyrics_as_string .= "<h2>".$line."</h2>\n<p class='lyrics'>";
-                    } else {
-                        $lyrics_as_string .= $line."<br />\n";
-                    }
-                }
-                $songBookContent .= $lyrics_as_string."</p>\n";
-                $songBookContent .= "\n</div>".$pageBreak."\n";
-                $PageDefinitions = $PageDefinitions."\n@page Section".$sectionNumber."\n{";
-                $PageDefinitions = $PageDefinitions.$pageDefinitionSingleColumn;
-                if($lineCount > 50) {
-                    $PageDefinitions = $PageDefinitions.$pageDefinitionDoubleColumn;
-                }
-                $PageDefinitions = $PageDefinitions."}\n";
-                $PageDefinitions = $PageDefinitions."div.Section".$sectionNumber."\n{page:Section".$sectionNumber.";}\n";
-            }
-        }
-
-        $songBook = $fileHeaderBeforeTitle.
-                    $title.
-                    $fileHeaderFromTitleToPageDefinitions.
-                    $PageDefinitions.
-                    $fileHeaderAfterPageDefinitions.
-                    $titlePage.
-                    $contentsPage.
-                    $songBookContent.
-                    $footer;
-
-        $fp = fopen($title.'.htm', 'w');
-        if(fwrite($fp, $songBook)) {
-            echo "File ".$title.".htm written";
-        } else {
-            echo "ERROR : There was a problem writing file".$title.".htm";
-        }
-        fclose($fp);
-    break;
-
-    case 'allsongs':
-        if(array_key_exists('search_string', $_GET)) {
-            $search_string = $_GET['search_string'];
-        } else {
-            $search_string = false;
-        }
-        $display = $display.sbk_list_all_songs_in_database($search_string);
     break;
 }
 

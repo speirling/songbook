@@ -6,7 +6,18 @@ $(document).ready(function() {
 
 	jQuery('#playlist-holder>ul').sortable();
 
-	jQuery('#playlist-holder li li, #all-song-list li').contextMenu('context-menu', {
+	jQuery('#playlist-holder li li, #all-song-list li, .song').contextMenu('context-menu', {
+	    'show lyrics': {
+	        click: function(element){ window.open('?action=displaySong&id=' + element.attr('id').replace('id_', '')); }
+	    },
+	    'edit song': {
+	        click: function(element){window.open( '?action=editSong&id=' + element.attr('id').replace('id_', '')); }
+	    },
+	    'remove from playlist': {
+	        click: function(element){ element.remove(); }
+	    }
+	});
+	jQuery('.song').contextMenu('context-menu', {
 	    'show lyrics': {
 	        click: function(element){ window.open('?action=displaySong&id=' + element.attr('id').replace('id_', '')); }
 	    },
