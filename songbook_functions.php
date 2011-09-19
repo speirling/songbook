@@ -42,28 +42,32 @@ function sbk_convert_playlistXML_to_list($playlistContent) {
     return $outputHTML;
 }
 
-function sbk_convert_playlistXML_to_printable_list($playlistContent) {
+function sbk_convert_playlistXML_to_table($playlistContent) {
     $outputHTML = '';
-    $outputHTML = $outputHTML.'<div id="playlist-printable-holder">';
-    $outputHTML = $outputHTML.'<h1>'.$playlistContent['title'].'</h1>';
-    $outputHTML = $outputHTML.'<ul>';
+    $number_of_columns = count($playlistContent->set);
+    $column_width = floor(100/$number_of_columns);
+    $outputHTML = $outputHTML.'<table id="playlist-printable-holder"><tbody><tr>';
+    $outputHTML = $outputHTML.'<td colspan='.$number_of_columns.' ><h1>'.$playlistContent['title'].'</h1></td></tr>';
     foreach ($playlistContent->set as $thisSet) {
-        $outputHTML = $outputHTML.'<li class="set playlist">';
+        //$outputHTML = $outputHTML.'<tr>';
+        $outputHTML = $outputHTML.'<td class="set playlist" style="width:'.$column_width.'%">';
         $outputHTML = $outputHTML.'<h2>'.$thisSet['label'].'</h2>';
-        $outputHTML = $outputHTML.'<ol>';
+        $outputHTML = $outputHTML.'<table>';
         foreach($thisSet->song as $thisSong) {
             $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $thisSong['id']);
-            $outputHTML = $outputHTML.'<li class="song" >';
-            $outputHTML = $outputHTML.'<span class="singer">'.$thisSong['singer'].'</span>';
-            $outputHTML = $outputHTML.'<span class="key">'.$thisSong['key'].'</span>';
-            $outputHTML = $outputHTML.'<span class="title">'.$this_record['title'].'</span>';
-            $outputHTML = $outputHTML.'<span class="detail"> (<span class="written_by">'.$this_record['written_by'].'</span> | <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
-            $outputHTML = $outputHTML.'</li>';
+            $outputHTML = $outputHTML.'<tr class="song" >';
+            $outputHTML = $outputHTML.'<td class="singer">'.$thisSong['singer'].'</td>';
+            $outputHTML = $outputHTML.'<td class="key">'.$thisSong['key'].'</td>';
+            $outputHTML = $outputHTML.'<td class="title">'.$this_record['title'].'</td>';
+            $outputHTML = $outputHTML.'<td class="detail">(<span class="written_by">'.$this_record['written_by'].'</span> | <span class="performed_by">'.$this_record['performed_by'].'</span>)</td>';
+            $outputHTML = $outputHTML.'</tr>';
         }
-        $outputHTML = $outputHTML.'</ol>';
+        $outputHTML = $outputHTML.'</table></td>';
+        //$outputHTML = $outputHTML.'</tr>';
     }
-    $outputHTML = $outputHTML.'</li>';
-    $outputHTML = $outputHTML.'</ul></div>';
+    $outputHTML = $outputHTML.'</td>';
+    $outputHTML = $outputHTML.'</tr>';
+    $outputHTML = $outputHTML.'</tbody></table>';
     return $outputHTML;
 }
 
@@ -253,7 +257,6 @@ function sbk_convert_song_content_to_HTML($content) {
 function sbk_playlist_as_html($playlist) {
     $display = '';
     $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
-    p($playlistContent);
     $display = $display.sbk_convert_playlistXML_to_list($playlistContent);
 
     return $display;
