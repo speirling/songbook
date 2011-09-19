@@ -72,7 +72,7 @@ body.pdf ul {
 
 
 #playlist-printable-holder {
-	
+	width: 1200px;
 }
 #playlist-printable-holder .song {
 	font-size: 0.9em;

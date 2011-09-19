@@ -247,7 +247,7 @@ switch ($action) {
         $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
 
         $display = '<html><head><title>'.$playlistContent['title'].'</title><link href="pdf.css" rel="stylesheet" type="text/css" /></head><body class="pdf">';
-        $display = $display.sbk_convert_playlistXML_to_printable_list($playlistContent);
+        $display = $display.sbk_convert_playlistXML_to_table($playlistContent);
         $display = preg_replace('/&nbsp;/', '&#160;', $display); //&nbsp; doesn't work in XML unless it's specifically declared.
         $display = $display.'</body></html>';
 
