@@ -282,8 +282,7 @@ form#allsongsearch {
 	padding-left:1.3em;
 	padding-right:1.3em;
 }
-#playlistForm a#savePlaylist:hover,
-#all-song-list li:hover {
+#playlistForm a#savePlaylist:hover {
 	background-color: #008080;
 	color: white;
 }
