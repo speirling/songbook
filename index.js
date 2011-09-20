@@ -112,7 +112,10 @@ function create_filter_list(container) {
 }
 
 
-function display_songpicker_from_playlist(container, playlist) {
+function display_songpicker_from_playlist(parent_container, playlist) {
+	var container = jQuery('<div id="all-song-list"></div>');
+	parent_container.html('');
+	parent_container.append(container);
 	jQuery.get(
 		    '/songbook/display_playlist.php',
 		    {playlist: playlist},
