@@ -1,7 +1,5 @@
 <?php
 
-
-
 function sbk_add_songs_to_playlist($song_id_array, $sets, $playlist) {
     p('add an existing song to a playlist', $song_id, $sets, $playlist);
 
