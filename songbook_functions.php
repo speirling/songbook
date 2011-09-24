@@ -243,7 +243,9 @@ function sbk_create_blank_playlist($filename) {
 }
 
 function sbk_convert_song_content_to_HTML($content) {
-        $contentHTML = str_replace(' ', '&#160;', $content);
+        $contentHTML = $content;
+        $contentHTML = preg_replace('/&([^#n])/', '&#38;$1', $contentHTML);
+        $contentHTML = str_replace(' ', '&#160;', $contentHTML);
         $contentHTML = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $contentHTML);
         $contentHTML = preg_replace('/<div class=\"line\"><span class=\"text\">[\s]*?<\/span><\/div>/', '<div class="line"><span class="text">&nbsp;</span></div>', $contentHTML);
         $contentHTML = preg_replace('/\[(.*?)\]/','</span><span class="chord">$1</span><span class="text">', $contentHTML);
