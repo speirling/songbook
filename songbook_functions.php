@@ -56,8 +56,9 @@ function sbk_convert_playlistXML_to_table($playlistContent) {
             $outputHTML = $outputHTML.'<tr class="song" >';
             $outputHTML = $outputHTML.'<td class="singer">'.$thisSong['singer'].'</td>';
             $outputHTML = $outputHTML.'<td class="key">'.$thisSong['key'].'</td>';
-            $outputHTML = $outputHTML.'<td class="title">'.$this_record['title'].'</td>';
-            $outputHTML = $outputHTML.'<td class="detail">(<span class="written_by">'.$this_record['written_by'].'</span> | <span class="performed_by">'.$this_record['performed_by'].'</span>)</td>';
+            $outputHTML = $outputHTML.'<td class="title">'.$this_record['title'];
+            $outputHTML = $outputHTML.'<span class="detail">(<span class="written_by">'.$this_record['written_by'].'</span> | <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
+            $outputHTML = $outputHTML.'</td>';
             $outputHTML = $outputHTML.'</tr>';
         }
         $outputHTML = $outputHTML.'</table></td>';
