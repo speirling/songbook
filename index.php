@@ -1,8 +1,9 @@
 <?php
 require_once('admin/configure.inc.php');
-require_once("dompdf/dompdf_config.inc.php");
+//require_once("dompdf/dompdf_config.inc.php");
+require_once("wkhtml2pdf_integration.php");
 
-error_log("\n\n\n\n\n\n\n*******************************\nRun songbook index\n*******************************\n\n");
+error_log("******************************* Run songbook index *******************************");
 $songBookContent = "";
 
 if(array_key_exists('action', $_GET)) {
@@ -246,18 +247,17 @@ switch ($action) {
         $playlist = $_GET['playlist'];
         $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
 
-        $display = '<html><head><title>'.$playlistContent['title'].'</title><link href="pdf.css" rel="stylesheet" type="text/css" /></head><body class="pdf">';
+        $display = '<html><head><title>'.$playlistContent['title'].'</title><link href="../pdf.css" rel="stylesheet" type="text/css" /></head><body class="pdf">';
         $display = $display.sbk_convert_playlistXML_to_table($playlistContent);
         $display = preg_replace('/&nbsp;/', '&#160;', $display); //&nbsp; doesn't work in XML unless it's specifically declared.
         $display = $display.'</body></html>';
 
+        $pdf = new WKPDF();
+        $pdf->set_orientation('landscape');
+        $pdf->set_html($display);
+        $pdf->render();
+        $pdf->output(WKPDF::$PDF_DOWNLOAD, $playlistContent['title'].".pdf");
 
-/*
-        $dompdf = new DOMPDF();
-        $dompdf->load_html($display);
-        $dompdf->render();
-        $dompdf->stream($playlistContent['title'].".pdf");
-//-*/
 
     break;
 

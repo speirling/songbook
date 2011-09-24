@@ -10,7 +10,6 @@ body.pdf table {
 }
 body.pdf td {
 	vertical-align: top;
-	width: 50%;
 }
 body.pdf td.detail {
 	text-align: right;
@@ -74,6 +73,15 @@ body.pdf ul {
 #playlist-printable-holder {
 	width: 1200px;
 }
+#playlist-printable-holder h2 {
+	color: gray;
+	border-bottom: 1px solid gray;
+	margin:0;
+}
+#playlist-printable-holder td.playlist {
+	border-right: 1px solid gray;
+	padding: 1em;
+}
 #playlist-printable-holder .song {
 	font-size: 0.9em;
 	margin: 0.5em;
@@ -82,12 +90,13 @@ body.pdf ul {
 	display: inline-block;
 	width:2em;
 	font-size: 1.2em;
+	text-align: center;
 }
 #playlist-printable-holder .song .singer {
 	display: inline-block;
 	width:5em;
 	font-size: 0.8em;
-	text-align:center;
+	text-align:right;
 	color: gray;
 }
 #playlist-printable-holder .song .title {

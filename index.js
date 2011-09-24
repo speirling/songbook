@@ -17,7 +17,16 @@ $(document).ready(function() {
 	        click: function(element){ element.remove(); }
 	    }
 	});
-
+	
+	jQuery('.song-index .song').contextMenu('context-menu', {
+	    'show lyrics': {
+	        click: function(element){ window.open('?action=displaySong&id=' + element.attr('id').replace('id_', '')); }
+	    },
+	    'edit song': {
+	        click: function(element){ window.open('?action=editSong&id=' + element.attr('id').replace('id_', '')); }
+	    }
+	});
+	
 	jQuery('#playlist-holder .playlist').contextMenu('context-menu', {
 	    'remove from playlist': {
 	        click: function(element){ element.remove(); }
