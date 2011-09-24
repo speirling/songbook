@@ -197,47 +197,15 @@ switch ($action) {
 
         $this_record = acradb_get_single_record(SBK_DATABASE_NAME, SBK_TABLE_NAME, SBK_KEYFIELD_NAME, $id);
 
-        $display = '<html><head><title>'.$this_record['title'].'</title><link href="pdf.css" rel="stylesheet" type="text/css" /></head><body class="pdf">';
-        $display = $display.'<table><tbody><tr><td>';
-        $display = $display.'<div class="title">'.$this_record['title'].'</div>';
-        $display = $display.'<div class="written_by"><span class="data">'.$this_record['written_by'].'</div>';
-        $display = $display.'</td><td class="detail">';
-        $display = $display.'<span class="songnumber"><span class="label">Song no. </span><span class="data">'.$this_record['id'].'</span>';
-        $display = $display.'<div class="performed_by"><span class="label">performed by: </span><span class="data">'.$this_record['performed_by'].'</div></div>';
-        $display = $display.'</td></tr></tbody></table>';
-        $contentHTML = sbk_convert_song_content_to_HTML($this_record['content']);
-
-        $contentXML = new SimpleXMLElement($contentHTML);
-        $line_count = 0;
-        $formattedContentXML = new SimpleXMLElement('<div class="content"></div>');
-        $table = $formattedContentXML->addChild('table');
-        $table_row = $table->addChild('tr');
-        $current_column = $table_row->addChild('td');
-        $dom_current_column = dom_import_simplexml($current_column);
-       foreach($contentXML->xpath('//div[@class="line"]') as $this_line) {
-           if(sizeof($this_line->xpath('span[@class="chord"]')) > 0) {
-            $line_count = $line_count + 2;
-           } else {
-            $line_count = $line_count + 1;
-           }
-            if(($line_count % $number_of_lyric_lines_per_page) === 0) {
-                $current_column = $table_row->addChild('td');
-                $dom_current_column = dom_import_simplexml($current_column);
-            }
-            $dom_line = dom_import_simplexml($this_line);
-            $dom_line = $dom_current_column->ownerDocument->importNode($dom_line, true);
-            $dom_current_column->appendChild($dom_line);
-        }
-        $display = $display.str_replace('<?xml version="1.0"?'.'>','',$formattedContentXML->asXML());
-        $display = str_replace("<span class=\"text\">\n</span>", '&nbsp;', $display);//the &#160; got lost somewhere along the way (DOM part?) and <span>&nbsp;</span> doesn't display on screen
-
+        $display = '<html><head><title>'.$this_record['title'].'</title><link href="../pdf.css" rel="stylesheet" type="text/css" /></head><body class="pdf">';
+        $display = $display.sbk_get_song_html($id);
         $display = $display.'</body></html>';
-/*
-        $dompdf = new DOMPDF();
-        $dompdf->load_html($display);
-        $dompdf->render();
-        $dompdf->stream($this_record['title'].".pdf");
-//-*/
+
+        $pdf = new WKPDF();
+        $pdf->set_orientation('portrait');
+        $pdf->set_html($display);
+        $pdf->render();
+        $pdf->output(WKPDF::$PDF_DOWNLOAD, $this_record['title'].".pdf");
 
     break;
 
