@@ -2,16 +2,6 @@ body {
     font-family: trebuchet, verdana, sans-serif;
     font-size: 12px;
 }
-.title {
-
-}
-/*table, tbody, tr { position: relative; font-size: 1em;}
-td {
-	vertical-align:top;
-	position: relative;
-	font-size: 1em;
-}
-*/
 ul.menu {
     display: block;
     background-color: #aabbcc;
@@ -37,6 +27,10 @@ ul.menu li a {
 ul.menu li a:hover {
     background-color:#eef0ff;
 }
+/* end of menu --------------------- */
+
+
+
 .label, .data  {
     display:inline-block;
 }
@@ -54,6 +48,7 @@ ul.menu li a:hover {
 .written_by .label {
     color:gray;
 }
+
 span.song {
     display:block;
 }
@@ -61,9 +56,9 @@ span.song {
 
 }
 .song .detail {
-    font-size:0.8em;
     color: gray;
 }
+
 
 .content {
 	margin-top:1em;
@@ -86,6 +81,9 @@ span.song {
 	font-size: 0.8em;
 	font-family: verdana;
 }
+
+
+
 table.displayPlaylist {
 	height:95%;
 	width:100%;
@@ -103,6 +101,11 @@ table.displayPlaylist {
 	color: gray;
 	font-weight: normal;
 }
+
+
+
+
+
 #available-songs textarea,
 #playlist-holder textarea {
 	resize: none;
@@ -150,17 +153,22 @@ table.displayPlaylist {
 .playlist li li {
 	background-color: #faffaa;
 }
+
+
+
+/* context menu -------------------------- */
 .context-menu {
-	border: 1px solid sliver;
+	border: 1px solid gray;
 	background-color:white;
 	padding: 0.2em;
+	box-shadow: 2px 2px 2px #333;
 }
 .context-menu li {
 	padding:0.3em;
 	list-style-type: none;
 }
 .context-menu li:hover {
-	background-color:#e9e9e9;
+	background-color:silver;
 }
 
 .context-menu li a {
@@ -168,6 +176,8 @@ table.displayPlaylist {
 	font-size: 0.8em;
 	text-decoration: none;
 }
+/* end of context menu ------------------- */
+
 
 li.dummy {
 	border:0;
@@ -226,7 +236,6 @@ li.dummy {
 	display:block;
 }
 #available-songs form .label {
-	font-size:0.8em;
 	color:gray;
 }
 #all-song-list,
@@ -298,10 +307,12 @@ form#allsongsearch {
 .song-index h1 {
 	font-size: 1.4em;
 	color:#dd9999;
+	margin-bottom: 0.3em;
 }
 .song-index h2 {
 	font-size: 1.2em;
 	color:#9999dd;
+	margin-bottom: 0.3em;
 }
 .song-index .indent {
 	padding-left: 2em;
@@ -314,9 +325,19 @@ form#allsongsearch {
 	color: white;
 }
 
+.song-index .song .id {
+	display: inline-block;
+	width: 3em;
+	text-align: right;
+	padding-right: 0.5em;
+	border-right: 1px solid silver;
+	color: gray;
+}
+
 .song-index .song .title {
 	display: inline-block;
 	width: 30em;
+	padding-left: 0.5em;
 }
 
 
