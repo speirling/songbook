@@ -161,35 +161,39 @@ function sbk_generate_index($ID_array) {
     $result = acradb_get_query_result("select * from ".SBK_TABLE_NAME." WHERE id IN ".$id_csv, SBK_DATABASE_NAME);
     while ($this_record = mysql_fetch_assoc($result)) {
         $this_title = trim($this_record['title']);
-        $this_id = $this_record['id'];
-        $index['title'][$this_title] = $this_id;
-        $parts = explode(",",$this_record['written_by']);
+        $this_html = '<div class="song" id="'.$this_record['id'].'"><span class="id">'.$this_record['id'].'</span><span class="title">'.$this_record['title'].'</span></div>';
+
+        $index['title'][$this_title] = $this_html;
+
+        $parts = explode(",", $this_record['written_by']);
         foreach($parts as $this_writtenby) {
             $this_writtenby = trim($this_writtenby);
             if($this_writtenby !== '') {
-                $index['writtenby'][trim($this_writtenby)][$this_title] = $this_id;
+                $index['writtenby'][trim($this_writtenby)][$this_title] = $this_html;
             }
         }
+
         $parts = explode(",",$this_record['performed_by']);
         foreach($parts as $this_performedby) {
             $this_performedby = trim($this_performedby);
             if($this_performedby !== '') {
-                $index['performedby'][trim($this_performedby)][$this_title] = $this_id;
+                $index['performedby'][trim($this_performedby)][$this_title] = $this_html;
             }
         }
+
         $parts = explode(",",$this_record['meta_tags']);
         foreach($parts as $this_category) {
             $this_category = trim($this_category);
             if($this_category !== '') {
-                $index['categories'][trim($this_category)][$this_title] = $this_id;
+                $index['categories'][trim($this_category)][$this_title] = $this_html;
             }
         }
     }
     $html = $html.'<h1>Sorted by title</h1>';
     $html = $html.'<div class="indent">';
     ksort($index['title']);
-    foreach($index['title'] as $this_title => $this_id) {
-        $html = $html.'<div class="song" id="'.$this_id.'"><span class="title">'.$this_title.'</span><span class="id">'.$this_id.'</span></div>';
+    foreach($index['title'] as $this_title => $this_html) {
+        $html = $html.$this_html;
     }
     $html = $html.'</div>';
 
@@ -197,10 +201,10 @@ function sbk_generate_index($ID_array) {
     $html = $html.'<div class="indent">';
     ksort($index['writtenby']);
     foreach($index['writtenby'] as $this_composer => $this_songarray) {
-        $html = $html.'<h2>'.$this_composer.'</h2>';
+        $html = $html.'<h2>'.ucwords($this_composer).'</h2>';
         ksort($this_songarray);
-        foreach($this_songarray as $this_title => $this_id) {
-            $html = $html.'<div class="song" id="'.$this_id.'"><span class="title">'.$this_title.'</span><span class="id">'.$this_id.'</span></div>';
+        foreach($this_songarray as $this_title => $this_html) {
+            $html = $html.$this_html;
         }
     }
     $html = $html.'</div>';
@@ -209,10 +213,10 @@ function sbk_generate_index($ID_array) {
     $html = $html.'<div class="indent">';
     ksort($index['performedby']);
     foreach($index['performedby'] as $this_performer => $this_songarray) {
-        $html = $html.'<h2>'.$this_performer.'</h2>';
+        $html = $html.'<h2>'.ucwords($this_performer).'</h2>';
         ksort($this_songarray);
-        foreach($this_songarray as $this_title => $this_id) {
-            $html = $html.'<div class="song" id="'.$this_id.'"><span class="title">'.$this_title.'</span><span class="id">'.$this_id.'</span></div>';
+        foreach($this_songarray as $this_title => $this_html) {
+            $html = $html.$this_html;
         }
     }
     $html = $html.'</div>';
@@ -221,11 +225,11 @@ function sbk_generate_index($ID_array) {
     $html = $html.'<div class="indent">';
     ksort($index['categories']);
     foreach($index['categories'] as $this_category => $this_songarray) {
-        $html = $html.'<h2>'.$this_category.'</h2>';
+        $html = $html.'<h2>'.ucwords($this_category).'</h2>';
         $html = $html.'<div class="indent">';
         ksort($this_songarray);
-        foreach($this_songarray as $this_title => $this_id) {
-            $html = $html.'<div class="song" id="'.$this_id.'"><span class="title">'.$this_title.'</span><span class="id">'.$this_id.'</span></div>';
+        foreach($this_songarray as $this_title => $this_html) {
+            $html = $html.$this_html;
         }
         $html = $html.'</div>';
 
@@ -268,40 +272,55 @@ function sbk_get_song_html($id){
     $this_record = acradb_get_single_record(SBK_DATABASE_NAME, SBK_TABLE_NAME, SBK_KEYFIELD_NAME, $id);
 
     $number_of_lyric_lines_per_page = 58;
+    $number_of_columns_per_page = 2;
+
+
+    $contentHTML = sbk_convert_song_content_to_HTML($this_record['content']);
+
+    $contentXML = new SimpleXMLElement($contentHTML);
+    $line_count = 0;
+    $formattedContentXML = new SimpleXMLElement('<div class="content"></div>');
+    $table = $formattedContentXML->addChild('table');
+    $table_row = $table->addChild('tr');
+    $column_count = -1;
+    $current_column = $table_row->addChild('td');
+    $dom_current_column = dom_import_simplexml($current_column);
+   foreach($contentXML->xpath('//div[@class="line"]') as $this_line) {
+       if(sizeof($this_line->xpath('span[@class="chord"]')) > 0) {
+        $line_count = $line_count + 2;
+       } else {
+        $line_count = $line_count + 1;
+       }
+       if(($line_count % $number_of_lyric_lines_per_page) === 0) {
+            if((($column_count) % $number_of_columns_per_page) === 0) {
+                //$table->addChild('tr', '<td><div class="title">'.$this_record['title'].'</div></td><td class="detail"><span class="songnumber"><span class="label">Song no. </span><span class="data">'.$this_record['id'].'</span></span></td>');
+                $table_cell = $table->addChild('tr')->addChild('td')->addChild('div', $this_record['title'])->addAttribute('class', 'title');
+                $table_row = $table->addChild('tr');
+                $column_count = -1;
+            }
+            $current_column = $table_row->addChild('td');
+            $column_count = $column_count + 1;
+            $dom_current_column = dom_import_simplexml($current_column);
+        }
+        $dom_line = dom_import_simplexml($this_line);
+        $dom_line = $dom_current_column->ownerDocument->importNode($dom_line, true);
+        $dom_current_column->appendChild($dom_line);
+    }
+
+    $first_page_header = '<table><tbody><tr><td>';
+    $first_page_header = $first_page_header.'<div class="title">'.$this_record['title'].'</div>';
+    $first_page_header = $first_page_header.'<div class="written_by"><span class="data">'.$this_record['written_by'].'</span></div>';
+    $first_page_header = $first_page_header.'</td><td class="detail">';
+    $first_page_header = $first_page_header.'<span class="songnumber"><span class="label">Song no. </span><span class="data">'.$this_record['id'].'</span></span>';
+    $first_page_header = $first_page_header.'<div class="performed_by"><span class="label">performed by: </span><span class="data">'.$this_record['performed_by'].'</span></div>';
+    $first_page_header = $first_page_header.'</td></tr></tbody></table>';
+    $first_page_header_XML = new SimpleXMLElement($first_page_header);
 
     $display = $display.'<div class="song-display">';
-    $display = $display.'<table><tbody><tr><td>';
-        $display = $display.'<div class="title">'.$this_record['title'].'</div>';
-        $display = $display.'<div class="written_by"><span class="data">'.$this_record['written_by'].'</div>';
-        $display = $display.'</td><td class="detail">';
-        $display = $display.'<span class="songnumber"><span class="label">Song no. </span><span class="data">'.$this_record['id'].'</span>';
-        $display = $display.'<div class="performed_by"><span class="label">performed by: </span><span class="data">'.$this_record['performed_by'].'</div></div>';
-        $display = $display.'</td></tr></tbody></table>';
-        $contentHTML = sbk_convert_song_content_to_HTML($this_record['content']);
+    $display = $display.$first_page_header;
 
-        $contentXML = new SimpleXMLElement($contentHTML);
-        $line_count = 0;
-        $formattedContentXML = new SimpleXMLElement('<div class="content"></div>');
-        $table = $formattedContentXML->addChild('table');
-        $table_row = $table->addChild('tr');
-        $current_column = $table_row->addChild('td');
-        $dom_current_column = dom_import_simplexml($current_column);
-       foreach($contentXML->xpath('//div[@class="line"]') as $this_line) {
-           if(sizeof($this_line->xpath('span[@class="chord"]')) > 0) {
-            $line_count = $line_count + 2;
-           } else {
-            $line_count = $line_count + 1;
-           }
-            if(($line_count % $number_of_lyric_lines_per_page) === 0) {
-                $current_column = $table_row->addChild('td');
-                $dom_current_column = dom_import_simplexml($current_column);
-            }
-            $dom_line = dom_import_simplexml($this_line);
-            $dom_line = $dom_current_column->ownerDocument->importNode($dom_line, true);
-            $dom_current_column->appendChild($dom_line);
-        }
-        $display = $display.str_replace('<?xml version="1.0"?'.'>','',$formattedContentXML->asXML());
-        $display = str_replace("<span class=\"text\">\n</span>", '&nbsp;', $display);//the &#160; got lost somewhere along the way (DOM part?) and <span>&nbsp;</span> doesn't display on screen
+    $display = $display.str_replace('<?xml version="1.0"?'.'>', '', $formattedContentXML->asXML());
+    $display = str_replace("<span class=\"text\">\n</span>", '&nbsp;', $display);//the &#160; got lost somewhere along the way (DOM part?) and <span>&nbsp;</span> doesn't display on screen
     $display = $display.'</div>';
 
     return $display;

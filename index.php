@@ -28,6 +28,14 @@ $menu = $menu.'<li><a href="?action=index">index of all songs</a></li> ';
 $menu = $menu.'</ul>';
 
 switch ($action) {
+    case 'listAllSongs':
+        $display = $display.$menu;
+
+        $display = $display.'<h1>List of songs in the database:</h1>';
+        $display = $display.'<div id="available-songs" class="main-list"></div>';
+
+    break;
+
     case 'index':
         if(array_key_exists('playlist', $_GET)) {
             $playlist = $_GET['playlist'];
@@ -84,14 +92,6 @@ switch ($action) {
         }
     break;
 
-    case 'listAllSongs':
-        $display = $display.$menu;
-
-        $display = $display.'<h1>List of songs in the database:</h1>';
-        $display = $display.'<div id="available-songs" class="main-list"></div>';
-
-    break;
-
     case 'displayPlaylist':
         $playlist = $_GET['playlist'];
         if (array_key_exists('update', $_POST)) {
@@ -123,6 +123,7 @@ switch ($action) {
         $display = $display.'<ul class=menu>';
         $display = $display.'<li><a href="#" id="add-new-set" playlist="'.$playlist.'">Add a new set</a></li> ';
         $display = $display.'<li><a href="?action=pdfPlaylist&playlist='.$playlist.'">pdf</a>';
+        $display = $display.'<li><a href="?action=index&playlist='.$playlist.'">Show an index of the songs in this playlist</a>';
         $display = $display.'</ul>';
 
         $display = $display.'<table class="displayPlaylist"><tr><td><span class="holder">';
