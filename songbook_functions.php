@@ -279,12 +279,14 @@ function sbk_get_song_html($id){
 
     $contentXML = new SimpleXMLElement($contentHTML);
     $line_count = 0;
-    $formattedContentXML = new SimpleXMLElement('<div class="content"></div>');
-    $table = $formattedContentXML->addChild('table');
-    $table_row = $table->addChild('tr');
+    $page_index = 0;
+    $pageXML = array();
+    $pageXML[$page_index] = new SimpleXMLElement('<div class="song-display" id="page_'.$this_record['id'].'_'.$page_index.'"></div>');
+    $table_row = $pageXML[$page_index]->addChild('table')->addChild('tr');
     $column_count = -1;
     $current_column = $table_row->addChild('td');
     $dom_current_column = dom_import_simplexml($current_column);
+
    foreach($contentXML->xpath('//div[@class="line"]') as $this_line) {
        if(sizeof($this_line->xpath('span[@class="chord"]')) > 0) {
         $line_count = $line_count + 2;
@@ -293,10 +295,13 @@ function sbk_get_song_html($id){
        }
        if(($line_count % $number_of_lyric_lines_per_page) === 0) {
             if((($column_count) % $number_of_columns_per_page) === 0) {
-                //$table->addChild('tr', '<td><div class="title">'.$this_record['title'].'</div></td><td class="detail"><span class="songnumber"><span class="label">Song no. </span><span class="data">'.$this_record['id'].'</span></span></td>');
-                $table_cell = $table->addChild('tr')->addChild('td')->addChild('div', $this_record['title'])->addAttribute('class', 'title');
-                $table_row = $table->addChild('tr');
+
+                $page_index = $page_index + 1;
+                $pageXML[$page_index] = new SimpleXMLElement('<div class="song-display page_'.$page_index.'" id="page_'.$this_record['id'].'_'.$page_index.'"></div>');
+                $table_row = $pageXML[$page_index]->addChild('table')->addChild('tr');
                 $column_count = -1;
+                $current_column = $table_row->addChild('td');
+                $dom_current_column = dom_import_simplexml($current_column);
             }
             $current_column = $table_row->addChild('td');
             $column_count = $column_count + 1;
@@ -307,22 +312,33 @@ function sbk_get_song_html($id){
         $dom_current_column->appendChild($dom_line);
     }
 
-    $first_page_header = '<table><tbody><tr><td>';
-    $first_page_header = $first_page_header.'<div class="title">'.$this_record['title'].'</div>';
-    $first_page_header = $first_page_header.'<div class="written_by"><span class="data">'.$this_record['written_by'].'</span></div>';
-    $first_page_header = $first_page_header.'</td><td class="detail">';
-    $first_page_header = $first_page_header.'<span class="songnumber"><span class="label">Song no. </span><span class="data">'.$this_record['id'].'</span></span>';
-    $first_page_header = $first_page_header.'<div class="performed_by"><span class="label">performed by: </span><span class="data">'.$this_record['performed_by'].'</span></div>';
-    $first_page_header = $first_page_header.'</td></tr></tbody></table>';
-    $first_page_header_XML = new SimpleXMLElement($first_page_header);
+    $page_header = '<table class="page_header"><tbody><tr><td>';
+    $page_header = $page_header.'<div class="title">'.$this_record['title'].'</div>';
+    $page_header = $page_header.'<div class="written_by"><span class="data">'.$this_record['written_by'].'</span></div>';
+    $page_header = $page_header.'</td><td class="detail">';
+    $page_header = $page_header.'<span class="songnumber"><span class="label">Song no. </span><span class="data">'.$this_record['id'].'</span></span>';
+    $page_header = $page_header.'<span class="pagenumber"><span class="label">page</span><span class="data" id="page_number">test</span><span class="label">of</span><span class="data" id="number_of_pages">test</span></span>';
+    $page_header = $page_header.'<div class="performed_by"><span class="label">performed by: </span><span class="data">'.$this_record['performed_by'].'</span></div>';
+    $page_header = $page_header.'</td></tr></tbody></table>';
+    $page_headerXML = new SimpleXMLElement($page_header);
 
-    $display = $display.'<div class="song-display">';
-    $display = $display.$first_page_header;
+    $page_number = 0;
+    foreach($pageXML as $page_contentXML) {
+        $page_number = $page_number + 1;
 
-    $display = $display.str_replace('<?xml version="1.0"?'.'>', '', $formattedContentXML->asXML());
-    $display = str_replace("<span class=\"text\">\n</span>", '&nbsp;', $display);//the &#160; got lost somewhere along the way (DOM part?) and <span>&nbsp;</span> doesn't display on screen
-    $display = $display.'</div>';
+        $page_number_holder = $page_headerXML->xpath('//span[@id="page_number"]');
+        $number_of_pages_holder = $page_headerXML->xpath('//span[@id="number_of_pages"]');
+        dom_import_simplexml($page_number_holder[0])->nodeValue = $page_number;
+        dom_import_simplexml($number_of_pages_holder[0])->nodeValue = $page_index;
+        $dom_page = dom_import_simplexml($page_contentXML);
+        $dom_header = dom_import_simplexml($page_headerXML);
+        $dom_header = $dom_page->ownerDocument->importNode($dom_header, true);
+        $dom_page->insertBefore($dom_header, $dom_page->firstChild);
+        $display = $display.str_replace('<?xml version="1.0"?'.'>', '', $page_contentXML->asXML());
+        $display = str_replace("<span class=\"text\">\n</span>", '&nbsp;', $display);//the &#160; got lost somewhere along the way (DOM part?) and <span>&nbsp;</span> doesn't display on screen
+    }
 
     return $display;
 }
+
 ?>
