@@ -281,7 +281,7 @@ function sbk_get_song_html($id){
     $line_count = 0;
     $page_index = 0;
     $pageXML = array();
-    $pageXML[$page_index] = new SimpleXMLElement('<div class="song-display" id="page_'.$this_record['id'].'_'.$page_index.'"></div>');
+    $pageXML[$page_index] = new SimpleXMLElement('<div class="song-display  first_page" id="page_'.$this_record['id'].'_'.$page_index.'"></div>');
     $table_row = $pageXML[$page_index]->addChild('table')->addChild('tr');
     $column_count = -1;
     $current_column = $table_row->addChild('td');
@@ -297,10 +297,9 @@ function sbk_get_song_html($id){
             if((($column_count) % $number_of_columns_per_page) === 0) {
 
                 $page_index = $page_index + 1;
-                $pageXML[$page_index] = new SimpleXMLElement('<div class="song-display page_'.$page_index.'" id="page_'.$this_record['id'].'_'.$page_index.'"></div>');
+                $pageXML[$page_index] = new SimpleXMLElement('<div class="song-display page_'.$page_index.'"></div>');
                 $table_row = $pageXML[$page_index]->addChild('table')->addChild('tr');
                 $column_count = -1;
-                $current_column = $table_row->addChild('td');
                 $dom_current_column = dom_import_simplexml($current_column);
             }
             $current_column = $table_row->addChild('td');

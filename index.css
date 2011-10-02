@@ -367,14 +367,17 @@ div.song-display .chord {
 	font-family: Helvetica;
 }
 
+div.song-display table.page_header {
+	border-bottom: 1px solid silver;
+	margin-bottom: 0.5em;
+}
 div.song-display .title {
-    font-size: 2em;
+    font-size: 1.2em;
 	color:#004080;
 }
 div.song-display .performed_by,
 div.song-display .written_by {
-	font-size:0.8em;
-    color: gray;
+	display:none;
 }
 div.song-display .performed_by .label,
 div.song-display .written_by .label {
@@ -385,10 +388,38 @@ div.song-display .songnumber {
 }
 div.song-display .songnumber .data {
 	font-weight:bold;
-	font-size:1em;
-}
-div.song-display .songnumber .label {
 	font-size:0.8em;
 }
+div.song-display .songnumber .label {
+	font-size:0.6em;
+}
+
+div.song-display .pagenumber {
+	display: block;
+	font-size: 0.6em;
+}
+
+div.song-display.first_page .title {
+    font-size: 2em;
+	color:#004080;
+}
+div.song-display.first_page .performed_by,
+div.song-display.first_page .written_by {
+	display: inline-block;
+	font-size:0.8em;
+    color: gray;
+}
+div.song-display.first_page .performed_by .label,
+div.song-display.first_page .written_by .label {
+    font-style: italic;
+}
+div.song-display.first_page .songnumber .data {
+	font-weight:bold;
+	font-size:1.2em;
+}
+div.song-display.first_page .songnumber .label {
+	font-size:0.8em;
+}
+
 
 /* end of song display */
