@@ -267,9 +267,23 @@ function sbk_playlist_as_html($playlist) {
     return $display;
 }
 
-function sbk_get_song_html($id){
+
+function sbk_get_song_record($id) {
+    return acradb_get_single_record(SBK_DATABASE_NAME, SBK_TABLE_NAME, SBK_KEYFIELD_NAME, $id);
+}
+
+
+function sbk_get_song_html($id) {
     $display = '';
-    $this_record = acradb_get_single_record(SBK_DATABASE_NAME, SBK_TABLE_NAME, SBK_KEYFIELD_NAME, $id);
+    $this_record = sbk_get_song_record($id);
+    $display = sbk_song_html($this_record);
+
+    return $display;
+}
+
+
+function sbk_song_html($this_record) {
+    $display = '';
 
     $number_of_lyric_lines_per_page = 58;
     $number_of_columns_per_page = 2;
@@ -328,7 +342,7 @@ function sbk_get_song_html($id){
         $page_number_holder = $page_headerXML->xpath('//span[@id="page_number"]');
         $number_of_pages_holder = $page_headerXML->xpath('//span[@id="number_of_pages"]');
         dom_import_simplexml($page_number_holder[0])->nodeValue = $page_number;
-        dom_import_simplexml($number_of_pages_holder[0])->nodeValue = $page_index;
+        dom_import_simplexml($number_of_pages_holder[0])->nodeValue = ($page_index + 1);
         $dom_page = dom_import_simplexml($page_contentXML);
         $dom_header = dom_import_simplexml($page_headerXML);
         $dom_header = $dom_page->ownerDocument->importNode($dom_header, true);

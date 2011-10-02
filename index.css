@@ -32,7 +32,10 @@ ul.menu li a:hover {
 
 
 .label, .data  {
-    display:inline-block;
+    display: inline-block;
+}
+.label  {
+	margin-right: 0.5em;
 }
 
 .performed_by {
@@ -403,7 +406,11 @@ div.song-display.first_page .title {
     font-size: 2em;
 	color:#004080;
 }
-div.song-display.first_page .performed_by,
+div.song-display.first_page .performed_by {
+	display: inline-block;
+	font-size:0.6em;
+    color: gray;
+}
 div.song-display.first_page .written_by {
 	display: inline-block;
 	font-size:0.8em;
