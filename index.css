@@ -338,29 +338,31 @@ form#allsongsearch {
 /* song display */
 
 
-div.song-display {
+div.song-page {
 	width: 720px;
 	position: relative;
 	font-family: Arial, Helvetica, sans-serif;
 	padding-top:1em;
 	/*border:1px solid red;*/
+	page-break-after: always;
+	
 }
-div.song-display table {
+div.song-page table {
 	width: 100%;
 }
 
-div.song-display td {
+div.song-page td {
 	vertical-align: top;
 	width: 50%;
 }
-div.song-display td.detail {
+div.song-page td.detail {
 	text-align: right;
 }
-div.song-display .line {
+div.song-page .line {
 	margin-top: 0.2em;
 	font-size:0.8em;
 }
-div.song-display .chord {
+div.song-page .chord {
 	display: inline-block;
 	/*position:relative;*/
 	padding-bottom: 1.3em;
@@ -370,61 +372,61 @@ div.song-display .chord {
 	font-family: Helvetica;
 }
 
-div.song-display table.page_header {
+div.song-page table.page_header {
 	border-bottom: 1px solid silver;
 	margin-bottom: 0.5em;
 }
-div.song-display .title {
+div.song-page .title {
     font-size: 1.2em;
 	color:#004080;
 }
-div.song-display .performed_by,
-div.song-display .written_by {
+div.song-page .performed_by,
+div.song-page .written_by {
 	display:none;
 }
-div.song-display .performed_by .label,
-div.song-display .written_by .label {
+div.song-page .performed_by .label,
+div.song-page .written_by .label {
     font-style: italic;
 }
-div.song-display .songnumber {
+div.song-page .songnumber {
 	color: #4080c0;
 }
-div.song-display .songnumber .data {
+div.song-page .songnumber .data {
 	font-weight:bold;
 	font-size:0.8em;
 }
-div.song-display .songnumber .label {
+div.song-page .songnumber .label {
 	font-size:0.6em;
 }
 
-div.song-display .pagenumber {
+div.song-page .pagenumber {
 	display: block;
 	font-size: 0.6em;
 }
 
-div.song-display.first_page .title {
+div.song-page.first_page .title {
     font-size: 2em;
 	color:#004080;
 }
-div.song-display.first_page .performed_by {
+div.song-page.first_page .performed_by {
 	display: inline-block;
 	font-size:0.6em;
     color: gray;
 }
-div.song-display.first_page .written_by {
+div.song-page.first_page .written_by {
 	display: inline-block;
 	font-size:0.8em;
     color: gray;
 }
-div.song-display.first_page .performed_by .label,
-div.song-display.first_page .written_by .label {
+div.song-page.first_page .performed_by .label,
+div.song-page.first_page .written_by .label {
     font-style: italic;
 }
-div.song-display.first_page .songnumber .data {
+div.song-page.first_page .songnumber .data {
 	font-weight:bold;
 	font-size:1.2em;
 }
-div.song-display.first_page .songnumber .label {
+div.song-page.first_page .songnumber .label {
 	font-size:0.8em;
 }
 

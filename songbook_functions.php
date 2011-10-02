@@ -285,7 +285,7 @@ function sbk_get_song_html($id) {
 function sbk_song_html($this_record) {
     $display = '';
 
-    $number_of_lyric_lines_per_page = 58;
+    $number_of_lyric_lines_per_page = 55;
     $number_of_columns_per_page = 2;
 
 
@@ -295,7 +295,7 @@ function sbk_song_html($this_record) {
     $line_count = 0;
     $page_index = 0;
     $pageXML = array();
-    $pageXML[$page_index] = new SimpleXMLElement('<div class="song-display  first_page" id="page_'.$this_record['id'].'_'.$page_index.'"></div>');
+    $pageXML[$page_index] = new SimpleXMLElement('<div class="song-page first_page" id="page_'.$this_record['id'].'_'.$page_index.'"></div>');
     $table_row = $pageXML[$page_index]->addChild('table')->addChild('tr');
     $column_count = -1;
     $current_column = $table_row->addChild('td');
@@ -311,7 +311,7 @@ function sbk_song_html($this_record) {
             if((($column_count) % $number_of_columns_per_page) === 0) {
 
                 $page_index = $page_index + 1;
-                $pageXML[$page_index] = new SimpleXMLElement('<div class="song-display page_'.$page_index.'"></div>');
+                $pageXML[$page_index] = new SimpleXMLElement('<div class="song-page page_'.$page_index.'"></div>');
                 $table_row = $pageXML[$page_index]->addChild('table')->addChild('tr');
                 $column_count = -1;
                 $dom_current_column = dom_import_simplexml($current_column);
@@ -343,10 +343,12 @@ function sbk_song_html($this_record) {
         $number_of_pages_holder = $page_headerXML->xpath('//span[@id="number_of_pages"]');
         dom_import_simplexml($page_number_holder[0])->nodeValue = $page_number;
         dom_import_simplexml($number_of_pages_holder[0])->nodeValue = ($page_index + 1);
+
         $dom_page = dom_import_simplexml($page_contentXML);
         $dom_header = dom_import_simplexml($page_headerXML);
         $dom_header = $dom_page->ownerDocument->importNode($dom_header, true);
         $dom_page->insertBefore($dom_header, $dom_page->firstChild);
+
         $display = $display.str_replace('<?xml version="1.0"?'.'>', '', $page_contentXML->asXML());
         $display = str_replace("<span class=\"text\">\n</span>", '&nbsp;', $display);//the &#160; got lost somewhere along the way (DOM part?) and <span>&nbsp;</span> doesn't display on screen
     }
