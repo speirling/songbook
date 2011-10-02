@@ -14,7 +14,8 @@ if(array_key_exists('action', $_GET)) {
 
 $STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.contextMenu/jquery.contextMenu.js";
 $STANDARD_JAVASCRIPTS[] = "index.js";
-$display = acradisp_standardHTMLheader('playlists['.$action.']', array('index.css'), $STANDARD_JAVASCRIPTS);
+$page_title = $action.'[playlists]';
+$display = '';
 
 $menu = '';
 $menu = $menu.'<ul class="menu">';
@@ -189,7 +190,9 @@ switch ($action) {
         $display = $display.'</ul>';
         $display = $display.$menu;
 
-        $display = $display.sbk_get_song_html($id);
+        $this_record = sbk_get_song_record($id);
+        $display = $display.sbk_song_html($this_record);
+        $page_title = $this_record['title'].' - playlists';
     break;
 
     case 'pdfSong':
@@ -308,9 +311,7 @@ switch ($action) {
     break;
 }
 
-$display = $display.'
-</body>
-</html>';
+$display = acradisp_standardHTMLheader($page_title, array('index.css'), $STANDARD_JAVASCRIPTS).$display.'</body></html>';
 
 echo $display;
 
