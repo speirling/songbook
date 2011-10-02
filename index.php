@@ -288,7 +288,8 @@ switch ($action) {
                 'written_by' => '',
                 'content' => '',
                 'meta_tags' => '',
-                'original_filename' => ''
+                'original_filename' => '',
+                'base_key' => ''
             );
         }
 
