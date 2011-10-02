@@ -201,7 +201,7 @@ switch ($action) {
 
         $this_record = acradb_get_single_record(SBK_DATABASE_NAME, SBK_TABLE_NAME, SBK_KEYFIELD_NAME, $id);
 
-        $display = '<html><head><title>'.$this_record['title'].'</title><link href="../pdf.css" rel="stylesheet" type="text/css" /></head><body class="pdf">';
+        $display = '<html><head><title>'.$this_record['title'].'</title><link href="../index.css" rel="stylesheet" type="text/css" /></head><body class="pdf">';
         $display = $display.sbk_get_song_html($id);
         $display = $display.'</body></html>';
 
