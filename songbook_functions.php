@@ -238,7 +238,7 @@ function sbk_generate_index($ID_array) {
 
 
 
-    return $html;
+    return '<div class="song-index">'.$html.'</div>';
 }
 
 function sbk_create_blank_playlist($filename) {
@@ -303,7 +303,7 @@ function sbk_song_html($this_record) {
 
    foreach($contentXML->xpath('//div[@class="line"]') as $this_line) {
        if(sizeof($this_line->xpath('span[@class="chord"]')) > 0) {
-        $line_count = $line_count + 2;
+        $line_count = $line_count + 2.5;
        } else {
         $line_count = $line_count + 1;
        }
@@ -356,4 +356,23 @@ function sbk_song_html($this_record) {
     return $display;
 }
 
+function sbk_print_multiple_songs($id_array) {
+    $output = '';
+
+    foreach ($id_array as $this_id) {
+        $output = $output.sbk_get_song_html($this_id);
+    }
+
+    return $output;
+}
+
+function sbk_output_pdf($display, $title, $orientation = 'portrait') {
+        $pdf = new WKPDF();
+        $pdf->set_orientation($orientation);
+        $display = '<html><head><title>'.$title.'</title><link href="../index.css" rel="stylesheet" type="text/css" /></head><body class="pdf">'.$display.'</body></html>';
+        $display = preg_replace('/&nbsp;/', '&#160;', $display); //&nbsp; doesn't work in XML unless it's specifically declared.
+        $pdf->set_html($display);
+        $pdf->render();
+        $pdf->output(WKPDF::$PDF_DOWNLOAD, $title.".pdf");
+}
 ?>

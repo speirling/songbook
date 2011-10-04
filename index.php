@@ -53,9 +53,7 @@ switch ($action) {
             $ID_array = sbk_getIDarray();
         }
 
-        $display = $display.'<div class="song-index">';
         $display = $display.sbk_generate_index($ID_array);
-        $display = $display.'</div>';
     break;
 
     case 'listAllPlaylists':
@@ -125,6 +123,7 @@ switch ($action) {
         $display = $display.'<li><a href="#" id="add-new-set" playlist="'.$playlist.'">Add a new set</a></li> ';
         $display = $display.'<li><a href="?action=pdfPlaylist&playlist='.$playlist.'">pdf</a>';
         $display = $display.'<li><a href="?action=index&playlist='.$playlist.'">Show an index of the songs in this playlist</a>';
+        $display = $display.'<li><a href="?action=playlistBook&playlist='.$playlist.'">Playlist as a book</a>';
         $display = $display.'</ul>';
 
         $display = $display.'<table class="displayPlaylist"><tr><td><span class="holder">';
@@ -200,37 +199,33 @@ switch ($action) {
         $id = $_GET['id'];
 
         $this_record = acradb_get_single_record(SBK_DATABASE_NAME, SBK_TABLE_NAME, SBK_KEYFIELD_NAME, $id);
-
-        $display = '<html><head><title>'.$this_record['title'].'</title><link href="../index.css" rel="stylesheet" type="text/css" /></head><body class="pdf">';
         $display = $display.sbk_get_song_html($id);
-        $display = $display.'</body></html>';
 
-        $pdf = new WKPDF();
-        $pdf->set_orientation('portrait');
-        $pdf->set_html($display);
-        $pdf->render();
-        $pdf->output(WKPDF::$PDF_DOWNLOAD, $this_record['title'].".pdf");
-
+        sbk_output_pdf($display, $this_record['title']);
     break;
 
-
     case 'pdfPlaylist':
-        $number_of_lyric_lines_per_page = 65;
         $playlist = $_GET['playlist'];
         $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
-
-        $display = '<html><head><title>'.$playlistContent['title'].'</title><link href="../pdf.css" rel="stylesheet" type="text/css" /></head><body class="pdf">';
         $display = $display.sbk_convert_playlistXML_to_table($playlistContent);
-        $display = preg_replace('/&nbsp;/', '&#160;', $display); //&nbsp; doesn't work in XML unless it's specifically declared.
-        $display = $display.'</body></html>';
 
-        $pdf = new WKPDF();
-        $pdf->set_orientation('landscape');
-        $pdf->set_html($display);
-        $pdf->render();
-        $pdf->output(WKPDF::$PDF_DOWNLOAD, $playlistContent['title'].".pdf");
+        sbk_output_pdf($display, $playlistContent['title'], 'landscape');
+    break;
 
+    case 'playlistBook':
+        $playlist = $_GET['playlist'];
+        $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
+        $ID_array = sbk_getIDarray($playlistContent);
+        $display = '';
 
+        $display = $display.'<div class="playlist-page">';
+        $display = $display.sbk_convert_playlistXML_to_list($playlistContent);
+        $display = $display.'</div>';
+        $display = $display.sbk_generate_index($ID_array);
+        sort($ID_array);
+        $display = $display.sbk_print_multiple_songs($ID_array);
+
+        sbk_output_pdf($display, 'SongBook - '.$playlistContent['title']);
     break;
 
     case 'editSong':
