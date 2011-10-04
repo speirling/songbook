@@ -193,7 +193,6 @@
                 public function render(){
                         $web=$GLOBALS['WKPDF_BASE_SITE'].$GLOBALS['WKPDF_BASE_PATH'].'tmp/'.basename($this->tmp);
                         $web=str_replace($_SERVER['DOCUMENT_ROOT'], '', $web);
-                        p($web);
                         $this->pdf=self::_pipeExec(
                                 '"'.$this->cmd.'"'
                                 .(($this->copies>1)?' --copies '.$this->copies:'')                              // number of copies
