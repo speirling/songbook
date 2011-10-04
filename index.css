@@ -129,9 +129,9 @@ table.displayPlaylist {
 .playlist li {
 	margin: 1px;
 	padding: 0.2em;
-	border:1px solid silver;
+	/*border:1px solid silver;*/
 	list-style-type: none;
-	background-color: #f9fc8b;
+	/*background-color: #f9fc8b;*/
 	cursor: move;
 }
 #available-songs .playlist li {
@@ -148,7 +148,9 @@ table.displayPlaylist {
 	background-color: #faffaa;
 }
 
-
+.playlist-page {
+	page-break-after: always;
+}
 
 /* context menu -------------------------- */
 .context-menu {
@@ -202,6 +204,7 @@ li.dummy {
 }
 #playlist-holder {
 	margin-right: 2em;
+	top:2em;
 }
 #available-songs,
 #playlist-holder {
@@ -212,9 +215,6 @@ li.dummy {
 	bottom:0;
 	left:0;
 	right:0;
-}
-#playlist-holder {
-	top:2em;
 }
 #available-songs {
 	top:4em;
@@ -297,6 +297,7 @@ form#allsongsearch {
 
 
 .song-index {
+	page-break-after: always;
 }
 .song-index h1 {
 	font-size: 1.4em;
@@ -304,9 +305,10 @@ form#allsongsearch {
 	margin-bottom: 0.3em;
 }
 .song-index h2 {
-	font-size: 1.2em;
+	font-size: 1em;
 	color:#9999dd;
 	margin-bottom: 0.3em;
+	font-weight: normal;
 }
 .song-index .indent {
 	padding-left: 2em;
