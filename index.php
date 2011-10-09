@@ -14,11 +14,11 @@ if(array_key_exists('action', $_GET)) {
 
 $STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.contextMenu/jquery.contextMenu.js";
 $STANDARD_JAVASCRIPTS[] = "index.js";
-$page_title = $action.'[playlists]';
+$page_title = $action.' (playlists)';
 $display = '';
 
 $menu = '';
-$menu = $menu.'<ul class="menu">';
+$menu = $menu.'<ul class="menu main">';
 $menu = $menu.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
 $menu = $menu.'<li><a href="?action=index">index of all songs</a></li> ';
 $menu = $menu.'<li><a href="?action=listAllPlaylists">List all playlists</a></li> ';
@@ -119,11 +119,13 @@ switch ($action) {
 
         }
         $display = $display.$menu;
-        $display = $display.'<ul class=menu>';
+        $display = $display.'<ul class="menu local">';
         $display = $display.'<li><a href="#" id="add-new-set" playlist="'.$playlist.'">Add a new set</a></li> ';
-        $display = $display.'<li><a href="?action=pdfPlaylist&playlist='.$playlist.'">pdf</a>';
+        $display = $display.'<li><a href="?action=pdfPlaylist&playlist='.$playlist.'">printable</a>';
+        $display = $display.'<li><a href="?action=pdfPlaylist&playlist='.$playlist.'&pdf">pdf</a>';
         $display = $display.'<li><a href="?action=index&playlist='.$playlist.'">Show an index of the songs in this playlist</a>';
         $display = $display.'<li><a href="?action=playlistBook&playlist='.$playlist.'">Playlist as a book</a>';
+        $display = $display.'<li><a href="?action=playlistBook&playlist='.$playlist.'&pdf">Playlist as a book pdf</a>';
         $display = $display.'</ul>';
 
         $display = $display.'<table class="displayPlaylist"><tr><td><span class="holder">';
@@ -154,13 +156,48 @@ switch ($action) {
 
     break;
 
+    case 'pdfSong':
+        $number_of_lyric_lines_per_page = 58;
+        $id = $_GET['id'];
+
+        $this_record = acradb_get_single_record(SBK_DATABASE_NAME, SBK_TABLE_NAME, SBK_KEYFIELD_NAME, $id);
+        $display = $display.sbk_get_song_html($id);
+
+        sbk_output_pdf($display, $this_record['title']);
+    break;
+
+    case 'pdfPlaylist':
+        $playlist = $_GET['playlist'];
+        $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
+        $display = $display.sbk_convert_playlistXML_to_table($playlistContent);
+        if($_GET['pdf']) {
+            sbk_output_pdf($display, $playlistContent['title'], 'landscape');
+        }
+    break;
+
+    case 'playlistBook':
+        $playlist = $_GET['playlist'];
+        $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
+        $ID_array = sbk_getIDarray($playlistContent);
+        $display = '';
+
+        $display = $display.'<div class="playlist-page">';
+        $display = $display.sbk_convert_playlistXML_to_list($playlistContent);
+        $display = $display.'</div>';
+        $display = $display.sbk_generate_index($ID_array);
+        sort($ID_array);
+        $display = $display.sbk_print_multiple_songs($ID_array);
+        if($_GET['pdf']) {
+            sbk_output_pdf($display, 'SongBook - '.$playlistContent['title']);
+        }
+    break;
+
     case 'displaySong':
         if (array_key_exists('update',$_POST)) {
             switch ($_POST['update']) {
             case "addNewSong":
                 //a new song has been added - submit to database before displaying
                 $value_array = acradb_convert_POST_data_into_recordValueArray($_POST, SBK_TABLE_NAME, SBK_DATABASE_NAME);
-                //p($value_array);
                 $updatequery = acradb_generate_insert_query_from_value_array($value_array, SBK_TABLE_NAME);
 
                 $result = acradb_get_query_result($updatequery, SBK_DATABASE_NAME);
@@ -181,7 +218,7 @@ switch ($action) {
         } else {
             $id = str_replace('id_', '', $_GET['id']);
         }
-        $display = $display.'<ul class=menu>';
+        $display = $display.'<ul class="menu local">';
         $display = $display.'<li><a href="?action=displaySong&id='.($id - 1).'">&laquo; Previous</a></li>';
         $display = $display.'<li><a href="?action=editSong&id='.$id.'">Edit this song</a></li>';
         $display = $display.'<li><a href="?action=pdfSong&id='.$id.'">.pdf</a></li>';
@@ -192,40 +229,6 @@ switch ($action) {
         $this_record = sbk_get_song_record($id);
         $display = $display.sbk_song_html($this_record);
         $page_title = $this_record['title'].' - playlists';
-    break;
-
-    case 'pdfSong':
-        $number_of_lyric_lines_per_page = 58;
-        $id = $_GET['id'];
-
-        $this_record = acradb_get_single_record(SBK_DATABASE_NAME, SBK_TABLE_NAME, SBK_KEYFIELD_NAME, $id);
-        $display = $display.sbk_get_song_html($id);
-
-        sbk_output_pdf($display, $this_record['title']);
-    break;
-
-    case 'pdfPlaylist':
-        $playlist = $_GET['playlist'];
-        $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
-        $display = $display.sbk_convert_playlistXML_to_table($playlistContent);
-
-        sbk_output_pdf($display, $playlistContent['title'], 'landscape');
-    break;
-
-    case 'playlistBook':
-        $playlist = $_GET['playlist'];
-        $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
-        $ID_array = sbk_getIDarray($playlistContent);
-        $display = '';
-
-        $display = $display.'<div class="playlist-page">';
-        $display = $display.sbk_convert_playlistXML_to_list($playlistContent);
-        $display = $display.'</div>';
-        $display = $display.sbk_generate_index($ID_array);
-        sort($ID_array);
-        $display = $display.sbk_print_multiple_songs($ID_array);
-
-        sbk_output_pdf($display, 'SongBook - '.$playlistContent['title']);
     break;
 
     case 'editSong':
@@ -263,7 +266,7 @@ switch ($action) {
             $display = $display.'<input type="hidden" name="update" id="update" value="editExistingSong"></input>';
             $display = $display.'<input type="hidden" name="display_id" id="display-id" value="'.$id.'"></input>';
             $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $id);
-            $display = $display.'<ul class=menu>';
+            $display = $display.'<ul class="menu local">';
             $display = $display.'<li><a href="#" onclick="jQuery(\'#edit-song-form input#display-id\').val('.($id-1).'); jQuery(\'#edit-song-form\').attr(\'action\',\'?action=editSong\').submit();">Edit Previous</a></li>';
             $display = $display.'<li><a href="?action=displaySong&id='.$id.'">Cancel edit</a></li>';
             $display = $display.'<li><a href="#" onclick="jQuery(\'#edit-song-form input#display-id\').val('.($id+1).'); jQuery(\'#edit-song-form\').attr(\'action\',\'?action=editSong\').submit();">Edit Next</a></li>';

@@ -366,7 +366,7 @@ function sbk_print_multiple_songs($id_array) {
     return $output;
 }
 
-function sbk_output_pdf($display, $title, $orientation = 'portrait') {
+function sbk_output_pdf($display, $title = '', $orientation = 'portrait') {
         $pdf = new WKPDF();
         $pdf->set_orientation($orientation);
         $display = '<html><head><title>'.$title.'</title><link href="../index.css" rel="stylesheet" type="text/css" /></head><body class="pdf">'.$display.'</body></html>';
