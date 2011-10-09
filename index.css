@@ -4,8 +4,13 @@ body {
 }
 ul.menu {
     display: block;
-    background-color: #aabbcc;
 	margin: 0;
+}
+ul.menu.main {
+    background-color: #aabbcc;
+}
+ul.menu.local {
+    background-color: #ddeeff;
 }
 ul.menu li {
     display: inline-block;
@@ -62,6 +67,9 @@ span.song {
     color: gray;
 }
 
+#playlist-printable-holder .song .detail {
+	display: none;
+}
 
 .line {
 	margin-top: 1em;
@@ -100,8 +108,8 @@ table.displayPlaylist {
 
 
 
-#available-songs textarea,
-#playlist-holder textarea {
+textarea.playlist-title,
+textarea.set-title {
 	resize: none;
 	height: 1.2em;
 	border: 0px;
@@ -121,17 +129,24 @@ table.displayPlaylist {
 	font-size: 1.5em;
 	font-weight: bold;
 }
-.set {
+.set-title {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.5em;
+	font-weight: bold;
+	color: #933;
+	margin-top:1em;
+}
+li.set {
 	list-style-type: none;
-	border: 1px solid silver;
 	cursor: move;
+}
+#playlist-holder .set {
+	border: 1px solid silver;
 }
 .playlist li {
 	margin: 1px;
 	padding: 0.2em;
-	/*border:1px solid silver;*/
 	list-style-type: none;
-	/*background-color: #f9fc8b;*/
 	cursor: move;
 }
 #available-songs .playlist li {
