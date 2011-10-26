@@ -121,20 +121,22 @@ switch ($action) {
         $display = $display.$menu;
         $display = $display.'<ul class="menu local">';
         $display = $display.'<li><a href="#" id="add-new-set" playlist="'.$playlist.'">Add a new set</a></li> ';
-        $display = $display.'<li><a href="?action=pdfPlaylist&playlist='.$playlist.'">printable</a>';
+        $display = $display.'<li><a href="?action=pdfPlaylist&playlist='.$playlist.'" target="new">printable</a>';
         $display = $display.'<li><a href="?action=pdfPlaylist&playlist='.$playlist.'&pdf">pdf</a>';
+        $display = $display.'<li><a href="?action=emailPlaylist&playlist='.$playlist.'&pdf">email</a>';
         $display = $display.'<li><a href="?action=index&playlist='.$playlist.'">Show an index of the songs in this playlist</a>';
-        $display = $display.'<li><a href="?action=playlistBook&playlist='.$playlist.'">Playlist as a book</a>';
+        $display = $display.'<li><a href="?action=playlistBook&playlist='.$playlist.'" target="new">Playlist as a book</a>';
         $display = $display.'<li><a href="?action=playlistBook&playlist='.$playlist.'&pdf">Playlist as a book pdf</a>';
         $display = $display.'</ul>';
 
-        $display = $display.'<table class="displayPlaylist"><tr><td><span class="holder">';
+        $display = $display.'<div class="side_1 displayPlaylist">';
         $display = $display.'<h3>Playlist</h3>';
         $display = $display.'<form id="playlistForm" method="post"><a href="#" id="savePlaylist">Save</a><input type="hidden" name="update" value="replaceList" /><textarea id="playlist_input" name="playlist_input" style="display:none;"></textarea></form>';
         $display = $display.'<div id="playlist-holder">';
-        $display = $display.sbk_playlist_as_html($playlist);
+        $display = $display.sbk_playlist_as_editable_html($playlist);
         $display = $display.'</div>';
-        $display = $display.'</span></td><td><span class="holder">';
+        $display = $display.'</div>';
+        $display = $display.'<div class="side_2 displayPlaylist">';
         $display = $display.'<h3>Available songs</h3>';
         $display = $display.'<select class="playlist-chooser">';
         $display = $display.'<option value="all">all songs</option>';
@@ -152,7 +154,7 @@ switch ($action) {
             }
         $display = $display.'</select>';
         $display = $display.'<div id="available-songs"></div>';
-        $display = $display.'</span></td></tr></table>';
+        $display = $display.'</div>';
 
     break;
 
@@ -175,6 +177,12 @@ switch ($action) {
         }
     break;
 
+    case 'emailPlaylist':
+        $playlist = $_GET['playlist'];
+        $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
+        $display = $display.sbk_convert_playlistXML_to_orderedlist($playlistContent, $show_key = TRUE, $show_singer = TRUE, $show_id = FALSE, $show_writtenby = FALSE, $show_performedby = FALSE);
+    break;
+
     case 'playlistBook':
         $playlist = $_GET['playlist'];
         $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
@@ -182,12 +190,13 @@ switch ($action) {
         $display = '';
 
         $display = $display.'<div class="playlist-page">';
-        $display = $display.sbk_convert_playlistXML_to_list($playlistContent);
+        $display = $display.$display.sbk_convert_playlistXML_to_orderedlist($playlistContent, $show_key = TRUE, $show_singer = TRUE, $show_id = TRUE, $show_writtenby = TRUE, $show_performedby = TRUE);
         $display = $display.'</div>';
-        $display = $display.sbk_generate_index($ID_array);
+        //$display = $display.sbk_generate_index($ID_array);
         sort($ID_array);
         $display = $display.sbk_print_multiple_songs($ID_array);
-        if($_GET['pdf']) {
+        p($_GET);
+        if(array_key_exists('pdf', $_GET)) {
             sbk_output_pdf($display, 'SongBook - '.$playlistContent['title']);
         }
     break;
@@ -218,13 +227,13 @@ switch ($action) {
         } else {
             $id = str_replace('id_', '', $_GET['id']);
         }
+        $display = $display.$menu;
         $display = $display.'<ul class="menu local">';
         $display = $display.'<li><a href="?action=displaySong&id='.($id - 1).'">&laquo; Previous</a></li>';
         $display = $display.'<li><a href="?action=editSong&id='.$id.'">Edit this song</a></li>';
         $display = $display.'<li><a href="?action=pdfSong&id='.$id.'">.pdf</a></li>';
         $display = $display.'<li><a href="?action=displaySong&id='.($id + 1).'">Next &raquo;</a></li>';
         $display = $display.'</ul>';
-        $display = $display.$menu;
 
         $this_record = sbk_get_song_record($id);
         $display = $display.sbk_song_html($this_record);
@@ -266,12 +275,12 @@ switch ($action) {
             $display = $display.'<input type="hidden" name="update" id="update" value="editExistingSong"></input>';
             $display = $display.'<input type="hidden" name="display_id" id="display-id" value="'.$id.'"></input>';
             $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $id);
+            $display = $display.$menu;
             $display = $display.'<ul class="menu local">';
             $display = $display.'<li><a href="#" onclick="jQuery(\'#edit-song-form input#display-id\').val('.($id-1).'); jQuery(\'#edit-song-form\').attr(\'action\',\'?action=editSong\').submit();">Edit Previous</a></li>';
             $display = $display.'<li><a href="?action=displaySong&id='.$id.'">Cancel edit</a></li>';
             $display = $display.'<li><a href="#" onclick="jQuery(\'#edit-song-form input#display-id\').val('.($id+1).'); jQuery(\'#edit-song-form\').attr(\'action\',\'?action=editSong\').submit();">Edit Next</a></li>';
             $display = $display.'</ul>';
-            $display = $display.$menu;
 
             $display = $display.'<h1>Edit song</h1>';
             $display = $display.'<div class="song_id">Song ID: ['.$id.']</div>';

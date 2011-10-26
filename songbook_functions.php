@@ -1,9 +1,6 @@
 <?php
 
 function sbk_add_songs_to_playlist($song_id_array, $sets, $playlist) {
-    p('add an existing song to a playlist', $song_id, $sets, $playlist);
-
-    //read playlist
     $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
     foreach($sets as $set) {
         $thisSet =  $playlistContent->xpath('//set[@id='.$set.']');
@@ -11,11 +8,10 @@ function sbk_add_songs_to_playlist($song_id_array, $sets, $playlist) {
             $new_song = $thisSet->addChild('song')->addAttribute('id', $id);
         }
     }
-    //p($playlistContent);
     $playlistContent->saveXML(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
 }
 
-function sbk_convert_playlistXML_to_list($playlistContent) {
+function sbk_convert_playlistXML_to_editable_list($playlistContent) {
     $outputHTML = '';
     $outputHTML = $outputHTML.'<textarea class="playlist-title">'.$playlistContent['title'].'</textarea>';
     $outputHTML = $outputHTML.'<ul>';
@@ -30,10 +26,59 @@ function sbk_convert_playlistXML_to_list($playlistContent) {
             $outputHTML = $outputHTML.'<input type="text" class="key" value="'.$thisSong['key'].'"></input>';
             $outputHTML = $outputHTML.'<input type="text" class="singer" value="'.$thisSong['singer'].'"></input>';
             $outputHTML = $outputHTML.'<span class="title">'.$this_record['title'].'</span>';
+            //$outputHTML = $outputHTML.'<span class="id">'.$this_record['id'].'</span>';
             $outputHTML = $outputHTML.'<span class="detail"> (<span class="written_by">'.$this_record['written_by'].'</span> | <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
+            $outputHTML = $outputHTML.'<input type="text" class="duration" value="'.$thisSong['duration'].'"></input>';
             $outputHTML = $outputHTML.'</li>';
         }
         $outputHTML = $outputHTML.'</ul>';
+    }
+    $outputHTML = $outputHTML.'</li>';
+    $outputHTML = $outputHTML.'</ul>';
+    return $outputHTML;
+}
+
+function sbk_convert_playlistXML_to_orderedlist($playlistContent, $show_key = TRUE, $show_singer = TRUE, $show_id = TRUE, $show_writtenby = TRUE, $show_performedby = TRUE, $show_duration) {
+    $outputHTML = '';
+    $outputHTML = $outputHTML.'<div class="playlist-title">'.$playlistContent['title'].'</div>';
+    $outputHTML = $outputHTML.'<ul>';
+    foreach ($playlistContent->set as $thisSet) {
+        $outputHTML = $outputHTML.'<li class="set playlist">';
+        $outputHTML = $outputHTML.'<div class="set-title">'.$thisSet['label'].'</div>';
+        $outputHTML = $outputHTML.'<ol>';
+        foreach($thisSet->song as $thisSong) {
+            $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $thisSong['id']);
+            $outputHTML = $outputHTML.'<li class="song" id="id_'.$this_record['id'].'">';
+            $outputHTML = $outputHTML.'<span class="title">'.$this_record['title'].'</span>';
+            if($show_key | $show_singer) {
+                $outputHTML = $outputHTML.'<span class="spec">';
+                if($show_key) {
+                    $outputHTML = $outputHTML.'<span class="key">'.$thisSong['key'].'</span>';
+                }
+                if($show_singer) {
+                    $outputHTML = $outputHTML.'<span class="singer">'.$thisSong['singer'].'</span>';
+                }
+                if($show_id) {
+                    $outputHTML = $outputHTML.'<span class="id">'.$this_record['id'].'</span>';
+                }
+                if($show_duration) {
+                    $outputHTML = $outputHTML.'<span class="duration">'.$thisSong['duration'].'</span>';
+                }
+                $outputHTML = $outputHTML.'</span>';
+            }
+            if($show_writtenby | $show_performedby) {
+                $outputHTML = $outputHTML.'<span class="detail"> (';
+                if($show_writtenby) {
+                    $outputHTML = $outputHTML.'<span class="written_by">'.$this_record['written_by'].'</span>';
+                }
+                if($show_performedby) {
+                    $outputHTML = $outputHTML.' | <span class="performed_by">'.$this_record['performed_by'].'</span>';
+                }
+                $outputHTML = $outputHTML.')</span>';
+            }
+            $outputHTML = $outputHTML.'</li>';
+        }
+        $outputHTML = $outputHTML.'</ol>';
     }
     $outputHTML = $outputHTML.'</li>';
     $outputHTML = $outputHTML.'</ul>';
@@ -57,6 +102,7 @@ function sbk_convert_playlistXML_to_table($playlistContent) {
             $outputHTML = $outputHTML.'<td class="singer">'.$thisSong['singer'].'</td>';
             $outputHTML = $outputHTML.'<td class="key">'.$thisSong['key'].'</td>';
             $outputHTML = $outputHTML.'<td class="title">'.$this_record['title'];
+            $outputHTML = $outputHTML.'<span class="duration">'.$this_song['duration'].'</span>';
             $outputHTML = $outputHTML.'<span class="detail">(<span class="written_by">'.$this_record['written_by'].'</span> | <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
             $outputHTML = $outputHTML.'</td>';
             $outputHTML = $outputHTML.'</tr>';
@@ -88,6 +134,29 @@ function sbk_convert_list_to_playlistXML($list) {
                 $XMLsong->addAttribute('id', $this_id);
                 $XMLsong->addAttribute('key',(string) $thisSong['key']);
                 $XMLsong->addAttribute('singer',(string) $thisSong['singer']);
+                $XMLsong->addAttribute('duration',(string) $thisSong['duration']);
+            }
+        }
+    }
+
+    return $playlistContent;
+}
+function sbk_convert_parsedjson_to_playlistXML($parsed_json) {
+    $playlistContent = new SimpleXMLElement('<?xml version="1.0" standalone="yes"?><songlist></songlist>');
+    $playlistContent->addAttribute('title', $parsed_json->title);
+    foreach($parsed_json->sets as $thisSet) {
+        $XMLset = $playlistContent->addChild('set');
+        $XMLset->addAttribute('label', $thisSet->label);
+        foreach($thisSet->songs as $thisSong) {
+            p($thisSong);
+            $this_id = (string) $thisSong->id;
+            $this_id = str_replace('id_', '', $this_id);
+            if(is_numeric($this_id)) {
+                $XMLsong = $XMLset->addChild('song','');
+                $XMLsong->addAttribute('id', $this_id);
+                $XMLsong->addAttribute('key',(string) $thisSong->key);
+                $XMLsong->addAttribute('singer',(string) $thisSong->singer);
+                $XMLsong->addAttribute('duration',(string) $thisSong->duration);
             }
         }
     }
@@ -236,8 +305,6 @@ function sbk_generate_index($ID_array) {
     }
     $html = $html.'</div>';
 
-
-
     return '<div class="song-index">'.$html.'</div>';
 }
 
@@ -259,10 +326,10 @@ function sbk_convert_song_content_to_HTML($content) {
         return $contentHTML;
 }
 
-function sbk_playlist_as_html($playlist) {
+function sbk_playlist_as_editable_html($playlist) {
     $display = '';
     $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
-    $display = $display.sbk_convert_playlistXML_to_list($playlistContent);
+    $display = $display.sbk_convert_playlistXML_to_editable_list($playlistContent);
 
     return $display;
 }
@@ -287,7 +354,6 @@ function sbk_song_html($this_record) {
 
     $number_of_lyric_lines_per_page = 55;
     $number_of_columns_per_page = 2;
-
 
     $contentHTML = sbk_convert_song_content_to_HTML($this_record['content']);
 
@@ -375,4 +441,6 @@ function sbk_output_pdf($display, $title = '', $orientation = 'portrait') {
         $pdf->render();
         $pdf->output(WKPDF::$PDF_DOWNLOAD, $title.".pdf");
 }
+
+
 ?>
