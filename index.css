@@ -10,7 +10,8 @@ ul.menu.main {
     background-color: #aabbcc;
 }
 ul.menu.local {
-    background-color: #ddeeff;
+    background-color: #ffffff;
+	border-bottom: 1px solid #aabbcc;
 }
 ul.menu li {
     display: inline-block;
@@ -22,14 +23,19 @@ ul.menu li a {
     height: 1.5em;
     line-height:1.5em;
     vertical-align:middle;
-    border:1px solid gray;
     margin:2px;
     text-align:center;
     font-size: 0.9em;
 	padding-left:2em;
 	padding-right:2em;
 }
+ul.menu.local li a {
+    border:1px solid gray;
+}
 ul.menu li a:hover {
+    background-color:#eef0ff;
+}
+ul.menu.main li a:hover {
     background-color:#eef0ff;
 }
 /* end of menu --------------------- */
@@ -85,15 +91,6 @@ span.song {
 }
 
 
-
-table.displayPlaylist {
-	height:95%;
-	width:100%;
-}
-.displayPlaylist td {
-	vertical-align: top;
-	width:50%;
-}
 .displayPlaylist {
 	font-size: 0.8em;
 }
@@ -145,6 +142,9 @@ li.set {
 }
 .playlist li {
 	margin: 1px;
+	padding: 0.5em;
+}
+.displayPlaylist .playlist li {
 	padding: 0.2em;
 	list-style-type: none;
 	cursor: move;
@@ -166,6 +166,29 @@ li.set {
 .playlist-page {
 	page-break-after: always;
 }
+.playlist-page .title{
+	font-weight: bold;
+}
+.playlist-page .spec {
+	display:block;	
+	color: black;
+	font-size: 1.2em;
+}
+.playlist-page .spec .key {
+	color: #993333;
+}
+.playlist-page .spec .id {	
+	color: gray;
+	font-size: 0.7em;
+}
+.playlist-page .spec span {
+	display:inline-block;	
+	margin-right:1em;
+}
+.playlist-page .playlist .detail {
+	display:none;	
+}
+
 
 /* context menu -------------------------- */
 .context-menu {
@@ -221,18 +244,36 @@ li.dummy {
 	margin-right: 2em;
 	top:2em;
 }
+
+div.side_1,
+div.side_2 {
+	position: absolute;
+	top:50px;
+	bottom:0px;
+}
+div.side_1 {
+	left: 0px;
+	right:55%;
+}
+div.side_2 {
+	right: 0px;
+	left:55%;
+}
+
+
 #available-songs,
 #playlist-holder {
 	padding:1em;
 	border-radius:1em;
 	border:1px solid gray;
-	position: absolute;
+	height:400px;
+}
+#available-songs {
+	position:absolute;
+	top:4em;
 	bottom:0;
 	left:0;
 	right:0;
-}
-#available-songs {
-	top:4em;
 }
 #available-songs.main-list {
 	top:7em;
@@ -252,9 +293,8 @@ li.dummy {
 	overflow: auto;
 	position: absolute;
 	top:4em;
-	bottom:0;
 	left:1em;
-	right:0;
+	bottom:0;
 }
 #available-songs ul,
 form#allsongsearch {
@@ -273,13 +313,6 @@ form#allsongsearch {
 }
 #available-songs #allsongs li input {
 	display: none;
-}
-.holder {
-	position: relative;
-	width: 100%;
-	height: 100%;
-	display: block;
-	
 }
 #playlistForm {
 	position:absolute;

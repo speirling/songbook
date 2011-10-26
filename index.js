@@ -39,11 +39,13 @@ $(document).ready(function() {
 
 
 	jQuery('#savePlaylist').click(function() {
-		jQuery('#playlist-holder textarea').each(function(){jQuery(this).html(jQuery(this).val());});
+		/*jQuery('#playlist-holder textarea').each(function(){jQuery(this).html(jQuery(this).val());});
 		jQuery('#playlist-holder li.song input.key').each(function(){jQuery(this).parent().attr('key', jQuery(this).val());}).remove();
 		jQuery('#playlist-holder li.song input.singer').each(function(){jQuery(this).parent().attr('singer', jQuery(this).val());}).remove();
+		jQuery('#playlist-holder li.song input.duration').each(function(){jQuery(this).parent().attr('duration', jQuery(this).val());}).remove();
 		jQuery('#playlist_input').val(jQuery('#playlist-holder').html());
-		jQuery('#playlistForm').submit();
+		jQuery('#playlistForm').submit();*/
+		save_playlist();
 	});
 	create_filter_list(jQuery('#available-songs'));
 
@@ -98,6 +100,50 @@ function search_allsongs() {
     		}
 	    }
 	);
+}
+
+function save_playlist() {
+	playlist_html = jQuery('#playlist-holder').html();
+	playlist_json = convert_playlist_to_json (playlist_html);
+	//playlist_json = {"test": "one", "test2": 2, "test3": [1,2,3]};
+
+	jQuery.post(
+	    '/songbook/update_playlist.php',
+	    {data: JSON.stringify(playlist_json)},
+	    function (data) {
+    		console.log(data);
+	    }
+	);
+}
+
+function convert_playlist_to_json (playlist_html) {
+	output_json = {};
+	source = jQuery('<div>' +playlist_html + '</div>');
+	output_json.title = jQuery('.playlist-title', source).val();
+	output_json.sets = [];
+	set_count = 0;
+	jQuery('.set', source).each(function () {
+		var this_set = jQuery(this);
+
+		output_json.sets[set_count] = {
+			"label": jQuery('.set-title', this_set).val(),
+			"songs": []
+		};
+		song_count = 0;
+		jQuery('.song', this_set).each(function () {
+			var self = jQuery(this);
+			
+			output_json.sets[set_count].songs[song_count] = {
+				"id": self.attr('id'),
+				"key": jQuery('.key', self).val(),
+				"singer": jQuery('singer', self).val(),
+				"duration": jQuery('.duration', self).val()
+			};
+			song_count = song_count + 1;
+		});
+		set_count = set_count +1;
+	});
+	return output_json;
 }
 
 function create_filter_list(container) {
