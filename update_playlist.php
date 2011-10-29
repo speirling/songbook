@@ -10,10 +10,13 @@ if(array_key_exists('filename', $_POST)) {
     $data_string = str_replace('\"', '"', trim($data_string, '()'));
     $data = json_decode(trim($data_string, '()'));
     $playlist_XML = sbk_convert_parsedjson_to_playlistXML($data);
-
+    $testXML = <<<XML
+    <?xml version="1.0" standalone="yes"?><songlist title="test playlist"></songlist></songbook>
+XML;
+$playlist_XML = new SimpleXMLElement($testXML);
     $display = $playlist_XML->asXML();
 
-    $destination = PLAYLIST_DIRECTORY.'/'.$filename.'.playlist';
+    $destination = str_replace('\\','/',getcwd()).'/'.PLAYLIST_DIRECTORY.'/'.$filename.'.playlist';
 
     if($playlist_XML->saveXML($destination)) {
          $display = '{"success": true, "destination": "'.$destination.'"}';

@@ -143,6 +143,7 @@ function save_playlist() {
 	    	data: JSON.stringify(playlist_json)
 	    },
 	    function (response) {
+	    	console.log(response);
 	    	data = JSON.parse(response);
     		if(data.success) {
     			console.log('playlist saved to ' + data.destination);
