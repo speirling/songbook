@@ -1,5 +1,7 @@
 $(document).ready(function() {
-	        
+	
+	display_playlist_editor ();
+	/*
 	jQuery('#playlist-holder ul ul').sortable({
 			connectWith: '.playlist ul'
 		});
@@ -17,6 +19,7 @@ $(document).ready(function() {
 	        click: function(element){ element.remove(); }
 	    }
 	});
+	*/
 	
 	jQuery('.song-index .song').contextMenu('context-menu', {
 	    'show lyrics': {
@@ -39,12 +42,6 @@ $(document).ready(function() {
 
 
 	jQuery('#savePlaylist').click(function() {
-		/*jQuery('#playlist-holder textarea').each(function(){jQuery(this).html(jQuery(this).val());});
-		jQuery('#playlist-holder li.song input.key').each(function(){jQuery(this).parent().attr('key', jQuery(this).val());}).remove();
-		jQuery('#playlist-holder li.song input.singer').each(function(){jQuery(this).parent().attr('singer', jQuery(this).val());}).remove();
-		jQuery('#playlist-holder li.song input.duration').each(function(){jQuery(this).parent().attr('duration', jQuery(this).val());}).remove();
-		jQuery('#playlist_input').val(jQuery('#playlist-holder').html());
-		jQuery('#playlistForm').submit();*/
 		save_playlist();
 	});
 	create_filter_list(jQuery('#available-songs'));
@@ -66,6 +63,37 @@ $(document).ready(function() {
 		}
 	});
 });
+
+function display_playlist_editor () {
+	console.log('display_playist_editor');
+	jQuery('#playlist-holder').each(function () {
+		var self = jQuery(this), playlist;
+		
+		playlist = self.attr('filename');
+		jQuery.get(
+		    '/songbook/display_playlist.php',
+		    {playlist: playlist},
+		    function (data) {
+		    	self.html(data);
+        		jQuery('ul', self).sortable();
+        		jQuery('ul ul', self).sortable({
+        			connectWith: '.playlist ul'
+        		});
+        		jQuery('li li', self).contextMenu('context-menu', {
+        		    'show lyrics': {
+        		        click: function(element){ window.open('?action=displaySong&id=' + element.attr('id').replace('id_', '')); }
+        		    },
+        		    'edit song': {
+        		        click: function(element){ window.open('?action=editSong&id=' + element.attr('id').replace('id_', '')); }
+        		    },
+        		    'remove from playlist': {
+        		        click: function(element){ element.remove(); }
+        		    }
+        		});
+    		}
+		);
+	});
+}
 
 function add_new_setlist(container) {
 	var newSet = jQuery('<li class="set playlist"><textarea class="set-title" type="text">New Set</textarea></li>');
@@ -103,15 +131,23 @@ function search_allsongs() {
 }
 
 function save_playlist() {
-	playlist_html = jQuery('#playlist-holder').html();
+	playlist = jQuery('#playlist-holder');
+	playlist_html = playlist.html();
 	playlist_json = convert_playlist_to_json (playlist_html);
 	//playlist_json = {"test": "one", "test2": 2, "test3": [1,2,3]};
 
 	jQuery.post(
 	    '/songbook/update_playlist.php',
-	    {data: JSON.stringify(playlist_json)},
-	    function (data) {
-    		console.log(data);
+	    {
+	    	filename: playlist.attr('filename'),
+	    	data: JSON.stringify(playlist_json)
+	    },
+	    function (response) {
+	    	data = JSON.parse(response);
+    		if(data.success) {
+    			console.log('playlist saved to ' + data.destination);
+    			display_playlist_editor ();
+    		}
 	    }
 	);
 }
@@ -136,7 +172,7 @@ function convert_playlist_to_json (playlist_html) {
 			output_json.sets[set_count].songs[song_count] = {
 				"id": self.attr('id'),
 				"key": jQuery('.key', self).val(),
-				"singer": jQuery('singer', self).val(),
+				"singer": jQuery('.singer', self).val(),
 				"duration": jQuery('.duration', self).val()
 			};
 			song_count = song_count + 1;

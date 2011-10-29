@@ -1,6 +1,5 @@
 <?php
 require_once('admin/configure.inc.php');
-//require_once("dompdf/dompdf_config.inc.php");
 require_once("wkhtml2pdf_integration.php");
 
 error_log("******************************* Run songbook index *******************************");
@@ -132,8 +131,7 @@ switch ($action) {
         $display = $display.'<div class="side_1 displayPlaylist">';
         $display = $display.'<h3>Playlist</h3>';
         $display = $display.'<form id="playlistForm" method="post"><a href="#" id="savePlaylist">Save</a><input type="hidden" name="update" value="replaceList" /><textarea id="playlist_input" name="playlist_input" style="display:none;"></textarea></form>';
-        $display = $display.'<div id="playlist-holder">';
-        $display = $display.sbk_playlist_as_editable_html($playlist);
+        $display = $display.'<div id="playlist-holder" filename="'.$playlist.'">';
         $display = $display.'</div>';
         $display = $display.'</div>';
         $display = $display.'<div class="side_2 displayPlaylist">';
