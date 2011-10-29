@@ -5,19 +5,23 @@ $display = '';
 p($_POST);
 $data_string = (string) $_POST['data'];
 if(array_key_exists('filename', $_POST)) {
-$filename = $_POST['filename'];
+    $filename = $_POST['filename'];
 
-$data_string = str_replace('\"', '"', trim($data_string, '()'));
+    $data_string = str_replace('\"', '"', trim($data_string, '()'));
+    $data = json_decode(trim($data_string, '()'));
+    $playlist_XML = sbk_convert_parsedjson_to_playlistXML($data);
 
-$data = json_decode(trim($data_string, '()'));
+    $display = $playlist_XML->asXML();
 
-$playlist_XML = sbk_convert_parsedjson_to_playlistXML($data);
+    $destination = PLAYLIST_DIRECTORY.'/'.$filename.'.playlist';
 
-$display = $playlist_XML->asXML();
+    if($playlist_XML->saveXML($destination)) {
+         $display = '{"success": true, "destination": "'.$destination.'"}';
+    }
 
-$playlistContent->saveXML(PLAYLIST_DIRECTORY.'/'.$filename.'.playlist');
 } else {
-    $display = "error - no playlist filename specified";
+    $display = '{"error": "no playlist filename specified"}';
 }
+
 echo $display;
 ?>
