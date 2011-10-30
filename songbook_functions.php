@@ -16,21 +16,24 @@ function sbk_convert_playlistXML_to_editable_list($playlistContent) {
     $outputHTML = $outputHTML.'<textarea class="playlist-title">'.$playlistContent['title'].'</textarea>';
     $outputHTML = $outputHTML.'<ul>';
     foreach ($playlistContent->set as $thisSet) {
-        $outputHTML = $outputHTML.'<li class="set playlist">';
-        $outputHTML = $outputHTML.'<textarea class="set-title">'.$thisSet['label'].'</textarea>';
-        $outputHTML = $outputHTML.'<ul>';
-        $outputHTML = $outputHTML.'<li class="dummy">&nbsp;</li>';
+        $set_duration = 0;
+        $setHTML = '';
         foreach($thisSet->song as $thisSong) {
             $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $thisSong['id']);
-            $outputHTML = $outputHTML.'<li class="song" id="id_'.$this_record['id'].'">';
-            $outputHTML = $outputHTML.'<input type="text" class="key" value="'.$thisSong['key'].'"></input>';
-            $outputHTML = $outputHTML.'<input type="text" class="singer" value="'.$thisSong['singer'].'"></input>';
-            $outputHTML = $outputHTML.'<span class="title">'.$this_record['title'].'</span>';
-            //$outputHTML = $outputHTML.'<span class="id">'.$this_record['id'].'</span>';
-            $outputHTML = $outputHTML.'<span class="detail"> (<span class="written_by">'.$this_record['written_by'].'</span> | <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
-            $outputHTML = $outputHTML.'<input type="text" class="duration" value="'.$thisSong['duration'].'"></input>';
-            $outputHTML = $outputHTML.'</li>';
+            $set_duration = $set_duration + sbk_duration_string_to_seconds((string) $thisSong['duration']);
+            $setHTML = $setHTML.'<li class="song" id="id_'.$this_record['id'].'">';
+            $setHTML = $setHTML.'<input type="text" class="key" value="'.$thisSong['key'].'"></input>';
+            $setHTML = $setHTML.'<input type="text" class="singer" value="'.$thisSong['singer'].'"></input>';
+            $setHTML = $setHTML.'<span class="title">'.$this_record['title'].'</span>';
+            $setHTML = $setHTML.'<span class="detail"> (<span class="written_by">'.$this_record['written_by'].'</span> | <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
+            $setHTML = $setHTML.'<input type="text" class="duration" value="'.$thisSong['duration'].'"></input>';
+            $setHTML = $setHTML.'</li>';
         }
+        $outputHTML = $outputHTML.'<li class="set playlist">';
+        $outputHTML = $outputHTML.'<textarea class="set-title">'.$thisSet['label'].'</textarea><span class="duration">'.sbk_seconds_to_duration_string($set_duration).'</span>';
+        $outputHTML = $outputHTML.'<ul>';
+        $outputHTML = $outputHTML.'<li class="dummy">&nbsp;</li>';
+        $outputHTML = $outputHTML.$setHTML;
         $outputHTML = $outputHTML.'</ul>';
     }
     $outputHTML = $outputHTML.'</li>';
@@ -43,43 +46,47 @@ function sbk_convert_playlistXML_to_orderedlist($playlistContent, $show_key = TR
     $outputHTML = $outputHTML.'<div class="playlist-title">'.$playlistContent['title'].'</div>';
     $outputHTML = $outputHTML.'<ul>';
     foreach ($playlistContent->set as $thisSet) {
-        $outputHTML = $outputHTML.'<li class="set playlist">';
-        $outputHTML = $outputHTML.'<div class="set-title">'.$thisSet['label'].'</div>';
-        $outputHTML = $outputHTML.'<ol>';
+        $set_duration = 0;
+        $setHTML = '';
         foreach($thisSet->song as $thisSong) {
+            $set_duration = $set_duration + sbk_duration_string_to_seconds((string) $thisSong->duration);
             $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $thisSong['id']);
-            $outputHTML = $outputHTML.'<li class="song" id="id_'.$this_record['id'].'">';
-            $outputHTML = $outputHTML.'<span class="title">'.$this_record['title'].'</span>';
+            $setHTML = $setHTML.'<li class="song" id="id_'.$this_record['id'].'">';
+            $setHTML = $setHTML.'<span class="title">'.$this_record['title'].'</span>';
             if($show_key | $show_singer) {
-                $outputHTML = $outputHTML.'<span class="spec">';
+                $setHTML = $setHTML.'<span class="spec">';
                 if($show_key) {
-                    $outputHTML = $outputHTML.'<span class="key">'.$thisSong['key'].'</span>';
+                    $setHTML = $setHTML.'<span class="key">'.$thisSong['key'].'</span>';
                 }
                 if($show_singer) {
-                    $outputHTML = $outputHTML.'<span class="singer">'.$thisSong['singer'].'</span>';
+                    $setHTML = $setHTML.'<span class="singer">'.$thisSong['singer'].'</span>';
                 }
                 if($show_id) {
-                    $outputHTML = $outputHTML.'<span class="id">'.$this_record['id'].'</span>';
+                    $setHTML = $setHTML.'<span class="id">'.$this_record['id'].'</span>';
                 }
                 if($show_duration) {
-                    $outputHTML = $outputHTML.'<span class="duration">'.$thisSong['duration'].'</span>';
+                    $setHTML = $setHTML.'<span class="duration">'.$thisSong['duration'].'</span>';
                 }
-                $outputHTML = $outputHTML.'</span>';
+                $setHTML = $setHTML.'</span>';
             }
             if($show_writtenby | $show_performedby) {
-                $outputHTML = $outputHTML.'<span class="detail"> (';
+                $setHTML = $setHTML.'<span class="detail"> (';
                 if($show_writtenby) {
-                    $outputHTML = $outputHTML.'<span class="written_by">'.$this_record['written_by'].'</span>';
+                    $setHTML = $setHTML.'<span class="written_by">'.$this_record['written_by'].'</span>';
                 }
                 if($show_performedby) {
-                    $outputHTML = $outputHTML.' | <span class="performed_by">'.$this_record['performed_by'].'</span>';
+                    $setHTML = $setHTML.' | <span class="performed_by">'.$this_record['performed_by'].'</span>';
                 }
-                $outputHTML = $outputHTML.')</span>';
+                $setHTML = $setHTML.')</span>';
             }
-            $outputHTML = $outputHTML.'</li>';
+            $setHTML = $setHTML.'</li>';
         }
-        $outputHTML = $outputHTML.'</ol>';
+        $setHTML = $setHTML.'</ol>';
     }
+    $outputHTML = $outputHTML.'<li class="set playlist">';
+    $outputHTML = $outputHTML.'<div class="set-title">'.$thisSet['label'].'<span class="duration">'.sbk_seconds_to_duration_string($set_duration).'</span></div>';
+    $outputHTML = $outputHTML.'<ol>';
+    $outputHTML = $outputHTML.$setHTML;
     $outputHTML = $outputHTML.'</li>';
     $outputHTML = $outputHTML.'</ul>';
     return $outputHTML;
@@ -94,7 +101,7 @@ function sbk_convert_playlistXML_to_table($playlistContent) {
     foreach ($playlistContent->set as $thisSet) {
         //$outputHTML = $outputHTML.'<tr>';
         $outputHTML = $outputHTML.'<td class="set playlist" style="width:'.$column_width.'%">';
-        $outputHTML = $outputHTML.'<h2>'.$thisSet['label'].'</h2>';
+        $outputHTML = $outputHTML.'<h2>'.$thisSet['label'].'<span class="duration">'.sbk_seconds_to_duration_string($thisSet['duration']).'</span></h2>';
         $outputHTML = $outputHTML.'<table>';
         foreach($thisSet->song as $thisSong) {
             $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $thisSong['id']);
@@ -145,22 +152,45 @@ function sbk_convert_parsedjson_to_playlistXML($parsed_json) {
     $playlistContent = new SimpleXMLElement('<?xml version="1.0" standalone="yes"?><songlist></songlist>');
     $playlistContent->addAttribute('title', $parsed_json->title);
     foreach($parsed_json->sets as $thisSet) {
+        $set_duration = 0;
         $XMLset = $playlistContent->addChild('set');
         $XMLset->addAttribute('label', $thisSet->label);
         foreach($thisSet->songs as $thisSong) {
             $this_id = (string) $thisSong->id;
             $this_id = str_replace('id_', '', $this_id);
             if(is_numeric($this_id)) {
-                $XMLsong = $XMLset->addChild('song','');
+                $set_duration = $set_duration + sbk_duration_string_to_seconds((string) $thisSong->duration);
+
+                $XMLsong = $XMLset->addChild('song', '');
                 $XMLsong->addAttribute('id', $this_id);
                 $XMLsong->addAttribute('key',(string) $thisSong->key);
                 $XMLsong->addAttribute('singer',(string) $thisSong->singer);
                 $XMLsong->addAttribute('duration',(string) $thisSong->duration);
             }
         }
+        $XMLset->addAttribute('duration', $set_duration);
     }
 
     return $playlistContent;
+}
+
+function sbk_duration_string_to_seconds($individual_duration_string) {
+    if($individual_duration_string !== '') {
+        //assumes duration is mm:ss - so less than a minute would be 00:ss
+        $time_bits = preg_split('/:/', $individual_duration_string);
+        $duration_seconds = $time_bits[0] * 60 + $time_bits[1];
+    } else {
+        $duration_seconds = 0;
+    }
+    return $duration_seconds;
+}
+
+function sbk_seconds_to_duration_string($duration_seconds) {
+    $exact = $duration_seconds/60;
+    $hours = floor($exact);
+    $minutes = ($exact - $hours) * 60;
+
+    return str_pad($hours, 2, '0', STR_PAD_LEFT).':'.str_pad($minutes, 2, '0', STR_PAD_LEFT);
 }
 
 function sbk_list_all_songs_in_database($search_string = false) {
@@ -183,6 +213,7 @@ function sbk_list_all_songs_in_database($search_string = false) {
             $outputHTML = $outputHTML.'<input class="key" type="text" value="">';
             $outputHTML = $outputHTML.'<input class="singer" type="text" value="">';
             $outputHTML = $outputHTML.'<span class="title">'.$this_record['title'].'</span>';
+            $outputHTML = $outputHTML.'<input type="text" class="duration" value=""></input>';
             $outputHTML = $outputHTML.'<span class="detail"> (<span class="written_by">'.$this_record['written_by'].'</span> | <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
             $outputHTML = $outputHTML.'</li>';
     	}
