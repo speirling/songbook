@@ -148,7 +148,6 @@ function sbk_convert_parsedjson_to_playlistXML($parsed_json) {
         $XMLset = $playlistContent->addChild('set');
         $XMLset->addAttribute('label', $thisSet->label);
         foreach($thisSet->songs as $thisSong) {
-            p($thisSong);
             $this_id = (string) $thisSong->id;
             $this_id = str_replace('id_', '', $this_id);
             if(is_numeric($this_id)) {

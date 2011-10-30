@@ -1,25 +1,6 @@
 $(document).ready(function() {
 	
 	display_playlist_editor ();
-	/*
-	jQuery('#playlist-holder ul ul').sortable({
-			connectWith: '.playlist ul'
-		});
-
-	jQuery('#playlist-holder>ul').sortable();
-
-	jQuery('#playlist-holder li li').contextMenu('context-menu', {
-	    'show lyrics': {
-	        click: function(element){ window.open('?action=displaySong&id=' + element.attr('id').replace('id_', '')); }
-	    },
-	    'edit song': {
-	        click: function(element){window.open( '?action=editSong&id=' + element.attr('id').replace('id_', '')); }
-	    },
-	    'remove from playlist': {
-	        click: function(element){ element.remove(); }
-	    }
-	});
-	*/
 	
 	jQuery('.song-index .song').contextMenu('context-menu', {
 	    'show lyrics': {
@@ -65,7 +46,6 @@ $(document).ready(function() {
 });
 
 function display_playlist_editor () {
-	console.log('display_playist_editor');
 	jQuery('#playlist-holder').each(function () {
 		var self = jQuery(this), playlist;
 		
@@ -132,10 +112,7 @@ function search_allsongs() {
 
 function save_playlist() {
 	playlist = jQuery('#playlist-holder');
-	playlist_html = playlist.html();
-	playlist_json = convert_playlist_to_json (playlist_html);
-	//playlist_json = {"test": "one", "test2": 2, "test3": [1,2,3]};
-
+	playlist_json = convert_playlist_to_json (playlist);
 	jQuery.post(
 	    '/songbook/update_playlist.php',
 	    {
@@ -153,9 +130,9 @@ function save_playlist() {
 	);
 }
 
-function convert_playlist_to_json (playlist_html) {
+function convert_playlist_to_json (source) {
+	//source is the jQuery(container) holding the EDITED playlist
 	output_json = {};
-	source = jQuery('<div>' +playlist_html + '</div>');
 	output_json.title = jQuery('.playlist-title', source).val();
 	output_json.sets = [];
 	set_count = 0;
@@ -197,7 +174,6 @@ function create_filter_list(container) {
 		return false;
     });
 }
-
 
 function display_songpicker_from_playlist(parent_container, playlist) {
 	var container = jQuery('<div id="all-song-list"></div>');
