@@ -120,6 +120,9 @@ textarea.set-title {
 }
 .playlist .title {
 	font-size: 1.5em;
+	width: 300px;
+	display: inline-block;
+	overflow: hidden;
 }
 .playlist-title {
 	font-family: Arial, Helvetica, sans-serif;
@@ -136,6 +139,12 @@ textarea.set-title {
 li.set {
 	list-style-type: none;
 	cursor: move;
+}
+li.set span.duration {
+	float: right;
+	font-size: 1.4em;
+	padding-top: 1em;
+	color: gray;
 }
 #playlist-holder .set {
 	border: 1px solid silver;
@@ -187,6 +196,11 @@ li.set {
 }
 .playlist-page .playlist .detail {
 	display:none;	
+}
+input.duration {
+	width: 3em;
+	text-align: right;
+	border: 0;
 }
 
 
