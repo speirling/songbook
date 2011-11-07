@@ -73,13 +73,18 @@ span.song {
     color: gray;
 }
 
-#playlist-printable-holder .song .detail {
+#playlist-table .song .detail {
 	display: none;
+}
+
+#playlist-table ul>li {
+	display: table-cell;
 }
 
 .line {
 	margin-top: 1em;
 }
+
 .chord {
 	display: inline-block;
 	position:relative;
@@ -105,13 +110,18 @@ span.song {
 
 
 
-textarea.playlist-title,
-textarea.set-title {
-	resize: none;
-	height: 1.2em;
+input.playlist-title,
+input.set-title {
 	border: 0px;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 80%;
 }
-
+input.playlist-title {
+	left: 1em;
+	top: 0.5em;
+}
 #playlist-holder .detail {
 	display: none;
 }
@@ -120,7 +130,6 @@ textarea.set-title {
 }
 .playlist .title {
 	font-size: 1.5em;
-	width: 300px;
 	display: inline-block;
 	overflow: hidden;
 }
@@ -131,25 +140,34 @@ textarea.set-title {
 }
 .set-title {
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 1.5em;
+	font-size: 1.8em;
 	font-weight: bold;
-	color: #933;
-	margin-top:1em;
+	color: #daa;
 }
 li.set {
 	list-style-type: none;
 	cursor: move;
+	position: relative;
+	padding-top: 2.5em;
+}
+li.set ul {
+	padding: 0;
+	padding-left: 1em;
 }
 li.set span.duration {
-	float: right;
+	position:absolute;
+	right: 1.5em;
+	top:0;
 	font-size: 1.4em;
-	padding-top: 1em;
 	color: gray;
+	width: 3em;
+	text-align:center;
 }
 #playlist-holder .set {
-	border: 1px solid silver;
+	border-top: 1px solid silver;
 }
 .playlist li {
+	position: relative;
 	margin: 1px;
 	padding: 0.5em;
 }
@@ -178,29 +196,37 @@ li.set span.duration {
 .playlist-page .title{
 	font-weight: bold;
 }
-.playlist-page .spec {
+.spec {
 	display:block;	
 	color: black;
 	font-size: 1.2em;
 }
-.playlist-page .spec .key {
+.spec .key {
 	color: #993333;
+	text-align: left;
 }
-.playlist-page .spec .id {	
+.spec .id {	
 	color: gray;
 	font-size: 0.7em;
 }
-.playlist-page .spec span {
-	display:inline-block;	
+.spec span {
+	display: inline-block;	
 	margin-right:1em;
+}
+.spec .singer {
+	font-size: 0.8em;
+	text-align: left;
 }
 .playlist-page .playlist .detail {
 	display:none;	
 }
 input.duration {
 	width: 3em;
-	text-align: right;
+	text-align: center;
 	border: 0;
+	background-color: #f3f3f3;
+	position: absolute;
+	right: 1em;
 }
 
 
@@ -242,12 +268,17 @@ li.dummy {
 	font-weight: bold;
 	background-color: transparent;
 	border:0;
+	text-align: center;
 }
 
 .singer {
  	width:5em;
 	background-color: transparent;
 	border:0;
+	text-align: right;
+	color:gray;
+	font-size:1.3em;
+	margin-right:0.3em;
 }
 
 .key:focus, .singer:focus {
@@ -280,7 +311,11 @@ div.side_2 {
 	padding:1em;
 	border-radius:1em;
 	border:1px solid gray;
-	height:400px;
+	position: absolute;
+	top: 2em;
+	bottom:0;
+	left:5em;
+	right:0;
 }
 #available-songs {
 	position:absolute;
@@ -306,13 +341,16 @@ div.side_2 {
 #playlist-holder>ul {
 	overflow: auto;
 	position: absolute;
-	top:4em;
+	top: 4em;
 	left:1em;
 	bottom:0;
+	right: 0;
+	padding: 0.5em;
 }
 #available-songs ul,
 form#allsongsearch {
 	padding-left:0;
+	margin: 0;
 }
 
 #available-songs li {

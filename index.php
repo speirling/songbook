@@ -92,36 +92,12 @@ switch ($action) {
 
     case 'displayPlaylist':
         $playlist = $_GET['playlist'];
-        if (array_key_exists('update', $_POST)) {
-            switch ($_POST['update']) {
-            case "PlaylistAddListOfSongs":
-                //couldn't get checkboxes as an array
-                $song_id_array = array();
-                $sets = array();
-                foreach ($_POST as $key => $value) {
-                    if(strstr($key, "song_")) {
-                        $set = str_replace('set_','',preg_filter('/_song_.*/','',$key));
-                        if(!in_array($set, $sets)) {
-                            $sets[] = $set;
-                        }
-                        $song_id_array[$set][] = $value;
-                    }
-                }
-                sbk_add_songs_to_playlist($song_id_array, $sets, $playlist) ;
-            break;
-            case "replaceList":
-                $playlistContent = sbk_convert_list_to_playlistXML($_POST['playlist_input']);
-                $playlistContent->saveXML(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
-            break;
-            }
-        } elseif (array_key_exists('addNewSet', $_GET)) {
 
-        }
         $display = $display.$menu;
         $display = $display.'<ul class="menu local">';
         $display = $display.'<li><a href="#" id="add-new-set" playlist="'.$playlist.'">Add a new set</a></li> ';
-        $display = $display.'<li><a href="?action=pdfPlaylist&playlist='.$playlist.'" target="new">printable</a>';
-        $display = $display.'<li><a href="?action=pdfPlaylist&playlist='.$playlist.'&pdf">pdf</a>';
+        $display = $display.'<li><a href="?action=pdfPlaylist&playlist='.$playlist.'" target="new">table</a>';
+        $display = $display.'<li><a href="?action=pdfPlaylist&playlist='.$playlist.'&pdf">table pdf</a>';
         $display = $display.'<li><a href="?action=emailPlaylist&playlist='.$playlist.'&pdf">email</a>';
         $display = $display.'<li><a href="?action=index&playlist='.$playlist.'">Show an index of the songs in this playlist</a>';
         $display = $display.'<li><a href="?action=playlistBook&playlist='.$playlist.'" target="new">Playlist as a book</a>';
@@ -139,17 +115,17 @@ switch ($action) {
         $display = $display.'<select class="playlist-chooser">';
         $display = $display.'<option value="all">all songs</option>';
         $directoryList = scandir(PLAYLIST_DIRECTORY);
-            foreach($directoryList as $filename) {
-                if(!is_dir($filename)) {
-                    $path_parts = pathinfo($filename);
-                    if($path_parts['extension'] === 'playlist' && $path_parts['filename'] != '') {
-                        $display = $display.'<option value="'.$path_parts['filename'].'">';
-                        $thisPlaylistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$path_parts['filename'].'.playlist');
-    		            $display = $display.$thisPlaylistContent['title'];
-    		            $display = $display.'</option>';
-                    }
+        foreach($directoryList as $filename) {
+            if(!is_dir($filename)) {
+                $path_parts = pathinfo($filename);
+                if($path_parts['extension'] === 'playlist' && $path_parts['filename'] != '') {
+                    $display = $display.'<option value="'.$path_parts['filename'].'">';
+                    $thisPlaylistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$path_parts['filename'].'.playlist');
+		            $display = $display.$thisPlaylistContent['title'];
+		            $display = $display.'</option>';
                 }
             }
+        }
         $display = $display.'</select>';
         $display = $display.'<div id="available-songs"></div>';
         $display = $display.'</div>';
@@ -209,10 +185,6 @@ switch ($action) {
 
                 $result = acradb_get_query_result($updatequery, SBK_DATABASE_NAME);
                 $id = mysql_insert_id();
-                if(array_key_exists('playlist', $_POST)) {
-                    sbk_add_songs_to_playlist(array($id), $_POST['playlist']);
-                } else {
-                }
             break;
 
             case "editExistingSong":
@@ -250,10 +222,6 @@ switch ($action) {
 
                 $result = acradb_get_query_result($updatequery, SBK_DATABASE_NAME);
                 $id = mysql_insert_id();
-                if(array_key_exists('playlist', $_POST)) {
-                    sbk_add_songs_to_playlist(array($id), $_POST['playlist']);
-                } else {
-                }
             break;
 
             case "editExistingSong":
