@@ -2,23 +2,10 @@ $(document).ready(function() {
 	
 	display_playlist_editor ();
 	create_filter_list(jQuery('#available-songs'));
-	
-	/*
-	jQuery('.song-index .song').contextMenu('context-menu', {
-	    'show lyrics': {
-	        click: function(element){ window.open('?action=displaySong&id=' + element.attr('id').replace('id_', '')); }
-	    },
-	    'edit song': {
-	        click: function(element){ window.open('?action=editSong&id=' + element.attr('id').replace('id_', '')); }
-	    }
+
+	jQuery('#add-new-set').click(function () {
+		add_new_setlist(jQuery('#playlist-holder>ul'));
 	});
-	
-	jQuery('#playlist-holder .playlist').contextMenu('context-menu', {
-	    'remove from playlist': {
-	        click: function(element){ element.remove(); }
-	    }
-	});
-*/
 
 	jQuery('.song-index .song').click(function () {
 		location.href = '?action=displaySong&id=' + jQuery(this).attr('id');
@@ -49,8 +36,8 @@ function display_playlist_editor () {
 		    function (data) {
 		    	self.html(data);
         		jQuery('ul', self).sortable();
-        		jQuery('ul ul', self).sortable({
-        			connectWith: '.playlist ul'
+        		jQuery('ul ol', self).sortable({
+        			connectWith: '.playlist ol'
         		});
         		jQuery('li li', self).contextMenu('context-menu', {
         		    'show lyrics': {
@@ -63,11 +50,13 @@ function display_playlist_editor () {
         		        click: function(element){ element.remove(); }
         		    }
         		});
+        		jQuery('li.set', self).contextMenu('context-menu', {
+        		    'remove from playlist': {
+        		        click: function(element){ element.remove(); }
+        		    }
+        		});
         		jQuery('#savePlaylist').click(function() {
         			save_playlist();
-        		});
-        		jQuery('#add-new-set').click(function () {
-        			add_new_setlist(jQuery('#playlist-holder>ul'));
         		});
     		}
 		);
@@ -75,9 +64,13 @@ function display_playlist_editor () {
 }
 
 function add_new_setlist(container) {
-	var newSet = jQuery('<li class="set playlist"><textarea class="set-title" type="text">New Set</textarea></li>');
+	var newSet = jQuery('<li class="set playlist"><textarea class="set-title" type="text">New Set</textarea></li>').contextMenu('context-menu', {
+	    'remove from playlist': {
+	        click: function(element){ element.remove(); }
+	    }
+	});
 	var newList = jQuery('<ul class="ui-sortable"><li class=dummy>&nbsp;</li></ul>').sortable({
-			connectWith: '.playlist ul'
+			connectWith: '.playlist ol'
 	});
 	container.append(newSet);
 	newSet.append(newList);
@@ -92,7 +85,7 @@ function search_allsongs() {
 	    	jQuery('#allsongsearch .number-of-records').html(jQuery('div#all-song-list .numberofrecords').html());
 	    	if(jQuery('.displayPlaylist').length) {
         		jQuery('#playlist-holder ul ul, #allsongs ul').sortable({
-        			connectWith: '.playlist ul'
+        			connectWith: '.playlist ol'
         		});
     		}
     		if(jQuery('#allsongs').length) {
@@ -188,7 +181,7 @@ function display_songpicker_from_playlist(parent_container, playlist) {
 		    	container.html(data);
 		    	if(jQuery('.displayPlaylist').length) {
 	        		jQuery('ul', container).sortable({
-	        			connectWith: '.playlist ul'
+	        			connectWith: '.playlist ol'
 	        		});
 	    		}
 	    		if(jQuery('li', container).length) {
