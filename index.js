@@ -8,7 +8,7 @@ $(document).ready(function() {
 	});
 
 	jQuery('.song-index .song').click(function () {
-		location.href = '?action=displaySong&id=' + jQuery(this).attr('id');
+		 window.open('?action=displaySong&id=' + jQuery(this).attr('id'));
 	});
 	jQuery('a#remove_linebreaks').click(function (){
 		jQuery('textarea#content').html(jQuery('textarea#content').html().replace(/\n\n/gm, "\n"));
@@ -55,7 +55,7 @@ function display_playlist_editor () {
         		        click: function(element){ element.remove(); }
         		    }
         		});
-        		jQuery('#savePlaylist').click(function() {
+        		jQuery('#savePlaylist').unbind('click').click(function() {
         			save_playlist();
         		});
     		}
@@ -95,6 +95,9 @@ function search_allsongs() {
         		    },
         		    'edit song': {
         		        click: function(element){ window.open('?action=editSong&id=' + element.attr('id').replace('id_', '')); }
+        		    },
+        		    'remove from playlist': {
+        		        click: function(element){ element.remove(); }
         		    }
         		});
     		}
@@ -146,7 +149,11 @@ function convert_playlist_to_json (source) {
 				"id": self.attr('id'),
 				"key": jQuery('.key', self).val(),
 				"singer": jQuery('.singer', self).val(),
-				"duration": jQuery('.duration', self).val()
+				"duration": jQuery('.duration', self).val(),
+				"introduction": {
+					"text": jQuery('.introduction_text', self).val(),
+					"duration": jQuery('.introduction_duration', self).val()
+				}
 			};
 			song_count = song_count + 1;
 		});

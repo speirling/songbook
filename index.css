@@ -224,7 +224,16 @@ input.duration {
 	width: 3em;
 	text-align: center;
 	border: 0;
-	background-color: #f3f3f3;
+	background-color: #e3e3f3;
+	position: absolute;
+	right: 1em;
+}
+
+input.introduction_duration {
+	width: 3em;
+	text-align: center;
+	border: 0;
+	background-color: #f3f3e3;
 	position: absolute;
 	right: 1em;
 }
@@ -298,11 +307,28 @@ div.side_2 {
 }
 div.side_1 {
 	left: 0px;
-	right:55%;
+	right:40%;
 }
 div.side_2 {
 	right: 0px;
-	left:55%;
+	left:60%;
+}
+
+.introduction {
+	display: block;
+	vertical-align: top;
+	position: relative;
+	left: 0;
+	width: 100%;
+}
+.introduction .introduction_text {
+	height: 1.5em;
+	font-size: 1.3em;
+	color: gray;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	position: relative;
+	left: 6em;
+	width: 70%;
 }
 
 
