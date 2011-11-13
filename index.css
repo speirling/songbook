@@ -111,7 +111,8 @@ span.song {
 
 
 input.playlist-title,
-input.set-title {
+input.set-title,
+input.act {
 	border: 0px;
 	position: absolute;
 	left: 0;
@@ -121,6 +122,12 @@ input.set-title {
 input.playlist-title {
 	left: 1em;
 	top: 0.5em;
+	width: 40%;
+}
+input.act {
+	left: 40%;
+	top: 0.5em;
+	width: 40%;
 }
 #playlist-holder .detail {
 	display: none;
@@ -320,6 +327,7 @@ div.side_2 {
 	position: relative;
 	left: 0;
 	width: 100%;
+	margin-top:1.8em;
 }
 .introduction .introduction_text {
 	height: 1.5em;
@@ -392,15 +400,11 @@ form#allsongsearch {
 #available-songs #allsongs li input {
 	display: none;
 }
-#playlistForm {
+a#savePlaylist {
 	position:absolute;
-	top:2.5em;
+	top:2em;
 	right:3em;
-	width:10em;
-	height: 4em;
 	z-index:10;
-}
-#playlistForm a#savePlaylist {
 	display: block;
 	background-color: transparent;
 	color: silver;
@@ -411,11 +415,11 @@ form#allsongsearch {
 	padding-left:1.3em;
 	padding-right:1.3em;
 }
-#playlistForm a#savePlaylist:hover {
+a#savePlaylist:hover {
 	background-color: #008080;
 	color: white;
 }
-#playlistForm .numberofrecords,
+
 #available-songs .numberofrecords {
 	display: none;
 }
