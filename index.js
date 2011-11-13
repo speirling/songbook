@@ -129,22 +129,32 @@ function save_playlist() {
 }
 
 function convert_playlist_to_json (source) {
+	var set_count, output_json;
 	//source is the jQuery(container) holding the EDITED playlist
 	output_json = {};
 	output_json.title = jQuery('.playlist-title', source).val();
+	output_json.act = jQuery('.act', source).val();
+	output_json.introduction = {
+	  "text": jQuery('.introduction.songlist .introduction_text', source).val(),
+	  "duration": jQuery('.introduction.songlist .introduction_duration', source).val()
+	};
 	output_json.sets = [];
 	set_count = 0;
-	jQuery('.set', source).each(function () {
-		var this_set = jQuery(this);
+	jQuery('li.set', source).each(function () {
+		var this_set = jQuery(this), song_count;
 
 		output_json.sets[set_count] = {
 			"label": jQuery('.set-title', this_set).val(),
+			"introduction": {
+				"text": jQuery('.introduction.set .introduction_text', this_set).val(),
+				"duration": jQuery('.introduction.set .introduction_duration', this_set).val()
+			},
 			"songs": []
 		};
 		song_count = 0;
-		jQuery('.song', this_set).each(function () {
+		jQuery('li.song', this_set).each(function () {
 			var self = jQuery(this);
-			
+
 			output_json.sets[set_count].songs[song_count] = {
 				"id": self.attr('id'),
 				"key": jQuery('.key', self).val(),

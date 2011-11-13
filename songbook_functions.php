@@ -1,27 +1,47 @@
 <?php
 
 function sbk_convert_playlistXML_to_editable_list($playlistContent) {
-    return sbk_convert_playlistXML_to_list($playlistContent, $editable = true, $show_key = TRUE, $show_singer = TRUE, $show_id = false, $show_writtenby = false, $show_performedby = false, $show_duration = true, $introduction = true);
+    return sbk_convert_playlistXML_to_list($playlistContent, $editable = true, $show_key = TRUE, $show_singer = TRUE, $show_id = false, $show_writtenby = false, $show_performedby = false, $show_duration = true, $show_introduction = true);
 }
 
-function sbk_convert_playlistXML_to_orderedlist($playlistContent, $show_key = TRUE, $show_singer = TRUE, $show_id = TRUE, $show_writtenby = TRUE, $show_performedby = TRUE, $show_duration = true, $introduction = false) {
-    return sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $show_key, $show_singer, $show_id, $show_writtenby, $show_performedby, $show_duration, $introduction);
+function sbk_convert_playlistXML_to_orderedlist($playlistContent, $show_key = TRUE, $show_singer = TRUE, $show_id = TRUE, $show_writtenby = TRUE, $show_performedby = TRUE, $show_duration = true, $show_introduction = false) {
+    return sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $show_key, $show_singer, $show_id, $show_writtenby, $show_performedby, $show_duration, $show_introduction);
 }
 
-function sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $show_key = TRUE, $show_singer = TRUE, $show_id = TRUE, $show_writtenby = TRUE, $show_performedby = TRUE, $show_duration = true, $introduction = true) {
+function sbk_convert_playlistXML_to_table($playlistContent) {
+    $outputHTML = '';
+    $number_of_columns = count($playlistContent->set);
+    $column_width = floor(100/$number_of_columns);
+    $outputHTML = $outputHTML.'<div id="playlist-table">';
+    $outputHTML = $outputHTML.sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $show_key = TRUE, $show_singer = TRUE, $show_id = TRUE, $show_writtenby = TRUE, $show_performedby = TRUE, $show_duration = true);
+    $outputHTML = $outputHTML.'</div>';
+    return $outputHTML;
+}
+
+function sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $show_key = TRUE, $show_singer = TRUE, $show_id = TRUE, $show_writtenby = TRUE, $show_performedby = TRUE, $show_duration = true, $show_introduction = true) {
+    //p($playlistContent->asXML(), $editable, $show_key, $show_singer, $show_id, $show_writtenby, $show_performedby, $show_duration, $show_introduction);
     $outputHTML = '';
     if($editable) {
         $textarea = 'textarea';
-        $input_start = 'input type="text" ';
+        $input_start = 'input type="text"';
         $input_middle = ' value="';
         $input_end = '" /';
     } else {
-        $textarea = 'div';
-        $input_start = 'span ';
+        $textarea = 'span';
+        $input_start = 'span';
         $input_middle = '>';
         $input_end = '</span';
     }
-    $outputHTML = $outputHTML.'<'.$input_start.' class="playlist-title" '.$input_middle.$playlistContent['title'].$input_end.'>';
+    $outputHTML = $outputHTML.'<'.$input_start.' class="playlist-title"'.$input_middle.$playlistContent['title'].$input_end.'>';
+    $outputHTML = $outputHTML.'<'.$input_start.' class="act"'.$input_middle.$playlistContent['act'].$input_end.'>';
+    if($editable | $show_introduction) {
+        $outputHTML = $outputHTML.'<span class="introduction songlist">';
+        $outputHTML = $outputHTML.'<'.$textarea.' class="introduction_text">'.(string) $playlistContent->introduction.'</'.$textarea.'>';
+        if($show_duration) {
+            $outputHTML = $outputHTML.'<'.$input_start.' class="introduction_duration"'.$input_middle.$playlistContent->introduction['duration'].$input_end.'>';
+        }
+        $outputHTML = $outputHTML.'</span>';
+    }
     $outputHTML = $outputHTML.'<ul>';
     foreach ($playlistContent->set as $thisSet) {
         $set_duration = 0;
@@ -36,6 +56,7 @@ function sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $s
             $songHTML['id'] = '';
             $songHTML['songDuration'] = '';
             $songHTML['writtenBy'] = '';
+            $songHTML['performedBy'] = '';
             $songHTML['introduction_text'] = '';
             $songHTML['introduction_duration'] = '';
             $songHTML['title'] = '<span class="title">'.$this_record['title'].'</span>';
@@ -55,10 +76,15 @@ function sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $s
                 $songHTML['writtenBy'] = '<span class="written_by">'.$this_record['written_by'].'</span>';
             }
             if($show_performedby) {
-                $songHTML['performedBy'] = ' | <span class="performed_by">'.$this_record['performed_by'].'</span>';
+                if($show_writtenby) {
+                    $songHTML['performedBy'] = ' | ';
+                }
+                $songHTML['performedBy'] .= '<span class="performed_by">'.$this_record['performed_by'].'</span>';
             }
             $songHTML['introduction_text'] = '<'.$textarea.' class="introduction_text">'.(string) $thisSong->introduction.'</'.$textarea.'>';
-            $songHTML['introduction_duration'] = '<'.$input_start.' class="introduction_duration"'.$input_middle.$thisSong->introduction['duration'].$input_end.'>';
+            if($show_duration) {
+                $songHTML['introduction_duration'] = '<'.$input_start.' class="introduction_duration"'.$input_middle.$thisSong->introduction['duration'].$input_end.'>';
+            }
 
             $setHTML = $setHTML.'<li class="song" id="id_'.$this_record['id'].'">';
             if($editable) {
@@ -73,7 +99,13 @@ function sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $s
                 $setHTML = $setHTML.'</span>';
             } else {
                 $setHTML = $setHTML.$songHTML['title'];
-                if($show_key | $show_singer) {
+                if($show_writtenby | $show_performedby) {
+                    $setHTML = $setHTML.'<span class="detail"> (';
+                    $setHTML = $setHTML.$songHTML['writtenBy'];
+                    $setHTML = $setHTML.$songHTML['performedBy'];
+                    $setHTML = $setHTML.')</span>';
+                }
+                if($show_key | $show_singer | $show_id) {
                     $setHTML = $setHTML.'<span class="spec">';
                     $setHTML = $setHTML.$songHTML['key'];
                     $setHTML = $setHTML.$songHTML['singer'];
@@ -81,13 +113,7 @@ function sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $s
                     $setHTML = $setHTML.$songHTML['songDuration'];
                     $setHTML = $setHTML.'</span>';
                 }
-                if($show_writtenby | $show_performedby) {
-                    $setHTML = $setHTML.'<span class="detail"> (';
-                    $setHTML = $setHTML.$songHTML['writtenBy'];
-                    $setHTML = $setHTML.$songHTML['performedBy'];
-                    $setHTML = $setHTML.')</span>';
-                }
-                if($introduction) {
+                if($show_introduction) {
                     $setHTML = $setHTML.'<span class="introduction">';
                     $setHTML = $setHTML.$songHTML['introduction_text'];
                     $setHTML = $setHTML.$songHTML['introduction_duration'];
@@ -97,36 +123,47 @@ function sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $s
             $setHTML = $setHTML.'</li>';
         }
         $outputHTML = $outputHTML.'<li class="set playlist">';
-        $outputHTML = $outputHTML.'<'.$input_start.' class="set-title"'.$input_middle.$thisSet['label'].$input_end.'><span class="duration">'.sbk_seconds_to_duration_string($set_duration).'</span>';
+        $outputHTML = $outputHTML.'<'.$input_start.' class="set-title"'.$input_middle.$thisSet['label'].$input_end.'>';
+        if($show_duration) {
+            $outputHTML = $outputHTML.'<span class="duration">'.sbk_seconds_to_duration_string($set_duration).'</span>';
+        }
+        if($editable | $show_introduction) {
+            $outputHTML = $outputHTML.'<span class="introduction set">';
+            $outputHTML = $outputHTML.'<'.$textarea.' class="introduction_text">'.(string) $thisSet->introduction.'</'.$textarea.'>';
+            if($show_duration) {
+                $outputHTML = $outputHTML.'<'.$input_start.' class="introduction_duration"'.$input_middle.$thisSet->introduction['duration'].$input_end.'>';
+            }
+            $outputHTML = $outputHTML.'</span>';
+        }
         $outputHTML = $outputHTML.'<ol>';
         $outputHTML = $outputHTML.$setHTML;
         if($editable) {
             $outputHTML = $outputHTML.'<li class="dummy">&nbsp;</li>';
         }
         $outputHTML = $outputHTML.'</ol>';
+        $outputHTML = $outputHTML.'</li>';
     }
-    $outputHTML = $outputHTML.'</li>';
     $outputHTML = $outputHTML.'</ul>';
     return $outputHTML;
 }
 
-function sbk_convert_playlistXML_to_table($playlistContent) {
-    $outputHTML = '';
-    $number_of_columns = count($playlistContent->set);
-    $column_width = floor(100/$number_of_columns);
-    $outputHTML = $outputHTML.'<div id="playlist-table">';
-    $outputHTML = $outputHTML.sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $show_key = TRUE, $show_singer = TRUE, $show_id = TRUE, $show_writtenby = TRUE, $show_performedby = TRUE, $show_duration = true);
-    $outputHTML = $outputHTML.'</div>';
-    return $outputHTML;
-}
-
 function sbk_convert_parsedjson_to_playlistXML($parsed_json) {
+
     $playlistContent = new SimpleXMLElement('<?xml version="1.0" standalone="yes"?><songlist></songlist>');
     $playlistContent->addAttribute('title', $parsed_json->title);
+    $playlistContent->addAttribute('act', $parsed_json->act);
+
+    $show_introduction = $playlistContent->addChild('introduction', (string) $parsed_json->introduction->text);
+    $show_introduction->addAttribute('duration',(string) $parsed_json->introduction->duration);
+
     foreach($parsed_json->sets as $thisSet) {
         $set_duration = 0;
         $XMLset = $playlistContent->addChild('set');
         $XMLset->addAttribute('label', $thisSet->label);
+
+        $set_introduction = $XMLset->addChild('introduction', (string) $thisSet->introduction->text);
+        $set_introduction->addAttribute('duration',(string) $thisSet->introduction->duration);
+
         foreach($thisSet->songs as $thisSong) {
             $this_id = (string) $thisSong->id;
             $this_id = str_replace('id_', '', $this_id);
@@ -145,7 +182,6 @@ function sbk_convert_parsedjson_to_playlistXML($parsed_json) {
                 }
             }
         }
-        $XMLset->addAttribute('duration', $set_duration);
     }
 
     return $playlistContent;
