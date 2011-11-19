@@ -12,6 +12,7 @@ if(array_key_exists('action', $_GET)) {
 }
 
 $STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.contextMenu/jquery.contextMenu.js";
+$STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.a-tools.js";
 $STANDARD_JAVASCRIPTS[] = "index.js";
 $page_title = $action.' (playlists)';
 $display = '';
@@ -107,6 +108,7 @@ switch ($action) {
         $display = $display.'<div class="side_1 displayPlaylist">';
         $display = $display.'<h3>Playlist</h3>';
         $display = $display.'<a href="#" id="savePlaylist">Save</a>';
+        $display = $display.'<a href="#" id="toggle-introductions">Toggle all Introductions</a>';
         $display = $display.'<div id="playlist-holder" filename="'.$playlist.'">';
         $display = $display.'</div>';
         $display = $display.'</div>';
@@ -201,18 +203,32 @@ switch ($action) {
         $display = $display.'<ul class="menu local">';
         $display = $display.'<li><a href="?action=displaySong&id='.($id - 1).'">&laquo; Previous</a></li>';
         $display = $display.'<li><a href="?action=editSong&id='.$id.'">Edit this song</a></li>';
+        $display = $display.'<li><a href="?action=editChords&id='.$id.'">Edit chords</a></li>';
         $display = $display.'<li><a href="?action=pdfSong&id='.$id.'">.pdf</a></li>';
         $display = $display.'<li><a href="?action=displaySong&id='.($id + 1).'">Next &raquo;</a></li>';
         $display = $display.'</ul>';
+        $display = $display.sbk_get_song_html($id);
+        $page_title = $this_record['title'].' - playlists';
+    break;
 
-        $this_record = sbk_get_song_record($id);
-        $display = $display.sbk_song_html($this_record);
+    case 'editChords':
+
+        $id = str_replace('id_', '', $_GET['id']);
+
+        $display = $display.$menu;
+        $display = $display.'<ul class="menu local">';
+        $display = $display.'<li><a href="?action=displaySong&id='.$id.'">Display this song</a></li>';
+        $display = $display.'<li><a href="?action=editSong&id='.$id.'">Edit this song</a></li>';
+        $display = $display.'</ul>';
+
+        $display = $display.'<span class="edit-chords edit">';
+        $display = $display.'<h1>Edit Chords</h1>';
+        $display = $display.sbk_song_edit_form ($id, false, false);
+        $display = $display."</span>";
         $page_title = $this_record['title'].' - playlists';
     break;
 
     case 'editSong':
-        $display = $display.'<form id="edit-song-form" action = "?action=displaySong" method="post">';
-
         if (array_key_exists('update',$_POST)) {
             switch ($_POST['update']) {
             case "addNewSong":
@@ -237,50 +253,24 @@ switch ($action) {
             $id = false;
         }
 
+        if(array_key_exists('playlist', $_GET)) {
+            $playlist = $_GET['playlist'];
+        } else {
+            $playlist = false;
+        }
+
         if($id) {
-            $display = $display.'<input type="hidden" name="update" id="update" value="editExistingSong"></input>';
-            $display = $display.'<input type="hidden" name="display_id" id="display-id" value="'.$id.'"></input>';
-            $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $id);
             $display = $display.$menu;
             $display = $display.'<ul class="menu local">';
             $display = $display.'<li><a href="#" onclick="jQuery(\'#edit-song-form input#display-id\').val('.($id-1).'); jQuery(\'#edit-song-form\').attr(\'action\',\'?action=editSong\').submit();">Edit Previous</a></li>';
             $display = $display.'<li><a href="?action=displaySong&id='.$id.'">Cancel edit</a></li>';
             $display = $display.'<li><a href="#" onclick="jQuery(\'#edit-song-form input#display-id\').val('.($id+1).'); jQuery(\'#edit-song-form\').attr(\'action\',\'?action=editSong\').submit();">Edit Next</a></li>';
             $display = $display.'</ul>';
-
-            $display = $display.'<h1>Edit song</h1>';
-            $display = $display.'<div class="song_id">Song ID: ['.$id.']</div>';
-            $display = $display.'<input type="hidden" name="id" id="id" value="'.$id.'"></input>';
-        } else {
-            $display = $display.'<input type="hidden" name="update" id="update" value="addNewSong"></input>';
-            $display = $display.'<h1>Add a new song</h1>';
-            if(array_key_exists('playlist', $_GET)) {
-                $display = $display.'<h2>to playlist [' . $_GET['playlist'] . ']</h2>';
-            }
-            $display = $display.$menu;
-            $this_record = array(
-                'title' => '',
-                'performed_by' => '',
-                'written_by' => '',
-                'content' => '',
-                'meta_tags' => '',
-                'original_filename' => '',
-                'base_key' => ''
-            );
         }
-
-        if(array_key_exists('playlist', $_GET)) {
-            $display = $display.'<input type="hidden" name="playlist" id="update" value="'.$_GET['playlist'] .'"></input>';
-        }
-        $display = $display.'<div class="title">title: <input type="text" name="title" id="title" size=80 value="'.$this_record['title'].'"></input></div>';
-        $display = $display.'<div class="performed_by"><span class=label>performed by: </span><input type="text" name="performed_by" id="performed_by" size=80 value="'.$this_record['performed_by'].'"></input></div>';
-        $display = $display.'<div class="written_by"><span class=label>written by: </span><input type="text" name="written_by" id="written_by" size=80 value="'.$this_record['written_by'].'"></input></div>';
-        $display = $display.'<div class="base_key"><span class=label>base_key: </span><input type="text" name="base_key" id="base_key" size=10 value="'.$this_record['base_key'].'"></input></div>';
-        $display = $display.'<div class="content">content: <a id="remove_linebreaks" href="#">Remove double linebreaks</a><br /><textarea name="content" id="content" cols=80 rows=20>'.$this_record['content'].'</textarea></div>';
-        $display = $display.'<div class="meta_tags"><input type="text" name="meta_tags" id="meta_tags" size=80 value="'.$this_record['meta_tags'].'"></input></div>';
-        $display = $display.'<div class="original_filename"><input type="text" name="original_filename" id="original_filename" size=80 value="'.$this_record['original_filename'].'"></input></div>';
-        $display = $display.'<input type=submit value="Save changes" />';
-        $display = $display.'</form>';
+        $display = $display.'<span class="edit-song edit">';
+        $display = $display.'<h1>Edit song</h1>';
+        $display = $display.sbk_song_edit_form ($id, $playlist, true);
+        $display = $display."</span>";
     break;
 }
 

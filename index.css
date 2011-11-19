@@ -47,20 +47,21 @@ ul.menu.main li a:hover {
 }
 .label  {
 	margin-right: 0.5em;
+    color:gray;
+    font-style: italic;
+	font-size: 0.9em;
 }
 
 .performed_by {
     font-style: italic;
 }
 .performed_by .label {
-    color:gray;
 }
 .written_by {
     font-style: italic;
     
 }
 .written_by .label {
-    color:gray;
 }
 
 span.song {
@@ -348,7 +349,7 @@ div.side_2 {
 	position: absolute;
 	top: 2em;
 	bottom:0;
-	left:5em;
+	left:0;
 	right:0;
 }
 #available-songs {
@@ -369,7 +370,6 @@ div.side_2 {
 	display:block;
 }
 #available-songs form .label {
-	color:gray;
 }
 #all-song-list,
 #playlist-holder>ul {
@@ -400,10 +400,14 @@ form#allsongsearch {
 #available-songs #allsongs li input {
 	display: none;
 }
-a#savePlaylist {
+#available-songs li .spec,
+#available-songs li .introduction {
+	display: none;
+}
+a#savePlaylist,
+a#toggle-introductions {
 	position:absolute;
 	top:2em;
-	right:3em;
 	z-index:10;
 	display: block;
 	background-color: transparent;
@@ -415,7 +419,14 @@ a#savePlaylist {
 	padding-left:1.3em;
 	padding-right:1.3em;
 }
-a#savePlaylist:hover {
+a#savePlaylist {
+	right:3em;
+}
+a#toggle-introductions {
+	right:10em;
+}
+a#savePlaylist:hover,
+a#toggle-introductions:hover {
 	background-color: #008080;
 	color: white;
 }
@@ -423,8 +434,6 @@ a#savePlaylist:hover {
 #available-songs .numberofrecords {
 	display: none;
 }
-
-
 
 .song-index {
 	page-break-after: always;
@@ -518,7 +527,6 @@ div.song-page .written_by {
 }
 div.song-page .performed_by .label,
 div.song-page .written_by .label {
-    font-style: italic;
 }
 div.song-page .songnumber {
 	color: #4080c0;
@@ -552,7 +560,6 @@ div.song-page.first_page .written_by {
 }
 div.song-page.first_page .performed_by .label,
 div.song-page.first_page .written_by .label {
-    font-style: italic;
 }
 div.song-page.first_page .songnumber .data {
 	font-weight:bold;
@@ -564,3 +571,79 @@ div.song-page.first_page .songnumber .label {
 
 
 /* end of song display */
+
+ 
+/* edit song */
+form#edit-song-form {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border: 1ps solid red;
+	
+}
+form#edit-song-form .song_id {
+	margin-top: 4em;
+}
+form#edit-song-form textarea#title,
+form#edit-song-form textarea#performed_by,
+form#edit-song-form textarea#written_by,
+form#edit-song-form textarea#base_key,
+form#edit-song-form textarea#meta_tags,
+form#edit-song-form textarea#original_filename {
+	width: 35em;
+	height: 3em; 	
+}
+form#edit-song-form div.content {
+	position: absolute;
+	top: 0;
+	right:0;
+	left: 40em;
+	bottom: 0;
+}
+form#edit-song-form div.content textarea {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+}
+form#edit-song-form a#remove_linebreaks {
+	position: absolute;
+	top: 0.5em;
+	right: 2em;
+	display: block;
+	opacity:0.4;
+	text-decoration: none;
+	color: gray;
+	z-index: 2;
+}
+form#edit-song-form a#remove_linebreaks:hover {
+	opacity: 1;
+	text-decoration: underline;
+	color: blue;
+}
+
+ 
+ 
+/* edit chords */
+.edit-chords,
+.edit-song {
+	position: absolute;
+	display: block;
+	top: 5em;
+	bottom:0;
+	left: 1em;;
+	right: 0;
+}
+.edit-chords #title {
+	font-weight: bold;
+	font-size: 1.2em;
+}
+.edit .song_id .label  {
+	display: inline-block;
+}
+
+.edit .label {
+	display: block;
+}

@@ -23,6 +23,38 @@ $(document).ready(function() {
 			display_songpicker_from_playlist(container, value);
 		}
 	});
+	jQuery('.edit-chords textarea').click(function () {
+		var textarea = jQuery(this), caret_position, chord_text = '', key = false;
+
+		textarea.unbind('keypress').bind('keypress', function (event) {
+			if(chord_text.length === 0) {
+				key = sbk_charCode_to_chord_text(event.charCode);
+			} else {
+				//allow backspace to work
+				if(event.charCode === 0) {
+					chord_text = chord_text.slice(0, -1);
+					return true;
+				}
+				if(chord_text.length === 1) {
+					if(event.charCode == '66' | event.charCode == '98') {
+						chord_text = chord_text + 'b';
+						textarea.insertAtCaretPos('b');
+					}
+				}
+				key = sbk_charCode_to_chord_modifier(event.charCode);
+			}
+			if(key) {
+				chord_text = chord_text + key;
+				textarea.insertAtCaretPos(key);
+			}
+			return false;
+		});
+		textarea.insertAtCaretPos('[');
+		textarea.insertAtCaretPos(']');
+		caret_position = textarea.getSelection().start;
+		//move the caret back one, so that the insert point is between the brackets
+		textarea.setCaretPos(caret_position);
+	});
 });
 
 function display_playlist_editor () {
@@ -48,6 +80,11 @@ function display_playlist_editor () {
         		    },
         		    'remove from playlist': {
         		        click: function(element){ element.remove(); }
+        		    },
+        		    'toggle introduction': {
+        		        click: function(element){
+        		        	jQuery('.introduction', element).toggle();
+        		        }
         		    }
         		});
         		jQuery('li.set', self).contextMenu('context-menu', {
@@ -57,6 +94,10 @@ function display_playlist_editor () {
         		});
         		jQuery('#savePlaylist').unbind('click').click(function() {
         			save_playlist();
+        		});
+        		hide_introductions();
+        		jQuery('#toggle-introductions').unbind('click').click(function() {
+        			toggle_introductions();
         		});
     		}
 		);
@@ -126,6 +167,20 @@ function save_playlist() {
 	    	}
 	    }
 	);
+}
+
+function toggle_introductions() {
+	if(jQuery('#toggle-introductions').hasClass('open')) {
+		hide_introductions();
+	} else {
+		jQuery('#playlist-holder .introduction').show();
+		jQuery('#toggle-introductions').addClass('open');
+	}
+}
+
+function hide_introductions() {
+	jQuery('#playlist-holder .introduction').hide();
+	jQuery('#toggle-introductions').removeClass('open');
 }
 
 function convert_playlist_to_json (source) {
@@ -218,3 +273,50 @@ function display_songpicker_from_playlist(parent_container, playlist) {
 		);
 }
 
+function sbk_enforce_chord_text(text) {
+	console.log(text, text.val());
+}
+
+function sbk_charCode_to_chord_text(char_code) {
+	var codes = {
+		'65': 'A', //A
+		'66': 'B', //B
+		'67': 'C', //C
+		'68': 'D', //D
+		'69': 'E',
+		'70': 'F',
+		'71': 'G',
+		
+		'97': 'A', //a
+		'98': 'B', //b
+		'99': 'C', //c
+		'100': 'D', //d
+		'101': 'E',
+		'102': 'F',
+		'103': 'G'
+	};
+	if(typeof(codes[char_code]) === 'string') {
+		return codes[char_code];
+	} else {
+		return false;
+	}
+}
+
+function sbk_charCode_to_chord_modifier(char_code) {
+	//console.log(char_code);
+	var codes = {
+		'68': 'dim',
+		'100': 'dim',
+		'109': 'm', 
+		'77': 'm',
+		'55': '7',
+		'43': 'aug',
+		'97': 'aug',
+		'65': 'aug'
+	};
+	if(typeof(codes[char_code]) === 'string') {
+		return codes[char_code];
+	} else {
+		return false;
+	}
+}

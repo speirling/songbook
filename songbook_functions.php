@@ -48,79 +48,7 @@ function sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $s
         $setHTML = '';
         foreach($thisSet->song as $thisSong) {
             $set_duration = $set_duration + sbk_duration_string_to_seconds((string) $thisSong['duration']) + sbk_duration_string_to_seconds((string) $thisSong->introduction['duration']);
-            $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $thisSong['id']);
-            $songHTML = array();
-
-            $songHTML['key'] = '';
-            $songHTML['singer'] = '';
-            $songHTML['id'] = '';
-            $songHTML['songDuration'] = '';
-            $songHTML['writtenBy'] = '';
-            $songHTML['performedBy'] = '';
-            $songHTML['introduction_text'] = '';
-            $songHTML['introduction_duration'] = '';
-            $songHTML['title'] = '<span class="title">'.$this_record['title'].'</span>';
-            if($show_key) {
-                $songHTML['key'] = '<'.$input_start.' class="key"'.$input_middle.$thisSong['key'].$input_end.'>';
-            }
-            if($show_singer) {
-                $songHTML['singer'] = '<'.$input_start.' class="singer"'.$input_middle.$thisSong['singer'].$input_end.'>';
-            }
-            if($show_id) {
-                $songHTML['id'] = '<span class="id">'.$this_record['id'].'</span>';
-            }
-            if($show_duration) {
-                $songHTML['songDuration'] = '<'.$input_start.' class="duration"'.$input_middle.$thisSong['duration'].$input_end.'>';
-            }
-            if($show_writtenby) {
-                $songHTML['writtenBy'] = '<span class="written_by">'.$this_record['written_by'].'</span>';
-            }
-            if($show_performedby) {
-                if($show_writtenby) {
-                    $songHTML['performedBy'] = ' | ';
-                }
-                $songHTML['performedBy'] .= '<span class="performed_by">'.$this_record['performed_by'].'</span>';
-            }
-            $songHTML['introduction_text'] = '<'.$textarea.' class="introduction_text">'.(string) $thisSong->introduction.'</'.$textarea.'>';
-            if($show_duration) {
-                $songHTML['introduction_duration'] = '<'.$input_start.' class="introduction_duration"'.$input_middle.$thisSong->introduction['duration'].$input_end.'>';
-            }
-
-            $setHTML = $setHTML.'<li class="song" id="id_'.$this_record['id'].'">';
-            if($editable) {
-                $setHTML = $setHTML.$songHTML['singer'];
-                $setHTML = $setHTML.$songHTML['key'];
-                $setHTML = $setHTML.$songHTML['id'];
-                $setHTML = $setHTML.$songHTML['songDuration'];
-                $setHTML = $setHTML.$songHTML['title'];
-                $setHTML = $setHTML.'<span class="introduction">';
-                    $setHTML = $setHTML.$songHTML['introduction_text'];
-                    $setHTML = $setHTML.$songHTML['introduction_duration'];
-                $setHTML = $setHTML.'</span>';
-            } else {
-                $setHTML = $setHTML.$songHTML['title'];
-                if($show_writtenby | $show_performedby) {
-                    $setHTML = $setHTML.'<span class="detail"> (';
-                    $setHTML = $setHTML.$songHTML['writtenBy'];
-                    $setHTML = $setHTML.$songHTML['performedBy'];
-                    $setHTML = $setHTML.')</span>';
-                }
-                if($show_key | $show_singer | $show_id) {
-                    $setHTML = $setHTML.'<span class="spec">';
-                    $setHTML = $setHTML.$songHTML['key'];
-                    $setHTML = $setHTML.$songHTML['singer'];
-                    $setHTML = $setHTML.$songHTML['id'];
-                    $setHTML = $setHTML.$songHTML['songDuration'];
-                    $setHTML = $setHTML.'</span>';
-                }
-                if($show_introduction) {
-                    $setHTML = $setHTML.'<span class="introduction">';
-                    $setHTML = $setHTML.$songHTML['introduction_text'];
-                    $setHTML = $setHTML.$songHTML['introduction_duration'];
-                    $setHTML = $setHTML.'</span>';
-                }
-            }
-            $setHTML = $setHTML.'</li>';
+            $setHTML = $setHTML.sbk_song_as_li($thisSong, $textarea, $input_start, $input_middle, $input_end, $editable, $show_key, $show_singer, $show_id, $show_writtenby, $show_performedby, $show_duration, $show_introduction);
         }
         $outputHTML = $outputHTML.'<li class="set playlist">';
         $outputHTML = $outputHTML.'<'.$input_start.' class="set-title"'.$input_middle.$thisSet['label'].$input_end.'>';
@@ -222,6 +150,8 @@ function sbk_list_all_songs_in_database($search_string = false) {
         $outputHTML = $outputHTML.'<span class="numberofrecords">'.mysql_num_rows($result).'</span>';
         $outputHTML = $outputHTML.'<ul>';
         while ($this_record = mysql_fetch_assoc($result)) {
+            $outputHTML = $outputHTML.sbk_song_as_li($this_record);
+            /*
             $outputHTML = $outputHTML.'<li class="song" id="id_'.$this_record['id'].'">';
             $outputHTML = $outputHTML.'<input class="key" type="text" value="">';
             $outputHTML = $outputHTML.'<input class="singer" type="text" value="">';
@@ -229,6 +159,7 @@ function sbk_list_all_songs_in_database($search_string = false) {
             $outputHTML = $outputHTML.'<input type="text" class="duration" value=""></input>';
             $outputHTML = $outputHTML.'<span class="detail"> (<span class="written_by">'.$this_record['written_by'].'</span> | <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
             $outputHTML = $outputHTML.'</li>';
+            */
     	}
         $outputHTML = $outputHTML.'</ul>';
     	$outputHTML = $outputHTML.'</div>';
@@ -392,7 +323,7 @@ function sbk_get_song_html($id) {
 function sbk_song_html($this_record) {
     $display = '';
 
-    $number_of_lyric_lines_per_page = 55;
+    $number_of_lyric_lines_per_page = 50;
     $number_of_columns_per_page = 2;
 
     $contentHTML = sbk_convert_song_content_to_HTML($this_record['content']);
@@ -413,6 +344,7 @@ function sbk_song_html($this_record) {
        } else {
         $line_count = $line_count + 1;
        }
+       p($line_count, $number_of_lyric_lines_per_page);
        if(($line_count % $number_of_lyric_lines_per_page) === 0) {
             if((($column_count) % $number_of_columns_per_page) === 0) {
 
@@ -482,5 +414,168 @@ function sbk_output_pdf($display, $title = '', $orientation = 'portrait') {
         $pdf->output(WKPDF::$PDF_DOWNLOAD, $title.".pdf");
 }
 
+function sbk_song_as_li(
+            $thisSong,
+            $textarea = 'span',
+            $input_start = 'span',
+            $input_middle = '>',
+            $input_end = '</span',
+            $editable = false,
+            $show_key = TRUE,
+            $show_singer = TRUE,
+            $show_id = TRUE,
+            $show_writtenby = TRUE,
+            $show_performedby = TRUE,
+            $show_duration = true,
+            $show_introduction = true) {
+    $setHTML = '';
+    $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $thisSong['id']);
+    $songHTML = array();
+    $songHTML['key'] = '';
+    $songHTML['singer'] = '';
+    $songHTML['id'] = '';
+    $songHTML['songDuration'] = '';
+    $songHTML['writtenBy'] = '';
+    $songHTML['performedBy'] = '';
+    $songHTML['introduction_text'] = '';
+    $songHTML['introduction_duration'] = '';
+    $songHTML['title'] = '<span class="title">'.$this_record['title'].'</span>';
+    if($show_key) {
+        if(array_key_exists('key', $thisSong)) {
+            $songHTML['key'] = '<'.$input_start.' class="key"'.$input_middle.$thisSong['key'].$input_end.'>';
+        } else {
+            $songHTML['key'] = '<'.$input_start.' class="key"'.$input_middle.$input_end.'>';
+        }
+    }
+    if($show_singer) {
+        if(array_key_exists('singer', $thisSong)) {
+            $songHTML['singer'] = '<'.$input_start.' class="singer"'.$input_middle.$thisSong['singer'].$input_end.'>';
+        } else {
+            $songHTML['singer'] = '<'.$input_start.' class="singer"'.$input_middle.$input_end.'>';
+        }
+    }
+    if($show_id) {
+        $songHTML['id'] = '<span class="id">'.$this_record['id'].'</span>';
+    }
+    if($show_duration) {
+        if(array_key_exists('duration', $thisSong)) {
+            $songHTML['songDuration'] = '<'.$input_start.' class="duration"'.$input_middle.$thisSong['duration'].$input_end.'>';
+        } else {
+            $songHTML['songDuration'] = '<'.$input_start.' class="duration"'.$input_middle.$input_end.'>';
+        }
+    }
+    if($show_writtenby) {
+        $songHTML['writtenBy'] = '<span class="written_by">'.$this_record['written_by'].'</span>';
+    }
+    if($show_performedby) {
+        if($show_writtenby) {
+            $songHTML['performedBy'] = ' | ';
+        }
+        $songHTML['performedBy'] .= '<span class="performed_by">'.$this_record['performed_by'].'</span>';
+    }
+    if(array_key_exists('introduction', $thisSong)) {
+        $songHTML['introduction_text'] = '<'.$textarea.' class="introduction_text">'.(string) $thisSong->introduction.'</'.$textarea.'>';
+    } else {
+        $songHTML['introduction_text'] = '<'.$textarea.' class="introduction_text">'.'</'.$textarea.'>';
+    }
+    if($show_duration) {
+        if(array_key_exists('introduction', $thisSong)) {
+            $songHTML['introduction_duration'] = '<'.$input_start.' class="introduction_duration"'.$input_middle.$thisSong->introduction['duration'].$input_end.'>';
+        } else {
+            $songHTML['introduction_duration'] = '<'.$input_start.' class="introduction_duration"'.$input_middle.$input_end.'>';
+        }
+    }
 
+    $setHTML = $setHTML.'<li class="song" id="id_'.$this_record['id'].'">';
+    if($editable) {
+        $setHTML = $setHTML.$songHTML['singer'];
+        $setHTML = $setHTML.$songHTML['key'];
+        $setHTML = $setHTML.$songHTML['id'];
+        $setHTML = $setHTML.$songHTML['songDuration'];
+        $setHTML = $setHTML.$songHTML['title'];
+        $setHTML = $setHTML.'<span class="introduction">';
+            $setHTML = $setHTML.$songHTML['introduction_text'];
+            $setHTML = $setHTML.$songHTML['introduction_duration'];
+        $setHTML = $setHTML.'</span>';
+    } else {
+        $setHTML = $setHTML.$songHTML['title'];
+        if($show_writtenby | $show_performedby) {
+            $setHTML = $setHTML.'<span class="detail"> (';
+            $setHTML = $setHTML.$songHTML['writtenBy'];
+            $setHTML = $setHTML.$songHTML['performedBy'];
+            $setHTML = $setHTML.')</span>';
+        }
+        if($show_key | $show_singer | $show_id) {
+            $setHTML = $setHTML.'<span class="spec">';
+            $setHTML = $setHTML.$songHTML['key'];
+            $setHTML = $setHTML.$songHTML['singer'];
+            $setHTML = $setHTML.$songHTML['id'];
+            $setHTML = $setHTML.$songHTML['songDuration'];
+            $setHTML = $setHTML.'</span>';
+        }
+        if($show_introduction) {
+            $setHTML = $setHTML.'<span class="introduction">';
+            $setHTML = $setHTML.$songHTML['introduction_text'];
+            $setHTML = $setHTML.$songHTML['introduction_duration'];
+            $setHTML = $setHTML.'</span>';
+        }
+    }
+    $setHTML = $setHTML.'</li>';
+
+    return $setHTML;
+}
+
+
+function sbk_song_edit_form ($id, $playlist = false, $all_fields_editable = true) {
+    $display ='';
+
+    $display = $display.'<form id="edit-song-form" action = "?action=displaySong" method="post">';
+
+    if($id) {
+        $display = $display.'<input type="hidden" name="update" id="update" value="editExistingSong"></input>';
+        $display = $display.'<input type="hidden" name="display_id" id="display-id" value="'.$id.'"></input>';
+        $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $id);
+
+        $display = $display.'<div class="song_id"><span class="label">Song ID: </span>['.$id.']</div>';
+        $display = $display.'<input type="hidden" name="id" id="id" value="'.$id.'"></input>';
+    } else {
+        $display = $display.'<input type="hidden" name="update" id="update" value="addNewSong"></input>';
+        $display = $display.'<h1>Add a new song</h1>';
+        if(array_key_exists('playlist', $_GET)) {
+            $display = $display.'<h2>to playlist [' . $_GET['playlist'] . ']</h2>';
+        }
+        $display = $display.$menu;
+        $this_record = array(
+            'title' => '',
+            'performed_by' => '',
+            'written_by' => '',
+            'content' => '',
+            'meta_tags' => '',
+            'original_filename' => '',
+            'base_key' => ''
+        );
+    }
+
+    if($playlist) {
+        $display = $display.'<input type="hidden" name="playlist" id="update" value="'.$_GET['playlist'] .'"></input>';
+    }
+
+     if($all_fields_editable) {
+        $textarea = 'textarea';
+    } else {
+        $textarea = 'span';
+    }
+
+    $display = $display.'<div class="title"><span class="label">title: </span>                                 <'.$textarea.' name="title"             id="title"            >'.$this_record['title'].            '</'.$textarea.'></div>';
+    $display = $display.'<div class="performed_by"><span class="label">performed by: </span>                   <'.$textarea.' name="performed_by"      id="performed_by"     >'.$this_record['performed_by'].     '</'.$textarea.'></div>';
+    $display = $display.'<div class="written_by"><span class="label">written by: </span>                       <'.$textarea.' name="written_by"        id="written_by"       >'.$this_record['written_by'].       '</'.$textarea.'></div>';
+    $display = $display.'<div class="base_key"><span class="label">base_key: </span>                           <'.$textarea.' name="base_key"          id="base_key"         >'.$this_record['base_key'].         '</'.$textarea.'></div>';
+    $display = $display.'<div class="content"><a id="remove_linebreaks" href="#">Remove double linebreaks</a><'.'textarea   name="content"           id="content"          >'.$this_record['content'].          '</'.'textarea'.'></div>';
+    $display = $display.'<div class="meta_tags"><span class="label">sort terms: </span>                        <'.$textarea.' name="meta_tags"         id="meta_tags"        >'.$this_record['meta_tags'].        '</'.$textarea.'></div>';
+    //$display = $display.'<div class="original_filename"><span class="label">orignal filename: </span>                                                     <'.$textarea.' name="original_filename" id="original_filename">'.$this_record['original_filename'].'</'.$textarea.'></div>';
+    $display = $display.'<input type=submit value="Save changes" />';
+    $display = $display.'</form>';
+
+    return $display;
+}
 ?>
