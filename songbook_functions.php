@@ -323,7 +323,7 @@ function sbk_get_song_html($id) {
 function sbk_song_html($this_record) {
     $display = '';
 
-    $number_of_lyric_lines_per_page = 50;
+    $number_of_lyric_lines_per_page = 90;
     $number_of_columns_per_page = 2;
 
     $contentHTML = sbk_convert_song_content_to_HTML($this_record['content']);
@@ -334,33 +334,43 @@ function sbk_song_html($this_record) {
     $pageXML = array();
     $pageXML[$page_index] = new SimpleXMLElement('<div class="song-page first_page" id="page_'.$this_record['id'].'_'.$page_index.'"></div>');
     $table_row = $pageXML[$page_index]->addChild('table')->addChild('tr');
-    $column_count = -1;
+    $column_count = -2;
     $current_column = $table_row->addChild('td');
     $dom_current_column = dom_import_simplexml($current_column);
+    $this_column_height = 0;
+    $previous_column_height = 0;
 
    foreach($contentXML->xpath('//div[@class="line"]') as $this_line) {
        if(sizeof($this_line->xpath('span[@class="chord"]')) > 0) {
-        $line_count = $line_count + 2.5;
+        $line_spacing = 2.5;
        } else {
-        $line_count = $line_count + 1;
+        $line_spacing = 1;
        }
-       p($line_count, $number_of_lyric_lines_per_page);
-       if(($line_count % $number_of_lyric_lines_per_page) === 0) {
-            if((($column_count) % $number_of_columns_per_page) === 0) {
-
+       $line_count = $line_count + $line_spacing;
+       //p($line_count, $number_of_lyric_lines_per_page, $column_count, $number_of_columns_per_page, $line_count % $number_of_lyric_lines_per_page, $column_count % $number_of_columns_per_page);
+       $this_column_height = ($line_count % $number_of_lyric_lines_per_page);
+       if($this_column_height < $previous_column_height) {
+           //too many lines - start a new column
+           p('too many lines - start a new column');
+           $this_page_width = ($column_count % $number_of_columns_per_page);
+            if($this_page_width < $previous_page_width) {
+                //too many columns - start a new page
+                p('too many columns - start a new page');
                 $page_index = $page_index + 1;
                 $pageXML[$page_index] = new SimpleXMLElement('<div class="song-page page_'.$page_index.'"></div>');
                 $table_row = $pageXML[$page_index]->addChild('table')->addChild('tr');
-                $column_count = -1;
+                $column_count = -2;
                 $dom_current_column = dom_import_simplexml($current_column);
-            }
+            } else { p($column_count.' | '.$number_of_columns_per_page.' | '.$column_count % $number_of_columns_per_page.' | '.'no new page'); }
             $current_column = $table_row->addChild('td');
             $column_count = $column_count + 1;
             $dom_current_column = dom_import_simplexml($current_column);
-        }
+            $previous_page_width = $this_page_width;
+        } else { p($line_count.' | '.$number_of_lyric_lines_per_page.' | '.$line_count % $number_of_lyric_lines_per_page.' | '.'no new column.'); }
         $dom_line = dom_import_simplexml($this_line);
         $dom_line = $dom_current_column->ownerDocument->importNode($dom_line, true);
         $dom_current_column->appendChild($dom_line);
+        $previous_column_height = $this_column_height;
     }
 
     $page_header = '<table class="page_header"><tbody><tr><td>';
