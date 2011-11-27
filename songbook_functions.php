@@ -570,7 +570,8 @@ function sbk_song_edit_form ($id, $playlist = false, $all_fields_editable = true
     $display = $display.'<div class="performed_by"><span class="label">performed by: </span>                   <'.$textarea.' name="performed_by"      id="performed_by"     >'.$this_record['performed_by'].     '</'.$textarea.'></div>';
     $display = $display.'<div class="written_by"><span class="label">written by: </span>                       <'.$textarea.' name="written_by"        id="written_by"       >'.$this_record['written_by'].       '</'.$textarea.'></div>';
     $display = $display.'<div class="base_key"><span class="label">base_key: </span>                           <'.$textarea.' name="base_key"          id="base_key"         >'.$this_record['base_key'].         '</'.$textarea.'></div>';
-    $display = $display.'<div class="content"><a id="remove_linebreaks" href="#">Remove double linebreaks</a><'.'textarea   name="content"           id="content"          >'.$this_record['content'].          '</'.'textarea'.'></div>';
+    $display = $display.'<a id="remove_linebreaks" href="#">Remove double linebreaks</a><a id="add_chords" href="#">Enter Chords</a>';
+    $display = $display.'<div class="content"><'.'textarea   name="content"           id="content"          >'.$this_record['content'].          '</'.'textarea'.'></div>';
     $display = $display.'<div class="meta_tags"><span class="label">sort terms: </span>                        <'.$textarea.' name="meta_tags"         id="meta_tags"        >'.$this_record['meta_tags'].        '</'.$textarea.'></div>';
     //$display = $display.'<div class="original_filename"><span class="label">orignal filename: </span>                                                     <'.$textarea.' name="original_filename" id="original_filename">'.$this_record['original_filename'].'</'.$textarea.'></div>';
     $display = $display.'<input type=submit value="Save changes" />';
