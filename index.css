@@ -598,7 +598,7 @@ form#edit-song-form textarea#original_filename {
 }
 form#edit-song-form div.content {
 	position: absolute;
-	top: 0;
+	top: 2em;
 	right:0;
 	left: 40em;
 	bottom: 0;
@@ -608,27 +608,11 @@ form#edit-song-form div.content textarea {
 	height: 100%;
 	width: 100%;
 }
-form#edit-song-form a#remove_linebreaks {
-	position: absolute;
-	top: 0.5em;
-	right: 2em;
-	display: block;
-	opacity:0.4;
-	text-decoration: none;
-	color: gray;
-	z-index: 2;
-}
-form#edit-song-form a#remove_linebreaks:hover {
-	opacity: 1;
-	text-decoration: underline;
-	color: blue;
-}
 
  
  
 /* edit chords */
-.edit-chords,
-.edit-song {
+.edit {
 	position: absolute;
 	display: block;
 	top: 5em;
@@ -636,9 +620,8 @@ form#edit-song-form a#remove_linebreaks:hover {
 	left: 1em;;
 	right: 0;
 }
-.edit-chords #title {
+.edit #title {
 	font-weight: bold;
-	font-size: 1.2em;
 }
 .edit .song_id .label  {
 	display: inline-block;
@@ -646,4 +629,34 @@ form#edit-song-form a#remove_linebreaks:hover {
 
 .edit .label {
 	display: block;
+}
+
+.edit a#remove_linebreaks,
+.edit a#add_chords {
+	position: absolute;
+	top: 0.5em;
+	display: block;
+	opacity:0.4;
+	text-decoration: none;
+	color: gray;
+	z-index: 2;
+}
+
+.edit a#remove_linebreaks {
+	right: 2em;
+}
+
+.edit a#add_chords {
+	right: 18em;
+}
+
+.edit a.chord_mode {
+	opacity: 1;
+	border: 1px solid red;
+}
+.edit a#remove_linebreaks:hover,
+.edit a#add_chords:hover {
+	opacity: 1;
+	text-decoration: underline;
+	color: blue;
 }

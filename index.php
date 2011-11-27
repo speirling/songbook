@@ -211,23 +211,6 @@ switch ($action) {
         $page_title = $this_record['title'].' - playlists';
     break;
 
-    case 'editChords':
-
-        $id = str_replace('id_', '', $_GET['id']);
-
-        $display = $display.$menu;
-        $display = $display.'<ul class="menu local">';
-        $display = $display.'<li><a href="?action=displaySong&id='.$id.'">Display this song</a></li>';
-        $display = $display.'<li><a href="?action=editSong&id='.$id.'">Edit this song</a></li>';
-        $display = $display.'</ul>';
-
-        $display = $display.'<span class="edit-chords edit">';
-        $display = $display.'<h1>Edit Chords</h1>';
-        $display = $display.sbk_song_edit_form ($id, false, false);
-        $display = $display."</span>";
-        $page_title = $this_record['title'].' - playlists';
-    break;
-
     case 'editSong':
         if (array_key_exists('update',$_POST)) {
             switch ($_POST['update']) {
@@ -267,7 +250,7 @@ switch ($action) {
             $display = $display.'<li><a href="#" onclick="jQuery(\'#edit-song-form input#display-id\').val('.($id+1).'); jQuery(\'#edit-song-form\').attr(\'action\',\'?action=editSong\').submit();">Edit Next</a></li>';
             $display = $display.'</ul>';
         }
-        $display = $display.'<span class="edit-song edit">';
+        $display = $display.'<span class="edit">';
         $display = $display.'<h1>Edit song</h1>';
         $display = $display.sbk_song_edit_form ($id, $playlist, true);
         $display = $display."</span>";

@@ -13,6 +13,7 @@ $(document).ready(function() {
 	jQuery('a#remove_linebreaks').click(function (){
 		jQuery('textarea#content').html(jQuery('textarea#content').html().replace(/\n\n/gm, "\n"));
 	});
+	jQuery('a#add_chords').click(sbk_enter_add_chords_mode);
 	
 	jQuery('.playlist-chooser').change(function () {
 		var value = jQuery(this).val(), container = jQuery('#available-songs');
@@ -22,38 +23,6 @@ $(document).ready(function() {
 		} else {
 			display_songpicker_from_playlist(container, value);
 		}
-	});
-	jQuery('.edit-chords textarea').click(function () {
-		var textarea = jQuery(this), caret_position, chord_text = '', key = false;
-
-		textarea.unbind('keypress').bind('keypress', function (event) {
-			if(chord_text.length === 0) {
-				key = sbk_charCode_to_chord_text(event.charCode);
-			} else {
-				//allow backspace to work
-				if(event.charCode === 0) {
-					chord_text = chord_text.slice(0, -1);
-					return true;
-				}
-				if(chord_text.length === 1) {
-					if(event.charCode == '66' | event.charCode == '98') {
-						chord_text = chord_text + 'b';
-						textarea.insertAtCaretPos('b');
-					}
-				}
-				key = sbk_charCode_to_chord_modifier(event.charCode);
-			}
-			if(key) {
-				chord_text = chord_text + key;
-				textarea.insertAtCaretPos(key);
-			}
-			return false;
-		});
-		textarea.insertAtCaretPos('[');
-		textarea.insertAtCaretPos(']');
-		caret_position = textarea.getSelection().start;
-		//move the caret back one, so that the insert point is between the brackets
-		textarea.setCaretPos(caret_position);
 	});
 });
 
@@ -319,4 +288,62 @@ function sbk_charCode_to_chord_modifier(char_code) {
 	} else {
 		return false;
 	}
+}
+
+function sbk_add_chord() {
+	var textarea, caret_position, chord_text = '', key = false;
+	
+	textarea = jQuery('textarea#content');
+
+	textarea.unbind('keypress').bind('keypress', function (event) {
+		if(chord_text.length === 0) {
+			key = sbk_charCode_to_chord_text(event.charCode);
+		} else {
+			//allow backspace to work
+			if(event.charCode === 0) {
+				chord_text = chord_text.slice(0, -1);
+				return true;
+			}
+			if(chord_text.length === 1) {
+				if(event.charCode == '66' | event.charCode == '98') {
+					chord_text = chord_text + 'b';
+					textarea.insertAtCaretPos('b');
+				}
+			}
+			key = sbk_charCode_to_chord_modifier(event.charCode);
+		}
+		if(key) {
+			chord_text = chord_text + key;
+			textarea.insertAtCaretPos(key);
+		}
+		return false;
+	});
+	textarea.insertAtCaretPos('[');
+	textarea.insertAtCaretPos(']');
+	caret_position = textarea.getSelection().start;
+	//move the caret back one, so that the insert point is between the brackets
+	textarea.setCaretPos(caret_position);
+
+	
+}
+
+function sbk_enter_add_chords_mode() {
+	var textarea, anchor, caret_position, chord_text = '', key = false;
+	
+	textarea = jQuery('textarea#content');
+	anchor = jQuery('a#add_chords');
+	
+	textarea.bind('click', sbk_add_chord);
+	
+	anchor.unbind('click').html('exit chord mode').click(sbk_exit_add_chords_mode).addClass('chord_mode');
+}
+
+function sbk_exit_add_chords_mode(anchor){
+	var textarea, anchor;
+	
+	textarea = jQuery('textarea#content');
+	anchor = jQuery('a#add_chords');
+	
+	textarea.unbind('keypress').unbind('click');
+	anchor.unbind('click').html('add chords').click(sbk_enter_add_chords_mode).removeClass('chord_mode');
 }
