@@ -502,7 +502,11 @@ div.song-page td.detail {
 div.song-page .line {
 	margin-top: 0.2em;
 	font-size:0.8em;
+	white-space: pre;
 }
+div.song-page .line .text {
+	white-space: normal;
+} 
 div.song-page .chord {
 	display: inline-block;
 	/*position:relative;*/
@@ -634,12 +638,16 @@ form#edit-song-form div.content textarea {
 .edit a#remove_linebreaks,
 .edit a#add_chords {
 	position: absolute;
-	top: 0.5em;
+	top: 0em;
 	display: block;
 	opacity:0.4;
 	text-decoration: none;
 	color: gray;
 	z-index: 2;
+	padding: 0.3em;
+	border-radius: 0.3em;
+	border: 1px solid white;
+	text-align: center;
 }
 
 .edit a#remove_linebreaks {
@@ -650,13 +658,23 @@ form#edit-song-form div.content textarea {
 	right: 18em;
 }
 
-.edit a.chord_mode {
+.edit a#add_chords.chord_mode {
 	opacity: 1;
-	border: 1px solid red;
+	background-color: #990000;
+	color: white;
+	font-weight: bold;
+}
+.edit a#add_chords {
+	width:10em;
+}
+.edit a#add_chords.chord_mode:hover {
+	color: white;
+	text-decoration: none;
+	background-color: #000099;
 }
 .edit a#remove_linebreaks:hover,
 .edit a#add_chords:hover {
 	opacity: 1;
-	text-decoration: underline;
-	color: blue;
+	color: gray;
+	border: 1px solid gray;
 }
