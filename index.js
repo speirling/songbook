@@ -242,10 +242,6 @@ function display_songpicker_from_playlist(parent_container, playlist) {
 		);
 }
 
-function sbk_enforce_chord_text(text) {
-	console.log(text, text.val());
-}
-
 function sbk_charCode_to_chord_text(char_code) {
 	var codes = {
 		'65': 'A', //A
@@ -281,7 +277,8 @@ function sbk_charCode_to_chord_modifier(char_code) {
 		'55': '7',
 		'43': 'aug',
 		'97': 'aug',
-		'65': 'aug'
+		'65': 'aug',
+		'35': '#'
 	};
 	if(typeof(codes[char_code]) === 'string') {
 		return codes[char_code];
