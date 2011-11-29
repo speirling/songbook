@@ -294,6 +294,7 @@ function sbk_convert_song_content_to_HTML($content) {
         $contentHTML = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $contentHTML);
         $contentHTML = preg_replace('/<div class=\"line\"><span class=\"text\">[\s]*?<\/span><\/div>/', '<div class="line"><span class="text">&nbsp;</span></div>', $contentHTML);
         $contentHTML = preg_replace('/\[(.*?)\]/','</span><span class="chord">$1</span><span class="text">', $contentHTML);
+        $contentHTML = preg_replace('#<span class="chord">([^<]*?)/([^<]*?)</span>#','<span class="chord">$1<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">$2</span></span>', $contentHTML);
         $contentHTML = preg_replace('/&nbsp;/', '&#160;', $contentHTML); //&nbsp; doesn't work in XML unless it's specifically declared.
         $contentHTML = '<div class="content"><div class="line"><span class="text">'.$contentHTML.'</span></div></div>';
 
@@ -351,22 +352,20 @@ function sbk_song_html($this_record) {
        $this_column_height = ($line_count % $number_of_lyric_lines_per_page);
        if($this_column_height < $previous_column_height) {
            //too many lines - start a new column
-           p('too many lines - start a new column');
            $this_page_width = ($column_count % $number_of_columns_per_page);
             if($this_page_width < $previous_page_width) {
                 //too many columns - start a new page
-                p('too many columns - start a new page');
                 $page_index = $page_index + 1;
                 $pageXML[$page_index] = new SimpleXMLElement('<div class="song-page page_'.$page_index.'"></div>');
                 $table_row = $pageXML[$page_index]->addChild('table')->addChild('tr');
                 $column_count = -2;
                 $dom_current_column = dom_import_simplexml($current_column);
-            } else { p($column_count.' | '.$number_of_columns_per_page.' | '.$column_count % $number_of_columns_per_page.' | '.'no new page'); }
+            }
             $current_column = $table_row->addChild('td');
             $column_count = $column_count + 1;
             $dom_current_column = dom_import_simplexml($current_column);
             $previous_page_width = $this_page_width;
-        } else { p($line_count.' | '.$number_of_lyric_lines_per_page.' | '.$line_count % $number_of_lyric_lines_per_page.' | '.'no new column.'); }
+        }
         $dom_line = dom_import_simplexml($this_line);
         $dom_line = $dom_current_column->ownerDocument->importNode($dom_line, true);
         $dom_current_column->appendChild($dom_line);
