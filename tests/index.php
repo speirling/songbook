@@ -162,6 +162,93 @@ $text_playlist_json = '{
 
 class songbook_tests extends UnitTestCase {
 
+   function test_sbk_song_as_li() {
+       global $text_playlist_xml, $text_full_html;
+
+      $data[] = array(
+           'thisSong' => new SimpleXMLElement('<song id="164" key="G" singer="Clare" duration="3:05"><introduction duration="1:32">Testing 1...2...3...</introduction></song>'),
+           'textarea' => 'span',
+           'input_start' => 'span',
+           'input_middle' => '>',
+           'input_end' => '</span',
+           'editable' => false,
+           'show_key' => TRUE,
+           'show_singer' => TRUE,
+           'show_id' => TRUE,
+           'show_writtenby' => TRUE,
+           'show_performedby' => TRUE,
+           'show_duration' => true,
+           'show_introduction' => true,
+           'expected' => sbktest_standardise_markup('
+           		<li class="song" id="id_164">
+           			<span class="title">Dublin in The Rare Ould Times</span>
+           			<span class="detail"> (<span class="written_by">Pete StJohn</span> | <span class="performed_by"></span>)</span>
+           			<span class="spec">
+           				<span class="key">G</span>
+           				<span class="singer">Clare</span>
+           				<span class="id">164</span>
+           				<span class="duration">3:05</span>
+           			</span>
+           			<span class="introduction">
+               			<span class="introduction_text">Testing 1...2...3...</span>
+               			<span class="introduction_duration">1:32</span>
+           			</span>
+           		</li>')
+       );
+       $data[] = array(
+           'thisSong' => new SimpleXMLElement('<song id="164" key="G" singer="Clare" duration="3:05"><introduction duration="1:32">Testing 1...2...3...</introduction></song>'),
+           'textarea' => 'textarea',
+           'input_start' => 'input type="text"',
+           'input_middle' => ' value="',
+           'input_end' => '" /',
+           'editable' => true,
+           'show_key' => TRUE,
+           'show_singer' => TRUE,
+           'show_id' => TRUE,
+           'show_writtenby' => TRUE,
+           'show_performedby' => TRUE,
+           'show_duration' => true,
+           'show_introduction' => true,
+           'expected' => sbktest_standardise_markup('
+           		<li class="song" id="id_164">
+           			<input type="text" class="singer" value="Clare" />
+           			<input type="text" class="key" value="G" />
+           			<span class="id">164</span>
+           			<input type="text" class="duration" value="3:05" />
+           			<span class="title">Dublin in The Rare Ould Times</span>
+           			<span class="introduction">
+           				<textarea class="introduction_text">Testing 1...2...3...</textarea>
+           				<input type="text" class="introduction_duration" value="1:32" />
+           			</span>
+           		</li>')
+       );
+       for ( $index = 0; $index < sizeof($data); $index = $index + 1) {
+           $result = sbk_song_as_li(
+               $data[$index]['thisSong'],
+               $data[$index]['textarea'],
+               $data[$index]['input_start'],
+               $data[$index]['input_middle'],
+               $data[$index]['input_end'],
+               $data[$index]['editable'],
+               $data[$index]['show_key'],
+      	       $data[$index]['show_singer'],
+      	       $data[$index]['show_id'],
+      	       $data[$index]['show_writtenby'],
+      	       $data[$index]['show_performedby'],
+      	       $data[$index]['show_duration'],
+      	       $data[$index]['show_introduction'],
+               $data[$index]['expected']
+           );
+           if($result !== $data[$index]['expected']) {
+               echo "<h2 class='test-fail'>".__FUNCTION__."[".$index."]"."</h2>";
+               acradisp_compare($result,$data[$index]['expected']);
+       		   p(str_replace("\n","\\n",str_replace('"','\"',$result)));
+       		   echo $result;
+           }
+           $this->assertEqual($result, $data[$index]['expected']);
+       }
+   }
+
    function test_sbk_convert_playlistXML_to_list() {
        global $text_playlist_xml, $text_full_html;
 
