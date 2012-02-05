@@ -13,12 +13,12 @@ define("SYSTEM_ID","Epeelo Songbook");
 
 //---------------------------------------------------------------------------------------------------------------------------------------
   define("URL_TO_DATASET_DEFINITIONS", "songbook");
-  define("ABSOLUTE_PATH_TO_DATASET_DEFINITIONS", $_SERVER['DOCUMENT_ROOT']."/".URL_TO_DATASET_DEFINITIONS);
+  define("ABSOLUTE_PATH_TO_DATASET_DEFINITIONS", '/fileserver/data/www'."/".URL_TO_DATASET_DEFINITIONS);
 
   //The path to the acra_i scripts must be ABSOLUTE... so that the scripts can be held out of the scope of the current site
   //NOTE: If acra_i is outside the scope of the current site, then you can't use the standard javascript libraries... or else they will have to be held separate from acra_i.... or else you might have symbolic links or mapping in the httpd.conf file
   define("URL_TO_ACRA_SCRIPTS","/acra_i");
-  define("ABSOLUTE_PATH_TO_ACRA_SCRIPTS",$_SERVER['DOCUMENT_ROOT'].URL_TO_ACRA_SCRIPTS);
+  define("ABSOLUTE_PATH_TO_ACRA_SCRIPTS",'/fileserver/data/www/acra_i');
 
   define("ACRA_DOC_URL","/acra_i/doc");
   define("URL_TO_DATASET_STYLESHEETS","/songbook");
@@ -29,7 +29,7 @@ define("SYSTEM_ID","Epeelo Songbook");
   //This could give far too much useful detail to hackers, so only leave it on for very short periods of time (when debugging)
   define("ALLOW_DEBUG_DISPLAY", true);
 
-  if($_SERVER['DOCUMENT_ROOT'] == "/fileserver/data/www/") { //fps
+  if('/fileserver/data/www' == "/fileserver/data/www/") { //fps
   	define("DATABASE_USERNAME", "root");
 	define("DATABASE_PASSWORD", "chancery");
 	define("DATABASE_SERVERHOST", "localhost");
@@ -89,7 +89,7 @@ define("EDITFORM_PRESENTATION", "inlineFixed")	;
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 //Include Dataset definitions,  acra_i library, and any custom fields
-	define("CONFIGURATION_FILE", str_replace($_SERVER['DOCUMENT_ROOT'],"",str_replace("\\", "/", __FILE__)) );
+	define("CONFIGURATION_FILE", str_replace('/fileserver/data/www',"",str_replace("\\", "/", __FILE__)) );
 	if(file_exists(ABSOLUTE_PATH_TO_ACRA_SCRIPTS."/complete.php")) {require(ABSOLUTE_PATH_TO_ACRA_SCRIPTS."/complete.php");} else {die( __FILE__." line ".__LINE__." :: \n<br />The acra_i library cannot be accessed (at ".ABSOLUTE_PATH_TO_ACRA_SCRIPTS.").\n<br />This script cannot continue. Sorry.");	}
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -98,6 +98,6 @@ define("SBK_DATABASE_NAME", 'music_admin');
 define("SBK_TABLE_NAME", 'lyrics');
 define("SBK_KEYFIELD_NAME", 'id');
 
-require($_SERVER['DOCUMENT_ROOT']."/songbook/songbook_functions.php");
+require('/fileserver/data/www'."/songbook/songbook_functions.php");
 define('PLAYLIST_DIRECTORY', 'playlists');
 ?>
