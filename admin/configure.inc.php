@@ -90,7 +90,7 @@ define("EDITFORM_PRESENTATION", "inlineFixed")	;
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 //Include Dataset definitions,  acra_i library, and any custom fields
 	define("CONFIGURATION_FILE", str_replace($_SERVER['DOCUMENT_ROOT'],"",str_replace("\\", "/", __FILE__)) );
-	if(file_exists($_SERVER['DOCUMENT_ROOT'].URL_TO_ACRA_SCRIPTS."/complete.php")) {require($_SERVER['DOCUMENT_ROOT'].URL_TO_ACRA_SCRIPTS."/complete.php");} else {die( __FILE__." line ".__LINE__." :: \n<br />The acra_i library cannot be accessed (at ".$_SERVER['DOCUMENT_ROOT'].URL_TO_ACRA_SCRIPTS.").\n<br />This script cannot continue. Sorry.");	}
+	if(file_exists(ABSOLUTE_PATH_TO_ACRA_SCRIPTS."/complete.php")) {require(ABSOLUTE_PATH_TO_ACRA_SCRIPTS."/complete.php");} else {die( __FILE__." line ".__LINE__." :: \n<br />The acra_i library cannot be accessed (at ".ABSOLUTE_PATH_TO_ACRA_SCRIPTS.").\n<br />This script cannot continue. Sorry.");	}
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
