@@ -11,6 +11,7 @@ if(array_key_exists('action', $_GET)) {
     $action = 'list';
 }
 
+$STANDARD_JAVASCRIPTS[] = 'admin/constants2js.php';
 $STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.contextMenu/jquery.contextMenu.js";
 $STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.a-tools.js";
 $STANDARD_JAVASCRIPTS[] = "index.js";
@@ -203,7 +204,6 @@ switch ($action) {
         $display = $display.'<ul class="menu local">';
         $display = $display.'<li><a href="?action=displaySong&id='.($id - 1).'">&laquo; Previous</a></li>';
         $display = $display.'<li><a href="?action=editSong&id='.$id.'">Edit this song</a></li>';
-        $display = $display.'<li><a href="?action=editChords&id='.$id.'">Edit chords</a></li>';
         $display = $display.'<li><a href="?action=pdfSong&id='.$id.'">.pdf</a></li>';
         $display = $display.'<li><a href="?action=displaySong&id='.($id + 1).'">Next &raquo;</a></li>';
         $display = $display.'</ul>';
