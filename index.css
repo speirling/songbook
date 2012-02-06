@@ -518,13 +518,17 @@ div.song-page .chord {
 	padding-bottom: 1.3em;
 	width: 1px;
 	color: #660000;
-	font-size: 0.8em;
+	font-size: 0.9em;
 	font-family: Helvetica;
+	font-weight: bold;
 }
 
-div.song-page table.page_header {
+div.song-page .page_header {
+	width: 100%;
+	position: relative;
 	border-bottom: 1px solid silver;
-	margin-bottom: 0.5em;
+	margin-bottom: 1em;
+	font-size: 1.2em;
 }
 div.song-page .title {
     font-size: 1.2em;
@@ -539,6 +543,9 @@ div.song-page .written_by .label {
 }
 div.song-page .songnumber {
 	color: #4080c0;
+	position: absolute;
+	right: 0;
+	top: 0.3em;
 }
 div.song-page .songnumber .data {
 	font-weight:bold;
@@ -551,19 +558,28 @@ div.song-page .songnumber .label {
 div.song-page .pagenumber {
 	display: block;
 	font-size: 0.6em;
+	position: absolute;
+	right: 0;
+	top: 2.5em;
 }
 
 div.song-page.first_page .title {
     font-size: 2em;
 	color:#004080;
+	overflow: hidden;
+	white-space: nowrap;
+	width: 600px;
 }
 div.song-page.first_page .performed_by {
-	display: inline-block;
+	display: block;
 	font-size:0.6em;
     color: gray;
+	position: absolute;
+	right: 0;
+	top: 4em;
 }
 div.song-page.first_page .written_by {
-	display: inline-block;
+	display: block;
 	font-size:0.8em;
     color: gray;
 }
