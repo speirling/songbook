@@ -221,7 +221,7 @@ function display_songpicker_from_playlist(parent_container, playlist) {
 		    function (data) {
 		    	container.html(data);
 		    	if(jQuery('.displayPlaylist').length) {
-	        		jQuery('ul', container).sortable({
+	        		jQuery('ol', container).sortable({
 	        			connectWith: '.playlist ol'
 	        		});
 	    		}
