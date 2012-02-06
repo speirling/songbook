@@ -335,8 +335,7 @@ function sbk_get_song_html($id) {
 
 function sbk_song_html($this_record) {
     $display = '';
-
-    $number_of_lyric_lines_per_page = 90;
+    $number_of_lyric_lines_per_page = 55;
     $number_of_columns_per_page = 2;
 
     $contentHTML = sbk_convert_song_content_to_HTML($this_record['content']);
@@ -355,7 +354,7 @@ function sbk_song_html($this_record) {
 
    foreach($contentXML->xpath('//div[@class="line"]') as $this_line) {
        if(sizeof($this_line->xpath('span[@class="chord"]')) > 0) {
-        $line_spacing = 2.5;
+        $line_spacing = 1.7;
        } else {
         $line_spacing = 1;
        }
@@ -384,14 +383,13 @@ function sbk_song_html($this_record) {
         $previous_column_height = $this_column_height;
     }
 
-    $page_header = '<table class="page_header"><tbody><tr><td>';
+    $page_header = '<div class="page_header">';
     $page_header = $page_header.'<div class="title">'.$this_record['title'].'</div>';
-    $page_header = $page_header.'<div class="written_by"><span class="data">'.$this_record['written_by'].'</span></div>';
-    $page_header = $page_header.'</td><td class="detail">';
     $page_header = $page_header.'<span class="songnumber"><span class="label">Song no. </span><span class="data">'.$this_record['id'].'</span></span>';
     $page_header = $page_header.'<span class="pagenumber"><span class="label">page</span><span class="data" id="page_number">test</span><span class="label">of</span><span class="data" id="number_of_pages">test</span></span>';
+    $page_header = $page_header.'<div class="written_by"><span class="data">'.$this_record['written_by'].'</span></div>';
     $page_header = $page_header.'<div class="performed_by"><span class="label">performed by: </span><span class="data">'.$this_record['performed_by'].'</span></div>';
-    $page_header = $page_header.'</td></tr></tbody></table>';
+    $page_header = $page_header.'</div>';
     $page_headerXML = new SimpleXMLElement($page_header);
 
     $page_number = 0;
