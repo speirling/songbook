@@ -33,6 +33,10 @@ define("SYSTEM_ID","Epeelo Songbook");
   	define("DATABASE_USERNAME", "root");
 	define("DATABASE_PASSWORD", "chancery");
 	define("DATABASE_SERVERHOST", "localhost");
+  } elseif($_SERVER['DOCUMENT_ROOT'] == '/var/www') { //fps over https
+  	define("DATABASE_USERNAME", "root");
+	define("DATABASE_PASSWORD", "chancery");
+	define("DATABASE_SERVERHOST", "localhost");
   } else { //Xampp
     define("DATABASE_USERNAME","root");
 	define("DATABASE_PASSWORD","");
