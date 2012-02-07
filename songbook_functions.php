@@ -1,5 +1,74 @@
 <?php
 
+$NOTE_VALUE_ARRAY = Array(
+    'C'  => 0,
+    'C#' => 1,
+    'Db' => 1,
+    'D'  => 2,
+    'D#' => 3,
+    'Eb' => 3,
+    'E'  => 4,
+    'E#' => 5,
+    'Fb' => 4,
+    'F'  => 5,
+    'F#' => 6,
+    'Gb' => 6,
+    'G'  => 7,
+    'G#' => 8,
+    'Ab' => 8,
+    'A'  => 9,
+    'A#' => 10,
+    'Bb' => 10,
+    'B'  => 11,
+    'B#' => 0,
+    'Cb' => 11
+);
+
+$VALUE_NOTE_ARRAY_DEFAULT = Array(
+    0 => 'C',
+    1 => 'C#',
+    2 => 'D',
+    3 => 'Eb',
+    4 => 'E',
+    5 => 'F',
+    6 => 'F#',
+    7 => 'G',
+    8 => 'G#',
+    9 => 'A',
+    10=> 'Bb',
+    11=> 'B'
+);
+
+$VALUE_NOTE_ARRAY_SHARP = Array(
+    0 => 'C',
+    1 => 'C#',
+    2 => 'D',
+    3 => 'D#',
+    4 => 'E',
+    5 => 'F',
+    6 => 'F#',
+    7 => 'G',
+    8 => 'G#',
+    9 => 'A',
+    10=> 'A#',
+    11=> 'B'
+);
+
+$VALUE_NOTE_ARRAY_FLAT = Array(
+    0 => 'C',
+    1 => 'Db',
+    2 => 'D',
+    3 => 'Eb',
+    4 => 'E',
+    5 => 'F',
+    6 => 'Gb',
+    7 => 'G',
+    8 => 'Ab',
+    9 => 'A',
+    10=> 'Bb',
+    11=> 'B'
+);
+
 function sbk_convert_playlistXML_to_editable_list($playlistContent) {
     return sbk_convert_playlistXML_to_list($playlistContent, $editable = true, $show_key = TRUE, $show_singer = TRUE, $show_id = false, $show_writtenby = false, $show_performedby = false, $show_duration = true, $show_introduction = true);
 }
@@ -628,5 +697,53 @@ function sbk_song_edit_form ($id, $playlist = false, $all_fields_editable = true
     $display = $display.'</form>';
 
     return $display;
+}
+
+function sbk_find_note_number($original_value, $adjustment) {
+    $new_value = $original_value + $adjustment;
+    if($new_value < 0) {
+        $new_value = 12 + $new_value;
+    }
+    if($new_value > 11) {
+        $new_value = $new_value - 12;
+    }
+    return $new_value;
+}
+
+function sbk_shift_note($note, $adjustment, $use_sharps = null) {
+    global $NOTE_VALUE_ARRAY, $VALUE_NOTE_ARRAY_DEFAULT, $VALUE_NOTE_ARRAY_SHARP, $VALUE_NOTE_ARRAY_FLAT;
+
+    $new_note_number = sbk_find_note_number($NOTE_VALUE_ARRAY[$note], $adjustment);
+
+    if(is_null($use_sharps)) {
+        $new_note = $VALUE_NOTE_ARRAY_DEFAULT[$new_note_number];
+    } elseif($use_sharps === true) {
+        $new_note = $VALUE_NOTE_ARRAY_SHARP[$new_note_number];
+    } else {
+        $new_note = $VALUE_NOTE_ARRAY_FLAT[$new_note_number];
+    }
+    return $new_note;
+}
+
+function sbk_transpose_chord($chord, $base_key, $target_key) {
+    global $NOTE_VALUE_ARRAY, $VALUE_NOTE_ARRAY_DEFAULT, $VALUE_NOTE_ARRAY_SHARP, $VALUE_NOTE_ARRAY_FLAT;
+
+    $chord_note = substr($chord, 0, 1);
+    $second_char = substr($chord, 1, 1);
+    $modifier_start = 1;
+    if($second_char === '#' || $second_char == 'b') {
+        $chord_note = $chord_note.$second_char;
+        $modifier_start = 2;
+    }
+    $chord_modifier = substr($chord, $modifier_start);
+
+
+    $key_conversion_value = $NOTE_VALUE_ARRAY[$target_key] - $NOTE_VALUE_ARRAY[$base_key];
+    $new_chord = sbk_shift_note($chord_note, $key_conversion_value);
+
+    $new_chord = $new_chord.$chord_modifier;
+
+    return $new_chord;
+
 }
 ?>

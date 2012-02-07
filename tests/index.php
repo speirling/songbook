@@ -405,6 +405,222 @@ class songbook_tests extends UnitTestCase {
        }
    }
 
+
+   function test_sbk_find_note_number() {
+
+       $data[] = array(
+           'original_value' => 1,
+           'adjustment' => 1,
+           'expected' => 2
+       );
+       $data[] = array(
+           'original_value' => 1,
+           'adjustment' => 2,
+           'expected' => 3
+       );
+       $data[] = array(
+           'original_value' => 1,
+           'adjustment' => 10,
+           'expected' => 11
+       );
+       $data[] = array(
+           'original_value' => 1,
+           'adjustment' => 11,
+           'expected' => 0
+       );
+       $data[] = array(
+           'original_value' => 5,
+           'adjustment' => 10,
+           'expected' => 3
+       );
+       $data[] = array(
+           'original_value' => 5,
+           'adjustment' => -2,
+           'expected' => 3
+       );
+       $data[] = array(
+           'original_value' => 5,
+           'adjustment' => -10,
+           'expected' => 7
+       );
+
+       for ( $index = 0; $index < sizeof($data); $index = $index + 1) {
+           p($data[$index]);
+           $result = sbk_find_note_number(
+               $data[$index]['original_value'],
+               $data[$index]['adjustment']
+           );
+           if($result !== $data[$index]['expected']) {
+               echo "<h2 class='test-fail'>".__FUNCTION__."[".$index."]"."</h2>";
+               acradisp_compare($result, $data[$index]['expected']);
+           }
+           $this->assertEqual($result, $data[$index]['expected']);
+       }
+   }
+
+   function test_sbk_shift_note() {
+
+       $data[] = array(
+           'original_value' => 'C#',
+           'adjustment' => 1,
+           'use_sharps' => null,
+           'expected' => 'D'
+       );
+       $data[] = array(
+           'original_value' => 'C',
+           'adjustment' => 1,
+           'use_sharps' => null,
+           'expected' => 'C#'
+       );
+       $data[] = array(
+           'original_value' => 'C',
+           'adjustment' => 1,
+           'use_sharps' => true,
+           'expected' => 'C#'
+       );
+       $data[] = array(
+           'original_value' => 'C',
+           'adjustment' => 1,
+           'use_sharps' => false,
+           'expected' => 'Db'
+       );
+       $data[] = array(
+           'original_value' => 'C',
+           'adjustment' => 2,
+           'use_sharps' => null,
+           'expected' => 'D'
+       );
+       $data[] = array(
+           'original_value' => 'C',
+           'adjustment' => 10,
+           'use_sharps' => null,
+           'expected' => 'Bb'
+       );
+       $data[] = array(
+           'original_value' => 'C',
+           'adjustment' => 10,
+           'use_sharps' => true,
+           'expected' => 'A#'
+       );
+       $data[] = array(
+           'original_value' => 'C',
+           'adjustment' => 10,
+           'use_sharps' => false,
+           'expected' => 'Bb'
+       );
+       $data[] = array(
+           'original_value' => 'C',
+           'adjustment' => 11,
+           'use_sharps' => null,
+           'expected' => 'B'
+       );
+       $data[] = array(
+           'original_value' => 'F',
+           'adjustment' => 10,
+           'use_sharps' => null,
+           'expected' => 'Eb'
+       );
+       $data[] = array(
+           'original_value' => 'F',
+           'adjustment' => -2,
+           'use_sharps' => null,
+           'expected' => 'Eb'
+       );
+       $data[] = array(
+           'original_value' => 'F',
+           'adjustment' => -2,
+           'use_sharps' => false,
+           'expected' => 'Eb'
+       );
+       $data[] = array(
+           'original_value' => 'F',
+           'adjustment' => -2,
+           'use_sharps' => true,
+           'expected' => 'D#'
+       );
+       $data[] = array(
+           'original_value' => 'F',
+           'adjustment' => -10,
+           'use_sharps' => null,
+           'expected' => 'G'
+       );
+
+       for ( $index = 0; $index < sizeof($data); $index = $index + 1) {
+           p($data[$index]);
+           $result = sbk_shift_note(
+               $data[$index]['original_value'],
+               $data[$index]['adjustment'],
+               $data[$index]['use_sharps']
+           );
+           if($result !== $data[$index]['expected']) {
+               echo "<h2 class='test-fail'>".__FUNCTION__."[".$index."]"."</h2>";
+               acradisp_compare($result, $data[$index]['expected']);
+           }
+           $this->assertEqual($result, $data[$index]['expected']);
+       }
+   }
+
+
+
+   function test_sbk_transpose_chord() {
+
+       $data[] = array(
+           'chord' => 'D',
+           'base_key' => 'D',
+           'target_key' => 'G',
+           'expected' => 'G'
+       );
+       $data[] = array(
+           'chord' => 'Cm',
+           'base_key' => 'D',
+           'target_key' => 'G',
+           'expected' => 'Fm'
+       );
+       $data[] = array(
+           'chord' => 'Gdim7',
+           'base_key' => 'D',
+           'target_key' => 'G',
+           'expected' => 'Cdim7'
+       );
+       $data[] = array(
+           'chord' => 'Daug',
+           'base_key' => 'C',
+           'target_key' => 'F#',
+           'expected' => 'G#aug'
+       );
+       $data[] = array(
+           'chord' => 'Dmaj7',
+           'base_key' => 'A',
+           'target_key' => 'F#',
+           'expected' => 'Bmaj7'
+       );
+       $data[] = array(
+           'chord' => 'Em',
+           'base_key' => 'G',
+           'target_key' => 'D',
+           'expected' => 'Bm'
+       );
+       $data[] = array(
+           'chord' => 'Ebm',
+           'base_key' => 'G#',
+           'target_key' => 'D',
+           'expected' => 'Am'
+       );
+
+       for ( $index = 0; $index < sizeof($data); $index = $index + 1) {
+           $result = sbk_transpose_chord(
+               $data[$index]['chord'],
+               $data[$index]['base_key'],
+               $data[$index]['target_key']
+           );
+           if($result !== $data[$index]['expected']) {
+               echo "<h2 class='test-fail'>".__FUNCTION__."[".$index."]"."</h2>";
+               acradisp_compare($result, $data[$index]['expected']);
+           }
+           $this->assertEqual($result, $data[$index]['expected']);
+       }
+   }
+
 }
 
 $STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.contextMenu/jquery.contextMenu.js";
