@@ -251,9 +251,9 @@ function sbk_getIDarray($playlistXML = false) {
     $ID_array = Array();
     if($playlistXML) {
         foreach ($playlistXML->set as $this_set) {
-            foreach($this_set->song as $this_song) {
-                if(!in_array($this_song['id'], $ID_array)) {
-                    $ID_array[] = (string) $this_song['id'];
+            foreach($this_set->song as $this_song_playlist_data) {
+                if(!array_key_exists($this_song['id'], $ID_array)) {
+                    $ID_array[(string) $this_song['id']] = $this_song_playlist_data;
                 }
             }
         }
@@ -276,7 +276,7 @@ function sbk_generate_index($ID_array) {
     );
     $id_csv = "(";
 
-    foreach ($ID_array as $this_id) {
+    foreach ($ID_array as $this_id => $this_song_playlist_data) {
         $id_csv = $id_csv.$this_id.", ";
     }
     $id_csv = substr($id_csv, 0, -2);
@@ -368,7 +368,7 @@ function sbk_create_blank_playlist($filename) {
     return $playlistContent->saveXML(PLAYLIST_DIRECTORY.'/'.$filename.'.playlist');
 }
 
-function sbk_convert_song_content_to_HTML($content) {
+function sbk_convert_song_content_to_HTML($content, $song_playlist_data = null) {
         $contentHTML = $content;
         $contentHTML = preg_replace('/&([^#n])/', '&#38;$1', $contentHTML);
         $contentHTML = str_replace(' ', '&#160;', $contentHTML);
@@ -394,20 +394,20 @@ function sbk_get_song_record($id) {
     return acradb_get_single_record(SBK_DATABASE_NAME, SBK_TABLE_NAME, SBK_KEYFIELD_NAME, $id);
 }
 
-function sbk_get_song_html($id) {
+function sbk_get_song_html($id, $song_playlist_data = null) {
     $display = '';
     $this_record = sbk_get_song_record($id);
-    $display = sbk_song_html($this_record);
+    $display = sbk_song_html($this_record, $song_playlist_data);
 
     return $display;
 }
 
-function sbk_song_html($this_record) {
+function sbk_song_html($this_record, $song_playlist_data = null) {
     $display = '';
     $number_of_lyric_lines_per_page = 55;
     $number_of_columns_per_page = 2;
 
-    $contentHTML = sbk_convert_song_content_to_HTML($this_record['content']);
+    $contentHTML = sbk_convert_song_content_to_HTML($this_record['content'], $song_playlist_data);
 
     $contentXML = new SimpleXMLElement($contentHTML);
     $line_count = 0;
@@ -485,8 +485,8 @@ function sbk_song_html($this_record) {
 function sbk_print_multiple_songs($id_array) {
     $output = '';
 
-    foreach ($id_array as $this_id) {
-        $output = $output.sbk_get_song_html($this_id);
+    foreach ($id_array as $this_id => $this_song_playlist_data) {
+        $output = $output.sbk_get_song_html($this_id, $this_song_playlist_data);
     }
 
     return $output;
