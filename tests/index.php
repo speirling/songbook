@@ -445,7 +445,6 @@ class songbook_tests extends UnitTestCase {
        );
 
        for ( $index = 0; $index < sizeof($data); $index = $index + 1) {
-           p($data[$index]);
            $result = sbk_find_note_number(
                $data[$index]['original_value'],
                $data[$index]['adjustment']
@@ -546,7 +545,6 @@ class songbook_tests extends UnitTestCase {
        );
 
        for ( $index = 0; $index < sizeof($data); $index = $index + 1) {
-           p($data[$index]);
            $result = sbk_shift_note(
                $data[$index]['original_value'],
                $data[$index]['adjustment'],
