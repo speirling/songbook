@@ -172,7 +172,6 @@ switch ($action) {
         //$display = $display.sbk_generate_index($ID_array);
         sort($ID_array);
         $display = $display.sbk_print_multiple_songs($ID_array);
-        p($_GET);
         if(array_key_exists('pdf', $_GET)) {
             sbk_output_pdf($display, 'SongBook - '.$playlistContent['title']);
         }
