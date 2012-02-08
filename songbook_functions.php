@@ -368,18 +368,30 @@ function sbk_create_blank_playlist($filename) {
     return $playlistContent->saveXML(PLAYLIST_DIRECTORY.'/'.$filename.'.playlist');
 }
 
+function sbk_chord_replacement_phase2($matches) {
+    // $matches[0] is the complete match
+    // $matches[1] the match for the first subpattern enclosed in '(...)' and so on
+    return '<span class="chord">'.$matches[1].'<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">'.$matches[2].'</span></span>';
+}
 function sbk_convert_song_content_to_HTML($content, $song_playlist_data = null) {
-        $contentHTML = $content;
-        $contentHTML = preg_replace('/&([^#n])/', '&#38;$1', $contentHTML);
-        $contentHTML = str_replace(' ', '&#160;', $contentHTML);
-        $contentHTML = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $contentHTML);
-        $contentHTML = preg_replace('/<div class=\"line\"><span class=\"text\">[\s]*?<\/span><\/div>/', '<div class="line"><span class="text">&nbsp;</span></div>', $contentHTML);
-        $contentHTML = preg_replace('/\[(.*?)\]/','</span><span class="chord">$1</span><span class="text">', $contentHTML);
-        $contentHTML = preg_replace('#<span class="chord">([^<]*?)/([^<]*?)</span>#','<span class="chord">$1<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">$2</span></span>', $contentHTML);
-        $contentHTML = preg_replace('/&nbsp;/', '&#160;', $contentHTML); //&nbsp; doesn't work in XML unless it's specifically declared.
-        $contentHTML = '<div class="content"><div class="line"><span class="text">'.$contentHTML.'</span></div></div>';
+    $display_key = null;
+    $performer = null;
+    if(!is_null($song_playlist_data)) {
+        $display_key = $song_playlist_data['key'];
+        $performer = $song_playlist_data['singer'];
+    }
 
-        return $contentHTML;
+    $contentHTML = $content;
+    $contentHTML = preg_replace('/&([^#n])/', '&#38;$1', $contentHTML);
+    $contentHTML = str_replace(' ', '&#160;', $contentHTML);
+    $contentHTML = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $contentHTML);
+    $contentHTML = preg_replace('/<div class=\"line\"><span class=\"text\">[\s]*?<\/span><\/div>/', '<div class="line"><span class="text">&nbsp;</span></div>', $contentHTML);
+    $contentHTML = preg_replace('/\[(.*?)\]/','</span><span class="chord">$1</span><span class="text">', $contentHTML);
+    $contentHTML = preg_replace_callback('#<span class="chord">([^<]*?)/([^<]*?)</span>#', 'sbk_chord_replacement_phase2', $contentHTML);
+    $contentHTML = preg_replace('/&nbsp;/', '&#160;', $contentHTML); //&nbsp; doesn't work in XML unless it's specifically declared.
+    $contentHTML = '<div class="content"><div class="line"><span class="text">'.$contentHTML.'</span></div></div>';
+
+    return $contentHTML;
 }
 
 function sbk_playlist_as_editable_html($playlist) {
