@@ -207,6 +207,7 @@ switch ($action) {
         $display = $display.'<li><a href="?action=displaySong&id='.($id + 1).'">Next &raquo;</a></li>';
         $display = $display.'</ul>';
         $display = $display.sbk_get_song_html($id);
+        $this_record = sbk_get_song_record($id);
         $page_title = $this_record['title'].' - playlists';
     break;
 
