@@ -110,6 +110,7 @@ function search_allsongs() {
         		        click: function(element){ element.remove(); }
         		    }
         		});
+        		jQuery('#allsongs li').click(function(){ window.open('?action=displaySong&id=' + jQuery(this).attr('id').replace('id_', '')); });
     		}
 	    }
 	);
