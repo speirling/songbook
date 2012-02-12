@@ -368,30 +368,18 @@ function sbk_create_blank_playlist($filename) {
     return $playlistContent->saveXML(PLAYLIST_DIRECTORY.'/'.$filename.'.playlist');
 }
 
-function sbk_chord_replacement_phase2($matches) {
-    // $matches[0] is the complete match
-    // $matches[1] the match for the first subpattern enclosed in '(...)' and so on
-    return '<span class="chord">'.$matches[1].'<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">'.$matches[2].'</span></span>';
-}
 function sbk_convert_song_content_to_HTML($content, $song_playlist_data = null) {
-    $display_key = null;
-    $performer = null;
-    if(!is_null($song_playlist_data)) {
-        $display_key = $song_playlist_data['key'];
-        $performer = $song_playlist_data['singer'];
-    }
+        $contentHTML = $content;
+        $contentHTML = preg_replace('/&([^#n])/', '&#38;$1', $contentHTML);
+        $contentHTML = str_replace(' ', '&#160;', $contentHTML);
+        $contentHTML = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $contentHTML);
+        $contentHTML = preg_replace('/<div class=\"line\"><span class=\"text\">[\s]*?<\/span><\/div>/', '<div class="line"><span class="text">&nbsp;</span></div>', $contentHTML);
+        $contentHTML = preg_replace('/\[(.*?)\]/','</span><span class="chord">$1</span><span class="text">', $contentHTML);
+        $contentHTML = preg_replace('#<span class="chord">([^<]*?)/([^<]*?)</span>#','<span class="chord">$1<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">$2</span></span>', $contentHTML);
+        $contentHTML = preg_replace('/&nbsp;/', '&#160;', $contentHTML); //&nbsp; doesn't work in XML unless it's specifically declared.
+        $contentHTML = '<div class="content"><div class="line"><span class="text">'.$contentHTML.'</span></div></div>';
 
-    $contentHTML = $content;
-    $contentHTML = preg_replace('/&([^#n])/', '&#38;$1', $contentHTML);
-    $contentHTML = str_replace(' ', '&#160;', $contentHTML);
-    $contentHTML = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $contentHTML);
-    $contentHTML = preg_replace('/<div class=\"line\"><span class=\"text\">[\s]*?<\/span><\/div>/', '<div class="line"><span class="text">&nbsp;</span></div>', $contentHTML);
-    $contentHTML = preg_replace('/\[(.*?)\]/','</span><span class="chord">$1</span><span class="text">', $contentHTML);
-    $contentHTML = preg_replace_callback('#<span class="chord">([^<]*?)/([^<]*?)</span>#', 'sbk_chord_replacement_phase2', $contentHTML);
-    $contentHTML = preg_replace('/&nbsp;/', '&#160;', $contentHTML); //&nbsp; doesn't work in XML unless it's specifically declared.
-    $contentHTML = '<div class="content"><div class="line"><span class="text">'.$contentHTML.'</span></div></div>';
-
-    return $contentHTML;
+        return $contentHTML;
 }
 
 function sbk_playlist_as_editable_html($playlist) {
@@ -418,6 +406,12 @@ function sbk_song_html($this_record, $song_playlist_data = null) {
     $display = '';
     $number_of_lyric_lines_per_page = 55;
     $number_of_columns_per_page = 2;
+    $target_key = null;
+    $performer = null;
+    if(!is_null($song_playlist_data)) {
+        $target_key = $song_playlist_data['key'];
+        $performer = $song_playlist_data['singer'];
+    }
 
     $contentHTML = sbk_convert_song_content_to_HTML($this_record['content'], $song_playlist_data);
 
@@ -555,7 +549,6 @@ function sbk_song_as_li(
         $key = (string) $thisSong['key'];
         $singer = (string) $thisSong['singer'];
         $songDuration = (string) $thisSong['duration'];
-        p($songDuration);
     } else {
         if(array_key_exists('key', $thisSong)) {
             $key = $thisSong['key'];
@@ -722,17 +715,41 @@ function sbk_find_note_number($original_value, $adjustment) {
     return $new_value;
 }
 
+function sbk_note_to_upper($note) {
+    $base_note = substr($note, 0, 1);
+    $upper_note = strtoupper($base_note);
+    if(strlen($note) == 2) {
+        $upper_note = $upper_note.substr($note, 1, 1);
+    }
+    return $upper_note;
+}
+
+function sbk_note_to_lower($note) {
+    $base_note = substr($note, 0, 1);
+    $lower_note = strtolower($base_note);
+    if(strlen($note) == 2) {
+        $lower_note = $lower_note.substr($note, 1, 1);
+    }
+    return $lower_note;
+}
+
 function sbk_shift_note($note, $adjustment, $use_sharps = null) {
     global $NOTE_VALUE_ARRAY, $VALUE_NOTE_ARRAY_DEFAULT, $VALUE_NOTE_ARRAY_SHARP, $VALUE_NOTE_ARRAY_FLAT;
 
-    $new_note_number = sbk_find_note_number($NOTE_VALUE_ARRAY[$note], $adjustment);
-
+    $lowercase = false;
+    if(sbk_note_to_lower($note) === $note) {
+        $lowercase = true;
+    }
+    $new_note_number = sbk_find_note_number($NOTE_VALUE_ARRAY[sbk_note_to_upper($note)], $adjustment);
     if(is_null($use_sharps)) {
         $new_note = $VALUE_NOTE_ARRAY_DEFAULT[$new_note_number];
     } elseif($use_sharps === true) {
         $new_note = $VALUE_NOTE_ARRAY_SHARP[$new_note_number];
     } else {
         $new_note = $VALUE_NOTE_ARRAY_FLAT[$new_note_number];
+    }
+    if($lowercase) {
+        $new_note = sbk_note_to_lower($new_note);
     }
     return $new_note;
 }
@@ -749,11 +766,21 @@ function sbk_transpose_chord($chord, $base_key, $target_key) {
     }
     $chord_modifier = substr($chord, $modifier_start);
 
-
     $key_conversion_value = $NOTE_VALUE_ARRAY[$target_key] - $NOTE_VALUE_ARRAY[$base_key];
     $new_chord = sbk_shift_note($chord_note, $key_conversion_value);
 
-    $new_chord = $new_chord.$chord_modifier;
+    $bass_key = '';
+    $slash_position = strpos($chord_modifier, '/');
+    if($slash_position !== false) {
+        $new_chord_modifier = substr($chord_modifier, 0, $slash_position);
+        $old_bass_key = substr($chord_modifier, $slash_position + 1);
+        $new_bass_key = sbk_shift_note($old_bass_key, $key_conversion_value);
+        $bass_key = '/'.$new_bass_key;
+    } else {
+        $new_chord_modifier = $chord_modifier;
+    }
+
+    $new_chord = $new_chord.$new_chord_modifier.$bass_key;
 
     return $new_chord;
 

@@ -604,12 +604,150 @@ class songbook_tests extends UnitTestCase {
            'target_key' => 'D',
            'expected' => 'Am'
        );
+       $data[] = array(
+           'chord' => 'Em/g',
+           'base_key' => 'G',
+           'target_key' => 'D',
+           'expected' => 'Bm/d'
+       );
+       $data[] = array(
+           'chord' => 'C/g',
+           'base_key' => 'G#',
+           'target_key' => 'D',
+           'expected' => 'F#/c#'
+       );
 
        for ( $index = 0; $index < sizeof($data); $index = $index + 1) {
            $result = sbk_transpose_chord(
                $data[$index]['chord'],
                $data[$index]['base_key'],
                $data[$index]['target_key']
+           );
+           if($result !== $data[$index]['expected']) {
+               echo "<h2 class='test-fail'>".__FUNCTION__."[".$index."]"."</h2>";
+               acradisp_compare($result, $data[$index]['expected']);
+           }
+           $this->assertEqual($result, $data[$index]['expected']);
+       }
+   }
+
+   function test_sbk_note_to_upper() {
+
+       $data[] = array(
+           'note' => 'D',
+           'expected' => 'D'
+       );
+       $data[] = array(
+           'note' => 'D#',
+           'expected' => 'D#'
+       );
+       $data[] = array(
+           'note' => 'Db',
+           'expected' => 'Db'
+       );
+       $data[] = array(
+           'note' => 'd',
+           'expected' => 'D'
+       );
+       $data[] = array(
+           'note' => 'd#',
+           'expected' => 'D#'
+       );
+       $data[] = array(
+           'note' => 'db',
+           'expected' => 'Db'
+       );
+       $data[] = array(
+           'note' => 'F',
+           'expected' => 'F'
+       );
+       $data[] = array(
+           'note' => 'F#',
+           'expected' => 'F#'
+       );
+       $data[] = array(
+           'note' => 'Fb',
+           'expected' => 'Fb'
+       );
+       $data[] = array(
+           'note' => 'f',
+           'expected' => 'F'
+       );
+       $data[] = array(
+           'note' => 'f#',
+           'expected' => 'F#'
+       );
+       $data[] = array(
+           'note' => 'fb',
+           'expected' => 'Fb'
+       );
+
+       for ( $index = 0; $index < sizeof($data); $index = $index + 1) {
+           $result = sbk_note_to_upper(
+               $data[$index]['note']
+           );
+           if($result !== $data[$index]['expected']) {
+               echo "<h2 class='test-fail'>".__FUNCTION__."[".$index."]"."</h2>";
+               acradisp_compare($result, $data[$index]['expected']);
+           }
+           $this->assertEqual($result, $data[$index]['expected']);
+       }
+   }
+
+   function test_sbk_note_to_lower() {
+
+       $data[] = array(
+           'note' => 'D',
+           'expected' => 'd'
+       );
+       $data[] = array(
+           'note' => 'D#',
+           'expected' => 'd#'
+       );
+       $data[] = array(
+           'note' => 'Db',
+           'expected' => 'db'
+       );
+       $data[] = array(
+           'note' => 'd',
+           'expected' => 'd'
+       );
+       $data[] = array(
+           'note' => 'd#',
+           'expected' => 'd#'
+       );
+       $data[] = array(
+           'note' => 'db',
+           'expected' => 'db'
+       );
+       $data[] = array(
+           'note' => 'F',
+           'expected' => 'f'
+       );
+       $data[] = array(
+           'note' => 'F#',
+           'expected' => 'f#'
+       );
+       $data[] = array(
+           'note' => 'Fb',
+           'expected' => 'fb'
+       );
+       $data[] = array(
+           'note' => 'f',
+           'expected' => 'f'
+       );
+       $data[] = array(
+           'note' => 'f#',
+           'expected' => 'f#'
+       );
+       $data[] = array(
+           'note' => 'fb',
+           'expected' => 'fb'
+       );
+
+       for ( $index = 0; $index < sizeof($data); $index = $index + 1) {
+           $result = sbk_note_to_lower(
+               $data[$index]['note']
            );
            if($result !== $data[$index]['expected']) {
                echo "<h2 class='test-fail'>".__FUNCTION__."[".$index."]"."</h2>";
