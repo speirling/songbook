@@ -2,7 +2,11 @@
 
         // Automated configuration. Modify these if they fail. (they shouldn't ;) )
         $GLOBALS['WKPDF_BASE_PATH']=str_replace(str_replace('\\','/',getcwd().'/'),'',dirname(str_replace('\\','/',__FILE__))).'/';
-        $GLOBALS['WKPDF_BASE_SITE']='http://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'].'/';
+        //$GLOBALS['WKPDF_BASE_SITE']='http://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'].'/';
+        //$GLOBALS['DOCUMENT_ROOT'] = $_SERVER['DOCUMENT_ROOT'];
+        //when accessed over https, the above doesn't work. Hard code the required values for fps:
+        $GLOBALS['WKPDF_BASE_SITE']='http://192.168.99.30:8000/';
+        $GLOBALS['DOCUMENT_ROOT'] = '/fileserver/data/www/';
 
         /**
          * @author Christian Sciberras
@@ -192,19 +196,18 @@
                  */
                 public function render(){
                         $web=$GLOBALS['WKPDF_BASE_SITE'].$GLOBALS['WKPDF_BASE_PATH'].'tmp/'.basename($this->tmp);
-                        $web=str_replace($_SERVER['DOCUMENT_ROOT'], '', $web);
-                        $this->pdf=self::_pipeExec(
-                                '"'.$this->cmd.'"'
+                        $web=str_replace($GLOBALS['DOCUMENT_ROOT'], '', $web);
+                        $command = '"'.$this->cmd.'"'
                                 .(($this->copies>1)?' --copies '.$this->copies:'')                              // number of copies
-                                .' --orientation '.$this->orient                                                                // orientation
-                                .' --page-size '.$this->size                                                                    // page size
-                                .($this->toc?' --toc':'')                                                                               // table of contents
-                                .($this->grayscale?' --grayscale':'')                                                   // grayscale
-                                .(($this->title!='')?' --title "'.$this->title.'"':'')                  // title
-                                .' "'.$web.'" -'                                                                                                // URL and optional to write to STDOUT
-                        );
+                                .' --orientation '.$this->orient                                                // orientation
+                                .' --page-size '.$this->size                                                    // page size
+                                .($this->toc?' --toc':'')                                                       // table of contents
+                                .($this->grayscale?' --grayscale':'')                                           // grayscale
+                                .(($this->title!='')?' --title "'.$this->title.'"':'')                          // title
+                                .' "'.$web.'" -';                                                               // URL and optional to write to STDOUT
+                        $this->pdf=self::_pipeExec($command);
                         if(strpos(strtolower($this->pdf['stderr']),'error')!==false) {
-                            p("url:", $web, "Error:", $this->pdf['stderr'], "return",$this->pdf['return'] , "stout", $this->pdf['stdout']);
+                            p("wkhtml2pdf had a problem.\n\turl: [".$web."]", "\tError message : [".$this->pdf['stderr']."]", "\tReturn: [".$this->pdf['return']."]", "\tstout: [".$this->pdf['stdout']."]", "\tCommand: [".$command."]");
                             //throw new Exception('WKPDF system error: <pre>'.$this->pdf['stderr'].'</pre>');
                         }
                         //if($this->pdf['stdout']=='')throw new Exception('WKPDF didn\'t return any data. <pre>'.$this->pdf['stderr'].'</pre>');
