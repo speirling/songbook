@@ -29,7 +29,7 @@ define("SYSTEM_ID","Epeelo Songbook");
   //This could give far too much useful detail to hackers, so only leave it on for very short periods of time (when debugging)
   define("ALLOW_DEBUG_DISPLAY", true);
 
-  if('/fileserver/data/www' == "/fileserver/data/www/") { //fps
+  if($_SERVER['DOCUMENT_ROOT'] == "/fileserver/data/www/") { //fps
   	define("DATABASE_USERNAME", "root");
 	define("DATABASE_PASSWORD", "chancery");
 	define("DATABASE_SERVERHOST", "localhost");
