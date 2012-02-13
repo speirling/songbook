@@ -34,7 +34,9 @@ h2.test-fail {
 global $text_playlist_xml;
 
 function sbktest_standardise_markup($string) {
-    return trim(preg_replace('/>[\s\n]*?</', '><', $string));
+    $string = str_replace(array("\r", "\n", '&#xE1;', '&#xF3;', '&#xED;', '&#xFA;', '&#xE9;','&#xA0;'), array('', '', 'á', 'ó', 'í', 'ú', 'é', '&#160;'), $string);
+    $string = trim(preg_replace('/>[\s\n]*?</', '><', $string));
+    return $string;
 }
 
 $text_playlist_xml = <<<XML
@@ -138,6 +140,98 @@ $text_full_html = sbktest_standardise_markup('
 </li>
 </ul>'
 );
+
+$array_song = array(
+'id' => 697,
+'title' => 'Tráth m\'Aoibhnis',
+'written_by' => 'Breandán de Róiste and Eugene Peelo',
+'performed_by' => '',
+'base_key' => 'D',
+'content' => 'Tráth m\'a[D]oibhnis, - bhíodh si[G]oc againn ar m[A/c#]aidin
+Um Tráthn[D]óna, - níorbh a[G]nnamh corr-aiteall \'s m[A]úr
+Thuas in ai[Bm]rde (ag) deisiú d[F#m]íonta,
+i mei[G]theal easaor[D]ánach
+Thíos f[Em]úm, ba l[G]iúm an chathair mh[A]ór
+
+Anseo abh[D]us - ní lé[G]ir a bhfuil i d[A]án dom',
+'original_filename' => '',
+'meta_tags' => 'Irish, Gaeilge, Folk'
+
+);
+
+$text_song_body_html = sbktest_standardise_markup(
+    str_replace('&nbsp;', '&#160;', '
+    <div class="line"><span class="text">Tráth&nbsp;m\'a</span><span class="chord">D</span><span class="text">oibhnis,&nbsp;-&nbsp;bhíodh&nbsp;si</span><span class="chord">G</span><span class="text">oc&nbsp;againn&nbsp;ar&nbsp;m</span><span class="chord">A<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">c#</span></span><span class="text">aidin</span></div>
+    <div class="line"><span class="text">Um&nbsp;Tráthn</span><span class="chord">D</span><span class="text">óna,&nbsp;-&nbsp;níorbh&nbsp;a</span><span class="chord">G</span><span class="text">nnamh&nbsp;corr-aiteall&nbsp;\'s&nbsp;m</span><span class="chord">A</span><span class="text">úr</span></div>
+    <div class="line"><span class="text">Thuas&nbsp;in&nbsp;ai</span><span class="chord">Bm</span><span class="text">rde&nbsp;(ag)&nbsp;deisiú&nbsp;d</span><span class="chord">F#m</span><span class="text">íonta,</span></div>
+    <div class="line"><span class="text">i&nbsp;mei</span><span class="chord">G</span><span class="text">theal&nbsp;easaor</span><span class="chord">D</span><span class="text">ánach</span></div>
+    <div class="line"><span class="text">Thíos&nbsp;f</span><span class="chord">Em</span><span class="text">úm,&nbsp;ba&nbsp;l</span><span class="chord">G</span><span class="text">iúm&nbsp;an&nbsp;chathair&nbsp;mh</span><span class="chord">A</span><span class="text">ór</span></div>
+    <div class="line"><span class="text">&nbsp;</span></div>
+    <div class="line"><span class="text">Anseo&nbsp;abh</span><span class="chord">D</span><span class="text">us&nbsp;-&nbsp;ní&nbsp;lé</span><span class="chord">G</span><span class="text">ir&nbsp;a&nbsp;bhfuil&nbsp;i&nbsp;d</span><span class="chord">A</span><span class="text">án&nbsp;dom</span></div>
+'));
+
+$text_song_body_html_transposed_G = sbktest_standardise_markup(
+    str_replace('&nbsp;', '&#160;', '
+    <div class="line"><span class="text">Tráth&nbsp;m\'a</span><span class="chord">G</span><span class="text">oibhnis,&nbsp;-&nbsp;bhíodh&nbsp;si</span><span class="chord">C</span><span class="text">oc&nbsp;againn&nbsp;ar&nbsp;m</span><span class="chord">D<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">f#</span></span><span class="text">aidin</span></div>
+    <div class="line"><span class="text">Um&nbsp;Tráthn</span><span class="chord">G</span><span class="text">óna,&nbsp;-&nbsp;níorbh&nbsp;a</span><span class="chord">C</span><span class="text">nnamh&nbsp;corr-aiteall&nbsp;\'s&nbsp;m</span><span class="chord">D</span><span class="text">úr</span></div>
+    <div class="line"><span class="text">Thuas&nbsp;in&nbsp;ai</span><span class="chord">Em</span><span class="text">rde&nbsp;(ag)&nbsp;deisiú&nbsp;d</span><span class="chord">Bm</span><span class="text">íonta,</span></div>
+    <div class="line"><span class="text">i&nbsp;mei</span><span class="chord">C</span><span class="text">theal&nbsp;easaor</span><span class="chord">G</span><span class="text">ánach</span></div>
+    <div class="line"><span class="text">Thíos&nbsp;f</span><span class="chord">Am</span><span class="text">úm,&nbsp;ba&nbsp;l</span><span class="chord">C</span><span class="text">iúm&nbsp;an&nbsp;chathair&nbsp;mh</span><span class="chord">D</span><span class="text">ór</span></div>
+    <div class="line"><span class="text">&nbsp;</span></div>
+    <div class="line"><span class="text">Anseo&nbsp;abh</span><span class="chord">G</span><span class="text">us&nbsp;-&nbsp;ní&nbsp;lé</span><span class="chord">C</span><span class="text">ir&nbsp;a&nbsp;bhfuil&nbsp;i&nbsp;d</span><span class="chord">D</span><span class="text">án&nbsp;dom</span></div>
+'));
+
+$text_song_html = sbktest_standardise_markup('
+<div class="song-page first_page" id="page_697_0">
+    <div class="page_header">
+        <div class="title">Tr&#xE1;th m\'Aoibhnis</div>
+        <span class="songnumber">
+            <span class="label">Song no. </span>
+            <span class="data">697</span></span>
+            <span class="pagenumber">
+            <span class="label">page</span>
+            <span class="data" id="page_number">1</span>
+            <span class="label">of</span>
+            <span class="data" id="number_of_pages">1</span>
+        </span>
+        <div class="written_by"><span class="data">Breand&#xE1;n de R&#xF3;iste and Eugene Peelo</span></div>
+        <div class="performed_by"><span class="label">performed by: </span><span class="data"/></div>
+    </div>
+    <table>
+        <tr>
+            <td>'.
+$text_song_body_html
+            .'</td>
+        </tr>
+    </table>
+</div>
+');
+
+$text_song_html_transposed_G = sbktest_standardise_markup('
+<div class="song-page first_page" id="page_697_0">
+    <div class="page_header">
+        <div class="title">Tr&#xE1;th m\'Aoibhnis</div>
+        <span class="songnumber">
+            <span class="label">Song no. </span>
+            <span class="data">697</span></span>
+            <span class="pagenumber">
+            <span class="label">page</span>
+            <span class="data" id="page_number">1</span>
+            <span class="label">of</span>
+            <span class="data" id="number_of_pages">1</span>
+        </span>
+        <div class="written_by"><span class="data">Breand&#xE1;n de R&#xF3;iste and Eugene Peelo</span></div>
+        <div class="performed_by"><span class="label">performed by: </span><span class="data"/></div>
+    </div>
+    <table>
+        <tr>
+            <td>'.
+$text_song_body_html_transposed_G
+            .'</td>
+        </tr>
+    </table>
+</div>
+');
 
 $text_playlist_json = '{
 	"title": "Test Playlist",
@@ -404,6 +498,81 @@ class songbook_tests extends UnitTestCase {
            $this->assertEqual($result, $data[$index]['expected']);
        }
    }
+
+   function test_sbk_convert_song_content_to_HTML() {
+       global $array_song, $text_song_body_html, $text_song_body_html_transposed_G;
+
+       $data[] = array(
+           'content' => $array_song['content'],
+           'base_key' => null,
+           'playlist_data' => null,
+           'expected' => '<div class="content">'.$text_song_body_html.'</div>'
+       );
+       $data[] = array(
+           'content' => $array_song['content'],
+           'base_key' => 'D',
+           'playlist_data' => Array (
+                'id' => '20',
+                'key' => 'G',
+                'singer' => 'Bill',
+                'duration' => '4:00'
+            ),
+           'expected' => '<div class="content">'.$text_song_body_html_transposed_G.'</div>'
+       );
+
+
+       for ( $index = 0; $index < sizeof($data); $index = $index + 1) {
+           $result = sbk_convert_song_content_to_HTML(
+               $data[$index]['content'],
+               $data[$index]['base_key'],
+               $data[$index]['playlist_data']
+           );
+           $result = sbktest_standardise_markup($result);
+           if($result !== $data[$index]['expected']) {
+               echo "<h2 class='test-fail'>".__FUNCTION__."[".$index."]"."</h2>";
+               acradisp_compare($result, $data[$index]['expected']);
+               echo('<pre>'.htmlentities($result).'</pre>');
+               echo('<pre>'.htmlentities($data[$index]['expected']).'</pre>');
+           }
+           $this->assertEqual($result, $data[$index]['expected']);
+       }
+   }
+
+   function test_sbk_song_html() {
+       global $array_song, $text_song_html, $text_song_html_transposed_G;
+
+       $data[] = array(
+           'record' => $array_song,
+           'playlist_data' => null,
+           'expected' => $text_song_html
+       );
+       $data[] = array(
+           'record' => $array_song,
+           'playlist_data' => Array (
+                'id' => '20',
+                'key' => 'G',
+                'singer' => 'Bill',
+                'duration' => '4:00'
+            ),
+           'expected' => $text_song_html_transposed_G
+       );
+
+       for ( $index = 0; $index < sizeof($data); $index = $index + 1) {
+           $result = sbk_song_html(
+               $data[$index]['record'],
+               $data[$index]['playlist_data']
+           );
+           $result = sbktest_standardise_markup($result);
+           if($result !== $data[$index]['expected']) {
+               echo "<h2 class='test-fail'>".__FUNCTION__."[".$index."]"."</h2>";
+               acradisp_compare($result, $data[$index]['expected']);
+               echo('<pre>'.htmlentities($result).'</pre>');
+               echo('<pre>'.htmlentities($data[$index]['expected']).'</pre>');
+           }
+           $this->assertEqual($result, $data[$index]['expected']);
+       }
+   }
+
 
 
    function test_sbk_find_note_number() {
