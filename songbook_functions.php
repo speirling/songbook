@@ -250,10 +250,10 @@ function sbk_list_all_songs_in_database($search_string = false) {
 function sbk_getIDarray($playlistXML = false) {
     $ID_array = Array();
     if($playlistXML) {
-        foreach ($playlistXML->set as $this_set) {
+        foreach($playlistXML->set as $this_set) {
             foreach($this_set->song as $this_song_playlist_data) {
-                if(!array_key_exists($this_song['id'], $ID_array)) {
-                    $ID_array[(string) $this_song['id']] = $this_song_playlist_data;
+                if(!array_key_exists($this_song_playlist_data['id'], $ID_array)) {
+                    $ID_array[(string) $this_song_playlist_data['id']] = $this_song_playlist_data;
                 }
             }
         }
@@ -368,18 +368,33 @@ function sbk_create_blank_playlist($filename) {
     return $playlistContent->saveXML(PLAYLIST_DIRECTORY.'/'.$filename.'.playlist');
 }
 
-function sbk_convert_song_content_to_HTML($content, $song_playlist_data = null) {
-        $contentHTML = $content;
-        $contentHTML = preg_replace('/&([^#n])/', '&#38;$1', $contentHTML);
-        $contentHTML = str_replace(' ', '&#160;', $contentHTML);
-        $contentHTML = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $contentHTML);
-        $contentHTML = preg_replace('/<div class=\"line\"><span class=\"text\">[\s]*?<\/span><\/div>/', '<div class="line"><span class="text">&nbsp;</span></div>', $contentHTML);
-        $contentHTML = preg_replace('/\[(.*?)\]/','</span><span class="chord">$1</span><span class="text">', $contentHTML);
-        $contentHTML = preg_replace('#<span class="chord">([^<]*?)/([^<]*?)</span>#','<span class="chord">$1<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">$2</span></span>', $contentHTML);
-        $contentHTML = preg_replace('/&nbsp;/', '&#160;', $contentHTML); //&nbsp; doesn't work in XML unless it's specifically declared.
-        $contentHTML = '<div class="content"><div class="line"><span class="text">'.$contentHTML.'</span></div></div>';
+function sbk_chord_replace_callback($chord, $base_key = null, $target_key = null) {
+    if(!is_null($base_key) && !is_null($target_key)) {
+        $chord = sbk_transpose_chord($chord, $base_key, $target_key);
+    }
+    return '</span><span class="chord">'.$chord.'</span><span class="text">';
+}
 
-        return $contentHTML;
+function sbk_convert_song_content_to_HTML($content, $base_key = 'null', $song_playlist_data = null) {
+    if(is_null($song_playlist_data)) {
+        $params = '';
+    } elseif(is_null($song_playlist_data['key'])) {
+        $params = '';
+    } else {
+        $params  = ', "'.$base_key.'", "'.$song_playlist_data['key'].'"';
+    }
+
+    $contentHTML = $content;
+    $contentHTML = preg_replace('/&([^#n])/', '&#38;$1', $contentHTML);
+    $contentHTML = str_replace(' ', '&#160;', $contentHTML);
+    $contentHTML = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $contentHTML);
+    $contentHTML = preg_replace('/<div class=\"line\"><span class=\"text\">[\s]*?<\/span><\/div>/', '<div class="line"><span class="text">&nbsp;</span></div>', $contentHTML);
+    $contentHTML = preg_replace_callback('/\[(.*?)\]/', create_function('$matches', 'return sbk_chord_replace_callback($matches[1]'.$params.');'), $contentHTML);
+    $contentHTML = preg_replace('#<span class="chord">([^<]*?)/([^<]*?)</span>#','<span class="chord">$1<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">$2</span></span>', $contentHTML);
+    $contentHTML = preg_replace('/&nbsp;/', '&#160;', $contentHTML); //&nbsp; doesn't work in XML unless it's specifically declared.
+    $contentHTML = '<div class="content"><div class="line"><span class="text">'.$contentHTML.'</span></div></div>';
+
+    return $contentHTML;
 }
 
 function sbk_playlist_as_editable_html($playlist) {
@@ -403,6 +418,7 @@ function sbk_get_song_html($id, $song_playlist_data = null) {
 }
 
 function sbk_song_html($this_record, $song_playlist_data = null) {
+
     $display = '';
     $number_of_lyric_lines_per_page = 55;
     $number_of_columns_per_page = 2;
@@ -413,7 +429,7 @@ function sbk_song_html($this_record, $song_playlist_data = null) {
         $performer = $song_playlist_data['singer'];
     }
 
-    $contentHTML = sbk_convert_song_content_to_HTML($this_record['content'], $song_playlist_data);
+    $contentHTML = sbk_convert_song_content_to_HTML($this_record['content'], $this_record['base_key'], $song_playlist_data);
 
     $contentXML = new SimpleXMLElement($contentHTML);
     $line_count = 0;
@@ -462,7 +478,7 @@ function sbk_song_html($this_record, $song_playlist_data = null) {
     $page_header = $page_header.'<div class="title">'.$this_record['title'].'</div>';
     $page_header = $page_header.'<span class="songnumber"><span class="label">Song no. </span><span class="data">'.$this_record['id'].'</span></span>';
     $page_header = $page_header.'<span class="pagenumber"><span class="label">page</span><span class="data" id="page_number">test</span><span class="label">of</span><span class="data" id="number_of_pages">test</span></span>';
-    $page_header = $page_header.'<div class="written_by"><span class="data">'.$this_record['written_by'].'</span></div>';
+    $page_header = $page_header.'<div class="written_by"><span class="data">'.str_replace('&', 'and', $this_record['written_by']).'</span></div>';
     $page_header = $page_header.'<div class="performed_by"><span class="label">performed by: </span><span class="data">'.$this_record['performed_by'].'</span></div>';
     $page_header = $page_header.'</div>';
     $page_headerXML = new SimpleXMLElement($page_header);
@@ -492,7 +508,11 @@ function sbk_print_multiple_songs($id_array) {
     $output = '';
 
     foreach ($id_array as $this_id => $this_song_playlist_data) {
-        $output = $output.sbk_get_song_html($this_id, $this_song_playlist_data);
+        $playlist_data = array();
+        foreach($this_song_playlist_data->attributes() as $key => $value) {
+            $playlist_data[$key] = (string) $value;
+        }
+        $output = $output.sbk_get_song_html($this_id, $playlist_data);
     }
 
     return $output;
