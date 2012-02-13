@@ -167,7 +167,7 @@ switch ($action) {
         $display = '';
 
         $display = $display.'<div class="playlist-page">';
-        $display = $display.$display.sbk_convert_playlistXML_to_orderedlist($playlistContent, $show_key = TRUE, $show_singer = TRUE, $show_id = TRUE, $show_writtenby = TRUE, $show_performedby = TRUE);
+        $display = $display.sbk_convert_playlistXML_to_orderedlist($playlistContent, $show_key = TRUE, $show_singer = TRUE, $show_id = TRUE, $show_writtenby = TRUE, $show_performedby = TRUE);
         $display = $display.'</div>';
         //$display = $display.sbk_generate_index($ID_array);
         sort($ID_array);
