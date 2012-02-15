@@ -42,7 +42,12 @@ function display_playlist_editor () {
         		});
         		jQuery('li li', self).contextMenu('context-menu', {
         		    'show lyrics': {
-        		        click: function(element){ window.open('?action=displaySong&id=' + element.attr('id').replace('id_', '')); }
+        		        click: function(element){ 
+        		        	window.open('?action=displaySong&id=' + element.attr('id').replace('id_', '') + 
+        		        			'&key=' + escape(element.children('.key').val()) +
+        		        			'&singer=' + element.children('.singer').val()
+        		        	);
+        		        }
         		    },
         		    'edit song': {
         		        click: function(element){ window.open('?action=editSong&id=' + element.attr('id').replace('id_', '')); }

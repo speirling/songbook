@@ -505,18 +505,13 @@ class songbook_tests extends UnitTestCase {
        $data[] = array(
            'content' => $array_song['content'],
            'base_key' => null,
-           'playlist_data' => null,
+           'target_key' => null,
            'expected' => '<div class="content">'.$text_song_body_html.'</div>'
        );
        $data[] = array(
            'content' => $array_song['content'],
            'base_key' => 'D',
-           'playlist_data' => Array (
-                'id' => '20',
-                'key' => 'G',
-                'singer' => 'Bill',
-                'duration' => '4:00'
-            ),
+           'target_key' => 'G',
            'expected' => '<div class="content">'.$text_song_body_html_transposed_G.'</div>'
        );
 
@@ -525,7 +520,7 @@ class songbook_tests extends UnitTestCase {
            $result = sbk_convert_song_content_to_HTML(
                $data[$index]['content'],
                $data[$index]['base_key'],
-               $data[$index]['playlist_data']
+               $data[$index]['target_key']
            );
            $result = sbktest_standardise_markup($result);
            if($result !== $data[$index]['expected']) {
@@ -543,24 +538,22 @@ class songbook_tests extends UnitTestCase {
 
        $data[] = array(
            'record' => $array_song,
-           'playlist_data' => null,
+           'key' => null,
+           'singer' => null,
            'expected' => $text_song_html
        );
        $data[] = array(
            'record' => $array_song,
-           'playlist_data' => Array (
-                'id' => '20',
-                'key' => 'G',
-                'singer' => 'Bill',
-                'duration' => '4:00'
-            ),
+           'key' => 'G',
+           'singer' => 'Bill',
            'expected' => $text_song_html_transposed_G
        );
 
        for ( $index = 0; $index < sizeof($data); $index = $index + 1) {
            $result = sbk_song_html(
                $data[$index]['record'],
-               $data[$index]['playlist_data']
+               $data[$index]['key'],
+               $data[$index]['singer']
            );
            $result = sbktest_standardise_markup($result);
            if($result !== $data[$index]['expected']) {

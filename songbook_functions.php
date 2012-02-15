@@ -369,19 +369,17 @@ function sbk_create_blank_playlist($filename) {
 }
 
 function sbk_chord_replace_callback($chord, $base_key = null, $target_key = null) {
-    if(!is_null($base_key) && !is_null($target_key)) {
+    if(!is_null($base_key) && !is_null($target_key) && $base_key !== '' && $target_key !== '') {
         $chord = sbk_transpose_chord($chord, $base_key, $target_key);
     }
     return '</span><span class="chord">'.$chord.'</span><span class="text">';
 }
 
-function sbk_convert_song_content_to_HTML($content, $base_key = 'null', $song_playlist_data = null) {
-    if(is_null($song_playlist_data)) {
-        $params = '';
-    } elseif(is_null($song_playlist_data['key'])) {
+function sbk_convert_song_content_to_HTML($content, $base_key = 'null', $target_key = null) {
+    if(is_null($target_key)) {
         $params = '';
     } else {
-        $params  = ', "'.$base_key.'", "'.$song_playlist_data['key'].'"';
+        $params  = ', "'.$base_key.'", "'.$target_key.'"';
     }
 
     $contentHTML = $content;
@@ -409,27 +407,33 @@ function sbk_get_song_record($id) {
     return acradb_get_single_record(SBK_DATABASE_NAME, SBK_TABLE_NAME, SBK_KEYFIELD_NAME, $id);
 }
 
-function sbk_get_song_html($id, $song_playlist_data = null) {
+function sbk_get_song_html($id, $key = null, $singer = null, $capo = null) {
     $display = '';
     $this_record = sbk_get_song_record($id);
-    $display = sbk_song_html($this_record, $song_playlist_data);
+    $display = sbk_song_html($this_record, $key, $singer, $capo);
 
     return $display;
 }
 
-function sbk_song_html($this_record, $song_playlist_data = null) {
+function sbk_song_html($this_record, $key = null, $singer = null, $capo = null) {
 
     $display = '';
     $number_of_lyric_lines_per_page = 55;
     $number_of_columns_per_page = 2;
     $target_key = null;
     $performer = null;
-    if(!is_null($song_playlist_data)) {
-        $target_key = $song_playlist_data['key'];
-        $performer = $song_playlist_data['singer'];
+    if(!is_null($key)) {
+        if(is_integer($capo)) {
+            $target_key = sbk_shift_note($key, -1 * $capo);
+        } else {
+            $target_key = $key;
+        }
+    }
+    if(!is_null($singer)) {
+        $performer = $singer;
     }
 
-    $contentHTML = sbk_convert_song_content_to_HTML($this_record['content'], $this_record['base_key'], $song_playlist_data);
+    $contentHTML = sbk_convert_song_content_to_HTML($this_record['content'], $this_record['base_key'], $target_key);
 
     $contentXML = new SimpleXMLElement($contentHTML);
     $line_count = 0;
@@ -452,6 +456,7 @@ function sbk_song_html($this_record, $song_playlist_data = null) {
        $line_count = $line_count + $line_spacing;
        //p($line_count, $number_of_lyric_lines_per_page, $column_count, $number_of_columns_per_page, $line_count % $number_of_lyric_lines_per_page, $column_count % $number_of_columns_per_page);
        $this_column_height = ($line_count % $number_of_lyric_lines_per_page);
+       $previous_page_width = 0;
        if($this_column_height < $previous_column_height) {
            //too many lines - start a new column
            $this_page_width = ($column_count % $number_of_columns_per_page);
@@ -480,6 +485,17 @@ function sbk_song_html($this_record, $song_playlist_data = null) {
     $page_header = $page_header.'<span class="pagenumber"><span class="label">page</span><span class="data" id="page_number">test</span><span class="label">of</span><span class="data" id="number_of_pages">test</span></span>';
     $page_header = $page_header.'<div class="written_by"><span class="data">'.str_replace('&', 'and', $this_record['written_by']).'</span></div>';
     $page_header = $page_header.'<div class="performed_by"><span class="label">performed by: </span><span class="data">'.$this_record['performed_by'].'</span></div>';
+
+    $page_header = $page_header.'<div class="key">';
+    if(!is_null($capo)) {
+        $page_header = $page_header.'<div class="capo"><span class="label">Capo </span><span class="data">'.$capo.'</span></div>';
+        $page_header = $page_header.'<div class="target_key"><span class="label">actual key: </span><span class="data">'.$key.'</span></div>';
+    }
+    if(!is_null($singer)) {
+        $page_header = $page_header.'<div class="singer"><span class="label">chords for </span><span class="data">'.$singer.'</span></div>';
+    }
+    $page_header = $page_header.'</div>';
+
     $page_header = $page_header.'</div>';
     $page_headerXML = new SimpleXMLElement($page_header);
 
@@ -508,11 +524,13 @@ function sbk_print_multiple_songs($id_array) {
     $output = '';
 
     foreach ($id_array as $this_id => $this_song_playlist_data) {
-        $playlist_data = array();
+        $key = null;
+        $singer = null;
+        $capo = null;
         foreach($this_song_playlist_data->attributes() as $key => $value) {
-            $playlist_data[$key] = (string) $value;
+            $$key = (string) $value;
         }
-        $output = $output.sbk_get_song_html($this_id, $playlist_data);
+        $output = $output.sbk_get_song_html($this_id, $key, $singer, $capo);
     }
 
     return $output;
@@ -777,6 +795,12 @@ function sbk_shift_note($note, $adjustment, $use_sharps = null) {
 function sbk_transpose_chord($chord, $base_key, $target_key) {
     global $NOTE_VALUE_ARRAY, $VALUE_NOTE_ARRAY_DEFAULT, $VALUE_NOTE_ARRAY_SHARP, $VALUE_NOTE_ARRAY_FLAT;
 
+    if(is_null($base_key) || $base_key === '') {
+        throw new Exception("sbk_transpose_chord() :: no base key passed");
+    }
+    if(is_null($target_key) || $target_key === '') {
+        throw new Exception("sbk_transpose_chord() :: no target key passed");
+    }
     $chord_note = substr($chord, 0, 1);
     $second_char = substr($chord, 1, 1);
     $modifier_start = 1;

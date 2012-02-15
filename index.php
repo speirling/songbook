@@ -138,9 +138,17 @@ switch ($action) {
     case 'pdfSong':
         $number_of_lyric_lines_per_page = 58;
         $id = $_GET['id'];
+        $key = null;
+        $singer = null;
+        if(array_key_exists('key', $_GET) && $_GET['key'] !== '') {
+            $key = urldecode($_GET['key']);
+        }
+        if(array_key_exists('singer', $_GET) && $_GET['singer'] !== '') {
+            $singer = urldecode($_GET['singer']);
+        }
 
-        $this_record = acradb_get_single_record(SBK_DATABASE_NAME, SBK_TABLE_NAME, SBK_KEYFIELD_NAME, $id);
-        $display = $display.sbk_get_song_html($id);
+        $this_record = sbk_get_song_record($id);
+        $display = $display.sbk_song_html($this_record, $key, $singer);
 
         sbk_output_pdf($display, $this_record['title']);
     break;
@@ -197,17 +205,41 @@ switch ($action) {
             break;
             }
         } else {
-            $id = str_replace('id_', '', $_GET['id']);
+            //$id = str_replace('id_', '', $_GET['id']); //why might this be needed?
+            $id = $_GET['id'];
+            $key = null;
+            $singer = null;
+            $capo = null;
+            if(array_key_exists('key', $_GET) && $_GET['key'] !== '') {
+                $key = urldecode($_GET['key']);
+            }
+            if(array_key_exists('singer', $_GET) && $_GET['singer'] !== '') {
+                $singer = urldecode($_GET['singer']);
+            }
+            if(array_key_exists('capo', $_GET) && $_GET['capo'] !== '') {
+                $capo = (integer) $_GET['capo'];
+            }
         }
         $display = $display.$menu;
         $display = $display.'<ul class="menu local">';
         $display = $display.'<li><a href="?action=displaySong&id='.($id - 1).'">&laquo; Previous</a></li>';
         $display = $display.'<li><a href="?action=editSong&id='.$id.'">Edit this song</a></li>';
-        $display = $display.'<li><a href="?action=pdfSong&id='.$id.'">.pdf</a></li>';
+        $display = $display.'<li><a href="?action=pdfSong&id='.$id;
+        if(!is_null($key)) {
+            $display = $display.'&key='.urlencode($key);
+        }
+        if(!is_null($singer)) {
+            $display = $display.'&singer='.$singer;
+        }
+        if(!is_null($capo)) {
+            $display = $display.'&singer='.$capo;
+        }
+        $display = $display.'">.pdf</a></li>';
         $display = $display.'<li><a href="?action=displaySong&id='.($id + 1).'">Next &raquo;</a></li>';
         $display = $display.'</ul>';
-        $display = $display.sbk_get_song_html($id);
+
         $this_record = sbk_get_song_record($id);
+        $display = $display.sbk_song_html($this_record, $key, $singer, $capo);
         $page_title = $this_record['title'].' - playlists';
     break;
 
