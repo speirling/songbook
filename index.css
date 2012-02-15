@@ -594,6 +594,32 @@ div.song-page.first_page .songnumber .label {
 	font-size:0.8em;
 }
 
+div.song-page .page_header .key {
+	font-size: 0.8em;
+	display: none;
+	position: absolute;
+	right: 7em;
+	top: 0;
+	border:1px solid red;
+}
+div.song-page .page_header .key .target_key {
+}
+div.song-page .page_header .key .target_key .label{
+}
+div.song-page .page_header .key .target_key .data {
+}
+div.song-page .page_header .key .capo {
+}
+div.song-page .page_header .key .capo .label {
+}
+div.song-page .page_header .key .capo .data {
+}
+div.song-page .page_header .key .singer {
+}
+div.song-page .page_header .key .singer .label {
+}
+div.song-page .page_header .key .singer .data {
+}
 
 /* end of song display */
 
