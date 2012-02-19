@@ -196,6 +196,11 @@ $text_song_html = sbktest_standardise_markup('
         </span>
         <div class="written_by"><span class="data">Breand&#xE1;n de R&#xF3;iste and Eugene Peelo</span></div>
         <div class="performed_by"><span class="label">performed by: </span><span class="data"/></div>
+        <div class="key">
+        	<div class="target_key">
+        		<span class="label">key: </span><span class="data">D</span>
+        	</div>
+        </div>
     </div>
     <table>
         <tr>
@@ -222,6 +227,16 @@ $text_song_html_transposed_G = sbktest_standardise_markup('
         </span>
         <div class="written_by"><span class="data">Breand&#xE1;n de R&#xF3;iste and Eugene Peelo</span></div>
         <div class="performed_by"><span class="label">performed by: </span><span class="data"/></div>
+        <div class="key">
+        	<div class="singer">
+        		<span class="label">chords for </span>
+        		<span class="data">Bill</span>
+        	</div>
+        	<div class="target_key">
+        		<span class="label">key: </span>
+        		<span class="data">G</span>
+        	</div>
+        </div>
     </div>
     <table>
         <tr>

@@ -381,7 +381,6 @@ function sbk_convert_song_content_to_HTML($content, $base_key = 'null', $target_
     } else {
         $params  = ', "'.$base_key.'", "'.$target_key.'"';
     }
-
     $contentHTML = $content;
     $contentHTML = preg_replace('/&([^#n])/', '&#38;$1', $contentHTML);
     $contentHTML = str_replace(' ', '&#160;', $contentHTML);
@@ -421,18 +420,20 @@ function sbk_song_html($this_record, $key = null, $singer = null, $capo = null) 
     $number_of_lyric_lines_per_page = 55;
     $number_of_columns_per_page = 2;
     $target_key = null;
-    $performer = null;
-    if(!is_null($key)) {
+    if(is_null($key)) {
+        $key = $this_record['base_key'];
+    } else {
         if(is_integer($capo)) {
             $target_key = sbk_shift_note($key, -1 * $capo);
         } else {
             $target_key = $key;
         }
     }
-    if(!is_null($singer)) {
-        $performer = $singer;
+    if(is_null($this_record['base_key'])) {
+        if(!is_null) {
+            p("sbk_song_html() :: This song ( no. ".$this_record['id'].", ".$this_record['title'].") does not have a base key specified. It will not be transposed");
+        }
     }
-
     $contentHTML = sbk_convert_song_content_to_HTML($this_record['content'], $this_record['base_key'], $target_key);
 
     $contentXML = new SimpleXMLElement($contentHTML);
@@ -486,13 +487,15 @@ function sbk_song_html($this_record, $key = null, $singer = null, $capo = null) 
     $page_header = $page_header.'<div class="written_by"><span class="data">'.str_replace('&', 'and', $this_record['written_by']).'</span></div>';
     $page_header = $page_header.'<div class="performed_by"><span class="label">performed by: </span><span class="data">'.$this_record['performed_by'].'</span></div>';
 
-    $page_header = $page_header.'<div class="key">';
-    if(!is_null($capo)) {
-        $page_header = $page_header.'<div class="capo"><span class="label">Capo </span><span class="data">'.$capo.'</span></div>';
-        $page_header = $page_header.'<div class="target_key"><span class="label">actual key: </span><span class="data">'.$key.'</span></div>';
-    }
+    $page_header = $page_header.'<div class="key"> ';//space needed here, or else if there's nulls you can end up with '<div class="key"/></div>', whcih messes up the page
     if(!is_null($singer)) {
         $page_header = $page_header.'<div class="singer"><span class="label">chords for </span><span class="data">'.$singer.'</span></div>';
+    }
+    if(!is_null($capo)) {
+        $page_header = $page_header.'<div class="capo"><span class="label">Capo </span><span class="data">'.$capo.'</span></div>';
+        $page_header = $page_header.'<div class="target_key">(<span class="label">actual key: </span><span class="data">'.$key.'</span>)</div>';
+    } else {
+        $page_header = $page_header.'<div class="target_key"><span class="label">key: </span><span class="data">'.$key.'</span></div>';
     }
     $page_header = $page_header.'</div>';
 

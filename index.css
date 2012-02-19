@@ -596,25 +596,43 @@ div.song-page.first_page .songnumber .label {
 
 div.song-page .page_header .key {
 	font-size: 0.8em;
-	display: none;
 	position: absolute;
-	right: 7em;
-	top: 0;
-	border:1px solid red;
+	left: 30%;
+	right: 30%;
+	bottom: 0;
+	width: auto;
+	background-color: #f3f3f3;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+}
+div.song-page .page_header .key .label {
+	font-style:normal;
 }
 div.song-page .page_header .key .target_key {
+	display: inline;
+	color: gray;
 }
 div.song-page .page_header .key .target_key .label{
 }
 div.song-page .page_header .key .target_key .data {
 }
 div.song-page .page_header .key .capo {
+	font-size: 1.5em;
+	display: inline;
+	margin-right: 0.7em;
+	margin-left: 0.7em;
 }
 div.song-page .page_header .key .capo .label {
+	margin-right: 0.2em;
+	color: black;
 }
 div.song-page .page_header .key .capo .data {
 }
 div.song-page .page_header .key .singer {
+	font-size: 1em;
+	font-weight: normal;
+	width: auto;
+	display: inline;
 }
 div.song-page .page_header .key .singer .label {
 }
