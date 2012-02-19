@@ -137,18 +137,23 @@ switch ($action) {
 
     case 'pdfSong':
         $number_of_lyric_lines_per_page = 58;
-        $id = $_GET['id'];
         $key = null;
         $singer = null;
+        $capo = null;
+
+        $id = $_GET['id'];
         if(array_key_exists('key', $_GET) && $_GET['key'] !== '') {
             $key = urldecode($_GET['key']);
         }
         if(array_key_exists('singer', $_GET) && $_GET['singer'] !== '') {
             $singer = urldecode($_GET['singer']);
         }
+        if(array_key_exists('capo', $_GET) && $_GET['capo'] !== '') {
+            $capo = (integer) $_GET['capo'];
+        }
 
         $this_record = sbk_get_song_record($id);
-        $display = $display.sbk_song_html($this_record, $key, $singer);
+        $display = $display.sbk_song_html($this_record, $key, $singer, $capo);
 
         sbk_output_pdf($display, $this_record['title']);
     break;
@@ -186,6 +191,9 @@ switch ($action) {
     break;
 
     case 'displaySong':
+        $key = null;
+        $singer = null;
+        $capo = null;
         if (array_key_exists('update',$_POST)) {
             switch ($_POST['update']) {
             case "addNewSong":
@@ -207,9 +215,6 @@ switch ($action) {
         } else {
             //$id = str_replace('id_', '', $_GET['id']); //why might this be needed?
             $id = $_GET['id'];
-            $key = null;
-            $singer = null;
-            $capo = null;
             if(array_key_exists('key', $_GET) && $_GET['key'] !== '') {
                 $key = urldecode($_GET['key']);
             }
@@ -232,7 +237,7 @@ switch ($action) {
             $display = $display.'&singer='.$singer;
         }
         if(!is_null($capo)) {
-            $display = $display.'&singer='.$capo;
+            $display = $display.'&capo='.$capo;
         }
         $display = $display.'">.pdf</a></li>';
         $display = $display.'<li><a href="?action=displaySong&id='.($id + 1).'">Next &raquo;</a></li>';
