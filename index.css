@@ -234,12 +234,12 @@ li.set span.duration {
 	display:none;	
 }
 input.duration {
-	width: 3em;
+	width: 32px;
 	text-align: center;
 	border: 0;
 	background-color: #e3e3f3;
 	position: absolute;
-	right: 1em;
+	right: 16px;
 }
 
 input.introduction_duration {
@@ -284,13 +284,35 @@ li.dummy {
 	font-size:3px;
 	line-height:3px;
 }
+::-webkit-input-placeholder{
+    font-size: 1.2em;
+	font-weight: normal;
+	margin-top: 4px;
+	margin-bottom: 4px;
+	margin-left: 3px;
+	margin-right: 3px;
+}
+input:-moz-placeholder {
+    font-size: 1.2em;
+	font-weight: normal;
+	margin-top: 4px;
+	margin-bottom: 4px;
+	margin-left: 3px;
+	margin-right: 3px;
+}
 
-.key {
-	width:2em;
-	font-weight: bold;
+
+.key ,
+.capo {
+	width:25px;
+	font-weight: normal;
 	background-color: transparent;
-	border:0;
+	border: 0;
 	text-align: center;
+	margin-right:0.3em;
+}
+.key {
+	font-weight: bold;
 }
 
 .singer {
@@ -303,7 +325,9 @@ li.dummy {
 	margin-right:0.3em;
 }
 
-.key:focus, .singer:focus {
+.key:focus, 
+.singer:focus, 
+.capo:focus {
 	border:1px solid silver;
 	background-color: white;
 }

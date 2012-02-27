@@ -45,19 +45,19 @@ $text_playlist_xml = <<<XML
   <introduction duration="0:55">Introduction to the show</introduction>
   <set label="Set 1">
     <introduction duration="0:05">Introduction to the first set</introduction>
-    <song id="34" key="G" singer="Euge" duration="1:00">
+    <song id="34" key="G" singer="Euge" capo="0" duration="1:00">
       <introduction duration="0:30">Introduction to the first song</introduction>
     </song>
-    <song id="38" key="A" singer="Ali" duration="2:00">
+    <song id="38" key="A" singer="Ali" capo="2" duration="2:00">
       <introduction duration="0:45">Introduction to the second song</introduction>
     </song>
   </set>
   <set label="Set 2">
     <introduction duration="0:05">Introduction to the second set</introduction>
-    <song id="40" key="E" singer="Breandan" duration="3:00">
+    <song id="40" key="E" singer="Breandan" capo="1" duration="3:00">
       <introduction duration="0:15">Introduction to the third song</introduction>
     </song>
-    <song id="20" key="D" singer="Bill" duration="4:00">
+    <song id="20" key="D" singer="Bill" capo="0" duration="4:00">
       <introduction duration="0:25">Introduction to the fourth song</introduction>
     </song>
   </set>
@@ -83,6 +83,7 @@ $text_full_html = sbktest_standardise_markup('
     <li class="song" id="id_34">
       <input type="text" class="singer" value="Euge" />
       <input type="text" class="key" value="G" />
+      <input type="text" class="capo" value="0" />
       <span class="id">34</span>
       <input type="text" class="duration" value="1:00" />
       <span class="title">A Hard Day\'s Night</span>
@@ -94,6 +95,7 @@ $text_full_html = sbktest_standardise_markup('
     <li class="song" id="id_38">
       <input type="text" class="singer" value="Ali" />
       <input type="text" class="key" value="A" />
+      <input type="text" class="capo" value="2" />
       <span class="id">38</span>
       <input type="text" class="duration" value="2:00" />
       <span class="title">A Pair Of Brown Eyes</span>
@@ -116,6 +118,7 @@ $text_full_html = sbktest_standardise_markup('
     <li class="song" id="id_40">
     <input type="text" class="singer" value="Breandan" />
     <input type="text" class="key" value="E" />
+      <input type="text" class="capo" value="1" />
     <span class="id">40</span>
     <input type="text" class="duration" value="3:00" />
     <span class="title">A Rainy Night In Soho</span>
@@ -127,6 +130,7 @@ $text_full_html = sbktest_standardise_markup('
   <li class="song" id="id_20">
     <input type="text" class="singer" value="Bill" />
     <input type="text" class="key" value="D" />
+      <input type="text" class="capo" value="0" />
     <span class="id">20</span>
     <input type="text" class="duration" value="4:00" />
     <span class="title">Stand by Me</span>
@@ -140,6 +144,27 @@ $text_full_html = sbktest_standardise_markup('
 </li>
 </ul>'
 );
+
+$text_playlist_json = '{
+	"title": "Test Playlist",
+	"act": "Cafe Ceili",
+	"introduction": {"text": "Introduction to the show", "duration": "0:55"},
+	"sets": [{
+		"label": "Set 1",
+		"introduction": {"text": "Introduction to the first set", "duration": "0:05"},
+		"songs": [
+			{"id": "id_34", "key": "G", "singer": "Euge", "capo": "0", "duration": "1:00", "introduction": {"text": "Introduction to the first song", "duration": "0:30"}},
+			{"id": "id_38", "key": "A", "singer": "Ali", "capo": "2", "duration": "2:00", "introduction": {"text": "Introduction to the second song", "duration": "0:45"}}
+		]
+	}, {
+		"label": "Set 2",
+		"introduction": {"text": "Introduction to the second set", "duration": "0:05"},
+		"songs": [
+			{"id": "id_40", "key": "E", "singer": "Breandan", "capo": "1", "duration": "3:00", "introduction": {"text": "Introduction to the third song", "duration": "0:15"}},
+			{"id": "id_20", "key":"D", "singer": "Bill", "capo": "0", "duration": "4:00", "introduction": {"text": "Introduction to the fourth song", "duration": "0:25"}}
+		]
+	}]
+}';
 
 $array_song = array(
 'id' => 697,
@@ -248,40 +273,20 @@ $text_song_body_html_transposed_G
 </div>
 ');
 
-$text_playlist_json = '{
-	"title": "Test Playlist",
-	"act": "Cafe Ceili",
-	"introduction": {"text": "Introduction to the show", "duration": "0:55"},
-	"sets": [{
-		"label": "Set 1",
-		"introduction": {"text": "Introduction to the first set", "duration": "0:05"},
-		"songs": [
-			{"id": "id_34", "key": "G", "singer": "Euge", "duration": "1:00", "introduction": {"text": "Introduction to the first song", "duration": "0:30"}},
-			{"id": "id_38", "key": "A", "singer": "Ali", "duration": "2:00", "introduction": {"text": "Introduction to the second song", "duration": "0:45"}}
-		]
-	}, {
-		"label": "Set 2",
-		"introduction": {"text": "Introduction to the second set", "duration": "0:05"},
-		"songs": [
-			{"id": "id_40", "key": "E", "singer": "Breandan", "duration": "3:00", "introduction": {"text": "Introduction to the third song", "duration": "0:15"}},
-			{"id": "id_20", "key":"D", "singer": "Bill", "duration": "4:00", "introduction": {"text": "Introduction to the fourth song", "duration": "0:25"}}
-		]
-	}]
-}';
-
 class songbook_tests extends UnitTestCase {
 
    function test_sbk_song_as_li() {
        global $text_playlist_xml, $text_full_html;
 
       $data[] = array(
-           'thisSong' => new SimpleXMLElement('<song id="164" key="G" singer="Clare" duration="3:05"><introduction duration="1:32">Testing 1...2...3...</introduction></song>'),
+           'thisSong' => new SimpleXMLElement('<song id="164" key="G" singer="Clare" capo="1" duration="3:05"><introduction duration="1:32">Testing 1...2...3...</introduction></song>'),
            'textarea' => 'span',
            'input_start' => 'span',
            'input_middle' => '>',
            'input_end' => '</span',
            'editable' => false,
            'show_key' => TRUE,
+           'show_capo' => TRUE,
            'show_singer' => TRUE,
            'show_id' => TRUE,
            'show_writtenby' => TRUE,
@@ -295,6 +300,7 @@ class songbook_tests extends UnitTestCase {
            			<span class="spec">
            				<span class="key">G</span>
            				<span class="singer">Clare</span>
+           				<span class="capo">1</span>
            				<span class="id">164</span>
            				<span class="duration">3:05</span>
            			</span>
@@ -305,13 +311,14 @@ class songbook_tests extends UnitTestCase {
            		</li>')
        );
        $data[] = array(
-           'thisSong' => new SimpleXMLElement('<song id="164" key="G" singer="Clare" duration="3:05"><introduction duration="1:32">Testing 1...2...3...</introduction></song>'),
+           'thisSong' => new SimpleXMLElement('<song id="164" key="G" singer="Clare" capo="2"  duration="3:05"><introduction duration="1:32">Testing 1...2...3...</introduction></song>'),
            'textarea' => 'textarea',
            'input_start' => 'input type="text"',
            'input_middle' => ' value="',
            'input_end' => '" /',
            'editable' => true,
            'show_key' => TRUE,
+           'show_capo' => TRUE,
            'show_singer' => TRUE,
            'show_id' => TRUE,
            'show_writtenby' => TRUE,
@@ -322,6 +329,7 @@ class songbook_tests extends UnitTestCase {
            		<li class="song" id="id_164">
            			<input type="text" class="singer" value="Clare" />
            			<input type="text" class="key" value="G" />
+           			<input type="text" class="capo" value="2" />
            			<span class="id">164</span>
            			<input type="text" class="duration" value="3:05" />
            			<span class="title">Dublin in The Rare Ould Times</span>
@@ -340,6 +348,7 @@ class songbook_tests extends UnitTestCase {
                $data[$index]['input_end'],
                $data[$index]['editable'],
                $data[$index]['show_key'],
+               $data[$index]['show_capo'],
       	       $data[$index]['show_singer'],
       	       $data[$index]['show_id'],
       	       $data[$index]['show_writtenby'],
@@ -365,6 +374,7 @@ class songbook_tests extends UnitTestCase {
            'playlistContent' => new SimpleXMLElement($text_playlist_xml),
            'editable' => true,
            'show_key' => TRUE,
+           'show_capo' => TRUE,
       	   'show_singer' => TRUE,
       	   'show_id' => TRUE,
       	   'show_writtenby' => TRUE,
@@ -377,103 +387,232 @@ class songbook_tests extends UnitTestCase {
            'playlistContent' => new SimpleXMLElement($text_playlist_xml),
            'editable' => false,
            'show_key' => TRUE,
+           'show_capo' => TRUE,
       	   'show_singer' => TRUE,
       	   'show_id' => TRUE,
       	   'show_writtenby' => TRUE,
       	   'show_performedby' => TRUE,
       	   'show_duration' => true,
       	   'show_introduction' => true,
-           'expected' => '<span class="playlist-title">Test Playlist</span><span class="act">Cafe Ceili</span><span class="introduction songlist"><span class="introduction_text">Introduction to the show</span><span class="introduction_duration">0:55</span></span><ul><li class="set playlist"><span class="set-title">Set 1</span><span class="duration">04:15</span><span class="introduction set"><span class="introduction_text">Introduction to the first set</span><span class="introduction_duration">0:05</span></span><ol><li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span><span class="detail"> (<span class="written_by">Lennon/McCartney</span> | <span class="performed_by">The Beatles</span>)</span><span class="spec"><span class="key">G</span><span class="singer">Euge</span><span class="id">34</span><span class="duration">1:00</span></span><span class="introduction"><span class="introduction_text">Introduction to the first song</span><span class="introduction_duration">0:30</span></span></li><li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="key">A</span><span class="singer">Ali</span><span class="id">38</span><span class="duration">2:00</span></span><span class="introduction"><span class="introduction_text">Introduction to the second song</span><span class="introduction_duration">0:45</span></span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><span class="introduction set"><span class="introduction_text">Introduction to the second set</span><span class="introduction_duration">0:05</span></span><ol><li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="key">E</span><span class="singer">Breandan</span><span class="id">40</span><span class="duration">3:00</span></span><span class="introduction"><span class="introduction_text">Introduction to the third song</span><span class="introduction_duration">0:15</span></span></li><li class="song" id="id_20"><span class="title">Stand by Me</span><span class="detail"> (<span class="written_by">Ben E King</span> | <span class="performed_by">Ben E King</span>)</span><span class="spec"><span class="key">D</span><span class="singer">Bill</span><span class="id">20</span><span class="duration">4:00</span></span><span class="introduction"><span class="introduction_text">Introduction to the fourth song</span><span class="introduction_duration">0:25</span></span></li></ol></li></ul>'
+           'expected' => sbktest_standardise_markup('
+           			<span class="playlist-title">Test Playlist</span>
+           			<span class="act">Cafe Ceili</span>
+           			<span class="introduction songlist">
+           				<span class="introduction_text">Introduction to the show</span>
+           				<span class="introduction_duration">0:55</span>
+           			</span>
+           			<ul>
+           				<li class="set playlist">
+           					<span class="set-title">Set 1</span>
+           					<span class="duration">04:15</span>
+           					<span class="introduction set">
+           						<span class="introduction_text">Introduction to the first set</span>
+           						<span class="introduction_duration">0:05</span>
+           					</span>
+           					<ol>
+           						<li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span>
+               						<span class="detail"> (<span class="written_by">Lennon/McCartney</span> | <span class="performed_by">The Beatles</span>)</span>
+               						<span class="spec">
+               							<span class="key">G</span>
+               							<span class="singer">Euge</span>
+               							<span class="capo">0</span>
+               							<span class="id">34</span>
+               							<span class="duration">1:00</span>
+               						</span>
+               						<span class="introduction">
+               							<span class="introduction_text">Introduction to the first song</span>
+               							<span class="introduction_duration">0:30</span>
+               						</span>
+           						</li>
+           						<li class="song" id="id_38">
+           							<span class="title">A Pair Of Brown Eyes</span>
+           							<span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span>
+           							<span class="spec">
+           								<span class="key">A</span>
+           								<span class="singer">Ali</span>
+               							<span class="capo">2</span>
+           								<span class="id">38</span>
+           								<span class="duration">2:00</span>
+           							</span>
+           							<span class="introduction">
+           								<span class="introduction_text">Introduction to the second song</span>
+           								<span class="introduction_duration">0:45</span>
+           							</span>
+           						</li>
+           					</ol>
+           				</li>
+           				<li class="set playlist">
+           					<span class="set-title">Set 2</span>
+           					<span class="duration">07:40</span>
+           					<span class="introduction set">
+           						<span class="introduction_text">Introduction to the second set</span>
+           						<span class="introduction_duration">0:05</span>
+           					</span>
+           					<ol>
+           						<li class="song" id="id_40">
+           							<span class="title">A Rainy Night In Soho</span>
+           							<span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span>
+           							<span class="spec">
+           								<span class="key">E</span>
+           								<span class="singer">Breandan</span>
+               							<span class="capo">1</span>
+           								<span class="id">40</span>
+           								<span class="duration">3:00</span>
+           							</span>
+           							<span class="introduction">
+           								<span class="introduction_text">Introduction to the third song</span>
+           								<span class="introduction_duration">0:15</span>
+           							</span>
+           						</li>
+           						<li class="song" id="id_20">
+           							<span class="title">Stand by Me</span>
+           							<span class="detail"> (<span class="written_by">Ben E King</span> | <span class="performed_by">Ben E King</span>)</span>
+           							<span class="spec">
+           								<span class="key">D</span>
+           								<span class="singer">Bill</span>
+               							<span class="capo">0</span>
+           								<span class="id">20</span>
+           								<span class="duration">4:00</span>
+           							</span>
+           							<span class="introduction">
+           								<span class="introduction_text">Introduction to the fourth song</span>
+           								<span class="introduction_duration">0:25</span>
+           							</span>
+           						</li>
+           					</ol>
+           				</li>
+           			</ul>')
        );
       $data[] = array(
            'playlistContent' => new SimpleXMLElement($text_playlist_xml),
            'editable' => false,
            'show_key' => TRUE,
+           'show_capo' => TRUE,
       	   'show_singer' => TRUE,
       	   'show_id' => TRUE,
       	   'show_writtenby' => TRUE,
       	   'show_performedby' => TRUE,
       	   'show_duration' => true,
       	   'show_introduction' => false,
-           'expected' => '<span class="playlist-title">Test Playlist</span><span class="act">Cafe Ceili</span><ul><li class="set playlist"><span class="set-title">Set 1</span><span class="duration">04:15</span><ol><li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span><span class="detail"> (<span class="written_by">Lennon/McCartney</span> | <span class="performed_by">The Beatles</span>)</span><span class="spec"><span class="key">G</span><span class="singer">Euge</span><span class="id">34</span><span class="duration">1:00</span></span></li><li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="key">A</span><span class="singer">Ali</span><span class="id">38</span><span class="duration">2:00</span></span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><ol><li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="key">E</span><span class="singer">Breandan</span><span class="id">40</span><span class="duration">3:00</span></span></li><li class="song" id="id_20"><span class="title">Stand by Me</span><span class="detail"> (<span class="written_by">Ben E King</span> | <span class="performed_by">Ben E King</span>)</span><span class="spec"><span class="key">D</span><span class="singer">Bill</span><span class="id">20</span><span class="duration">4:00</span></span></li></ol></li></ul>'
+           'expected' => sbktest_standardise_markup('<span class="playlist-title">Test Playlist</span><span class="act">Cafe Ceili</span><ul><li class="set playlist"><span class="set-title">Set 1</span><span class="duration">04:15</span><ol>
+<li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span><span class="detail"> (<span class="written_by">Lennon/McCartney</span> | <span class="performed_by">The Beatles</span>)</span><span class="spec"><span class="key">G</span><span class="singer">Euge</span><span class="capo">0</span><span class="id">34</span><span class="duration">1:00</span></span></li>
+<li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="key">A</span><span class="singer">Ali</span><span class="capo">2</span><span class="id">38</span><span class="duration">2:00</span></span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><ol>
+<li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="key">E</span><span class="singer">Breandan</span><span class="capo">1</span><span class="id">40</span><span class="duration">3:00</span></span></li>
+<li class="song" id="id_20"><span class="title">Stand by Me</span><span class="detail"> (<span class="written_by">Ben E King</span> | <span class="performed_by">Ben E King</span>)</span><span class="spec"><span class="key">D</span><span class="singer">Bill</span><span class="capo">0</span><span class="id">20</span><span class="duration">4:00</span></span></li></ol></li></ul>')
        );
       $data[] = array(
            'playlistContent' => new SimpleXMLElement($text_playlist_xml),
            'editable' => false,
            'show_key' => false,
+           'show_capo' => TRUE,
       	   'show_singer' => TRUE,
       	   'show_id' => TRUE,
       	   'show_writtenby' => TRUE,
       	   'show_performedby' => TRUE,
       	   'show_duration' => true,
       	   'show_introduction' => false,
-           'expected' => '<span class="playlist-title">Test Playlist</span><span class="act">Cafe Ceili</span><ul><li class="set playlist"><span class="set-title">Set 1</span><span class="duration">04:15</span><ol><li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span><span class="detail"> (<span class="written_by">Lennon/McCartney</span> | <span class="performed_by">The Beatles</span>)</span><span class="spec"><span class="singer">Euge</span><span class="id">34</span><span class="duration">1:00</span></span></li><li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="singer">Ali</span><span class="id">38</span><span class="duration">2:00</span></span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><ol><li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="singer">Breandan</span><span class="id">40</span><span class="duration">3:00</span></span></li><li class="song" id="id_20"><span class="title">Stand by Me</span><span class="detail"> (<span class="written_by">Ben E King</span> | <span class="performed_by">Ben E King</span>)</span><span class="spec"><span class="singer">Bill</span><span class="id">20</span><span class="duration">4:00</span></span></li></ol></li></ul>'
+           'expected' => sbktest_standardise_markup('<span class="playlist-title">Test Playlist</span><span class="act">Cafe Ceili</span><ul><li class="set playlist"><span class="set-title">Set 1</span><span class="duration">04:15</span><ol>
+<li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span><span class="detail"> (<span class="written_by">Lennon/McCartney</span> | <span class="performed_by">The Beatles</span>)</span><span class="spec"><span class="singer">Euge</span><span class="capo">0</span><span class="id">34</span><span class="duration">1:00</span></span></li>
+<li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="singer">Ali</span><span class="capo">2</span><span class="id">38</span><span class="duration">2:00</span></span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><ol>
+<li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="singer">Breandan</span><span class="capo">1</span><span class="id">40</span><span class="duration">3:00</span></span></li>
+<li class="song" id="id_20"><span class="title">Stand by Me</span><span class="detail"> (<span class="written_by">Ben E King</span> | <span class="performed_by">Ben E King</span>)</span><span class="spec"><span class="singer">Bill</span><span class="capo">0</span><span class="id">20</span><span class="duration">4:00</span></span></li></ol></li></ul>')
        );
       $data[] = array(
            'playlistContent' => new SimpleXMLElement($text_playlist_xml),
            'editable' => false,
            'show_key' => false,
+           'show_capo' => TRUE,
       	   'show_singer' => false,
       	   'show_id' => TRUE,
       	   'show_writtenby' => TRUE,
       	   'show_performedby' => TRUE,
       	   'show_duration' => true,
       	   'show_introduction' => false,
-           'expected' => '<span class="playlist-title">Test Playlist</span><span class="act">Cafe Ceili</span><ul><li class="set playlist"><span class="set-title">Set 1</span><span class="duration">04:15</span><ol><li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span><span class="detail"> (<span class="written_by">Lennon/McCartney</span> | <span class="performed_by">The Beatles</span>)</span><span class="spec"><span class="id">34</span><span class="duration">1:00</span></span></li><li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="id">38</span><span class="duration">2:00</span></span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><ol><li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="id">40</span><span class="duration">3:00</span></span></li><li class="song" id="id_20"><span class="title">Stand by Me</span><span class="detail"> (<span class="written_by">Ben E King</span> | <span class="performed_by">Ben E King</span>)</span><span class="spec"><span class="id">20</span><span class="duration">4:00</span></span></li></ol></li></ul>'
+           'expected' => sbktest_standardise_markup('<span class="playlist-title">Test Playlist</span><span class="act">Cafe Ceili</span><ul><li class="set playlist"><span class="set-title">Set 1</span><span class="duration">04:15</span><ol>
+<li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span><span class="detail"> (<span class="written_by">Lennon/McCartney</span> | <span class="performed_by">The Beatles</span>)</span><span class="spec"><span class="capo">0</span><span class="id">34</span><span class="duration">1:00</span></span></li>
+<li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="capo">2</span><span class="id">38</span><span class="duration">2:00</span></span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><ol>
+<li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="capo">1</span><span class="id">40</span><span class="duration">3:00</span></span></li>
+<li class="song" id="id_20"><span class="title">Stand by Me</span><span class="detail"> (<span class="written_by">Ben E King</span> | <span class="performed_by">Ben E King</span>)</span><span class="spec"><span class="capo">0</span><span class="id">20</span><span class="duration">4:00</span></span></li></ol></li></ul>')
        );
+/*
+ * @todo
+ * Add cases below where show_capo = true
+ */
+
       $data[] = array(
            'playlistContent' => new SimpleXMLElement($text_playlist_xml),
            'editable' => false,
            'show_key' => false,
+           'show_capo' => false,
       	   'show_singer' => false,
       	   'show_id' => false,
       	   'show_writtenby' => TRUE,
       	   'show_performedby' => TRUE,
       	   'show_duration' => true,
       	   'show_introduction' => false,
-           'expected' => '<span class="playlist-title">Test Playlist</span><span class="act">Cafe Ceili</span><ul><li class="set playlist"><span class="set-title">Set 1</span><span class="duration">04:15</span><ol><li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span><span class="detail"> (<span class="written_by">Lennon/McCartney</span> | <span class="performed_by">The Beatles</span>)</span></li><li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><ol><li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span></li><li class="song" id="id_20"><span class="title">Stand by Me</span><span class="detail"> (<span class="written_by">Ben E King</span> | <span class="performed_by">Ben E King</span>)</span></li></ol></li></ul>'
+           'expected' => sbktest_standardise_markup('<span class="playlist-title">Test Playlist</span><span class="act">Cafe Ceili</span><ul><li class="set playlist"><span class="set-title">Set 1</span><span class="duration">04:15</span><ol>
+<li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span><span class="detail"> (<span class="written_by">Lennon/McCartney</span> | <span class="performed_by">The Beatles</span>)</span></li>
+<li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><ol>
+<li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span></li>
+<li class="song" id="id_20"><span class="title">Stand by Me</span><span class="detail"> (<span class="written_by">Ben E King</span> | <span class="performed_by">Ben E King</span>)</span></li></ol></li></ul>')
        );
       $data[] = array(
            'playlistContent' => new SimpleXMLElement($text_playlist_xml),
            'editable' => false,
            'show_key' => false,
+           'show_capo' => false,
       	   'show_singer' => false,
       	   'show_id' => false,
       	   'show_writtenby' => false,
       	   'show_performedby' => TRUE,
       	   'show_duration' => true,
       	   'show_introduction' => false,
-           'expected' => '<span class="playlist-title">Test Playlist</span><span class="act">Cafe Ceili</span><ul><li class="set playlist"><span class="set-title">Set 1</span><span class="duration">04:15</span><ol><li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span><span class="detail"> (<span class="performed_by">The Beatles</span>)</span></li><li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span><span class="detail"> (<span class="performed_by">The Pogues</span>)</span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><ol><li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span><span class="detail"> (<span class="performed_by">The Pogues</span>)</span></li><li class="song" id="id_20"><span class="title">Stand by Me</span><span class="detail"> (<span class="performed_by">Ben E King</span>)</span></li></ol></li></ul>'
+           'expected' => sbktest_standardise_markup('<span class="playlist-title">Test Playlist</span><span class="act">Cafe Ceili</span><ul><li class="set playlist"><span class="set-title">Set 1</span><span class="duration">04:15</span><ol>
+<li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span><span class="detail"> (<span class="performed_by">The Beatles</span>)</span></li>
+<li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span><span class="detail"> (<span class="performed_by">The Pogues</span>)</span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><ol>
+<li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span><span class="detail"> (<span class="performed_by">The Pogues</span>)</span></li>
+<li class="song" id="id_20"><span class="title">Stand by Me</span><span class="detail"> (<span class="performed_by">Ben E King</span>)</span></li></ol></li></ul>')
        );
       $data[] = array(
            'playlistContent' => new SimpleXMLElement($text_playlist_xml),
            'editable' => false,
            'show_key' => false,
+           'show_capo' => false,
       	   'show_singer' => false,
       	   'show_id' => false,
       	   'show_writtenby' => false,
       	   'show_performedby' => false,
       	   'show_duration' => true,
       	   'show_introduction' => false,
-           'expected' => '<span class="playlist-title">Test Playlist</span><span class="act">Cafe Ceili</span><ul><li class="set playlist"><span class="set-title">Set 1</span><span class="duration">04:15</span><ol><li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span></li><li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><ol><li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span></li><li class="song" id="id_20"><span class="title">Stand by Me</span></li></ol></li></ul>'
+           'expected' => sbktest_standardise_markup('<span class="playlist-title">Test Playlist</span><span class="act">Cafe Ceili</span><ul><li class="set playlist"><span class="set-title">Set 1</span><span class="duration">04:15</span><ol>
+<li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span></li>
+<li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><ol>
+<li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span></li>
+<li class="song" id="id_20"><span class="title">Stand by Me</span></li></ol></li></ul>')
        );
       $data[] = array(
            'playlistContent' => new SimpleXMLElement($text_playlist_xml),
            'editable' => false,
            'show_key' => false,
+           'show_capo' => false,
       	   'show_singer' => false,
       	   'show_id' => false,
       	   'show_writtenby' => false,
       	   'show_performedby' => false,
       	   'show_duration' => false,
       	   'show_introduction' => false,
-           'expected' => '<span class="playlist-title">Test Playlist</span><span class="act">Cafe Ceili</span><ul><li class="set playlist"><span class="set-title">Set 1</span><ol><li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span></li><li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><ol><li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span></li><li class="song" id="id_20"><span class="title">Stand by Me</span></li></ol></li></ul>'
+           'expected' => sbktest_standardise_markup('<span class="playlist-title">Test Playlist</span><span class="act">Cafe Ceili</span><ul><li class="set playlist"><span class="set-title">Set 1</span><ol>
+<li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span></li>
+<li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><ol>
+<li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span></li>
+<li class="song" id="id_20"><span class="title">Stand by Me</span></li></ol></li></ul>')
        );
        for ( $index = 0; $index < sizeof($data); $index = $index + 1) {
            $result = sbk_convert_playlistXML_to_list(
                $data[$index]['playlistContent'],
                $data[$index]['editable'],
                $data[$index]['show_key'],
+               $data[$index]['show_capo'],
       	       $data[$index]['show_singer'],
       	       $data[$index]['show_id'],
       	       $data[$index]['show_writtenby'],

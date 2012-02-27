@@ -70,11 +70,11 @@ $VALUE_NOTE_ARRAY_FLAT = Array(
 );
 
 function sbk_convert_playlistXML_to_editable_list($playlistContent) {
-    return sbk_convert_playlistXML_to_list($playlistContent, $editable = true, $show_key = TRUE, $show_singer = TRUE, $show_id = false, $show_writtenby = false, $show_performedby = false, $show_duration = true, $show_introduction = true);
+    return sbk_convert_playlistXML_to_list($playlistContent, $editable = true, $show_key = TRUE, $show_capo = TRUE, $show_singer = TRUE, $show_id = false, $show_writtenby = false, $show_performedby = false, $show_duration = true, $show_introduction = true);
 }
 
-function sbk_convert_playlistXML_to_orderedlist($playlistContent, $show_key = TRUE, $show_singer = TRUE, $show_id = TRUE, $show_writtenby = TRUE, $show_performedby = TRUE, $show_duration = true, $show_introduction = false) {
-    return sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $show_key, $show_singer, $show_id, $show_writtenby, $show_performedby, $show_duration, $show_introduction);
+function sbk_convert_playlistXML_to_orderedlist($playlistContent, $show_key = TRUE, $show_capo = TRUE, $show_singer = TRUE, $show_id = TRUE, $show_writtenby = TRUE, $show_performedby = TRUE, $show_duration = true, $show_introduction = false) {
+    return sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $show_key, $show_capo, $show_singer, $show_id, $show_writtenby, $show_performedby, $show_duration, $show_introduction);
 }
 
 function sbk_convert_playlistXML_to_table($playlistContent) {
@@ -82,7 +82,7 @@ function sbk_convert_playlistXML_to_table($playlistContent) {
     $number_of_columns = count($playlistContent->set);
     $column_width = floor(100/$number_of_columns);
     $outputHTML = $outputHTML.'<div id="playlist-table">';
-    $outputHTML = $outputHTML.sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $show_key = TRUE, $show_singer = TRUE, $show_id = TRUE, $show_writtenby = TRUE, $show_performedby = TRUE, $show_duration = true);
+    $outputHTML = $outputHTML.sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $show_key = TRUE, $show_capo = TRUE, $show_singer = TRUE, $show_id = TRUE, $show_writtenby = TRUE, $show_performedby = TRUE, $show_duration = true);
     $outputHTML = $outputHTML.'</div>';
     return $outputHTML;
 }
@@ -99,8 +99,9 @@ function sbk_convert_playlistXML_to_table($playlistContent) {
  * @param boolean $show_duration
  * @param boolean $show_introduction
  */
-function sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $show_key = TRUE, $show_singer = TRUE, $show_id = TRUE, $show_writtenby = TRUE, $show_performedby = TRUE, $show_duration = true, $show_introduction = true) {
+function sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $show_key = TRUE, $show_capo = TRUE, $show_singer = TRUE, $show_id = TRUE, $show_writtenby = TRUE, $show_performedby = TRUE, $show_duration = true, $show_introduction = true) {
     //p($playlistContent->asXML(), $editable, $show_key, $show_singer, $show_id, $show_writtenby, $show_performedby, $show_duration, $show_introduction);
+
     $outputHTML = '';
     if($editable) {
         $textarea = 'textarea';
@@ -129,7 +130,7 @@ function sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $s
         $setHTML = '';
         foreach($thisSet->song as $thisSong) {
             $set_duration = $set_duration + sbk_duration_string_to_seconds((string) $thisSong['duration']) + sbk_duration_string_to_seconds((string) $thisSong->introduction['duration']);
-            $setHTML = $setHTML.sbk_song_as_li($thisSong, $textarea, $input_start, $input_middle, $input_end, $editable, $show_key, $show_singer, $show_id, $show_writtenby, $show_performedby, $show_duration, $show_introduction);
+            $setHTML = $setHTML.sbk_song_as_li($thisSong, $textarea, $input_start, $input_middle, $input_end, $editable, $show_key, $show_capo, $show_singer, $show_id, $show_writtenby, $show_performedby, $show_duration, $show_introduction);
         }
         $outputHTML = $outputHTML.'<li class="set playlist">';
         $outputHTML = $outputHTML.'<'.$input_start.' class="set-title"'.$input_middle.$thisSet['label'].$input_end.'>';
@@ -157,7 +158,6 @@ function sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $s
 }
 
 function sbk_convert_parsedjson_to_playlistXML($parsed_json) {
-
     $playlistContent = new SimpleXMLElement('<?xml version="1.0" standalone="yes"?><songlist></songlist>');
     $playlistContent->addAttribute('title', $parsed_json->title);
     $playlistContent->addAttribute('act', $parsed_json->act);
@@ -183,6 +183,7 @@ function sbk_convert_parsedjson_to_playlistXML($parsed_json) {
                 $XMLsong->addAttribute('id', $this_id);
                 $XMLsong->addAttribute('key',(string) $thisSong->key);
                 $XMLsong->addAttribute('singer',(string) $thisSong->singer);
+                $XMLsong->addAttribute('capo',(string) $thisSong->capo);
                 $XMLsong->addAttribute('duration',(string) $thisSong->duration);
 
                 if($thisSong->introduction) {
@@ -232,15 +233,6 @@ function sbk_list_all_songs_in_database($search_string = false) {
         $outputHTML = $outputHTML.'<ul>';
         while ($this_record = mysql_fetch_assoc($result)) {
             $outputHTML = $outputHTML.sbk_song_as_li($this_record);
-            /*
-            $outputHTML = $outputHTML.'<li class="song" id="id_'.$this_record['id'].'">';
-            $outputHTML = $outputHTML.'<input class="key" type="text" value="">';
-            $outputHTML = $outputHTML.'<input class="singer" type="text" value="">';
-            $outputHTML = $outputHTML.'<span class="title">'.$this_record['title'].'</span>';
-            $outputHTML = $outputHTML.'<input type="text" class="duration" value=""></input>';
-            $outputHTML = $outputHTML.'<span class="detail"> (<span class="written_by">'.$this_record['written_by'].'</span> | <span class="performed_by">'.$this_record['performed_by'].'</span>)</span>';
-            $outputHTML = $outputHTML.'</li>';
-            */
     	}
         $outputHTML = $outputHTML.'</ul>';
     	$outputHTML = $outputHTML.'</div>';
@@ -573,6 +565,7 @@ function sbk_song_as_li(
             $input_end = '</span',
             $editable = false,
             $show_key = TRUE,
+            $show_capo = TRUE,
             $show_singer = TRUE,
             $show_id = TRUE,
             $show_writtenby = TRUE,
@@ -582,19 +575,24 @@ function sbk_song_as_li(
     //capture('thisSong', 'textarea', 'input_start', 'input_end', 'editable', 'show_key', 'show_singer', 'show_id', 'show_writtenby', 'show_performedby', 'show_duration', 'show_introduction');
 
     $key = '';
+    $capo = '';
     $singer = '';
     $songDuration = '';
     if(gettype($thisSong) === 'object') {
         //p(gettype($thisSong), $thisSong->asXML());
         //p($thisSong['duration']);
         $key = (string) $thisSong['key'];
+        $capo = (string) $thisSong['capo'];
         $singer = (string) $thisSong['singer'];
         $songDuration = (string) $thisSong['duration'];
     } else {
         if(array_key_exists('key', $thisSong)) {
             $key = $thisSong['key'];
         }
-        if(array_key_exists('singer', $thisSong)) {
+        if(array_key_exists('capo', $thisSong)) {
+            $capo = $thisSong['capo'];
+        }
+        if(array_key_exists('singer', $thisSong)) {p($thisSong);
             $singer = $thisSong['singer'];
         }
         if(array_key_exists('duration', $thisSong)) {
@@ -609,6 +607,7 @@ Handle other attributes when it's an array
     $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $thisSong['id']);
     $songHTML = array();
     $songHTML['key'] = '';
+    $songHTML['capo'] = '';
     $songHTML['singer'] = '';
     $songHTML['id'] = '';
     $songHTML['songDuration'] = '';
@@ -618,16 +617,19 @@ Handle other attributes when it's an array
     $songHTML['introduction_duration'] = '';
     $songHTML['title'] = '<span class="title">'.$this_record['title'].'</span>';
     if($show_key) {
-        $songHTML['key'] = '<'.$input_start.' class="key"'.$input_middle.$key.$input_end.'>';
+        $songHTML['key'] = '<'.$input_start.' class="key" placeholder="key" '.$input_middle.$key.$input_end.'>';
     }
     if($show_singer) {
-        $songHTML['singer'] = '<'.$input_start.' class="singer"'.$input_middle.$singer.$input_end.'>';
+        $songHTML['singer'] = '<'.$input_start.' class="singer" placeholder="singer" '.$input_middle.$singer.$input_end.'>';
+    }
+    if($show_capo) {
+        $songHTML['capo'] = '<'.$input_start.' class="capo" placeholder="capo" '.$input_middle.$capo.$input_end.'>';
     }
     if($show_id) {
         $songHTML['id'] = '<span class="id">'.$this_record['id'].'</span>';
     }
     if($show_duration) {
-        $songHTML['songDuration'] = '<'.$input_start.' class="duration"'.$input_middle.$songDuration.$input_end.'>';
+        $songHTML['songDuration'] = '<'.$input_start.' class="duration" placeholder="mm:ss" '.$input_middle.$songDuration.$input_end.'>';
     }
     if($show_writtenby) {
         $songHTML['writtenBy'] = '<span class="written_by">'.$this_record['written_by'].'</span>';
@@ -639,15 +641,15 @@ Handle other attributes when it's an array
         $songHTML['performedBy'] .= '<span class="performed_by">'.$this_record['performed_by'].'</span>';
     }
     if(array_key_exists('introduction', $thisSong)) {
-        $songHTML['introduction_text'] = '<'.$textarea.' class="introduction_text">'.(string) $thisSong->introduction.'</'.$textarea.'>';
+        $songHTML['introduction_text'] = '<'.$textarea.' class="introduction_text" placeholder="Introduction text" >'.(string) $thisSong->introduction.'</'.$textarea.'>';
     } else {
-        $songHTML['introduction_text'] = '<'.$textarea.' class="introduction_text">'.'</'.$textarea.'>';
+        $songHTML['introduction_text'] = '<'.$textarea.' class="introduction_text" placeholder="Introduction text" >'.'</'.$textarea.'>';
     }
     if($show_duration) {
         if(array_key_exists('introduction', $thisSong)) {
-            $songHTML['introduction_duration'] = '<'.$input_start.' class="introduction_duration"'.$input_middle.$thisSong->introduction['duration'].$input_end.'>';
+            $songHTML['introduction_duration'] = '<'.$input_start.' class="introduction_duration" placeholder="Introduction duration" '.$input_middle.$thisSong->introduction['duration'].$input_end.'>';
         } else {
-            $songHTML['introduction_duration'] = '<'.$input_start.' class="introduction_duration"'.$input_middle.$input_end.'>';
+            $songHTML['introduction_duration'] = '<'.$input_start.' class="introduction_duration" placeholder="Introduction duration" '.$input_middle.$input_end.'>';
         }
     }
 
@@ -655,6 +657,7 @@ Handle other attributes when it's an array
     if($editable) {
         $setHTML = $setHTML.$songHTML['singer'];
         $setHTML = $setHTML.$songHTML['key'];
+        $setHTML = $setHTML.$songHTML['capo'];
         $setHTML = $setHTML.$songHTML['id'];
         $setHTML = $setHTML.$songHTML['songDuration'];
         $setHTML = $setHTML.$songHTML['title'];
@@ -670,10 +673,11 @@ Handle other attributes when it's an array
             $setHTML = $setHTML.$songHTML['performedBy'];
             $setHTML = $setHTML.')</span>';
         }
-        if($show_key | $show_singer | $show_id) {
+        if($show_key | $show_singer | $show_id | $show_capo) {
             $setHTML = $setHTML.'<span class="spec">';
             $setHTML = $setHTML.$songHTML['key'];
             $setHTML = $setHTML.$songHTML['singer'];
+            $setHTML = $setHTML.$songHTML['capo'];
             $setHTML = $setHTML.$songHTML['id'];
             $setHTML = $setHTML.$songHTML['songDuration'];
             $setHTML = $setHTML.'</span>';
