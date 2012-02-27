@@ -189,6 +189,7 @@ function convert_playlist_to_json (source) {
 				"id": self.attr('id'),
 				"key": jQuery('.key', self).val(),
 				"singer": jQuery('.singer', self).val(),
+				"capo": jQuery('.capo', self).val(),
 				"duration": jQuery('.duration', self).val(),
 				"introduction": {
 					"text": jQuery('.introduction_text', self).val(),
