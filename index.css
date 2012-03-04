@@ -284,6 +284,7 @@ li.dummy {
 	font-size:3px;
 	line-height:3px;
 }
+
 ::-webkit-input-placeholder{
     font-size: 1.2em;
 	font-weight: normal;
@@ -304,12 +305,12 @@ input:-moz-placeholder {
 
 .key ,
 .capo {
-	width:25px;
+	width: 25px;
 	font-weight: normal;
 	background-color: transparent;
 	border: 0;
 	text-align: center;
-	margin-right:0.3em;
+	margin-right: 3px;
 }
 .key {
 	font-weight: bold;
@@ -322,7 +323,7 @@ input:-moz-placeholder {
 	text-align: right;
 	color:gray;
 	font-size:1.3em;
-	margin-right:0.3em;
+	margin-right: 3px;
 }
 
 .key:focus, 
@@ -331,6 +332,7 @@ input:-moz-placeholder {
 	border:1px solid silver;
 	background-color: white;
 }
+
 #playlist-holder {
 	margin-right: 2em;
 	top:2em;

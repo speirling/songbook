@@ -400,6 +400,15 @@ function sbk_get_song_record($id) {
 
 function sbk_get_song_html($id, $key = null, $singer = null, $capo = null) {
     $display = '';
+    if($key === '') {
+        $key = null;
+    }
+    if($singer === '') {
+        $singer = null;
+    }
+    if($capo === '') {
+        $capo = null;
+    }
     $this_record = sbk_get_song_record($id);
     $display = sbk_song_html($this_record, $key, $singer, $capo);
 
@@ -519,13 +528,10 @@ function sbk_print_multiple_songs($id_array) {
     $output = '';
 
     foreach ($id_array as $this_id => $this_song_playlist_data) {
-        $key = null;
-        $singer = null;
-        $capo = null;
-        foreach($this_song_playlist_data->attributes() as $key => $value) {
-            $$key = (string) $value;
+        foreach($this_song_playlist_data->attributes() as $attribute_name => $value) {
+            $attributes[$attribute_name] = (string) $value;
         }
-        $output = $output.sbk_get_song_html($this_id, $key, $singer, $capo);
+        $output = $output.sbk_get_song_html($attributes['id'], $attributes['key'], $attributes['singer'], $attributes['capo']);
     }
 
     return $output;

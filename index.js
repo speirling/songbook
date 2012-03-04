@@ -45,7 +45,8 @@ function display_playlist_editor () {
         		        click: function(element){ 
         		        	window.open('?action=displaySong&id=' + element.attr('id').replace('id_', '') + 
         		        			'&key=' + escape(element.children('.key').val()) +
-        		        			'&singer=' + element.children('.singer').val()
+        		        			'&singer=' + element.children('.singer').val() +
+        		        			'&capo=' + element.children('.capo').val()
         		        	);
         		        }
         		    },

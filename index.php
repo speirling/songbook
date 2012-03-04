@@ -94,6 +94,7 @@ switch ($action) {
 
     case 'displayPlaylist':
         $playlist = $_GET['playlist'];
+        $page_title = "[".$playlist."]";
 
         $display = $display.$menu;
         $display = $display.'<ul class="menu local">';
@@ -182,11 +183,11 @@ switch ($action) {
         $display = $display.'<div class="playlist-page">';
         $display = $display.sbk_convert_playlistXML_to_orderedlist($playlistContent, $show_key = TRUE, $show_capo = TRUE, $show_singer = TRUE, $show_id = TRUE, $show_writtenby = TRUE, $show_performedby = TRUE);
         $display = $display.'</div>';
-        //$display = $display.sbk_generate_index($ID_array);
+        $display = $display.sbk_generate_index($ID_array);
         sort($ID_array);
         $display = $display.sbk_print_multiple_songs($ID_array);
         if(array_key_exists('pdf', $_GET)) {
-            sbk_output_pdf($display, 'SongBook - '.$playlistContent['title']);
+          sbk_output_pdf($display, 'SongBook - '.$playlistContent['title']);
         }
     break;
 
