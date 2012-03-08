@@ -3,10 +3,14 @@ require_once 'admin/configure.inc.php';
 
 $display = '';
 $data_string = (string) $_POST['data'];
+/**
+ * @todo: Put this into a testable function, and test for stings containing apostrophes... a playlist with the title "Clare's Repertoire" got blanked bfore line 14 was added
+ */
 if(array_key_exists('filename', $_POST)) {
     $filename = $_POST['filename'];
 
     $data_string = str_replace('\"', '"', trim($data_string, '()'));
+    $data_string = str_replace("\'", "'", trim($data_string, '()'));
     $data = json_decode(trim($data_string, '()'));
     $playlist_XML = sbk_convert_parsedjson_to_playlistXML($data);
 
