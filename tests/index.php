@@ -68,40 +68,40 @@ $text_full_html = sbktest_standardise_markup('
 <input type="text" class="playlist-title" value="Test Playlist" />
 <input type="text" class="act" value="Cafe Ceili" />
 <span class="introduction songlist">
-<textarea class="introduction_text">Introduction to the show</textarea>
-<input type="text" class="introduction_duration" value="0:55" />
+<textarea class="introduction_text" placeholder="Introduction text">Introduction to the show</textarea>
+<input type="text" class="introduction_duration" placeholder="Introduction duration" value="0:55" />
 </span>
 <ul>
 <li class="set playlist">
   <input type="text" class="set-title" value="Set 1" />
   <span class="duration">04:15</span>
   <span class="introduction set">
-    <textarea class="introduction_text">Introduction to the first set</textarea>
-    <input type="text" class="introduction_duration" value="0:05" />
+    <textarea class="introduction_text" placeholder="Introduction text">Introduction to the first set</textarea>
+    <input type="text" class="introduction_duration" placeholder="Introduction duration" value="0:05" />
   </span>
   <ol>
     <li class="song" id="id_34">
-      <input type="text" class="singer" value="Euge" />
-      <input type="text" class="key" value="G" />
-      <input type="text" class="capo" value="0" />
+      <input type="text" class="singer" placeholder="singer" value="Euge" />
+      <input type="text" class="key" placeholder="key" value="G" />
+      <input type="text" class="capo" placeholder="capo" value="0" />
       <span class="id">34</span>
-      <input type="text" class="duration" value="1:00" />
+      <input type="text" class="duration" placeholder="mm:ss" value="1:00" />
       <span class="title">A Hard Day\'s Night</span>
       <span class="introduction">
-        <textarea class="introduction_text">Introduction to the first song</textarea>
-        <input type="text" class="introduction_duration" value="0:30" />
+        <textarea class="introduction_text" placeholder="Introduction text">Introduction to the first song</textarea>
+        <input type="text" class="introduction_duration" placeholder="Introduction duration" value="0:30" />
       </span>
     </li>
     <li class="song" id="id_38">
-      <input type="text" class="singer" value="Ali" />
-      <input type="text" class="key" value="A" />
-      <input type="text" class="capo" value="2" />
+      <input type="text" class="singer" placeholder="singer" value="Ali" />
+      <input type="text" class="key" placeholder="key" value="A" />
+      <input type="text" class="capo" placeholder="capo" value="2" />
       <span class="id">38</span>
-      <input type="text" class="duration" value="2:00" />
+      <input type="text" class="duration" placeholder="mm:ss" value="2:00" />
       <span class="title">A Pair Of Brown Eyes</span>
       <span class="introduction">
-        <textarea class="introduction_text">Introduction to the second song</textarea>
-        <input type="text" class="introduction_duration" value="0:45" />
+        <textarea class="introduction_text" placeholder="Introduction text">Introduction to the second song</textarea>
+        <input type="text" class="introduction_duration" placeholder="Introduction duration" value="0:45" />
       </span>
     </li>
     <li class="dummy">&nbsp;</li>
@@ -111,32 +111,32 @@ $text_full_html = sbktest_standardise_markup('
   <input type="text" class="set-title" value="Set 2" />
   <span class="duration">07:40</span>
   <span class="introduction set">
-    <textarea class="introduction_text">Introduction to the second set</textarea>
-    <input type="text" class="introduction_duration" value="0:05" />
+    <textarea class="introduction_text" placeholder="Introduction text">Introduction to the second set</textarea>
+    <input type="text" class="introduction_duration" placeholder="Introduction duration" value="0:05" />
   </span>
   <ol>
     <li class="song" id="id_40">
-    <input type="text" class="singer" value="Breandan" />
-    <input type="text" class="key" value="E" />
-      <input type="text" class="capo" value="1" />
+    <input type="text" class="singer" placeholder="singer" value="Breandan" />
+    <input type="text" class="key" placeholder="key" value="E" />
+      <input type="text" class="capo" placeholder="capo" value="1" />
     <span class="id">40</span>
-    <input type="text" class="duration" value="3:00" />
+    <input type="text" class="duration" placeholder="mm:ss" value="3:00" />
     <span class="title">A Rainy Night In Soho</span>
     <span class="introduction">
-      <textarea class="introduction_text">Introduction to the third song</textarea>
-      <input type="text" class="introduction_duration" value="0:15" />
+      <textarea class="introduction_text" placeholder="Introduction text">Introduction to the third song</textarea>
+      <input type="text" class="introduction_duration" placeholder="Introduction duration" value="0:15" />
     </span>
   </li>
   <li class="song" id="id_20">
-    <input type="text" class="singer" value="Bill" />
-    <input type="text" class="key" value="D" />
-      <input type="text" class="capo" value="0" />
+    <input type="text" class="singer" placeholder="singer" value="Bill" />
+    <input type="text" class="key" placeholder="key" value="D" />
+      <input type="text" class="capo" placeholder="capo" value="0" />
     <span class="id">20</span>
-    <input type="text" class="duration" value="4:00" />
+    <input type="text" class="duration" placeholder="mm:ss" value="4:00" />
     <span class="title">Stand by Me</span>
     <span class="introduction">
-      <textarea class="introduction_text">Introduction to the fourth song</textarea>
-      <input type="text" class="introduction_duration" value="0:25" />
+      <textarea class="introduction_text" placeholder="Introduction text">Introduction to the fourth song</textarea>
+      <input type="text" class="introduction_duration" placeholder="Introduction duration" value="0:25" />
     </span>
   </li>
   <li class="dummy">&nbsp;</li>
@@ -298,15 +298,15 @@ class songbook_tests extends UnitTestCase {
            			<span class="title">Dublin in The Rare Ould Times</span>
            			<span class="detail"> (<span class="written_by">Pete StJohn</span> | <span class="performed_by"></span>)</span>
            			<span class="spec">
-           				<span class="key">G</span>
-           				<span class="singer">Clare</span>
-           				<span class="capo">1</span>
+           				<span class="key" placeholder="key">G</span>
+           				<span class="singer" placeholder="singer">Clare</span>
+           				<span class="capo" placeholder="capo">1</span>
            				<span class="id">164</span>
-           				<span class="duration">3:05</span>
+           				<span class="duration" placeholder="mm:ss">3:05</span>
            			</span>
            			<span class="introduction">
-               			<span class="introduction_text">Testing 1...2...3...</span>
-               			<span class="introduction_duration">1:32</span>
+               			<span class="introduction_text" placeholder="Introduction text">Testing 1...2...3...</span>
+               			<span class="introduction_duration" placeholder="Introduction duration">1:32</span>
            			</span>
            		</li>')
        );
@@ -327,15 +327,15 @@ class songbook_tests extends UnitTestCase {
            'show_introduction' => true,
            'expected' => sbktest_standardise_markup('
            		<li class="song" id="id_164">
-           			<input type="text" class="singer" value="Clare" />
-           			<input type="text" class="key" value="G" />
-           			<input type="text" class="capo" value="2" />
+           			<input type="text" class="singer" placeholder="singer" value="Clare" />
+           			<input type="text" class="key" placeholder="key" value="G" />
+           			<input type="text" class="capo" placeholder="capo" value="2" />
            			<span class="id">164</span>
-           			<input type="text" class="duration" value="3:05" />
+           			<input type="text" class="duration" placeholder="mm:ss" value="3:05" />
            			<span class="title">Dublin in The Rare Ould Times</span>
            			<span class="introduction">
-           				<textarea class="introduction_text">Testing 1...2...3...</textarea>
-           				<input type="text" class="introduction_duration" value="1:32" />
+           				<textarea class="introduction_text" placeholder="Introduction text">Testing 1...2...3...</textarea>
+           				<input type="text" class="introduction_duration" placeholder="Introduction duration" value="1:32" />
            			</span>
            		</li>')
        );
@@ -398,45 +398,45 @@ class songbook_tests extends UnitTestCase {
            			<span class="playlist-title">Test Playlist</span>
            			<span class="act">Cafe Ceili</span>
            			<span class="introduction songlist">
-           				<span class="introduction_text">Introduction to the show</span>
-           				<span class="introduction_duration">0:55</span>
+           				<span class="introduction_text" placeholder="Introduction text">Introduction to the show</span>
+           				<span class="introduction_duration" placeholder="Introduction duration">0:55</span>
            			</span>
            			<ul>
            				<li class="set playlist">
            					<span class="set-title">Set 1</span>
            					<span class="duration">04:15</span>
            					<span class="introduction set">
-           						<span class="introduction_text">Introduction to the first set</span>
-           						<span class="introduction_duration">0:05</span>
+           						<span class="introduction_text" placeholder="Introduction text">Introduction to the first set</span>
+           						<span class="introduction_duration" placeholder="Introduction duration">0:05</span>
            					</span>
            					<ol>
            						<li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span>
                						<span class="detail"> (<span class="written_by">Lennon/McCartney</span> | <span class="performed_by">The Beatles</span>)</span>
                						<span class="spec">
-               							<span class="key">G</span>
-               							<span class="singer">Euge</span>
-               							<span class="capo">0</span>
+               							<span class="key" placeholder="key">G</span>
+               							<span class="singer" placeholder="singer">Euge</span>
+               							<span class="capo" placeholder="capo">0</span>
                							<span class="id">34</span>
-               							<span class="duration">1:00</span>
+               							<span class="duration" placeholder="mm:ss">1:00</span>
                						</span>
                						<span class="introduction">
-               							<span class="introduction_text">Introduction to the first song</span>
-               							<span class="introduction_duration">0:30</span>
+               							<span class="introduction_text" placeholder="Introduction text">Introduction to the first song</span>
+               							<span class="introduction_duration" placeholder="Introduction duration">0:30</span>
                						</span>
            						</li>
            						<li class="song" id="id_38">
            							<span class="title">A Pair Of Brown Eyes</span>
            							<span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span>
            							<span class="spec">
-           								<span class="key">A</span>
-           								<span class="singer">Ali</span>
-               							<span class="capo">2</span>
+           								<span class="key" placeholder="key">A</span>
+           								<span class="singer" placeholder="singer">Ali</span>
+               							<span class="capo" placeholder="capo">2</span>
            								<span class="id">38</span>
-           								<span class="duration">2:00</span>
+           								<span class="duration" placeholder="mm:ss">2:00</span>
            							</span>
            							<span class="introduction">
-           								<span class="introduction_text">Introduction to the second song</span>
-           								<span class="introduction_duration">0:45</span>
+           								<span class="introduction_text" placeholder="Introduction text">Introduction to the second song</span>
+           								<span class="introduction_duration" placeholder="Introduction duration">0:45</span>
            							</span>
            						</li>
            					</ol>
@@ -445,38 +445,38 @@ class songbook_tests extends UnitTestCase {
            					<span class="set-title">Set 2</span>
            					<span class="duration">07:40</span>
            					<span class="introduction set">
-           						<span class="introduction_text">Introduction to the second set</span>
-           						<span class="introduction_duration">0:05</span>
+           						<span class="introduction_text" placeholder="Introduction text">Introduction to the second set</span>
+           						<span class="introduction_duration" placeholder="Introduction duration">0:05</span>
            					</span>
            					<ol>
            						<li class="song" id="id_40">
            							<span class="title">A Rainy Night In Soho</span>
            							<span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span>
            							<span class="spec">
-           								<span class="key">E</span>
-           								<span class="singer">Breandan</span>
-               							<span class="capo">1</span>
+           								<span class="key" placeholder="key">E</span>
+           								<span class="singer" placeholder="singer">Breandan</span>
+               							<span class="capo" placeholder="capo">1</span>
            								<span class="id">40</span>
-           								<span class="duration">3:00</span>
+           								<span class="duration" placeholder="mm:ss">3:00</span>
            							</span>
            							<span class="introduction">
-           								<span class="introduction_text">Introduction to the third song</span>
-           								<span class="introduction_duration">0:15</span>
+           								<span class="introduction_text" placeholder="Introduction text">Introduction to the third song</span>
+           								<span class="introduction_duration" placeholder="Introduction duration">0:15</span>
            							</span>
            						</li>
            						<li class="song" id="id_20">
            							<span class="title">Stand by Me</span>
            							<span class="detail"> (<span class="written_by">Ben E King</span> | <span class="performed_by">Ben E King</span>)</span>
            							<span class="spec">
-           								<span class="key">D</span>
-           								<span class="singer">Bill</span>
-               							<span class="capo">0</span>
+           								<span class="key" placeholder="key">D</span>
+           								<span class="singer" placeholder="singer">Bill</span>
+               							<span class="capo" placeholder="capo">0</span>
            								<span class="id">20</span>
-           								<span class="duration">4:00</span>
+           								<span class="duration" placeholder="mm:ss">4:00</span>
            							</span>
            							<span class="introduction">
-           								<span class="introduction_text">Introduction to the fourth song</span>
-           								<span class="introduction_duration">0:25</span>
+           								<span class="introduction_text" placeholder="Introduction text">Introduction to the fourth song</span>
+           								<span class="introduction_duration" placeholder="Introduction duration">0:25</span>
            							</span>
            						</li>
            					</ol>
@@ -495,10 +495,10 @@ class songbook_tests extends UnitTestCase {
       	   'show_duration' => true,
       	   'show_introduction' => false,
            'expected' => sbktest_standardise_markup('<span class="playlist-title">Test Playlist</span><span class="act">Cafe Ceili</span><ul><li class="set playlist"><span class="set-title">Set 1</span><span class="duration">04:15</span><ol>
-<li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span><span class="detail"> (<span class="written_by">Lennon/McCartney</span> | <span class="performed_by">The Beatles</span>)</span><span class="spec"><span class="key">G</span><span class="singer">Euge</span><span class="capo">0</span><span class="id">34</span><span class="duration">1:00</span></span></li>
-<li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="key">A</span><span class="singer">Ali</span><span class="capo">2</span><span class="id">38</span><span class="duration">2:00</span></span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><ol>
-<li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="key">E</span><span class="singer">Breandan</span><span class="capo">1</span><span class="id">40</span><span class="duration">3:00</span></span></li>
-<li class="song" id="id_20"><span class="title">Stand by Me</span><span class="detail"> (<span class="written_by">Ben E King</span> | <span class="performed_by">Ben E King</span>)</span><span class="spec"><span class="key">D</span><span class="singer">Bill</span><span class="capo">0</span><span class="id">20</span><span class="duration">4:00</span></span></li></ol></li></ul>')
+<li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span><span class="detail"> (<span class="written_by">Lennon/McCartney</span> | <span class="performed_by">The Beatles</span>)</span><span class="spec"><span class="key" placeholder="key">G</span><span class="singer" placeholder="singer">Euge</span><span class="capo" placeholder="capo">0</span><span class="id">34</span><span class="duration" placeholder="mm:ss">1:00</span></span></li>
+<li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="key" placeholder="key">A</span><span class="singer" placeholder="singer">Ali</span><span class="capo" placeholder="capo">2</span><span class="id">38</span><span class="duration" placeholder="mm:ss">2:00</span></span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><ol>
+<li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="key" placeholder="key">E</span><span class="singer" placeholder="singer">Breandan</span><span class="capo" placeholder="capo">1</span><span class="id">40</span><span class="duration" placeholder="mm:ss">3:00</span></span></li>
+<li class="song" id="id_20"><span class="title">Stand by Me</span><span class="detail"> (<span class="written_by">Ben E King</span> | <span class="performed_by">Ben E King</span>)</span><span class="spec"><span class="key" placeholder="key">D</span><span class="singer" placeholder="singer">Bill</span><span class="capo" placeholder="capo">0</span><span class="id">20</span><span class="duration" placeholder="mm:ss">4:00</span></span></li></ol></li></ul>')
        );
       $data[] = array(
            'playlistContent' => new SimpleXMLElement($text_playlist_xml),
@@ -512,10 +512,10 @@ class songbook_tests extends UnitTestCase {
       	   'show_duration' => true,
       	   'show_introduction' => false,
            'expected' => sbktest_standardise_markup('<span class="playlist-title">Test Playlist</span><span class="act">Cafe Ceili</span><ul><li class="set playlist"><span class="set-title">Set 1</span><span class="duration">04:15</span><ol>
-<li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span><span class="detail"> (<span class="written_by">Lennon/McCartney</span> | <span class="performed_by">The Beatles</span>)</span><span class="spec"><span class="singer">Euge</span><span class="capo">0</span><span class="id">34</span><span class="duration">1:00</span></span></li>
-<li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="singer">Ali</span><span class="capo">2</span><span class="id">38</span><span class="duration">2:00</span></span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><ol>
-<li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="singer">Breandan</span><span class="capo">1</span><span class="id">40</span><span class="duration">3:00</span></span></li>
-<li class="song" id="id_20"><span class="title">Stand by Me</span><span class="detail"> (<span class="written_by">Ben E King</span> | <span class="performed_by">Ben E King</span>)</span><span class="spec"><span class="singer">Bill</span><span class="capo">0</span><span class="id">20</span><span class="duration">4:00</span></span></li></ol></li></ul>')
+<li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span><span class="detail"> (<span class="written_by">Lennon/McCartney</span> | <span class="performed_by">The Beatles</span>)</span><span class="spec"><span class="singer" placeholder="singer">Euge</span><span class="capo" placeholder="capo">0</span><span class="id">34</span><span class="duration" placeholder="mm:ss">1:00</span></span></li>
+<li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="singer" placeholder="singer">Ali</span><span class="capo" placeholder="capo">2</span><span class="id">38</span><span class="duration" placeholder="mm:ss">2:00</span></span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><ol>
+<li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="singer" placeholder="singer">Breandan</span><span class="capo" placeholder="capo">1</span><span class="id">40</span><span class="duration" placeholder="mm:ss">3:00</span></span></li>
+<li class="song" id="id_20"><span class="title">Stand by Me</span><span class="detail"> (<span class="written_by">Ben E King</span> | <span class="performed_by">Ben E King</span>)</span><span class="spec"><span class="singer" placeholder="singer">Bill</span><span class="capo" placeholder="capo">0</span><span class="id">20</span><span class="duration" placeholder="mm:ss">4:00</span></span></li></ol></li></ul>')
        );
       $data[] = array(
            'playlistContent' => new SimpleXMLElement($text_playlist_xml),
@@ -529,10 +529,10 @@ class songbook_tests extends UnitTestCase {
       	   'show_duration' => true,
       	   'show_introduction' => false,
            'expected' => sbktest_standardise_markup('<span class="playlist-title">Test Playlist</span><span class="act">Cafe Ceili</span><ul><li class="set playlist"><span class="set-title">Set 1</span><span class="duration">04:15</span><ol>
-<li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span><span class="detail"> (<span class="written_by">Lennon/McCartney</span> | <span class="performed_by">The Beatles</span>)</span><span class="spec"><span class="capo">0</span><span class="id">34</span><span class="duration">1:00</span></span></li>
-<li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="capo">2</span><span class="id">38</span><span class="duration">2:00</span></span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><ol>
-<li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="capo">1</span><span class="id">40</span><span class="duration">3:00</span></span></li>
-<li class="song" id="id_20"><span class="title">Stand by Me</span><span class="detail"> (<span class="written_by">Ben E King</span> | <span class="performed_by">Ben E King</span>)</span><span class="spec"><span class="capo">0</span><span class="id">20</span><span class="duration">4:00</span></span></li></ol></li></ul>')
+<li class="song" id="id_34"><span class="title">A Hard Day\'s Night</span><span class="detail"> (<span class="written_by">Lennon/McCartney</span> | <span class="performed_by">The Beatles</span>)</span><span class="spec"><span class="capo" placeholder="capo">0</span><span class="id">34</span><span class="duration" placeholder="mm:ss">1:00</span></span></li>
+<li class="song" id="id_38"><span class="title">A Pair Of Brown Eyes</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="capo" placeholder="capo">2</span><span class="id">38</span><span class="duration" placeholder="mm:ss">2:00</span></span></li></ol></li><li class="set playlist"><span class="set-title">Set 2</span><span class="duration">07:40</span><ol>
+<li class="song" id="id_40"><span class="title">A Rainy Night In Soho</span><span class="detail"> (<span class="written_by">Shane McGowan</span> | <span class="performed_by">The Pogues</span>)</span><span class="spec"><span class="capo" placeholder="capo">1</span><span class="id">40</span><span class="duration" placeholder="mm:ss">3:00</span></span></li>
+<li class="song" id="id_20"><span class="title">Stand by Me</span><span class="detail"> (<span class="written_by">Ben E King</span> | <span class="performed_by">Ben E King</span>)</span><span class="spec"><span class="capo" placeholder="capo">0</span><span class="id">20</span><span class="duration" placeholder="mm:ss">4:00</span></span></li></ol></li></ul>')
        );
 /*
  * @todo
