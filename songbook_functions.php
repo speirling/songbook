@@ -118,9 +118,9 @@ function sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $s
     $outputHTML = $outputHTML.'<'.$input_start.' class="act"'.$input_middle.$playlistContent['act'].$input_end.'>';
     if($editable | $show_introduction) {
         $outputHTML = $outputHTML.'<span class="introduction songlist">';
-        $outputHTML = $outputHTML.'<'.$textarea.' class="introduction_text">'.(string) $playlistContent->introduction.'</'.$textarea.'>';
+        $outputHTML = $outputHTML.'<'.$textarea.' class="introduction_text" placeholder="Introduction text">'.(string) $playlistContent->introduction.'</'.$textarea.'>';
         if($show_duration) {
-            $outputHTML = $outputHTML.'<'.$input_start.' class="introduction_duration"'.$input_middle.$playlistContent->introduction['duration'].$input_end.'>';
+            $outputHTML = $outputHTML.'<'.$input_start.' class="introduction_duration" placeholder="Introduction duration"'.$input_middle.$playlistContent->introduction['duration'].$input_end.'>';
         }
         $outputHTML = $outputHTML.'</span>';
     }
@@ -139,9 +139,9 @@ function sbk_convert_playlistXML_to_list($playlistContent, $editable = false, $s
         }
         if($editable | $show_introduction) {
             $outputHTML = $outputHTML.'<span class="introduction set">';
-            $outputHTML = $outputHTML.'<'.$textarea.' class="introduction_text">'.(string) $thisSet->introduction.'</'.$textarea.'>';
+            $outputHTML = $outputHTML.'<'.$textarea.' class="introduction_text" placeholder="Introduction text">'.(string) $thisSet->introduction.'</'.$textarea.'>';
             if($show_duration) {
-                $outputHTML = $outputHTML.'<'.$input_start.' class="introduction_duration"'.$input_middle.$thisSet->introduction['duration'].$input_end.'>';
+                $outputHTML = $outputHTML.'<'.$input_start.' class="introduction_duration" placeholder="Introduction duration"'.$input_middle.$thisSet->introduction['duration'].$input_end.'>';
             }
             $outputHTML = $outputHTML.'</span>';
         }
@@ -258,6 +258,23 @@ function sbk_getIDarray($playlistXML = false) {
     return $ID_array;
 }
 
+function sbk_section_html($sort_fieldname) {
+    $html = '';
+
+    $html = $html.'<div class="indent">';
+    ksort($index[$sort_fieldname]);
+    foreach($index[$sort_fieldname] as $this_field => $this_songarray) {
+        $html = $html.'<h2>'.ucwords($this_field).'</h2>';
+        ksort($this_songarray);
+        foreach($this_songarray as $this_title => $this_html) {
+            $html = $html.$this_html;
+        }
+    }
+    $html = $html.'</div>';
+
+    return $html;
+}
+
 function sbk_generate_index($ID_array) {
     $html = '';
     $index = Array(
@@ -274,8 +291,13 @@ function sbk_generate_index($ID_array) {
     $id_csv = substr($id_csv, 0, -2);
     $id_csv = $id_csv.")";
 
+    $line_count = 0; //a line is a heading, a song, a space between paragraphs, a main heading is 2 lines
+    $column_height = 20; //lines - songs or headings
+    $page_width = 3; //columns
+
     $result = acradb_get_query_result("select * from ".SBK_TABLE_NAME." WHERE id IN ".$id_csv, SBK_DATABASE_NAME);
     while ($this_record = mysql_fetch_assoc($result)) {
+
         $this_title = trim($this_record['title']);
         $this_html = '<div class="song" id="'.$this_record['id'].'"><span class="id">'.$this_record['id'].'</span><span class="title">'.$this_record['title'].'</span></div>';
 
@@ -305,10 +327,16 @@ function sbk_generate_index($ID_array) {
             }
         }
     }
+
     $html = $html.'<h1>Sorted by title</h1>';
+    $line_count = $line_count + 1;
     $html = $html.'<div class="indent">';
     ksort($index['title']);
+
     foreach($index['title'] as $this_title => $this_html) {
+        if($line_count % $column_height === 0) {
+
+        }
         $html = $html.$this_html;
     }
     $html = $html.'</div>';
@@ -623,19 +651,19 @@ Handle other attributes when it's an array
     $songHTML['introduction_duration'] = '';
     $songHTML['title'] = '<span class="title">'.$this_record['title'].'</span>';
     if($show_key) {
-        $songHTML['key'] = '<'.$input_start.' class="key" placeholder="key" '.$input_middle.$key.$input_end.'>';
+        $songHTML['key'] = '<'.$input_start.' class="key" placeholder="key"'.$input_middle.$key.$input_end.'>';
     }
     if($show_singer) {
-        $songHTML['singer'] = '<'.$input_start.' class="singer" placeholder="singer" '.$input_middle.$singer.$input_end.'>';
+        $songHTML['singer'] = '<'.$input_start.' class="singer" placeholder="singer"'.$input_middle.$singer.$input_end.'>';
     }
     if($show_capo) {
-        $songHTML['capo'] = '<'.$input_start.' class="capo" placeholder="capo" '.$input_middle.$capo.$input_end.'>';
+        $songHTML['capo'] = '<'.$input_start.' class="capo" placeholder="capo"'.$input_middle.$capo.$input_end.'>';
     }
     if($show_id) {
         $songHTML['id'] = '<span class="id">'.$this_record['id'].'</span>';
     }
     if($show_duration) {
-        $songHTML['songDuration'] = '<'.$input_start.' class="duration" placeholder="mm:ss" '.$input_middle.$songDuration.$input_end.'>';
+        $songHTML['songDuration'] = '<'.$input_start.' class="duration" placeholder="mm:ss"'.$input_middle.$songDuration.$input_end.'>';
     }
     if($show_writtenby) {
         $songHTML['writtenBy'] = '<span class="written_by">'.$this_record['written_by'].'</span>';
@@ -647,15 +675,15 @@ Handle other attributes when it's an array
         $songHTML['performedBy'] .= '<span class="performed_by">'.$this_record['performed_by'].'</span>';
     }
     if(array_key_exists('introduction', $thisSong)) {
-        $songHTML['introduction_text'] = '<'.$textarea.' class="introduction_text" placeholder="Introduction text" >'.(string) $thisSong->introduction.'</'.$textarea.'>';
+        $songHTML['introduction_text'] = '<'.$textarea.' class="introduction_text" placeholder="Introduction text">'.(string) $thisSong->introduction.'</'.$textarea.'>';
     } else {
-        $songHTML['introduction_text'] = '<'.$textarea.' class="introduction_text" placeholder="Introduction text" >'.'</'.$textarea.'>';
+        $songHTML['introduction_text'] = '<'.$textarea.' class="introduction_text" placeholder="Introduction text">'.'</'.$textarea.'>';
     }
     if($show_duration) {
         if(array_key_exists('introduction', $thisSong)) {
-            $songHTML['introduction_duration'] = '<'.$input_start.' class="introduction_duration" placeholder="Introduction duration" '.$input_middle.$thisSong->introduction['duration'].$input_end.'>';
+            $songHTML['introduction_duration'] = '<'.$input_start.' class="introduction_duration" placeholder="Introduction duration"'.$input_middle.$thisSong->introduction['duration'].$input_end.'>';
         } else {
-            $songHTML['introduction_duration'] = '<'.$input_start.' class="introduction_duration" placeholder="Introduction duration" '.$input_middle.$input_end.'>';
+            $songHTML['introduction_duration'] = '<'.$input_start.' class="introduction_duration" placeholder="Introduction duration"'.$input_middle.$input_end.'>';
         }
     }
 
