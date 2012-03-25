@@ -289,6 +289,18 @@ function sbk_index_parts($this_record, $section, $this_title, $this_html) {
     return $output;
 }
 
+function sbk_covert_array_to_csv_string($array) {
+    $csv = "(";
+
+    foreach ($array as $element => $data) {
+        $csv = $csv.$element.", ";
+    }
+    $csv = substr($csv, 0, -2);
+    $csv = $csv.")";
+
+    return $csv;
+}
+
 function sbk_generate_index($ID_array) {
     $html = '';
     $index = Array(
@@ -297,13 +309,8 @@ function sbk_generate_index($ID_array) {
         'performed_by' => Array(),
         'meta_tags' => Array()
     );
-    $id_csv = "(";
 
-    foreach ($ID_array as $this_id => $this_song_playlist_data) {
-        $id_csv = $id_csv.$this_id.", ";
-    }
-    $id_csv = substr($id_csv, 0, -2);
-    $id_csv = $id_csv.")";
+    $id_csv = sbk_covert_array_to_csv_string($ID_array);
 
     $line_count = 0; //a line is a heading, a song, a space between paragraphs, a main heading is 2 lines
     $column_height = 20; //lines - songs or headings
