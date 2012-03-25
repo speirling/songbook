@@ -258,10 +258,11 @@ function sbk_getIDarray($playlistXML = false) {
     return $ID_array;
 }
 
-function sbk_section_html($sort_fieldname) {
+function sbk_section_html($index, $sort_fieldname, $section_heading) {
     $html = '';
 
     $html = $html.'<div class="indent">';
+    $html = $html.'<h1>'.$section_heading.'</h1>';
     ksort($index[$sort_fieldname]);
     foreach($index[$sort_fieldname] as $this_field => $this_songarray) {
         $html = $html.'<h2>'.ucwords($this_field).'</h2>';
@@ -275,13 +276,26 @@ function sbk_section_html($sort_fieldname) {
     return $html;
 }
 
+function sbk_index_parts($this_record, $section, $this_title, $this_html) {
+    $output= array();
+
+    $parts = explode(",", $this_record[$section]);
+    foreach($parts as $element) {
+        $element = trim($element);
+        if($element !== '') {
+            $output[$element][$this_title] = $this_html;
+        }
+    }
+    return $output;
+}
+
 function sbk_generate_index($ID_array) {
     $html = '';
     $index = Array(
         'title' => Array(),
-        'writtenby' => Array(),
-        'performedby' => Array(),
-        'categories' => Array()
+        'written_by' => Array(),
+        'performed_by' => Array(),
+        'meta_tags' => Array()
     );
     $id_csv = "(";
 
@@ -301,84 +315,16 @@ function sbk_generate_index($ID_array) {
         $this_title = trim($this_record['title']);
         $this_html = '<div class="song" id="'.$this_record['id'].'"><span class="id">'.$this_record['id'].'</span><span class="title">'.$this_record['title'].'</span></div>';
 
-        $index['title'][$this_title] = $this_html;
-
-        $parts = explode(",", $this_record['written_by']);
-        foreach($parts as $this_writtenby) {
-            $this_writtenby = trim($this_writtenby);
-            if($this_writtenby !== '') {
-                $index['writtenby'][trim($this_writtenby)][$this_title] = $this_html;
-            }
-        }
-
-        $parts = explode(",",$this_record['performed_by']);
-        foreach($parts as $this_performedby) {
-            $this_performedby = trim($this_performedby);
-            if($this_performedby !== '') {
-                $index['performedby'][trim($this_performedby)][$this_title] = $this_html;
-            }
-        }
-
-        $parts = explode(",",$this_record['meta_tags']);
-        foreach($parts as $this_category) {
-            $this_category = trim($this_category);
-            if($this_category !== '') {
-                $index['categories'][trim($this_category)][$this_title] = $this_html;
-            }
-        }
+        $index['title'][' '][$this_title] = $this_html;
+        $index['written_by'] = array_merge_recursive($index['written_by'], sbk_index_parts($this_record, 'written_by', $this_title, $this_html) );
+        $index['performed_by'] = array_merge_recursive($index['performed_by'], sbk_index_parts($this_record, 'performed_by', $this_title, $this_html) );
+        $index['meta_tags'] = array_merge_recursive($index['meta_tags'], sbk_index_parts($this_record, 'meta_tags', $this_title, $this_html) );
     }
 
-    $html = $html.'<h1>Sorted by title</h1>';
-    $line_count = $line_count + 1;
-    $html = $html.'<div class="indent">';
-    ksort($index['title']);
-
-    foreach($index['title'] as $this_title => $this_html) {
-        if($line_count % $column_height === 0) {
-
-        }
-        $html = $html.$this_html;
-    }
-    $html = $html.'</div>';
-
-    $html = $html.'<h1>Sorted by composer</h1>';
-    $html = $html.'<div class="indent">';
-    ksort($index['writtenby']);
-    foreach($index['writtenby'] as $this_composer => $this_songarray) {
-        $html = $html.'<h2>'.ucwords($this_composer).'</h2>';
-        ksort($this_songarray);
-        foreach($this_songarray as $this_title => $this_html) {
-            $html = $html.$this_html;
-        }
-    }
-    $html = $html.'</div>';
-
-    $html = $html.'<h1>Sorted by performer</h1>';
-    $html = $html.'<div class="indent">';
-    ksort($index['performedby']);
-    foreach($index['performedby'] as $this_performer => $this_songarray) {
-        $html = $html.'<h2>'.ucwords($this_performer).'</h2>';
-        ksort($this_songarray);
-        foreach($this_songarray as $this_title => $this_html) {
-            $html = $html.$this_html;
-        }
-    }
-    $html = $html.'</div>';
-
-    $html = $html.'<h1>Sorted by category</h1>';
-    $html = $html.'<div class="indent">';
-    ksort($index['categories']);
-    foreach($index['categories'] as $this_category => $this_songarray) {
-        $html = $html.'<h2>'.ucwords($this_category).'</h2>';
-        $html = $html.'<div class="indent">';
-        ksort($this_songarray);
-        foreach($this_songarray as $this_title => $this_html) {
-            $html = $html.$this_html;
-        }
-        $html = $html.'</div>';
-
-    }
-    $html = $html.'</div>';
+    $html = $html.sbk_section_html($index, 'title', 'Sorted by title');
+    $html = $html.sbk_section_html($index, 'written_by', 'Sorted by composer');
+    $html = $html.sbk_section_html($index, 'performed_by', 'Sorted by performer');
+    $html = $html.sbk_section_html($index, 'meta_tags', 'Sorted by category');
 
     return '<div class="song-index">'.$html.'</div>';
 }
