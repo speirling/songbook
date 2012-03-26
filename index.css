@@ -469,6 +469,9 @@ a#toggle-introductions:hover {
 .song-index {
 	page-break-after: always;
 }
+.song-index td {
+	font-size: 0.7em;
+}
 .song-index h1 {
 	font-size: 1.4em;
 	color:#dd9999;
@@ -485,6 +488,7 @@ a#toggle-introductions:hover {
 }
 .song-index .song {
 	cursor: pointer;
+	white-space: nowrap;
 }
 .song-index .song:hover {
 	background-color: #008080;
@@ -502,7 +506,7 @@ a#toggle-introductions:hover {
 
 .song-index .song .title {
 	display: inline-block;
-	width: 30em;
+	width: 20em;
 	padding-left: 0.5em;
 }
 
