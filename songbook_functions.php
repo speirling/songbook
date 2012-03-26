@@ -244,7 +244,7 @@ function sbk_getIDarray($playlistXML = false) {
     if($playlistXML) {
         foreach($playlistXML->set as $this_set) {
             foreach($this_set->song as $this_song_playlist_data) {
-                if(!array_key_exists($this_song_playlist_data['id'], $ID_array)) {
+                if(!array_key_exists((string) $this_song_playlist_data['id'], $ID_array)) {
                     $ID_array[(string) $this_song_playlist_data['id']] = $this_song_playlist_data;
                 }
             }
@@ -258,17 +258,85 @@ function sbk_getIDarray($playlistXML = false) {
     return $ID_array;
 }
 
+function sbk_evaluate_column_break($line_count, $increment, $column_height) {
+    $v1 = $line_count % $column_height;
+    $v2 = ($line_count + $increment) % $column_height;
+
+    if($v2 < $v1) {
+        $column_break = true;
+    } else {
+        $column_break = false;
+    }
+
+    return $column_break;
+}
+
+function sbk_evaluate_page_break($column_count, $page_width) {
+    $v1 = $column_count % $page_width;
+    $v2 = ($column_count + 1) % $page_width;
+
+    if($v2 < $v1) {
+        $page_break = true;
+    } else {
+        $page_break = false;
+    }
+
+    return $page_break;
+}
+
 function sbk_section_html($index, $sort_fieldname, $section_heading) {
+    global $line_count;
+    global $page_start;
+    global $page_end;
+    global $column_start;
+    global $column_end;
+    global $page_dimensions;
+
+    $height_of_h1 = 3;
+    $height_of_h2 = 2;
+    $height_of_field = 1;
+
     $html = '';
+
+    if(sbk_evaluate_column_break($line_count, $height_of_h1, $page_dimensions['column_height'])) {
+        $html = $html . $column_end . $column_start;
+        $line_count = 0;
+        $column_count = $column_count + 1;
+        if(sbk_evaluate_page_break($column_count, $page_dimensions['page_width'])) {
+            $html = $html . $column_end . $page_end . $page_start. $column_start;
+            $column_count = 0;
+        }
+    }
 
     $html = $html.'<div class="indent">';
     $html = $html.'<h1>'.$section_heading.'</h1>';
+    $line_count = $line_count + $height_of_h1;
     ksort($index[$sort_fieldname]);
     foreach($index[$sort_fieldname] as $this_field => $this_songarray) {
+        if(sbk_evaluate_column_break($line_count, $height_of_h2, $page_dimensions['column_height'])) {
+            $html = $html . $column_end . $column_start;
+            $line_count = 0;
+            $column_count = $column_count + 1;
+            if(sbk_evaluate_page_break($column_count, $page_dimensions['page_width'])) {
+                $html = $html . $column_end . $page_end . $page_start. $column_start;
+                $column_count = 0;
+            }
+        }
         $html = $html.'<h2>'.ucwords($this_field).'</h2>';
+        $line_count = $line_count + $height_of_h2;
         ksort($this_songarray);
         foreach($this_songarray as $this_title => $this_html) {
             $html = $html.$this_html;
+            if(sbk_evaluate_column_break($line_count, $height_of_field, $page_dimensions['column_height'])) {
+                $html = $html . $column_end . $column_start;
+                $line_count = 0;
+                $column_count = $column_count + 1;
+                if(sbk_evaluate_page_break($column_count, $page_dimensions['page_width'])) {
+                    $html = $html . $column_end . $page_end . $page_start. $column_start;
+                    $column_count = 0;
+                }
+            }
+            $line_count = $line_count + $height_of_field;
         }
     }
     $html = $html.'</div>';
@@ -302,6 +370,13 @@ function sbk_covert_array_to_csv_string($array) {
 }
 
 function sbk_generate_index($ID_array) {
+    global $line_count;
+    global $page_start;
+    global $page_end;
+    global $column_start;
+    global $column_end;
+    global $page_dimensions;
+
     $html = '';
     $index = Array(
         'title' => Array(),
@@ -312,9 +387,16 @@ function sbk_generate_index($ID_array) {
 
     $id_csv = sbk_covert_array_to_csv_string($ID_array);
 
+
     $line_count = 0; //a line is a heading, a song, a space between paragraphs, a main heading is 2 lines
-    $column_height = 20; //lines - songs or headings
-    $page_width = 3; //columns
+    $page_start = '<table class="song-index"><tr>';
+    $page_end = '</tr></table>';
+    $column_start = '<td class="column">';
+    $column_end = '</td>';
+    $page_dimensions = array(
+        'column_height' => 60, //lines - songs or headings
+        'page_width' => 3 //columns
+    );
 
     $result = acradb_get_query_result("select * from ".SBK_TABLE_NAME." WHERE id IN ".$id_csv, SBK_DATABASE_NAME);
     while ($this_record = mysql_fetch_assoc($result)) {
@@ -328,12 +410,16 @@ function sbk_generate_index($ID_array) {
         $index['meta_tags'] = array_merge_recursive($index['meta_tags'], sbk_index_parts($this_record, 'meta_tags', $this_title, $this_html) );
     }
 
+    $html = $html.$page_start;
+    $html = $html.$column_start;
     $html = $html.sbk_section_html($index, 'title', 'Sorted by title');
     $html = $html.sbk_section_html($index, 'written_by', 'Sorted by composer');
     $html = $html.sbk_section_html($index, 'performed_by', 'Sorted by performer');
     $html = $html.sbk_section_html($index, 'meta_tags', 'Sorted by category');
+    $html = $html.$column_end;
+    $html = $html.$page_end;
 
-    return '<div class="song-index">'.$html.'</div>';
+    return $html;
 }
 
 function sbk_create_blank_playlist($filename) {
