@@ -1084,18 +1084,80 @@ echo acradisp_standardHTMLheader("songbook tests", array('index.css'), $STANDARD
 
 <script>
 $(document).ready(function(){
-module("Basic");
-test("convert_playlist_to_json()", 1, function () {
-     var test_playlist = jQuery('<div><?php  echo str_replace("'", "\'", $text_full_html) ?></div>'),
-         result, expected;
+    module("Basic");
+    test("convert_playlist_to_json()", 1, function () {
+         var test_playlist = jQuery('<div><?php  echo str_replace("'", "\'", $text_full_html) ?></div>'),
+             result, expected;
 
-     result = convert_playlist_to_json(test_playlist);
-     expected = <?php echo $text_playlist_json; ?>;
+         result = convert_playlist_to_json(test_playlist);
+         expected = <?php echo $text_playlist_json; ?>;
 
-     same (result, expected, 'converted');
+         same (result, expected, 'converted');
 
-});
+    });
 
+    module("playlist class");
+    test("remove_attributes", 1, function () {
+        var test_playlist, playlist_json;
+
+        playlist_json_string = '{"@attributes":{"title":"Playlist Title","act":""},"introduction":{"@attributes":{"duration":""}},"set":[{"@attributes":{"label":"Set 1 Label"},"introduction":"By way of an introduction","song":[{"@attributes":{"id":"503","key":"A","singer":"me","capo":"2","duration":"3:00"},"introduction":"here is some sample text"},{"@attributes":{"id":"73","key":"D","singer":"ali","capo":"0","duration":"2:15"},"introduction":"more text more text more text"},{"@attributes":{"id":"694","key":"C","singer":"clare","capo":"","duration":"1:30"},"introduction":{"@attributes":{"duration":""}}}]},{"@attributes":{"label":"Set 2 label"},"introduction":{"@attributes":{"duration":""}},"song":[{"@attributes":{"id":"104","key":"F#","singer":"Breand\u00e1n","capo":"","duration":"2:43"},"introduction":{"@attributes":{"duration":""}}},{"@attributes":{"id":"106","key":"G","singer":"Noel","capo":"","duration":"3:02"},"introduction":{"@attributes":{"duration":""}}}]}]}';
+        div = jQuery('<div id="test_playlist_class"></div>').appendTo('body');
+
+        test_playlist = new SBK.playlist(playlist_json_string, div, '#jsr-playlist-list');
+
+        same(test_playlist.playlist_json, {
+            title:"Playlist Title",
+            act:"",
+            introduction:{duration:""},
+            set:[{
+                label:"Set 1 Label",
+                introduction:"By way of an introduction",
+                song:[{
+                    id:"503",
+                    key:"A",
+                    singer:"me",
+                    capo:"2",
+                    duration:"3:00",
+                    introduction:"here is some sample text"
+                }, {
+                    id:"73",
+                    key:"D",
+                    singer:"ali",
+                    capo:"0",
+                    duration:"2:15",
+                    introduction:"more text more text more text"
+                }, {
+                    id:"694",
+                    key:"C",
+                    singer:"clare",
+                    capo:"",
+                    duration:"1:30",
+                    introduction:{duration:""}
+                }]
+            }, {
+                label:"Set 2 label",
+                introduction:{duration:""},
+                song:[{
+                    id:"104",
+                    key:"F#",
+                    singer:"Breand\xE1n",
+                    capo:"",
+                    duration:"2:43",
+                    introduction:{duration:""}
+                }, {
+                    id:"106",
+                    key:"G",
+                    singer:"Noel",
+                    capo:"",
+                    duration:"3:02",
+                    introduction:{duration:""}
+                }]
+            }]
+        });
+
+        test_playlist.display_list();
+        same(div.html(), 'blah');
+    });
 });
 
 </script>
@@ -1108,6 +1170,9 @@ test("convert_playlist_to_json()", 1, function () {
  <ol id="qunit-tests"></ol>
  <div id="qunit-fixture"></div>
 
+<script id="jsr_test" type="text/x-jsrender">
+{{:title}}
 
+</script>
 </body></html>
 
