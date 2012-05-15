@@ -60,6 +60,9 @@ define("SYSTEM_ID","Epeelo Songbook");
 	define("AJAXSEQUENTIALLIST_URL", "/songbook/admin/ajaxSequentialList.php");
 
 	define("ERROR_LOG_FILE", ABSOLUTE_PATH_TO_ACRA_SCRIPTS."/php_error_log.log");
+
+    //jsrender templates
+    define("JSRENDER_TEMPLATES_PATH", "/fileserver/data/www/songbook/templates");
 //-*/ //end of Local XAMPP
 //---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -104,4 +107,5 @@ define("SBK_KEYFIELD_NAME", 'id');
 
 require('/fileserver/data/www'."/songbook/songbook_functions.php");
 define('PLAYLIST_DIRECTORY', 'playlists');
+
 ?>
