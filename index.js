@@ -1,7 +1,20 @@
 $(document).ready(function() {
 	
-	display_playlist_editor ();
-	create_filter_list(jQuery('#available-songs'));
+	jQuery('#playlist-holder').each(function () {
+		var self = jQuery(this), playlist;
+		
+		playlist = new SBK.playlist(self.attr('filename'), self, '#jsr-playlist-list');
+		playlist.render();
+	});
+	
+	jQuery('#available-songs').each(function () {
+		var self = jQuery(this), playlist;
+		
+		available_song_list = new SBK.SongSelectorList(self);
+		available_song_list.render();
+	});
+
+	//create_filter_list(jQuery('#available-songs'));
 
 	jQuery('#add-new-set').click(function () {
 		add_new_setlist(jQuery('#playlist-holder>ul'));
@@ -106,76 +119,366 @@ var SBK = {};
  return Class;
 }());
 //===================================================================
+SBK.PleaseWait = SBK.Class.extend({
+	init: function (parent_container) {
+		var self = this;
+
+		self.container = jQuery('<div class="pleasewait">Please wait...</div>').appendTo(parent_container);
+		self.hide();
+	},
+	
+	show: function () {
+		var self = this;
+
+		self.container.show();
+	},
+	
+	hide: function () {
+		var self = this;
+
+		self.container.hide();
+	}
+});
+
+SBK.HTTPRequest = SBK.Class.extend({
+	init: function (container) {
+		var self = this;
+
+		self.endpoint = '/songbook/api.php';
+	},
+
+    make_post_request: function (url, data, success, failure) {
+        var self = this;
+
+        try {
+            jQuery.ajax({
+                cache: true,
+                data: data,
+                dataType: 'json',
+                type: 'post',
+                url: url,
+                success: function (server_data, text_status, xhr) {
+                    // jQuery treats 0 as success, but this is what some browsers return when the XHR failed due to a
+                    // network error
+                    if (xhr.status === 0) {
+                        throw "Network Error";
+                    } else {
+                    	if(server_data === null) {
+                    		throw('The server returned Null');
+                    	}
+                    	if(server_data.success === true) {
+                    		success(server_data);
+                    	} else {
+                    		throw('Got a response from server, but the data indicated an error');
+                    	}
+                    }
+                },
+                error: function (xhr, text_status, error_thrown) {
+                    throw('post to [' + url + '] gave an error condition : [' + error_thrown +']');
+                }
+            });
+        } catch (e) {
+            //
+        }
+    },
+    
+    api_call: function (data, success, failure) {
+        var self = this;
+
+        return self.make_post_request(self.endpoint, data, success, failure);
+    }
+});
+
 
 
 SBK.playlist = SBK.Class.extend({
-	init: function (playlist_json, container, jsr_template_selector) {
+	init: function (playlist_name, container, jsr_template_selector) {
 		var self = this;
-		
-		self.playlist_json = self.filter_simpleXML_json(JSON.parse(playlist_json_string));
+
+		self.playlist_name = playlist_name;
 		self.container = container;
 		self.template = jQuery(jsr_template_selector);
+		self.pleasewait = new SBK.PleaseWait(self.container);
+		self.http_request = new SBK.HTTPRequest();
 	},
 	
-	filter_simpleXML_json: function (data) {
-		var self = this, output, index;
-
-		 if(typeof(data) === 'string') {
-			 output = data;
-		 } else if (typeof(data.length) === 'undefined') {
-			 output = {};
-			for(property_name in data) {
-				if(data.hasOwnProperty(property_name)) {
-					if(property_name === '@attributes') {
-						for(attribute_name in data['@attributes']) {
-							if(data['@attributes'].hasOwnProperty(attribute_name)) {
-								output[attribute_name] = data['@attributes'][attribute_name];
-							}
-						}
-					} else {
-						output[property_name] = self.filter_simpleXML_json(data[property_name]);
-					}
-				}			
-			}
-		} else {
-			output = [];
-			for (index = 0; index < data.length; index = index + 1) {
-				output[index] = self.filter_simpleXML_json(data[index]);
-			}
-		}
-
-		return output;
-	},
-	
-	display_list: function () {
-		var self = this;
-console.log(self.template, self.playlist_json);
-		self.playlist_html = self.template.render(self.playlist_json);
-	console.log(self.playlist_html);
-		self.container.html(self.playlist_html);
-	}
-});
-
-SBK.playlist_fetcher = SBK.Class.extend({
-	init: function () {
+	fetch: function (callback) {
 		var self = this;
 		
-		self.endpoint = '/songbook/api.php';
-	},
-	
-	get: function (filename, callback) {
-		var self = this;
-		
-		jQuery.post(
-			self.endpoint,
-		    {action: 'get_playlist', filename: filename},
+		self.pleasewait.show();
+		self.http_request.api_call(
+		    {action: 'get_playlist', playlist_name: self.playlist_name},
 		    function (data) {
 		    	callback(data);
+		    	self.pleasewait.hide();
     		}
 		);
+	},
+	
+	save_playlist: function (callback) {
+		var self = this;
+
+		self.pleasewait.show();
+		self._make_post_request(
+			self.endpoint,
+		    {
+			    action: 'update_playlist',
+			    playlist_name: self.playlist_name,
+			    playlist_data: JSON.stringify(self.data_json)
+			},
+		    function (data) {
+				if(typeof(callback) === 'function') {
+			    	callback(data);
+			    	self.pleasewait.hide();
+				}
+    		}
+		);
+	},
+
+	to_html: function () {
+		var self = this;
+
+		return self.template.render(self.data_json);
+	},
+
+	update: function () {
+		var self = this;
+
+		self.data_json = self.from_html(self.container.html());
+	},
+
+	from_html: function (html) {
+		var self = this, set_count, output_json;
+
+		source = jQuery('<div>' + html + '</div>');
+		output_json = {};
+
+		output_json.title = jQuery('.playlist-title', source).val();
+		output_json.act = jQuery('.act', source).val();
+		output_json.introduction = {
+			"duration": jQuery('.introduction.songlist .introduction_duration', source).val(),
+		    "text": jQuery('.introduction.songlist .introduction_text', source).val()
+		};
+		output_json.sets = [];
+		set_count = 0;
+		jQuery('li.set', source).each(function () {
+			var this_set = jQuery(this), song_count;
+
+			output_json.sets[set_count] = {
+				"label": jQuery('.set-title', this_set).val(),
+				"introduction": {
+					"duration": jQuery('.introduction.set .introduction_duration', this_set).val(),
+					"text": jQuery('.introduction.set .introduction_text', this_set).val()
+				},
+				"songs": []
+			};
+			song_count = 0;
+			jQuery('li.song', this_set).each(function () {
+				var self = jQuery(this);
+
+				output_json.sets[set_count].songs[song_count] = {
+					"id": self.attr('id'),
+					"key": jQuery('.key', self).val(),
+					"singer": jQuery('.singer', self).val(),
+					"capo": jQuery('.capo', self).val(),
+					"duration": jQuery('.duration', self).val(),
+					"title": jQuery('.title', self).html(),
+					"introduction": {
+						"duration": jQuery('.introduction_duration', self).val(),
+						"text": jQuery('.introduction_text', self).val()
+					}
+				};
+				song_count = song_count + 1;
+			});
+			set_count = set_count +1;
+		});
+		return output_json;
+	},
+
+	render: function () {
+		var self = this;
+
+		self.fetch(function(data_json_string){
+			self.process_server_data(data_json_string);
+		});
+	},
+
+	process_server_data: function (server_data) {
+		var self = this;
+
+		self.data_json = server_data.data;
+		self.playlist_html = self.to_html();
+		
+		self.display_content();
+	},
+
+	display_content: function (server_data) {
+		var self = this;
+		
+		self.container.html(self.playlist_html);
+		self.save_button = jQuery('<a href="#" id="savePlaylist">Save</a>').prependTo(self.container).click(function() {
+			//self.pleasewait.show();
+			self.update();
+			self.save_playlist(function () {
+				//self.pleasewait.hide();
+				self.render();
+			});
+		});
+		self.toggle_intro_button = jQuery('<a href="#" id="toggle-introductions">Toggle all Introductions</a>').prependTo(self.container).click(function() {
+			self.toggle_introductions();
+		});
+		self.hide_introductions();
+		self.set_up_context_menus();
+	},
+
+	update: function () {
+		var self = this;
+
+		self.data_json = self.from_html(self.container.html());
+	},
+
+	set_up_context_menus: function () {
+		var self = this;
+
+		jQuery('ul', self.container).sortable();
+		jQuery('ul ol', self.container).sortable({
+			connectWith: '.playlist ol'
+		});
+		jQuery('li li', self.container).contextMenu('context-menu', {
+		    'show lyrics': {
+		        click: function(element){ 
+		        	window.open('?action=displaySong&id=' + element.attr('id').replace('id_', '') + 
+	        			'&key=' + escape(element.children('.key').val()) +
+	        			'&singer=' + element.children('.singer').val() +
+	        			'&capo=' + element.children('.capo').val()
+		        	);
+		        }
+		    },
+		    'edit song': {
+		        click: function(element){ window.open('?action=editSong&id=' + element.attr('id').replace('id_', '')); }
+		    },
+		    'remove from playlist': {
+		        click: function(element){ element.remove(); }
+		    },
+		    'toggle introduction': {
+		        click: function(element){
+		        	jQuery('.introduction', element).toggle();
+		        }
+		    }
+		});
+		jQuery('li.set', self.container).contextMenu('context-menu', {
+		    'remove from playlist': {
+		        click: function(element){ element.remove(); }
+		    }
+		});
+	},
+
+	toggle_introductions: function() {
+		if(jQuery('#toggle-introductions', self.container).hasClass('open')) {
+			self.hide_introductions();
+		} else {
+			jQuery('#playlist-holder .introduction', self.container).show();
+			jQuery('#toggle-introductions', self.container).addClass('open');
+		}
+	},
+
+	hide_introductions: function() {
+		jQuery('#playlist-holder .introduction', self.container).hide();
+		jQuery('#toggle-introductions', self.container).removeClass('open');
 	}
 });
 
+
+
+
+
+SBK.SongSelectorList = SBK.Class.extend({
+	init: function (container) {
+		var self = this;
+
+		self.container = container;
+		self.template = jQuery('#jsr-song-selector-list');
+		self.endpoint = '/songbook/api.php';
+		self.pleasewait = new SBK.PleaseWait(self.container);
+		self.http_request = new SBK.HTTPRequest();
+	},
+	
+	fetch: function (callback) {
+		var self = this;
+		
+		self.pleasewait.show();
+		self.http_request.api_call(
+		    {action: 'get_available_songs'},
+		    function (data) {
+		    	callback(data);
+		    	self.pleasewait.hide();
+    		}
+		);
+	},
+
+	to_html: function () {
+		var self = this;
+
+		return self.template.render(self.data_json);
+	},
+
+	render: function () {
+		var self = this;
+
+		self.fetch(function(data_json_string){
+			self.process_server_data(data_json_string);
+		});
+	},
+
+	process_server_data: function (server_data) {
+		var self = this;
+
+		self.data_json = server_data.data;
+		self.playlist_html = self.to_html();
+		
+		self.display_content();
+	},
+
+	display_content: function (server_data) {
+		var self = this, search_form_html;
+		
+		search_form_html = '<form id="allsongsearch">' +
+        '<span class="label">Filter: </span><input type="test" id="search_string" value="" />' + 
+        '<span class="label">Number of songs displayed: </span><span class="number-of-records"></span>' + 
+        '</form>';
+		self.container.html(search_form_html + self.playlist_html);
+		self.hide_introductions();
+		self.set_up_context_menus();
+	},
+
+	set_up_context_menus: function () {
+		var self = this;
+
+		jQuery('ul', self.container).sortable();
+		jQuery('ul ol', self.container).sortable({
+			connectWith: '.playlist ol'
+		});
+		jQuery('li li', self.container).contextMenu('context-menu', {
+		    'show lyrics': {
+		        click: function(element){ 
+		        	window.open('?action=displaySong&id=' + element.attr('id').replace('id_', '') + 
+	        			'&key=' + escape(element.children('.key').val()) +
+	        			'&singer=' + element.children('.singer').val() +
+	        			'&capo=' + element.children('.capo').val()
+		        	);
+		        }
+		    },
+		    'edit song': {
+		        click: function(element){ window.open('?action=editSong&id=' + element.attr('id').replace('id_', '')); }
+		    }
+		});
+	},
+
+	hide_introductions: function() {
+		jQuery('#playlist-holder .introduction', self.container).hide();
+		jQuery('#toggle-introductions', self.container).removeClass('open');
+	}
+});
 
 function display_playlist_editor () {
 	jQuery('#playlist-holder').each(function () {
@@ -317,8 +620,8 @@ function convert_playlist_to_json (source) {
 	output_json.title = jQuery('.playlist-title', source).val();
 	output_json.act = jQuery('.act', source).val();
 	output_json.introduction = {
-	  "text": jQuery('.introduction.songlist .introduction_text', source).val(),
-	  "duration": jQuery('.introduction.songlist .introduction_duration', source).val()
+		"duration": jQuery('.introduction.songlist .introduction_duration', source).val(),
+	    "text": jQuery('.introduction.songlist .introduction_text', source).val()
 	};
 	output_json.sets = [];
 	set_count = 0;
@@ -328,8 +631,8 @@ function convert_playlist_to_json (source) {
 		output_json.sets[set_count] = {
 			"label": jQuery('.set-title', this_set).val(),
 			"introduction": {
-				"text": jQuery('.introduction.set .introduction_text', this_set).val(),
-				"duration": jQuery('.introduction.set .introduction_duration', this_set).val()
+				"duration": jQuery('.introduction.set .introduction_duration', this_set).val(),
+				"text": jQuery('.introduction.set .introduction_text', this_set).val()
 			},
 			"songs": []
 		};
@@ -344,8 +647,8 @@ function convert_playlist_to_json (source) {
 				"capo": jQuery('.capo', self).val(),
 				"duration": jQuery('.duration', self).val(),
 				"introduction": {
-					"text": jQuery('.introduction_text', self).val(),
-					"duration": jQuery('.introduction_duration', self).val()
+					"duration": jQuery('.introduction_duration', self).val(),
+					"text": jQuery('.introduction_text', self).val()
 				}
 			};
 			song_count = song_count + 1;

@@ -1,44 +1,53 @@
 <?php
 require_once('admin/configure.inc.php');
-echo return_playlist_json('Copy of Clare.playlist');
-/*
+
 if(array_key_exists('action', $_POST)) {
-    process_post($_POST)
+   echo process_post($_POST);
 } else {
     echo '{error: "no action specified"}';
 }
 
 function process_post($post_data) {
-    switch($post_data('action')) {
-        case: 'get_playlist':
-            if(array_key_exists('filename', $post_data)) {
-                return_playlist_json($post_data['filename'])
+    switch($post_data['action']) {
+        case 'get_playlist':
+            if(array_key_exists('playlist_name', $post_data)) {
+                $playlist_json = get_playlist_json($post_data['playlist_name']);
+                return '{"success": true, "data": '.$playlist_json.'}';
             } else {
-                return '{error: "no playlist specified"}';
+                return '{"success": false, "message": "no playlist specified"}';
             }
+        break;
+
+        case 'update_playlist':
+            if(array_key_exists('playlist_name', $post_data)) {
+                if(array_key_exists('playlist_data', $post_data)) {
+                    return sbk_update_playlist_file($post_data['playlist_name'], $post_data['playlist_data']);
+                } else {
+                    return '{"success": false, "message": "no playlist_data given"}';
+                }
+            } else {
+                return '{"success": false, "message": "no playlist specified"}';
+            }
+        break;
+
+        case 'get_available_songs':
+            $all_songs = sbk_get_all_songs();
+            return '{"success": true, "data": {"songs": '.$all_songs.'}}';
         break;
 
 
     }
 }
-*/
-function return_playlist_json($filename) {
-    $path_parts = pathinfo($filename);
-    p($path_parts);
-    if($path_parts['extension'] === 'playlist' && $path_parts['filename'] != '') {
-        $playlist = $post_data['playlist'];
-        $filename = PLAYLIST_DIRECTORY.'/'.$path_parts['filename'].'.playlist';
-        p($filename);
-        if(file_exists($filename)) {
-            p('file exists');
-        	$thisPlaylistContent = simplexml_load_file($filename);
-        	p($thisPlaylistContent);
-        	return json_encode($thisPlaylistContent);
-        } else {
-        	return '{error: "playlist does not exist"}';
-       	}
+
+function get_playlist_json($playlist_name) {
+    $filename = PLAYLIST_DIRECTORY.'/'.$playlist_name.'.playlist';
+    if(file_exists($filename)) {
+    	$thisPlaylistContent = simplexml_load_file($filename);
+    	$result = sbk_convert_simpleXML_playlist_to_json_string($thisPlaylistContent);
+    	//p($result);
+    	return $result;
     } else {
-        return '{error: "invalid playlist filename"}';
-    }
+    	return '{error: "playlist does not exist"}';
+   	}
 }
 ?>

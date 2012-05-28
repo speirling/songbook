@@ -109,8 +109,6 @@ switch ($action) {
 
         $display = $display.'<div class="side_1 displayPlaylist">';
         $display = $display.'<h3>Playlist</h3>';
-        $display = $display.'<a href="#" id="savePlaylist">Save</a>';
-        $display = $display.'<a href="#" id="toggle-introductions">Toggle all Introductions</a>';
         $display = $display.'<div id="playlist-holder" filename="'.$playlist.'">';
         $display = $display.'</div>';
         $display = $display.'</div>';
