@@ -64,7 +64,7 @@ $text_playlist_xml = <<<XML
 </songlist>
 XML;
 
-$text_full_html = sbktest_standardise_markup('
+$raw_text_full_html = '
 <input type="text" class="playlist-title" value="Test Playlist" />
 <input type="text" class="act" value="Cafe Ceili" />
 <span class="introduction songlist">
@@ -142,26 +142,26 @@ $text_full_html = sbktest_standardise_markup('
   <li class="dummy">&nbsp;</li>
   </ol>
 </li>
-</ul>'
-);
+</ul>';
+$text_full_html = sbktest_standardise_markup($raw_text_full_html);
 
 $text_playlist_json = '{
 	"title": "Test Playlist",
 	"act": "Cafe Ceili",
-	"introduction": {"text": "Introduction to the show", "duration": "0:55"},
+	"introduction": {"duration": "0:55", "text": "Introduction to the show"},
 	"sets": [{
 		"label": "Set 1",
-		"introduction": {"text": "Introduction to the first set", "duration": "0:05"},
+		"introduction": {"duration": "0:05", "text": "Introduction to the first set"},
 		"songs": [
-			{"id": "id_34", "key": "G", "singer": "Euge", "capo": "0", "duration": "1:00", "introduction": {"text": "Introduction to the first song", "duration": "0:30"}},
-			{"id": "id_38", "key": "A", "singer": "Ali", "capo": "2", "duration": "2:00", "introduction": {"text": "Introduction to the second song", "duration": "0:45"}}
+			{"id": "id_34", "key": "G", "singer": "Euge", "capo": "0", "duration": "1:00", "title": "A Hard Day\'s Night", "introduction": {"duration": "0:30", "text": "Introduction to the first song"}},
+			{"id": "id_38", "key": "A", "singer": "Ali", "capo": "2", "duration": "2:00", "title": "A Pair Of Brown Eyes", "introduction": {"duration": "0:45", "text": "Introduction to the second song"}}
 		]
 	}, {
 		"label": "Set 2",
-		"introduction": {"text": "Introduction to the second set", "duration": "0:05"},
+		"introduction": {"duration": "0:05", "text": "Introduction to the second set"},
 		"songs": [
-			{"id": "id_40", "key": "E", "singer": "Breandan", "capo": "1", "duration": "3:00", "introduction": {"text": "Introduction to the third song", "duration": "0:15"}},
-			{"id": "id_20", "key":"D", "singer": "Bill", "capo": "0", "duration": "4:00", "introduction": {"text": "Introduction to the fourth song", "duration": "0:25"}}
+			{"id": "id_40", "key": "E", "singer": "Breandan", "capo": "1", "duration": "3:00", "title": "A Rainy Night In Soho", "introduction": {"duration": "0:15", "text": "Introduction to the third song"}},
+			{"id": "id_20", "key":"D", "singer": "Bill", "capo": "0", "duration": "4:00", "title": "Stand by Me", "introduction": {"duration": "0:25", "text": "Introduction to the fourth song"}}
 		]
 	}]
 }';
@@ -1085,7 +1085,7 @@ echo acradisp_standardHTMLheader("songbook tests", array('index.css'), $STANDARD
 <script>
 $(document).ready(function(){
     module("Basic");
-    test("convert_playlist_to_json()", 1, function () {
+    /*test("convert_playlist_to_json()", 1, function () {
          var test_playlist = jQuery('<div><?php  echo str_replace("'", "\'", $text_full_html) ?></div>'),
              result, expected;
 
@@ -1094,69 +1094,61 @@ $(document).ready(function(){
 
          same (result, expected, 'converted');
 
-    });
+    });*/
 
     module("playlist class");
-    test("remove_attributes", 1, function () {
-        var test_playlist, playlist_json;
+    test("remove_attributes", 7, function () {
+        var test_playlist, test_html, div;
 
-        playlist_json_string = '{"@attributes":{"title":"Playlist Title","act":""},"introduction":{"@attributes":{"duration":""}},"set":[{"@attributes":{"label":"Set 1 Label"},"introduction":"By way of an introduction","song":[{"@attributes":{"id":"503","key":"A","singer":"me","capo":"2","duration":"3:00"},"introduction":"here is some sample text"},{"@attributes":{"id":"73","key":"D","singer":"ali","capo":"0","duration":"2:15"},"introduction":"more text more text more text"},{"@attributes":{"id":"694","key":"C","singer":"clare","capo":"","duration":"1:30"},"introduction":{"@attributes":{"duration":""}}}]},{"@attributes":{"label":"Set 2 label"},"introduction":{"@attributes":{"duration":""}},"song":[{"@attributes":{"id":"104","key":"F#","singer":"Breand\u00e1n","capo":"","duration":"2:43"},"introduction":{"@attributes":{"duration":""}}},{"@attributes":{"id":"106","key":"G","singer":"Noel","capo":"","duration":"3:02"},"introduction":{"@attributes":{"duration":""}}}]}]}';
-        div = jQuery('<div id="test_playlist_class"></div>').appendTo('body');
+        test_html = "to_html() called";
+        div = jQuery("<div></div>");
+        test_playlist = new SBK.playlist('playlist_name', div, '#jsr-playlist-list');
+        same(test_playlist.playlist_name, 'playlist_name', 'playlist_name set');
+        same(test_playlist.container, div, 'container set');
+        same(test_playlist.template, jQuery('#jsr-playlist-list'), 'template set');
+        same(test_playlist.endpoint, '/songbook/api.php', 'endpoint set');
 
-        test_playlist = new SBK.playlist(playlist_json_string, div, '#jsr-playlist-list');
 
-        same(test_playlist.playlist_json, {
-            title:"Playlist Title",
-            act:"",
-            introduction:{duration:""},
-            set:[{
-                label:"Set 1 Label",
-                introduction:"By way of an introduction",
-                song:[{
-                    id:"503",
-                    key:"A",
-                    singer:"me",
-                    capo:"2",
-                    duration:"3:00",
-                    introduction:"here is some sample text"
-                }, {
-                    id:"73",
-                    key:"D",
-                    singer:"ali",
-                    capo:"0",
-                    duration:"2:15",
-                    introduction:"more text more text more text"
-                }, {
-                    id:"694",
-                    key:"C",
-                    singer:"clare",
-                    capo:"",
-                    duration:"1:30",
-                    introduction:{duration:""}
-                }]
-            }, {
-                label:"Set 2 label",
-                introduction:{duration:""},
-                song:[{
-                    id:"104",
-                    key:"F#",
-                    singer:"Breand\xE1n",
-                    capo:"",
-                    duration:"2:43",
-                    introduction:{duration:""}
-                }, {
-                    id:"106",
-                    key:"G",
-                    singer:"Noel",
-                    capo:"",
-                    duration:"3:02",
-                    introduction:{duration:""}
-                }]
-            }]
-        });
+        test_playlist.to_html = function () {
+            return test_html;
+        }
+        test_playlist._make_post_request = function (url, data, success, failure) {
+            success({success: true, playlist_data: <?php
+                $sXML_object = simplexml_load_string($text_playlist_xml);
+                echo sbk_convert_simpleXML_playlist_to_json_string($sXML_object);
+            ?>});
+        }
 
-        test_playlist.display_list();
-        same(div.html(), 'blah');
+        test_playlist.render();
+
+        same(test_playlist.data_json, <?php echo $text_playlist_json; ?>, 'json data is properly set');
+        same(div.html(), test_html, "render puts the output of to_html() into container");
+
+        derived_json = test_playlist.from_html('<?php echo str_replace("'", "\'", $text_full_html); ?>');
+        same(derived_json, <?php echo $text_playlist_json; ?>, 'from_html correctly interprets html');
+    });
+
+    test("roundtrip", 2, function () {
+        var test_playlist, expected_json, div;
+        //catch any template changes that might need changes in to_html() and from_html
+
+        expected_json = <?php echo $text_playlist_json; ?>;
+        div = jQuery("<div></div>");
+        test_playlist = new SBK.playlist('playlist_name', div, '#jsr-playlist-list');
+
+        test_playlist._make_post_request = function (url, data, success, failure) {
+            success({success: true, playlist_data: <?php
+                $sXML_object = simplexml_load_string($text_playlist_xml);
+                echo sbk_convert_simpleXML_playlist_to_json_string($sXML_object);
+            ?>});
+        }
+
+        test_playlist.render();
+
+        same(test_playlist.data_json, expected_json, 'json data is properly set');
+
+        derived_json = test_playlist.from_html(test_playlist.playlist_html);
+        same(derived_json, expected_json, 'from_html(to_html) returns original json');
     });
 });
 
