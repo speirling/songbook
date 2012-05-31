@@ -3,7 +3,7 @@ $(document).ready(function() {
 	jQuery('#playlist-holder').each(function () {
 		var self = jQuery(this), playlist;
 		
-		playlist = new SBK.playlist(self.attr('filename'), self, '#jsr-playlist-list');
+		playlist = new SBK.playlist(self.attr('filename'), self);
 		playlist.render();
 	});
 	
@@ -12,6 +12,7 @@ $(document).ready(function() {
 		
 		available_song_list = new SBK.SongSelectorList(self);
 		available_song_list.render();
+		available_song_list.connect_sortable_songlist('#playlist-holder .songlist');
 	});
 
 	//create_filter_list(jQuery('#available-songs'));
@@ -139,7 +140,7 @@ SBK.PleaseWait = SBK.Class.extend({
 		self.container.hide();
 	}
 });
-
+//===================================================================
 SBK.HTTPRequest = SBK.Class.extend({
 	init: function (container) {
 		var self = this;
@@ -188,51 +189,27 @@ SBK.HTTPRequest = SBK.Class.extend({
         return self.make_post_request(self.endpoint, data, success, failure);
     }
 });
-
-
-
-SBK.playlist = SBK.Class.extend({
-	init: function (playlist_name, container, jsr_template_selector) {
+//===================================================================
+SBK.songlist = SBK.Class.extend({
+	init: function (container, jsr_template_selector) {
 		var self = this;
 
-		self.playlist_name = playlist_name;
 		self.container = container;
 		self.template = jQuery(jsr_template_selector);
 		self.pleasewait = new SBK.PleaseWait(self.container);
 		self.http_request = new SBK.HTTPRequest();
 	},
 	
-	fetch: function (callback) {
-		var self = this;
-		
-		self.pleasewait.show();
-		self.http_request.api_call(
-		    {action: 'get_playlist', playlist_name: self.playlist_name},
-		    function (data) {
-		    	callback(data);
-		    	self.pleasewait.hide();
-    		}
-		);
+	fetch: function () {
+		throw ('not implemented');
 	},
-	
-	save_playlist: function (callback) {
-		var self = this;
 
-		self.pleasewait.show();
-		self._make_post_request(
-			self.endpoint,
-		    {
-			    action: 'update_playlist',
-			    playlist_name: self.playlist_name,
-			    playlist_data: JSON.stringify(self.data_json)
-			},
-		    function (data) {
-				if(typeof(callback) === 'function') {
-			    	callback(data);
-			    	self.pleasewait.hide();
-				}
-    		}
-		);
+	display_content: function (server_data) {
+		throw ('not implemented');
+	},
+
+	set_up_context_menus: function () {
+		throw ('not implemented');
 	},
 
 	to_html: function () {
@@ -312,6 +289,77 @@ SBK.playlist = SBK.Class.extend({
 		self.display_content();
 	},
 
+	update: function () {
+		var self = this;
+
+		self.data_json = self.from_html(self.container.html());
+	},
+
+	hide_introductions: function() {
+		jQuery('#playlist-holder .introduction', self.container).hide();
+		jQuery('#toggle-introductions', self.container).removeClass('open');
+	},
+	
+	make_sets_sortable: function () {
+		var self = this;
+		
+		jQuery('.playlist', self.container).sortable();
+	},
+	
+	make_songlists_sortable: function () {
+		var self = this;
+		
+		jQuery('.songlist', self.container).sortable();
+	},
+
+	connect_sortable_songlist: function (connect_class) {
+		var self = this;
+		
+		jQuery('.songlist', self.container).sortable({
+			connectWith: connect_class
+		});
+	}
+});//===================================================================
+SBK.playlist = SBK.songlist.extend({
+	init: function (playlist_name, container) {
+		var self = this;
+
+		self.call_super(container, '#jsr-playlist-list');
+		self.playlist_name = playlist_name;
+	},
+	
+	fetch: function (callback) {
+		var self = this;
+		
+		self.pleasewait.show();
+		self.http_request.api_call(
+		    {action: 'get_playlist', playlist_name: self.playlist_name},
+		    function (data) {
+		    	callback(data);
+		    	self.pleasewait.hide();
+    		}
+		);
+	},
+	
+	save_playlist: function (callback) {
+		var self = this;
+
+		self.pleasewait.show();
+		self.http_request.api_call(
+		    {
+			    action: 'update_playlist',
+			    playlist_name: self.playlist_name,
+			    playlist_data: JSON.stringify(self.data_json)
+			},
+		    function (data) {
+				if(typeof(callback) === 'function') {
+			    	callback(data);
+			    	self.pleasewait.hide();
+				}
+    		}
+		);
+	},
+
 	display_content: function (server_data) {
 		var self = this;
 		
@@ -329,21 +377,15 @@ SBK.playlist = SBK.Class.extend({
 		});
 		self.hide_introductions();
 		self.set_up_context_menus();
+		self.make_sets_sortable();
+		self.make_songlists_sortable();
 	},
-
-	update: function () {
-		var self = this;
-
-		self.data_json = self.from_html(self.container.html());
-	},
-
+	
 	set_up_context_menus: function () {
 		var self = this;
 
-		jQuery('ul', self.container).sortable();
-		jQuery('ul ol', self.container).sortable({
-			connectWith: '.playlist ol'
-		});
+		
+		
 		jQuery('li li', self.container).contextMenu('context-menu', {
 		    'show lyrics': {
 		        click: function(element){ 
@@ -380,27 +422,14 @@ SBK.playlist = SBK.Class.extend({
 			jQuery('#playlist-holder .introduction', self.container).show();
 			jQuery('#toggle-introductions', self.container).addClass('open');
 		}
-	},
-
-	hide_introductions: function() {
-		jQuery('#playlist-holder .introduction', self.container).hide();
-		jQuery('#toggle-introductions', self.container).removeClass('open');
 	}
 });
-
-
-
-
-
-SBK.SongSelectorList = SBK.Class.extend({
+//===================================================================
+SBK.SongSelectorList = SBK.songlist.extend({
 	init: function (container) {
 		var self = this;
 
-		self.container = container;
-		self.template = jQuery('#jsr-song-selector-list');
-		self.endpoint = '/songbook/api.php';
-		self.pleasewait = new SBK.PleaseWait(self.container);
-		self.http_request = new SBK.HTTPRequest();
+		self.call_super(container, '#jsr-song-selector-list');
 	},
 	
 	fetch: function (callback) {
@@ -414,29 +443,6 @@ SBK.SongSelectorList = SBK.Class.extend({
 		    	self.pleasewait.hide();
     		}
 		);
-	},
-
-	to_html: function () {
-		var self = this;
-
-		return self.template.render(self.data_json);
-	},
-
-	render: function () {
-		var self = this;
-
-		self.fetch(function(data_json_string){
-			self.process_server_data(data_json_string);
-		});
-	},
-
-	process_server_data: function (server_data) {
-		var self = this;
-
-		self.data_json = server_data.data;
-		self.playlist_html = self.to_html();
-		
-		self.display_content();
 	},
 
 	display_content: function (server_data) {
@@ -472,14 +478,9 @@ SBK.SongSelectorList = SBK.Class.extend({
 		        click: function(element){ window.open('?action=editSong&id=' + element.attr('id').replace('id_', '')); }
 		    }
 		});
-	},
-
-	hide_introductions: function() {
-		jQuery('#playlist-holder .introduction', self.container).hide();
-		jQuery('#toggle-introductions', self.container).removeClass('open');
 	}
 });
-
+//===================================================================
 function display_playlist_editor () {
 	jQuery('#playlist-holder').each(function () {
 		var self = jQuery(this), playlist;
