@@ -185,7 +185,7 @@ function sbk_convert_parsedjson_to_playlistXML($parsed_json) {
 
         foreach($thisSet->songs as $thisSong) {
             $this_id = (string) $thisSong->id;
-            $this_id = str_replace('id_', '', $this_id);
+            $this_id = str_replace('id_', '', $this_id); // not required, 'id_' has been removed... but this should still work
             if(is_numeric($this_id)) {
                 $set_duration = $set_duration + sbk_duration_string_to_seconds((string) $thisSong->duration);
 
@@ -733,7 +733,7 @@ function sbk_playlist_text_to_attributes($playlist_simplexml) {
             $this_song->introduction[0]->addAttribute('text', $this_song->introduction[0]);
             $this_song->introduction[0] = '';
             $this_song['title'] = sbk_get_song_title($this_song['id']);
-            $this_song['id'] = 'id_'.$this_song['id'];
+            $this_song['id'] = $this_song['id'];
         }
     }
     return $playlist_simplexml;
@@ -765,7 +765,6 @@ function sbk_update_playlist_file($filename, $data_string) {
     $data_string = str_replace('\"', '"', trim($data_string, '()'));
     $data_string = str_replace("\'", "'", trim($data_string, '()'));
     $data = json_decode(trim($data_string, '()'));
-    P($data);
     $playlist_XML = sbk_convert_parsedjson_to_playlistXML($data);
 
     $destination = str_replace('\\','/',getcwd()).'/'.PLAYLIST_DIRECTORY.'/'.$filename.'.playlist';
@@ -794,7 +793,7 @@ function sbk_get_all_songs($search_string = false) {
         $output_json = '';
         while ($this_record = mysql_fetch_assoc($result)) {
             $output_json = $output_json."{";
-            $output_json = $output_json."\"id\" : \"id_".$this_record["id"]."\", ";
+            $output_json = $output_json."\"id\" : ".$this_record["id"].", ";
             $output_json = $output_json."\"key\": \"".$this_record["base_key"]."\", ";
             $output_json = $output_json."\"singer\": \"\", \"capo\": \"\", \"duration\":\"\", ";
             $output_json = $output_json."\"title\" : \"".str_replace('"', '&quot;', trim($this_record["title"]))."\", ";
