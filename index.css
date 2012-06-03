@@ -383,7 +383,7 @@ div.side_2 {
 	width: 70%;
 }
 
-
+/* available song picker */
 #available-songs,
 #playlist-holder {
 	padding:1em;
@@ -432,17 +432,14 @@ form#allsongsearch {
 
 #available-songs li {
 	list-style-type: none;
-	cursor: pointer;
 }
 .displayPlaylist #available-songs li {
 	cursor: move;
 }
 #available-songs li input {
-	font-size: 1em;
-}
-#available-songs #allsongs li input {
 	display: none;
 }
+#available-songs li .id,
 #available-songs li .spec,
 #available-songs li .introduction {
 	display: none;
