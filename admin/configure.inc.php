@@ -107,5 +107,6 @@ define("SBK_KEYFIELD_NAME", 'id');
 
 require('/fileserver/data/www'."/songbook/songbook_functions.php");
 define('PLAYLIST_DIRECTORY', 'playlists');
+define('JAVASCRIPT_CLASSES_DIRECTORY', 'js_classes');
 
 ?>
