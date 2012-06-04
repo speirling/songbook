@@ -1,0 +1,6 @@
+<select class="playlist-chooser">
+    <option value="all">all songs</option>
+	{{for playlists}}
+    <option value="{{:filename}}">{{:title}}</option>
+	{{/for}}
+</select>

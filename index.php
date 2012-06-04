@@ -14,6 +14,16 @@ if(array_key_exists('action', $_GET)) {
 $STANDARD_JAVASCRIPTS[] = 'admin/constants2js.php';
 $STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.contextMenu/jquery.contextMenu.js";
 $STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.a-tools.js";
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Namespace.js';
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.js';
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.PleaseWait.js';
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.HTTPRequest.js';
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.SongList.js';
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.SongList.PlayList.js';
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.SongList.SongFilterList.js';
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.SongPicker.js';
+
+$all_playlists = $all_playlists.']';
 $STANDARD_JAVASCRIPTS[] = "index.js";
 $page_title = $action.' (playlists)';
 $display = '';
@@ -112,25 +122,7 @@ switch ($action) {
         $display = $display.'<div id="playlist-holder" filename="'.$playlist.'">';
         $display = $display.'</div>';
         $display = $display.'</div>';
-        $display = $display.'<div class="side_2 displayPlaylist">';
-        $display = $display.'<h3>Available songs</h3>';
-        $display = $display.'<select class="playlist-chooser">';
-        $display = $display.'<option value="all">all songs</option>';
-        $directoryList = scandir(PLAYLIST_DIRECTORY);
-        foreach($directoryList as $filename) {
-            if(!is_dir($filename)) {
-                $path_parts = pathinfo($filename);
-                if($path_parts['extension'] === 'playlist' && $path_parts['filename'] != '') {
-                    $display = $display.'<option value="'.$path_parts['filename'].'">';
-                    $thisPlaylistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$path_parts['filename'].'.playlist');
-		            $display = $display.$thisPlaylistContent['title'];
-		            $display = $display.'</option>';
-                }
-            }
-        }
-        $display = $display.'</select>';
-        $display = $display.'<div id="available-songs"></div>';
-        $display = $display.'</div>';
+        $display = $display.'<div class="side_2 displayPlaylist"></div>';
 
     break;
 

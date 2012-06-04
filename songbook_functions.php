@@ -724,13 +724,19 @@ function sbk_song_edit_form ($id, $playlist = false, $all_fields_editable = true
 
 //For API ----------------------------------
 function sbk_playlist_text_to_attributes($playlist_simplexml) {
-    $playlist_simplexml->introduction[0]->addAttribute('text', $playlist_simplexml->introduction[0]);
+    if(sizeof($playlist_simplexml->introduction) > 0) {
+        $playlist_simplexml->introduction[0]->addAttribute('text', $playlist_simplexml->introduction[0]);
+    }
     $playlist_simplexml->introduction[0] = '';
     foreach($playlist_simplexml->set as $this_set) {
-        $this_set->introduction[0]->addAttribute('text', $this_set->introduction[0]);
+        if(sizeof($this_set->introduction) > 0) {
+            $this_set->introduction[0]->addAttribute('text', $this_set->introduction[0]);
+        }
         $this_set->introduction[0] = '';
         foreach($this_set->song as $this_song) {
-            $this_song->introduction[0]->addAttribute('text', $this_song->introduction[0]);
+            if(sizeof($this_song->introduction) > 0) {
+                $this_song->introduction[0]->addAttribute('text', $this_song->introduction[0]);
+            }
             $this_song->introduction[0] = '';
             $this_song['title'] = sbk_get_song_title($this_song['id']);
             $this_song['id'] = $this_song['id'];

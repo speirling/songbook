@@ -11,8 +11,14 @@ function process_post($post_data) {
     switch($post_data['action']) {
         case 'get_playlist':
             if(array_key_exists('playlist_name', $post_data)) {
-                $playlist_json = get_playlist_json($post_data['playlist_name']);
-                return '{"success": true, "data": '.$playlist_json.'}';
+                $filename = PLAYLIST_DIRECTORY.'/'.$post_data['playlist_name'].'.playlist';
+                if(file_exists($filename)) {
+                	$thisPlaylistContent = simplexml_load_file($filename);
+                	$result = sbk_convert_simpleXML_playlist_to_json_string($thisPlaylistContent);
+                	return '{"success": true, "data": '.$result.'}';
+                } else {
+                	return '{"success": false, "message": "playlist ['.$playlist_name.'] does not exist"}';
+               	}
             } else {
                 return '{"success": false, "message": "no playlist specified"}';
             }
@@ -35,19 +41,22 @@ function process_post($post_data) {
             return '{"success": true, "data": {"songs": '.$all_songs.'}}';
         break;
 
+        case 'get_available_playlists':
+            $all_playlists = '';
+            $directoryList = scandir(PLAYLIST_DIRECTORY);
+            foreach($directoryList as $filename) {
+                if(!is_dir($filename)) {
+                    $path_parts = pathinfo($filename);
+                    if($path_parts['extension'] === 'playlist' && $path_parts['filename'] != '') {
+                        $thisPlaylistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$path_parts['filename'].'.playlist');
+    		            $all_playlists = $all_playlists.'{"filename": "'.$path_parts['filename'].'", "title": "'.$thisPlaylistContent['title'].'"}, ';
+                    }
+                }
+            }
+            $all_playlists = substr($all_playlists, 0, -2);
+            return '{"success": true, "data": {"playlists": ['.$all_playlists.']}}';
+        break;
 
     }
-}
-
-function get_playlist_json($playlist_name) {
-    $filename = PLAYLIST_DIRECTORY.'/'.$playlist_name.'.playlist';
-    if(file_exists($filename)) {
-    	$thisPlaylistContent = simplexml_load_file($filename);
-    	$result = sbk_convert_simpleXML_playlist_to_json_string($thisPlaylistContent);
-    	//p($result);
-    	return $result;
-    } else {
-    	return '{error: "playlist does not exist"}';
-   	}
 }
 ?>
