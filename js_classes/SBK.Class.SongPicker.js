@@ -4,6 +4,7 @@ SBK.SongPicker = SBK.Class.extend({
 
 		self.container = container;
 		self.template = jQuery('#jsr-playlist-picker');
+		self.pleasewait = new SBK.PleaseWait(self.container);
 		self.http_request = new SBK.HTTPRequest();
 		
 		self.playlist_picker_holder = jQuery('<div id="playlist-picker"></div>').appendTo(self.container);
@@ -12,6 +13,8 @@ SBK.SongPicker = SBK.Class.extend({
 	
 	render: function () {
 		var self = this;
+		
+		self.pleasewait.show();
 		self.http_request.api_call(
 		    {action: 'get_available_playlists'},
 		    function (response) {
@@ -36,21 +39,15 @@ SBK.SongPicker = SBK.Class.extend({
 		});
 	},
 	
-	on_songlist_render: function () {
-		var self = this;
-		
-		jQuery('.songlist', self.container).sortable({connectWith: '#playlist-holder .songlist'});
-	},
-	
 	show_all_songs: function () {
 		var self = this;
 		
-		new SBK.SongFilterList(self.song_list_holder).render(self.on_songlist_render);
+		new SBK.SongFilterList(self.song_list_holder).render();
 	},
 	
 	show_playlist: function (playlist) {
 		var self = this;
 		
-		new SBK.PlayList(playlist, self.song_list_holder).render(self.on_songlist_render);
+		new SBK.PlayList(playlist, self.song_list_holder).render();
 	}
 });
