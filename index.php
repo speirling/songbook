@@ -35,8 +35,6 @@ $menu = $menu.'<li><a href="?action=index">index of all songs</a></li> ';
 $menu = $menu.'<li><a href="?action=listAllPlaylists">List all playlists</a></li> ';
 $menu = $menu.'<li><a href="?action=addNewPlaylist">Add a new playlist</a></li> ';
 $menu = $menu.'<li><a href="?action=editSong">Add new song</a></li> ';
-$menu = $menu.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
-$menu = $menu.'<li><a href="?action=index">index of all songs</a></li> ';
 $menu = $menu.'</ul>';
 
 switch ($action) {
@@ -117,11 +115,7 @@ switch ($action) {
         $display = $display.'<li><a href="?action=playlistBook&playlist='.$playlist.'&pdf">Playlist as a book pdf</a>';
         $display = $display.'</ul>';
 
-        $display = $display.'<div class="side_1 displayPlaylist">';
-        $display = $display.'<h3>Playlist</h3>';
-        $display = $display.'<div id="playlist-holder" filename="'.$playlist.'">';
-        $display = $display.'</div>';
-        $display = $display.'</div>';
+        $display = $display.'<div class="side_1 displayPlaylist" id="playlist-holder" filename="'.$playlist.'"></div>';
         $display = $display.'<div class="side_2 displayPlaylist"></div>';
 
     break;

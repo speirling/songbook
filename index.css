@@ -105,12 +105,6 @@ span.song {
 .displayPlaylist {
 	font-size: 0.8em;
 }
-.displayPlaylist h3 {
-	font-size: 1.4em;
-	margin: 0;
-	color: gray;
-	font-weight: normal;
-}
 
 
 
@@ -347,13 +341,13 @@ input:-moz-placeholder {
 
 #playlist-holder {
 	margin-right: 2em;
-	top:2em;
+	top:60px;
 }
 
 div.side_1,
 div.side_2 {
 	position: absolute;
-	top:50px;
+	top:60px;
 	bottom:0px;
 }
 div.side_1 {
@@ -389,15 +383,10 @@ div.side_2 {
 	padding:1em;
 	border-radius:1em;
 	border:1px solid gray;
-	position: absolute;
-	top: 2em;
-	bottom:0;
-	left:0;
-	right:0;
 }
 #available-songs {
 	position:absolute;
-	top:4em;
+	top: 2.5em;
 	bottom:0;
 	left:0;
 	right:0;
