@@ -8,8 +8,17 @@ SBK.SongList = SBK.Class.extend({
 		self.http_request = new SBK.HTTPRequest();
 	},
 	
-	fetch: function () {
-		throw ('not implemented');
+	fetch: function (callback) {
+		var self = this;
+
+		self.pleasewait.show();
+		self.http_request.api_call(
+		    self.fetch_parameters,
+		    function (data) {
+		    	callback(data);
+		    	self.pleasewait.hide();
+    		}
+		);
 	},
 
 	display_content: function (server_data) {
@@ -98,8 +107,6 @@ SBK.SongList = SBK.Class.extend({
 		self.playlist_html = self.to_html();
 		
 		self.display_content();
-        self.songlist = jQuery('.songlist', self.container);
-        self.playlist = jQuery('.playlist', self.container);
 	},
 
 	update: function () {

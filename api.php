@@ -37,7 +37,15 @@ function process_post($post_data) {
         break;
 
         case 'get_available_songs':
-            $all_songs = sbk_get_all_songs();
+            if(array_key_exists('search_string', $post_data)) {
+                $search_string = $post_data['search_string'];
+                if($search_string === '') {
+                    $search_string = false;
+                }
+            } else {
+                $search_string = false;
+            }
+            $all_songs = sbk_get_all_songs($search_string);
             return '{"success": true, "data": {"songs": '.$all_songs.'}}';
         break;
 

@@ -4,10 +4,7 @@ $(document).ready(function() {
 		var self = jQuery(this), playlist;
 
 		playlist = new SBK.PlayList(self.attr('filename'), self);
-		playlist.render(function () {
-			jQuery('.playlist', self.container).sortable();
-			jQuery('.songlist', self.container).sortable({connectWith: '.songlist'});
-		});
+		playlist.render();
 	});
 
 	jQuery('.side_2').each(function () {
