@@ -31,15 +31,18 @@ SBK.PlayList = SBK.SongList.extend({
 		
 		self.container.html(self.playlist_html);
 		self.save_button = jQuery('<a href="#" id="savePlaylist">Save</a>').prependTo(self.container).click(function() {
-			//self.pleasewait.show();
+			self.pleasewait.show();
 			self.update();
 			self.save_playlist(function () {
-				//self.pleasewait.hide();
+				self.pleasewait.hide();
 				self.render();
 			});
 		});
 		self.toggle_intro_button = jQuery('<a href="#" id="toggle-introductions">Toggle all Introductions</a>').prependTo(self.container).click(function() {
 			self.toggle_introductions();
+		});
+		self.add_set_button = jQuery('<a href="#" id="add-new-set">Add a new set</a>').prependTo(self.container).click(function() {
+			self.add_set();
 		});
 		self.hide_introductions();
 		self.set_up_context_menus();
@@ -80,11 +83,26 @@ SBK.PlayList = SBK.SongList.extend({
 	},
 
 	toggle_introductions: function() {
+		var self = this;
+
 		if(jQuery('#toggle-introductions', self.container).hasClass('open')) {
-			self.hide_introductions();
+			jQuery('#playlist-holder .introduction', self.container).hide();
+			jQuery('#toggle-introductions', self.container).removeClass('open');
 		} else {
 			jQuery('#playlist-holder .introduction', self.container).show();
 			jQuery('#toggle-introductions', self.container).addClass('open');
 		}
+	},
+
+	add_set: function() {
+		var self = this;
+
+		self.data_json.sets[self.data_json.sets.length] = {
+			label: ('enter a title for this set'),
+			introduction: {duration: '', text: ''},
+			songs: []
+		};
+		self.playlist_html = self.to_html();
+		self.display_content();
 	}
 });
