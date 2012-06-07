@@ -106,7 +106,6 @@ switch ($action) {
 
         $display = $display.$menu;
         $display = $display.'<ul class="menu local">';
-        $display = $display.'<li><a href="#" id="add-new-set" playlist="'.$playlist.'">Add a new set</a></li> ';
         $display = $display.'<li><a href="?action=pdfPlaylist&playlist='.$playlist.'" target="new">table</a>';
         $display = $display.'<li><a href="?action=pdfPlaylist&playlist='.$playlist.'&pdf">table pdf</a>';
         $display = $display.'<li><a href="?action=emailPlaylist&playlist='.$playlist.'&pdf">email</a>';

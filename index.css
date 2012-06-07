@@ -114,20 +114,10 @@ input.playlist-title,
 input.set-title,
 input.act {
 	border: 0px;
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 80%;
 }
-input.playlist-title {
-	left: 1em;
-	top: 0.5em;
-	width: 40%;
-}
+input.playlist-title,
 input.act {
-	left: 40%;
-	top: 0.5em;
-	width: 40%;
+	display: inline-block;
 }
 #playlist-holder .detail {
 	display: none;
@@ -384,6 +374,9 @@ div.side_2 {
 	border-radius:1em;
 	border:1px solid gray;
 }
+#playlist-holder {
+	padding-top:3em;
+}
 #available-songs {
 	position:absolute;
 	top: 2.5em;
@@ -406,11 +399,7 @@ div.side_2 {
 #all-song-list,
 #playlist-holder>ul {
 	overflow: auto;
-	position: absolute;
-	top: 4em;
-	left:1em;
-	bottom:0;
-	right: 0;
+ 	margin: 1em;
 	padding: 0.5em;
 }
 #available-songs ul,
@@ -434,7 +423,8 @@ form#allsongsearch {
 	display: none;
 }
 a#savePlaylist,
-a#toggle-introductions {
+a#toggle-introductions,
+a#add-new-set {
 	position:absolute;
 	top: 0;
 	z-index:10;
@@ -452,10 +442,14 @@ a#savePlaylist {
 	right:3em;
 }
 a#toggle-introductions {
-	right:10em;
+	right:9em;
+}
+a#add-new-set {
+	right:25em;
 }
 a#savePlaylist:hover,
-a#toggle-introductions:hover {
+a#toggle-introductions:hover,
+a#add-new-set:hover {
 	background-color: #008080;
 	color: white;
 }
