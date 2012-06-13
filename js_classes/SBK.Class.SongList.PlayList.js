@@ -3,27 +3,68 @@ SBK.PlayList = SBK.SongList.extend({
 		var self = this;
 
 		self.call_super(container, '#jsr-playlist-list');
-		self.playlist_name = playlist_name;
+		if(typeof(playlist_name) === 'undefined') {
+			self.playlist_name = '';
+		} else {
+			self.playlist_name = playlist_name;
+		}
 		self.fetch_parameters = {action: 'get_playlist', playlist_name: self.playlist_name};
 	},
-
-	save_playlist: function (callback) {
+	
+	fetch: function (callback) {
 		var self = this;
 
-		self.pleasewait.show();
-		self.http_request.api_call(
-		    {
-			    action: 'update_playlist',
-			    playlist_name: self.playlist_name,
-			    playlist_data: JSON.stringify(self.data_json)
-			},
-		    function (data) {
-				if(typeof(callback) === 'function') {
-			    	callback(data);
-			    	self.pleasewait.hide();
-				}
-    		}
-		);
+		if(self.playlist_name !== '') {
+			self._fetch(callback); 
+		} else {
+			callback({data: {
+				title: '',
+				act: '',
+				introduction: {
+					duration: '',
+					text: ''
+				},
+				sets:[{
+					label: '',
+					introduction: {
+						duration: '',
+						text: ''
+					},
+					songs: []
+				}]
+			}});
+		}
+	},
+
+	save_playlist: function () {
+		var self = this;
+
+		if(self.playlist_name === '') {
+			if(self.data_json.title === '') {
+				alert('please enter a title for the playlist');
+				return;
+			} else {
+				self.playlist_name = self.data_json.title.replace(/ /g, '_');
+				self.fetch_parameters.playlist_name = self.playlist_name;
+			}
+		}
+		if(self.playlist_name === '') {
+			alert('please enter a Playlist Name');
+			return;
+		} else {
+			self.pleasewait.show();
+			self.http_request.api_call(
+			    {
+				    action: 'update_playlist',
+				    playlist_name: self.playlist_name,
+				    playlist_data: JSON.stringify(self.data_json)
+				},
+			    function () {
+					self.render();
+				    self.pleasewait.hide();
+	    		}
+			);
+		}
 	},
 
 	display_content: function (server_data) {
@@ -33,10 +74,7 @@ SBK.PlayList = SBK.SongList.extend({
 		self.save_button = jQuery('<a href="#" id="savePlaylist">Save</a>').prependTo(self.container).click(function() {
 			self.pleasewait.show();
 			self.update();
-			self.save_playlist(function () {
-				self.pleasewait.hide();
-				self.render();
-			});
+			self.save_playlist();
 		});
 		self.toggle_intro_button = jQuery('<a href="#" id="toggle-introductions">Toggle all Introductions</a>').prependTo(self.container).click(function() {
 			self.toggle_introductions();
@@ -97,6 +135,7 @@ SBK.PlayList = SBK.SongList.extend({
 	add_set: function() {
 		var self = this;
 
+		self.update();
 		self.data_json.sets[self.data_json.sets.length] = {
 			label: ('enter a title for this set'),
 			introduction: {duration: '', text: ''},

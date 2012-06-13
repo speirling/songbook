@@ -22,6 +22,7 @@ $STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.SongList.js';
 $STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.SongList.PlayList.js';
 $STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.SongList.SongFilterList.js';
 $STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.SongPicker.js';
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.AllPlaylists.js';
 
 $all_playlists = $all_playlists.']';
 $STANDARD_JAVASCRIPTS[] = "index.js";
@@ -33,7 +34,7 @@ $menu = $menu.'<ul class="menu main">';
 $menu = $menu.'<li><a href="?action=listAllSongs">List all songs</a></li> ';
 $menu = $menu.'<li><a href="?action=index">index of all songs</a></li> ';
 $menu = $menu.'<li><a href="?action=listAllPlaylists">List all playlists</a></li> ';
-$menu = $menu.'<li><a href="?action=addNewPlaylist">Add a new playlist</a></li> ';
+$menu = $menu.'<li><a href="?action=displayPlaylist">Add a new playlist</a></li> ';
 $menu = $menu.'<li><a href="?action=editSong">Add new song</a></li> ';
 $menu = $menu.'</ul>';
 
@@ -42,7 +43,12 @@ switch ($action) {
         $display = $display.$menu;
 
         $display = $display.'<h1>List of songs in the database:</h1>';
-        $display = $display.'<div id="available-songs" class="main-list"></div>';
+        $display = $display.'<div id="available-songs" class="main-list"></div>';$display = $display."
+        <script type=\"text/javascript\">
+            $(document).ready(function() {
+				new SBK.SongFilterList(jQuery('#available-songs')).render();
+            });
+        </script>";
 
     break;
 
@@ -70,34 +76,14 @@ switch ($action) {
         $display = $display.$menu;
 
         $display = $display.'<h1>List of playlists:</h1>';
-        $directoryList = scandir(PLAYLIST_DIRECTORY);
-        $display = $display.'<ul class="playlist-list">';
-        foreach($directoryList as $filename) {
-            if(!is_dir($filename)) {
-                $path_parts = pathinfo($filename);
-                if($path_parts['extension'] === 'playlist' && $path_parts['filename'] != '') {
-                    $display = $display.'<li><a href="?action=displayPlaylist&playlist='.$path_parts['filename'].'">';
-                    $thisPlaylistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$path_parts['filename'].'.playlist');
-		            $display = $display.$thisPlaylistContent['title'];
-		            $display = $display.'</a></li>';
-                }
-            }
-        }
-        $display = $display.'</ul>';
-    break;
+        $display = $display.'<div id="playlist-list"></div>';
 
-    case 'addNewPlaylist':
-        if(array_key_exists('filename', $_POST)) {
-            sbk_create_blank_playlist($_POST['filename']);
-            $display = $display.acradisp_javascriptRedirectTo('?action=displayPlaylist&playlist='.$_POST['filename']);
-        } else {
-            $display = $display.$menu;
-
-            $display = $display.'<h1>Add a new playlist:</h1>';
-            $display = $display.'<form id="filename-new-playlist" action="#" method="post">';
-            $display = $display.'<input type="text" name="filename" />';
-            $display = $display.'</form>';
-        }
+        $display = $display."
+        <script type=\"text/javascript\">
+            $(document).ready(function() {
+				new SBK.AllPlaylists(jQuery('#playlist-list')).render();
+            });
+        </script>";
     break;
 
     case 'displayPlaylist':
@@ -114,9 +100,16 @@ switch ($action) {
         $display = $display.'<li><a href="?action=playlistBook&playlist='.$playlist.'&pdf">Playlist as a book pdf</a>';
         $display = $display.'</ul>';
 
-        $display = $display.'<div class="side_1 displayPlaylist" id="playlist-holder" filename="'.$playlist.'"></div>';
-        $display = $display.'<div class="side_2 displayPlaylist"></div>';
+        $display = $display.'<div id="playlist-holder"></div>';
+        $display = $display.'<div id="song_picker"></div>';
 
+        $display = $display."
+        <script type=\"text/javascript\">
+            $(document).ready(function() {
+            	new SBK.PlayList('".$playlist."', jQuery('#playlist-holder')).render();
+				new SBK.SongPicker(jQuery('#song_picker')).render();
+            });
+        </script>";
     break;
 
     case 'pdfSong':
@@ -263,8 +256,8 @@ switch ($action) {
             $playlist = false;
         }
 
+        $display = $display.$menu;
         if($id) {
-            $display = $display.$menu;
             $display = $display.'<ul class="menu local">';
             $display = $display.'<li><a href="#" onclick="jQuery(\'#edit-song-form input#display-id\').val('.($id-1).'); jQuery(\'#edit-song-form\').attr(\'action\',\'?action=editSong\').submit();">Edit Previous</a></li>';
             $display = $display.'<li><a href="?action=displaySong&id='.$id.'">Cancel edit</a></li>';
@@ -272,7 +265,6 @@ switch ($action) {
             $display = $display.'</ul>';
         }
         $display = $display.'<span class="edit">';
-        $display = $display.'<h1>Edit song</h1>';
         $display = $display.sbk_song_edit_form ($id, $playlist, true);
         $display = $display."</span>";
     break;

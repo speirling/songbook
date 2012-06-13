@@ -107,7 +107,9 @@ span.song {
 }
 
 
-
+.ui-sortable>li {
+	cursor: move;
+}
 
 
 input.playlist-title,
@@ -143,7 +145,6 @@ input.act {
 }
 li.set {
 	list-style-type: none;
-	cursor: move;
 	position: relative;
 	padding-top: 2.5em;
 }
@@ -171,7 +172,6 @@ li.set span.duration {
 .displayPlaylist .playlist li {
 	padding: 0.2em;
 	list-style-type: none;
-	cursor: move;
 }
 #available-songs .playlist li {
 	margin: 0;
@@ -329,24 +329,17 @@ input:-moz-placeholder {
 	background-color: white;
 }
 
+#playlist-holder,
+#song_picker {
+	display: inline-block;
+	position: relative;
+}
 #playlist-holder {
-	margin-right: 2em;
-	top:60px;
+	width: 60%;
 }
-
-div.side_1,
-div.side_2 {
-	position: absolute;
-	top:60px;
-	bottom:0px;
-}
-div.side_1 {
-	left: 0px;
-	right:40%;
-}
-div.side_2 {
-	right: 0px;
-	left:60%;
+#song_picker {
+	width: 36%;
+	float: right;
 }
 
 .introduction {
@@ -378,14 +371,6 @@ div.side_2 {
 	padding-top:3em;
 }
 #available-songs {
-	position:absolute;
-	top: 2.5em;
-	bottom:0;
-	left:0;
-	right:0;
-}
-#available-songs.main-list {
-	top:7em;
 }
 #all-song-list .pleasewait {
 	font-size: 0.8em;
@@ -407,12 +392,11 @@ form#allsongsearch {
 	padding-left:0;
 	margin: 0;
 }
-
+#available-songs ol {
+	padding: 0;
+}
 #available-songs li {
 	list-style-type: none;
-}
-.displayPlaylist #available-songs li {
-	cursor: move;
 }
 #available-songs li input {
 	display: none;

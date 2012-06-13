@@ -1,5 +1,5 @@
-<input type="text" class="playlist-title" value="{{:title}}" />
-<input type="text" class="act" value="{{:act}}" />
+<input type="text" class="playlist-title" placeholder="playlist title" value="{{:title}}" />
+<input type="text" class="act" placeholder="act" value="{{:act}}" />
 <span class="introduction songlist" style="display: none">
 	<textarea class="introduction_text" placeholder="Introduction text">{{:introduction.text}}</textarea>
 	<input type="text" class="introduction_duration" placeholder="Introduction duration" value="{{:introduction.duration}}" />
@@ -7,10 +7,10 @@
 <ul class="playlist">
 {{for sets}}
 <li class="set">
-  <input type="text" class="set-title" value="{{:label}}" />
+  <input type="text" class="set-title" placeholder="set title" value="{{:label}}" />
   <span class="duration"></span>
   <span class="introduction set" style="display: none">
-	<textarea class="introduction_text" placeholder="Introduction text">{{:introduction.text}}</textarea>
+	<textarea class="introduction_text" placeholder="Intro text" placeholder="Introduction text">{{:introduction.text}}</textarea>
 	<input type="text" class="introduction_duration" placeholder="Introduction duration" value="{{:introduction.duration}}" />
   </span>
   <ol class="songlist">
