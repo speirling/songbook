@@ -8,7 +8,7 @@ SBK.SongList = SBK.Class.extend({
 		self.http_request = new SBK.HTTPRequest();
 	},
 	
-	fetch: function (callback) {
+	_fetch: function (callback) {
 		var self = this;
 
 		self.pleasewait.show();
@@ -19,6 +19,12 @@ SBK.SongList = SBK.Class.extend({
 		    	self.pleasewait.hide();
     		}
 		);
+	},
+	
+	fetch: function (callback) {
+		var self = this;
+
+		self._fetch(callback); //so that sub classes can make this conditional - e.g. filename not specified
 	},
 
 	display_content: function (server_data) {
@@ -37,17 +43,18 @@ SBK.SongList = SBK.Class.extend({
 
 	update: function () {
 		var self = this;
-
-		self.data_json = self.from_html(self.container.html());
+		console.log('update!', self.container);
+		self.data_json = self.from_html(self.container);
+		console.log('update', self.data_json);
 	},
 
-	from_html: function (html) {
+	from_html: function (source) {
 		var self = this, set_count, output_json;
 
-		source = jQuery('<div>' + html + '</div>');
 		output_json = {};
 
 		output_json.title = jQuery('.playlist-title', source).val();
+		console.log(jQuery('.playlist-title', source));
 		output_json.act = jQuery('.act', source).val();
 		output_json.introduction = {
 			"duration": jQuery('.introduction.songlist .introduction_duration', source).val(),
@@ -107,12 +114,6 @@ SBK.SongList = SBK.Class.extend({
 		self.playlist_html = self.to_html();
 		
 		self.display_content();
-	},
-
-	update: function () {
-		var self = this;
-
-		self.data_json = self.from_html(self.container.html());
 	},
 
 	hide_introductions: function() {

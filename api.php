@@ -14,6 +14,7 @@ function process_post($post_data) {
                 $filename = PLAYLIST_DIRECTORY.'/'.$post_data['playlist_name'].'.playlist';
                 if(file_exists($filename)) {
                 	$thisPlaylistContent = simplexml_load_file($filename);
+                	p($filename, $thisPlaylistContent);
                 	$result = sbk_convert_simpleXML_playlist_to_json_string($thisPlaylistContent);
                 	return '{"success": true, "data": '.$result.'}';
                 } else {
@@ -32,7 +33,7 @@ function process_post($post_data) {
                     return '{"success": false, "message": "no playlist_data given"}';
                 }
             } else {
-                return '{"success": false, "message": "no playlist specified"}';
+                return '{"success": false, "message": "no playlist nmme specified"}';
             }
         break;
 

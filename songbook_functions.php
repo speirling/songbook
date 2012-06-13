@@ -658,6 +658,7 @@ function sbk_song_edit_form ($id, $playlist = false, $all_fields_editable = true
 
     if($id) {
         $display = $display.'<input type="hidden" name="update" id="update" value="editExistingSong"></input>';
+        $display = $display.'<h1>Edit song</h1>';
         $display = $display.'<input type="hidden" name="display_id" id="display-id" value="'.$id.'"></input>';
         $this_record = acradb_get_single_record('music_admin', 'lyrics', 'id', $id);
 
@@ -724,6 +725,7 @@ function sbk_song_edit_form ($id, $playlist = false, $all_fields_editable = true
 
 //For API ----------------------------------
 function sbk_playlist_text_to_attributes($playlist_simplexml) {
+    p($playlist_simplexml);
     if(sizeof($playlist_simplexml->introduction) > 0) {
         $playlist_simplexml->introduction[0]->addAttribute('text', $playlist_simplexml->introduction[0]);
     }
@@ -742,6 +744,7 @@ function sbk_playlist_text_to_attributes($playlist_simplexml) {
             $this_song['id'] = $this_song['id'];
         }
     }
+    p($playlist_simplexml);
     return $playlist_simplexml;
 }
 
