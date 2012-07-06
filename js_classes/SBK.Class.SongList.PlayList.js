@@ -124,10 +124,10 @@ SBK.PlayList = SBK.SongList.extend({
 		var self = this;
 
 		if(jQuery('#toggle-introductions', self.container).hasClass('open')) {
-			jQuery('#playlist-holder .introduction', self.container).hide();
+			jQuery('.introduction', self.container).hide();
 			jQuery('#toggle-introductions', self.container).removeClass('open');
 		} else {
-			jQuery('#playlist-holder .introduction', self.container).show();
+			jQuery('.introduction', self.container).show();
 			jQuery('#toggle-introductions', self.container).addClass('open');
 		}
 	},

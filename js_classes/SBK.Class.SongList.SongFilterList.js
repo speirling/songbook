@@ -33,7 +33,7 @@ SBK.SongFilterList = SBK.SongList.extend({
 		jQuery('ul ol', self.container).sortable({
 			connectWith: '.playlist ol'
 		});
-		jQuery('li li', self.container).contextMenu('context-menu', {
+		jQuery('.song', self.container).contextMenu('context-menu', {
 		    'show lyrics': {
 		        click: function(element){ 
 		        	window.open('?action=displaySong&id=' + element.attr('id').replace('id_', '') + 
