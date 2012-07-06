@@ -43,9 +43,8 @@ SBK.SongList = SBK.Class.extend({
 
 	update: function () {
 		var self = this;
-		console.log('update!', self.container);
+
 		self.data_json = self.from_html(self.container);
-		console.log('update', self.data_json);
 	},
 
 	from_html: function (source) {
@@ -54,7 +53,6 @@ SBK.SongList = SBK.Class.extend({
 		output_json = {};
 
 		output_json.title = jQuery('.playlist-title', source).val();
-		console.log(jQuery('.playlist-title', source));
 		output_json.act = jQuery('.act', source).val();
 		output_json.introduction = {
 			"duration": jQuery('.introduction.songlist .introduction_duration', source).val(),

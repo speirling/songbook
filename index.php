@@ -38,10 +38,11 @@ $menu = $menu.'<li><a href="?action=displayPlaylist">Add a new playlist</a></li>
 $menu = $menu.'<li><a href="?action=editSong">Add new song</a></li> ';
 $menu = $menu.'</ul>';
 
+
+$display = $display.$menu;
+
 switch ($action) {
     case 'listAllSongs':
-        $display = $display.$menu;
-
         $display = $display.'<h1>List of songs in the database:</h1>';
         $display = $display.'<div id="available-songs" class="main-list"></div>';$display = $display."
         <script type=\"text/javascript\">
@@ -52,13 +53,12 @@ switch ($action) {
 
     break;
 
-    case 'index':
+    case 'index':        
         if(array_key_exists('playlist', $_GET)) {
             $playlist = $_GET['playlist'];
         } else {
             $playlist = false;
         }
-        $display = $display.$menu;
         if($playlist) {
             $display = $display.'<h1>Index of '.$playlist.' playlist:</h1>';
             $thisPlaylistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
@@ -73,8 +73,6 @@ switch ($action) {
 
     case 'listAllPlaylists':
     default:
-        $display = $display.$menu;
-
         $display = $display.'<h1>List of playlists:</h1>';
         $display = $display.'<div id="playlist-list"></div>';
 
@@ -90,7 +88,6 @@ switch ($action) {
         $playlist = $_GET['playlist'];
         $page_title = "[".$playlist."]";
 
-        $display = $display.$menu;
         $display = $display.'<ul class="menu local">';
         $display = $display.'<li><a href="?action=pdfPlaylist&playlist='.$playlist.'" target="new">table</a>';
         $display = $display.'<li><a href="?action=pdfPlaylist&playlist='.$playlist.'&pdf">table pdf</a>';
@@ -130,7 +127,7 @@ switch ($action) {
         }
 
         $this_record = sbk_get_song_record($id);
-        $display = $display.sbk_song_html($this_record, $key, $singer, $capo);
+        $display = sbk_song_html($this_record, $key, $singer, $capo);
 
         sbk_output_pdf($display, $this_record['title']);
     break;
@@ -138,7 +135,7 @@ switch ($action) {
     case 'pdfPlaylist':
         $playlist = $_GET['playlist'];
         $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
-        $display = $display.sbk_convert_playlistXML_to_table($playlistContent);
+        $display = sbk_convert_playlistXML_to_table($playlistContent);
         if($_GET['pdf']) {
             sbk_output_pdf($display, $playlistContent['title'], 'landscape');
         }
@@ -147,7 +144,7 @@ switch ($action) {
     case 'emailPlaylist':
         $playlist = $_GET['playlist'];
         $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
-        $display = $display.sbk_convert_playlistXML_to_orderedlist($playlistContent, $show_key = TRUE, $show_capo = TRUE, $show_singer = TRUE, $show_id = FALSE, $show_writtenby = FALSE, $show_performedby = FALSE);
+        $display = sbk_convert_playlistXML_to_orderedlist($playlistContent, $show_key = TRUE, $show_capo = TRUE, $show_singer = TRUE, $show_id = FALSE, $show_writtenby = FALSE, $show_performedby = FALSE);
     break;
 
     case 'playlistBook':
@@ -202,7 +199,6 @@ switch ($action) {
                 $capo = (integer) $_GET['capo'];
             }
         }
-        $display = $display.$menu;
         $display = $display.'<ul class="menu local">';
         $display = $display.'<li><a href="?action=displaySong&id='.($id - 1).'">&laquo; Previous</a></li>';
         $display = $display.'<li><a href="?action=editSong&id='.$id.'">Edit this song</a></li>';
@@ -256,7 +252,6 @@ switch ($action) {
             $playlist = false;
         }
 
-        $display = $display.$menu;
         if($id) {
             $display = $display.'<ul class="menu local">';
             $display = $display.'<li><a href="#" onclick="jQuery(\'#edit-song-form input#display-id\').val('.($id-1).'); jQuery(\'#edit-song-form\').attr(\'action\',\'?action=editSong\').submit();">Edit Previous</a></li>';

@@ -1,6 +1,11 @@
 body {
     font-family: trebuchet, verdana, sans-serif;
     font-size: 12px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 }
 ul.menu {
     display: block;
@@ -68,7 +73,8 @@ span.song {
     display:block;
 }
 .song .title {
-
+    display: inline-block;
+    white-space: normal;
 }
 .song .detail {
     color: gray;
@@ -124,14 +130,6 @@ input.act {
 #playlist-holder .detail {
 	display: none;
 }
-.playlist {
-	font-size:0.8em;
-}
-.playlist .title {
-	font-size: 1.5em;
-	display: inline-block;
-	overflow: hidden;
-}
 .playlist-title {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 1.5em;
@@ -143,29 +141,23 @@ input.act {
 	font-weight: bold;
 	color: #daa;
 }
-li.set {
-	list-style-type: none;
-	position: relative;
-	padding-top: 2.5em;
-}
 li.set ul {
 	padding: 0;
 	padding-left: 1em;
 }
-li.set span.duration {
-	position:absolute;
-	right: 1.5em;
-	top:0;
-	font-size: 1.4em;
-	color: gray;
-	width: 3em;
-	text-align:center;
-}
 #playlist-holder .set {
 	border-top: 1px solid silver;
 }
+.playlist,
+#all-song-list {
+	position: absolute;
+	top: 3em;
+	bottom: 1em;
+	right: 1em;
+	left: 1em;
+	overflow: auto;
+}
 .playlist li {
-	position: relative;
 	margin: 1px;
 	padding: 0.5em;
 }
@@ -184,7 +176,8 @@ li.set span.duration {
 	background-color: #e9ec7b;
 }
 .playlist li li {
-	background-color: #faffaa;
+	background-color: #f0f0c0;
+	white-space: nowrap;
 }
 
 .playlist-page {
@@ -219,21 +212,17 @@ li.set span.duration {
 	display:none;	
 }
 input.duration {
-	width: 32px;
-	text-align: center;
-	border: 0;
-	background-color: #e3e3f3;
-	position: absolute;
-	right: 16px;
-}
-
-input.introduction_duration {
 	width: 3em;
 	text-align: center;
 	border: 0;
+	background-color: #e3e3f3;
+}
+
+input.introduction_duration {
+	width: 3.5em;
+	text-align: center;
+	border: 0;
 	background-color: #f3f3e3;
-	position: absolute;
-	right: 1em;
 }
 
 
@@ -313,11 +302,10 @@ input:-moz-placeholder {
 	font-style: italic;
 }
 .singer {
- 	width:5em;
+ 	width: 5em;
 	background-color: transparent;
-	border:0;
-	text-align: right;
-	color:gray;
+	border: 0;
+	color: gray;
 	font-size:1.3em;
 	margin-right: 3px;
 }
@@ -331,46 +319,49 @@ input:-moz-placeholder {
 
 #playlist-holder,
 #song_picker {
-	display: inline-block;
-	position: relative;
+    padding: 1em;
+    position: absolute;
+    top: 4em; 
+    bottom: 0;
 }
 #playlist-holder {
-	width: 60%;
+    padding-top: 3em; 
+    width: 60%;
 }
 #song_picker {
-	width: 36%;
-	float: right;
+	right: 1%;
+	left: 64%;
+	padding-top: 0;
 }
 
 .introduction {
+	font-size: 0.8em;
 	display: block;
 	vertical-align: top;
 	position: relative;
 	left: 0;
 	width: 100%;
-	margin-top:1.8em;
 }
 .introduction .introduction_text {
-	height: 1.5em;
-	font-size: 1.3em;
 	color: gray;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	position: relative;
-	left: 6em;
-	width: 70%;
+	width: 80%;
+	font-size: 1em;
 }
 
 /* available song picker */
+#available-songs {
+	padding: 1em;
+	position: absolute;
+	top: 2em;
+	left:0;
+	right: 0;
+	bottom: 0;
+}
 #available-songs,
 #playlist-holder {
-	padding:1em;
 	border-radius:1em;
 	border:1px solid gray;
-}
-#playlist-holder {
-	padding-top:3em;
-}
-#available-songs {
 }
 #all-song-list .pleasewait {
 	font-size: 0.8em;
@@ -382,7 +373,7 @@ input:-moz-placeholder {
 #available-songs form .label {
 }
 #all-song-list,
-#playlist-holder>ul {
+#playlist-holder ul {
 	overflow: auto;
  	margin: 1em;
 	padding: 0.5em;
