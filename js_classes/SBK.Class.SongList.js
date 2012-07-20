@@ -1,13 +1,39 @@
 SBK.SongList = SBK.Class.extend({
-	init: function (container, jsr_template_selector) {
+	init: function (container, jsr_template_selector, exclusion_songlist) {
 		var self = this;
 
 		self.container = container;
 		self.template = jQuery(jsr_template_selector);
 		self.pleasewait = new SBK.PleaseWait(self.container);
 		self.http_request = new SBK.HTTPRequest();
+		if(typeof(exclusion_songlist) === 'undefined') {
+			self.exclusion_list = null;
+		} else {
+			self.exclusion_list = self.flatten_exclusion_list(exclusion_songlist);
+		}
 	},
 	
+	flatten_exclusion_list: function (exclusion_songlist) {
+		var self = this, song_index, set_index, set, output_array = [];
+
+		if(typeof(exclusion_songlist.songs) !== 'undefined') {
+			for (song_index = 0; song_index < exclusion_songlist.songs.length; song_index = song_index + 1) {
+				output_array[output_array.length] = exclusion_songlist.songs[song_index].id;
+			}
+		}
+
+		if(typeof(exclusion_songlist.sets) !== 'undefined') {
+			for (set_index = 0; set_index < exclusion_songlist.sets.length; set_index = set_index + 1) {
+				set = exclusion_songlist.sets[set_index];
+				for (song_index = 0; song_index < set.songs.length; song_index = song_index + 1) {
+					output_array[output_array.length] = set.songs[song_index].id;
+				}
+			}
+		}
+		
+		return output_array;
+	},
+
 	_fetch: function (callback) {
 		var self = this;
 
@@ -27,7 +53,7 @@ SBK.SongList = SBK.Class.extend({
 		self._fetch(callback); //so that sub classes can make this conditional - e.g. filename not specified
 	},
 
-	display_content: function (server_data) {
+	display_content: function () {
 		throw ('not implemented');
 	},
 
@@ -97,8 +123,8 @@ SBK.SongList = SBK.Class.extend({
 	render: function (callback) {
 		var self = this;
 
-		self.fetch(function(data_json_string){
-			self.process_server_data(data_json_string);
+		self.fetch(function(server_data){
+			self.process_server_data(server_data);
 			if(typeof(callback) === 'function') {
 				callback();
 			}
@@ -109,9 +135,39 @@ SBK.SongList = SBK.Class.extend({
 		var self = this;
 
 		self.data_json = server_data.data;
+		self.filter_songlist_json_before_display();
 		self.playlist_html = self.to_html();
 		
 		self.display_content();
+	},
+	
+	filter_songlist_json_before_display: function () {
+		var self = this, song_index, set_index, set, id_index;
+
+		if(self.exclusion_list !== null) {
+			if(typeof(self.data_json.songs) !== 'undefined') {
+				for (song_index = 0; song_index < self.data_json.songs.length; song_index = song_index + 1) {
+					id_index = jQuery.inArray('' + self.data_json.songs[song_index].id, self.exclusion_list);
+					if(id_index !== -1) {
+						self.data_json.songs.splice(song_index, 1);
+						song_index = song_index -1;
+					}
+				}
+			}
+			
+			if(typeof(self.data_json.sets) !== 'undefined') {
+				for (set_index = 0; set_index < self.data_json.sets.length; set_index = set_index + 1) {
+					set = self.data_json.sets[set_index];
+					for (song_index = 0; song_index < set.songs.length; song_index = song_index + 1) {
+						id_index = jQuery.inArray('' + set.songs[song_index].id, self.exclusion_list);
+						if(id_index !== -1) {
+							set.songs.splice(song_index, 1);
+							song_index = song_index -1;
+						}
+					}
+				}
+			}
+		}
 	},
 
 	hide_introductions: function() {

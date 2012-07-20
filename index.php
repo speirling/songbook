@@ -11,20 +11,8 @@ if(array_key_exists('action', $_GET)) {
     $action = 'list';
 }
 
-$STANDARD_JAVASCRIPTS[] = 'admin/constants2js.php';
-$STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.contextMenu/jquery.contextMenu.js";
-$STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.a-tools.js";
-$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Namespace.js';
-$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.js';
-$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.PleaseWait.js';
-$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.HTTPRequest.js';
-$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.SongList.js';
-$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.SongList.PlayList.js';
-$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.SongList.SongFilterList.js';
-$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.SongPicker.js';
-$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.AllPlaylists.js';
-
 $all_playlists = $all_playlists.']';
+
 $STANDARD_JAVASCRIPTS[] = "index.js";
 $page_title = $action.' (playlists)';
 $display = '';
@@ -44,7 +32,8 @@ $display = $display.$menu;
 switch ($action) {
     case 'listAllSongs':
         $display = $display.'<h1>List of songs in the database:</h1>';
-        $display = $display.'<div id="available-songs" class="main-list"></div>';$display = $display."
+        $display = $display.'<div id="available-songs" class="main-list"></div>';
+        $display = $display."
         <script type=\"text/javascript\">
             $(document).ready(function() {
 				new SBK.SongFilterList(jQuery('#available-songs')).render();
@@ -53,7 +42,7 @@ switch ($action) {
 
     break;
 
-    case 'index':        
+    case 'index':
         if(array_key_exists('playlist', $_GET)) {
             $playlist = $_GET['playlist'];
         } else {
@@ -103,8 +92,12 @@ switch ($action) {
         $display = $display."
         <script type=\"text/javascript\">
             $(document).ready(function() {
-            	new SBK.PlayList('".$playlist."', jQuery('#playlist-holder')).render();
-				new SBK.SongPicker(jQuery('#song_picker')).render();
+            	var playlist = new SBK.PlayList('".$playlist."', jQuery('#playlist-holder'));
+            	playlist.render();
+
+				var songpicker = new SBK.SongPicker(jQuery('#song_picker'));
+				songpicker.link_to_playlist(playlist);
+				songpicker.render();
             });
         </script>";
     break;

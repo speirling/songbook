@@ -17,11 +17,12 @@ define("SYSTEM_ID","Epeelo Songbook");
 
   //The path to the acra_i scripts must be ABSOLUTE... so that the scripts can be held out of the scope of the current site
   //NOTE: If acra_i is outside the scope of the current site, then you can't use the standard javascript libraries... or else they will have to be held separate from acra_i.... or else you might have symbolic links or mapping in the httpd.conf file
-  define("URL_TO_ACRA_SCRIPTS","/acra_i");
-  define("ABSOLUTE_PATH_TO_ACRA_SCRIPTS",'/fileserver/data/www/acra_i');
+  define("URL_TO_ACRA_SCRIPTS", "/acra_i");
+  define("ABSOLUTE_PATH_TO_ACRA_SCRIPTS", '/fileserver/data/www/acra_i');
 
-  define("ACRA_DOC_URL","/acra_i/doc");
-  define("URL_TO_DATASET_STYLESHEETS","/songbook");
+  define("ACRA_DOC_URL", "/acra_i/doc");
+  define("BASE_URL", "/songbook");
+  define("URL_TO_DATASET_STYLESHEETS", BASE_URL);
 
   //it would be a security risk to leave this one ON (true)
   //if this is true, AND if there's a GET parameter debug (any value)
@@ -107,6 +108,19 @@ define("SBK_KEYFIELD_NAME", 'id');
 
 require('/fileserver/data/www'."/songbook/songbook_functions.php");
 define('PLAYLIST_DIRECTORY', 'playlists');
-define('JAVASCRIPT_CLASSES_DIRECTORY', 'js_classes');
+define('JAVASCRIPT_CLASSES_DIRECTORY', BASE_URL.'/js_classes');
+
+$STANDARD_JAVASCRIPTS[] = BASE_URL.'/admin/constants2js.php';
+$STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.contextMenu/jquery.contextMenu.js";
+$STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.a-tools.js";
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Namespace.js';
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.js';
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.PleaseWait.js';
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.HTTPRequest.js';
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.SongList.js';
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.SongList.PlayList.js';
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.SongList.SongFilterList.js';
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.SongPicker.js';
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_CLASSES_DIRECTORY.'/SBK.Class.AllPlaylists.js';
 
 ?>

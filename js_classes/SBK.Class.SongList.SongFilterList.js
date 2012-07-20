@@ -1,8 +1,8 @@
 SBK.SongFilterList = SBK.SongList.extend({
-	init: function (container) {
+	init: function (container, exclusion_list) {
 		var self = this;
 
-		self.call_super(container, '#jsr-song-selector-list');
+		self.call_super(container, '#jsr-song-selector-list', exclusion_list);
 		self.fetch_parameters = {action: 'get_available_songs', search_string: ''};
 	},
 
@@ -57,5 +57,9 @@ SBK.SongFilterList = SBK.SongList.extend({
 		self.render();
 		
 		return false;
+	},
+	
+	filter_by_songlist: function (songlist) {
+		console.log(songlist);
 	}
 });

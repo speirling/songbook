@@ -1,8 +1,8 @@
 SBK.PlayList = SBK.SongList.extend({
-	init: function (playlist_name, container) {
+	init: function (playlist_name, container, exclusion_list) {
 		var self = this;
 
-		self.call_super(container, '#jsr-playlist-list');
+		self.call_super(container, '#jsr-playlist-list', exclusion_list);
 		if(typeof(playlist_name) === 'undefined') {
 			self.playlist_name = '';
 		} else {
@@ -10,7 +10,7 @@ SBK.PlayList = SBK.SongList.extend({
 		}
 		self.fetch_parameters = {action: 'get_playlist', playlist_name: self.playlist_name};
 	},
-	
+
 	fetch: function (callback) {
 		var self = this;
 
@@ -67,7 +67,7 @@ SBK.PlayList = SBK.SongList.extend({
 		}
 	},
 
-	display_content: function (server_data) {
+	display_content: function () {
 		var self = this;
 		
 		self.container.html(self.playlist_html);
