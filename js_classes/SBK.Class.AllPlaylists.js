@@ -3,19 +3,26 @@ SBK.AllPlaylists = SBK.Class.extend({
 		var self = this;
 
 		self.container = container;
-		self.template = jQuery('#jsr-all-playlists');
+		self.template = self.get_template();
 		self.pleasewait = new SBK.PleaseWait(self.container);
 		self.http_request = new SBK.HTTPRequest();
 	},
 	
-	render: function () {
-		var self = this;
+	get_template: function () {
+		return jQuery('#jsr-all-playlists');
+	},
+	
+	render: function (callback) {
+		var self = this, all_playlists;
 		
 		self.pleasewait.show();
 		self.http_request.api_call(
 		    {action: 'get_available_playlists'},
 		    function (response) {
-		    	jQuery(self.template.render(response.data)).appendTo(self.container);
+		    	all_playlists = jQuery(self.template.render(response.data)).appendTo(self.container);
+		    	if(typeof(callback) === 'function') {
+		    		callback(all_playlists);
+		    	}
 		    	self.pleasewait.hide();
     		}
 		);

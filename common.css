@@ -1,0 +1,28 @@
+body {
+    font-family: trebuchet, verdana, sans-serif;
+    font-size: 12px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.label, .data  {
+    display: inline-block;
+}
+.label  {
+	margin-right: 0.5em;
+    color:gray;
+    font-style: italic;
+	font-size: 0.9em;
+}
+
+
+.pleasewait {
+	position: absolute;
+	left: 50%;
+	top:50%;
+	padding:3em;
+	font-weight: bold;
+}
