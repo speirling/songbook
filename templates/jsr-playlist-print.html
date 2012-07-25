@@ -1,0 +1,36 @@
+<div class="playlist">
+	<span class="playlist-title">{{:title}}</span>
+	<span class="act">{{:act}}</span>
+	<span class="introduction songlist">
+		<span class="introduction_text">{{:introduction.text}}</span>
+		<span class="introduction_duration">{{:introduction.duration}}</span>
+	</span>
+	<ul>
+	{{for sets}}
+	<li class="set">
+	  <span class="set-title">{{:label}}</span>
+	  <span class="duration"></span>
+	  <span class="introduction set" style="display: none">
+		<span class="introduction_text">{{:introduction.text}}</span>
+		<span class="introduction_duration">value="{{:introduction.duration}}" </span>
+	  </span>
+	  <ol class="songlist">
+	  	{{for songs}}
+	    <li class="song" id="{{:id}}">
+	      <span class="singer">{{:singer}}</span>
+	      <span class="key">{{:key}}</span>
+	      <span class="capo">{{:capo}}</span>
+	      <span class="id">{{:id}}</span>
+	      <span class="duration">{{:duration}}</span>
+	      <span class="title">{{:title}}</span>
+	      <span class="introduction">
+			<span class="introduction_text" placeholder="Introduction text">{{:introduction.text}}</span>
+			<span class="introduction_duration" placeholder="Introduction duration">{{:introduction.duration}}</span>
+	      </span>
+	    </li>
+		{{/for}}
+	  </ol>
+	</li>
+	{{/for}}
+	</ul>
+</div>

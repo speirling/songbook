@@ -2,13 +2,19 @@ SBK.PlayList = SBK.SongList.extend({
 	init: function (playlist_name, container, exclusion_list) {
 		var self = this;
 
-		self.call_super(container, '#jsr-playlist-list', exclusion_list);
+		self.call_super(container, self.get_template(), exclusion_list);
 		if(typeof(playlist_name) === 'undefined') {
 			self.playlist_name = '';
 		} else {
 			self.playlist_name = playlist_name;
 		}
 		self.fetch_parameters = {action: 'get_playlist', playlist_name: self.playlist_name};
+	},
+	
+	get_template: function (callback) {
+		var self = this;
+		
+		return '#jsr-playlist-list';
 	},
 
 	fetch: function (callback) {
