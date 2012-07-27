@@ -29,12 +29,13 @@ $menu = $menu.'</span>';
 $menu = $menu.'</div>';
 
 $css = array();
-$css[] = 'common.css';
+define(CSS_PATH, 'css/');
+$css[] = CSS_PATH.'common.css';
 
 switch ($action) {
     case 'listAllSongs':
-        $css[] = 'index.css';
-        $css[] = 'menu.css';
+        $css[] = CSS_PATH.CSS_PATH.'index.css';
+        $css[] = CSS_PATH.'menu.css';
         $display = $display.'<h1>List of songs in the database:</h1>';
         $display = $display.'<div id="available-songs" class="main-list"></div>';
         $display = $display."
@@ -47,8 +48,8 @@ switch ($action) {
     break;
 
     case 'index':
-        $css[] = 'index.css';
-        $css[] = 'menu.css';
+        $css[] = CSS_PATH.'index.css';
+        $css[] = CSS_PATH.'menu.css';
         if(array_key_exists('playlist', $_GET)) {
             $playlist = $_GET['playlist'];
         } else {
@@ -68,8 +69,8 @@ switch ($action) {
 
     case 'listAllPlaylists':
     default:
-        $css[] = 'index.css';
-        $css[] = 'menu.css';
+        $css[] = CSS_PATH.'index.css';
+        $css[] = CSS_PATH.'menu.css';
         $display = $display.'<h1>List of playlists:</h1>';
         $display = $display.'<div id="playlist-list"></div>';
 
@@ -82,8 +83,8 @@ switch ($action) {
     break;
 
     case 'displayPlaylist':
-        $css[] = 'index.css';
-        $css[] = 'menu.css';
+        $css[] = CSS_PATH.'index.css';
+        $css[] = CSS_PATH.'menu.css';
         $playlist = $_GET['playlist'];
         $page_title = "[".$playlist."]";
 
@@ -121,8 +122,8 @@ switch ($action) {
     break;
 
     case 'pdfSong':
-        $css[] = 'index.css';
-        $css[] = 'song_lyrics.css';
+        $css[] = CSS_PATH.'index.css';
+        $css[] = CSS_PATH.'song_lyrics.css';
         $number_of_lyric_lines_per_page = 58;
         $key = null;
         $singer = null;
@@ -146,7 +147,7 @@ switch ($action) {
     break;
 
     case 'pdfPlaylist':
-        $css[] = 'index.css';
+        $css[] = CSS_PATH.'index.css';
         $playlist = $_GET['playlist'];
         $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
         $display = sbk_convert_playlistXML_to_table($playlistContent);
@@ -156,15 +157,17 @@ switch ($action) {
     break;
 
     case 'emailPlaylist':
-        $css[] = 'index.css';
+        $css[] = CSS_PATH.'index.css';
         $playlist = $_GET['playlist'];
         $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
         $display = sbk_convert_playlistXML_to_orderedlist($playlistContent, $show_key = TRUE, $show_capo = TRUE, $show_singer = TRUE, $show_id = FALSE, $show_writtenby = FALSE, $show_performedby = FALSE);
     break;
 
     case 'playlistBook':
-        $css[] = 'playlistBook.css';
-        $css[] = 'song_lyrics.css';
+        //$css[] = CSS_PATH.'index.css';
+        $css[] = CSS_PATH.'playlistBook.css';
+        $css[] = CSS_PATH.'song_lyrics.css';
+        $css[] = CSS_PATH.'songIndex.css';
         $playlist = $_GET['playlist'];
         $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
         $ID_array = sbk_getIDarray($playlistContent);
@@ -188,9 +191,9 @@ switch ($action) {
     break;
 
     case 'displaySong':
-        //$css[] = 'index.css';
-        $css[] = 'menu.css';
-        $css[] = 'song_lyrics.css';
+        //$css[] = CSS_PATH.'index.css';
+        $css[] = CSS_PATH.'menu.css';
+        $css[] = CSS_PATH.'song_lyrics.css';
         $key = null;
         $singer = null;
         $capo = null;
@@ -248,9 +251,9 @@ switch ($action) {
     break;
 
     case 'editSong':
-        $css[] = 'index.css';
-        $css[] = 'menu.css';
-        $css[] = 'song_edit.css';
+        $css[] = CSS_PATH.'index.css';
+        $css[] = CSS_PATH.'menu.css';
+        $css[] = CSS_PATH.'song_edit.css';
         if (array_key_exists('update',$_POST)) {
             switch ($_POST['update']) {
             case "addNewSong":

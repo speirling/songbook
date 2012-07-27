@@ -1,0 +1,72 @@
+
+.song-index {
+	page-break-after: always;
+}
+.song-index td {
+	font-size: 10pt;
+}
+.song-index h1 {
+	font-size: 1.4em;
+	color:#dd9999;
+	margin-bottom: 0.3em;
+}
+.song-index h2 {
+	font-size: 1em;
+	color:#9999dd;
+	margin-bottom: 0.3em;
+	font-weight: normal;
+}
+.song-index .indent {
+	padding-left: 2em;
+}
+.song-index .song {
+	white-space: nowrap;
+}
+.song-index .song:hover {
+	background-color: #008080;
+	color: white;
+}
+
+.song-index .song .id {
+	display: inline-block;
+	width: 3em;
+	text-align: right;
+	padding-right: 0.5em;
+	border-right: 1px solid silver;
+	color: gray;
+}
+
+.song-index .song .title {
+	display: inline-block;
+	width: 20em;
+	padding-left: 0.5em;
+}
+
+
+.key ,
+.capo {
+	background-color: transparent;
+	border: 0;
+	text-align: center;
+	margin-right: 3px;
+	display: inline-block;
+}
+.key {
+	width: 2em;
+	font-weight: bold;
+}
+.capo {
+	width: 4em;
+	font-size: 0.8em;
+	font-style: inherit;
+	font-weight: bold;
+	text-align: left;
+}
+.singer {
+ 	width: 5em;
+	background-color: transparent;
+	border: 0;
+	color: gray;
+	font-size:1.3em;
+	margin-right: 3px;
+}
