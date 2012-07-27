@@ -17,16 +17,11 @@
 	  <ol class="songlist">
 	  	{{for songs}}
 	    <li class="song" id="{{:id}}">
+	      <span class="title">{{:title}}</span>
+	      <span class="id">({{:id}})</span>
 	      <span class="singer">{{:singer}}</span>
 	      <span class="key">{{:key}}</span>
 	      <span class="capo">{{:capo}}</span>
-	      <span class="id">{{:id}}</span>
-	      <span class="duration">{{:duration}}</span>
-	      <span class="title">{{:title}}</span>
-	      <span class="introduction">
-			<span class="introduction_text" placeholder="Introduction text">{{:introduction.text}}</span>
-			<span class="introduction_duration" placeholder="Introduction duration">{{:introduction.duration}}</span>
-	      </span>
 	    </li>
 		{{/for}}
 	  </ol>

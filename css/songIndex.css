@@ -3,16 +3,16 @@
 	page-break-after: always;
 }
 .song-index td {
-	font-size: 10pt;
 }
 .song-index h1 {
-	font-size: 1.4em;
-	color:#dd9999;
-	margin-bottom: 0.3em;
+	font-size: 12pt;
+	color:#bb5555;
+	margin-bottom: 0.1em #bb5555;
+	border-top: 1px solid 
 }
 .song-index h2 {
-	font-size: 1em;
-	color:#9999dd;
+	font-size: 10pt;
+	color:#555599;
 	margin-bottom: 0.3em;
 	font-weight: normal;
 }
@@ -21,6 +21,7 @@
 }
 .song-index .song {
 	white-space: nowrap;
+	font-size: 8pt;
 }
 .song-index .song:hover {
 	background-color: #008080;
@@ -40,33 +41,4 @@
 	display: inline-block;
 	width: 20em;
 	padding-left: 0.5em;
-}
-
-
-.key ,
-.capo {
-	background-color: transparent;
-	border: 0;
-	text-align: center;
-	margin-right: 3px;
-	display: inline-block;
-}
-.key {
-	width: 2em;
-	font-weight: bold;
-}
-.capo {
-	width: 4em;
-	font-size: 0.8em;
-	font-style: inherit;
-	font-weight: bold;
-	text-align: left;
-}
-.singer {
- 	width: 5em;
-	background-color: transparent;
-	border: 0;
-	color: gray;
-	font-size:1.3em;
-	margin-right: 3px;
 }
