@@ -167,7 +167,7 @@ switch ($action) {
         //$css[] = CSS_PATH.'index.css';
         $css[] = CSS_PATH.'playlist-book.css';
         $css[] = CSS_PATH.'song-lyrics.css';
-        $css[] = CSS_PATH.'songIndex.css';
+        $css[] = CSS_PATH.'song-index.css';
         $playlist = $_GET['playlist'];
         $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
         $ID_array = sbk_getIDarray($playlistContent);
