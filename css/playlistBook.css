@@ -28,3 +28,34 @@
 .playlist .set-title {
 	font-weight: bold;
 }
+
+
+.song .capo,
+.song .id {
+	font-size: 0.8em;
+}
+.song .key,
+.song .capo {
+	background-color: transparent;
+	border: 0;
+	text-align: center;
+	margin-right: 3px;
+	display: inline-block;
+}
+.song .key {
+	font-weight: bold;
+}
+.song .capo {
+	font-style: inherit;
+	font-weight: bold;
+	text-align: left;
+}
+.song .singer {
+	background-color: transparent;
+	border: 0;
+	color: gray;
+	margin-right: 3px;
+}
+.song .id {
+	font-style: italic;
+}
