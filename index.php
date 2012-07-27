@@ -123,7 +123,7 @@ switch ($action) {
 
     case 'pdfSong':
         $css[] = CSS_PATH.'index.css';
-        $css[] = CSS_PATH.'song_lyrics.css';
+        $css[] = CSS_PATH.'song-lyrics.css';
         $number_of_lyric_lines_per_page = 58;
         $key = null;
         $singer = null;
@@ -165,8 +165,8 @@ switch ($action) {
 
     case 'playlistBook':
         //$css[] = CSS_PATH.'index.css';
-        $css[] = CSS_PATH.'playlistBook.css';
-        $css[] = CSS_PATH.'song_lyrics.css';
+        $css[] = CSS_PATH.'playlist-book.css';
+        $css[] = CSS_PATH.'song-lyrics.css';
         $css[] = CSS_PATH.'songIndex.css';
         $playlist = $_GET['playlist'];
         $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
@@ -178,6 +178,7 @@ switch ($action) {
         sort($ID_array);
         $display = $display.sbk_print_multiple_songs($ID_array);
         if(array_key_exists('pdf', $_GET)) {
+          $display = acradisp_standardHTMLheader($page_title, $css, $STANDARD_JAVASCRIPTS).$display.'</body></html>';
           sbk_output_pdf($display, 'SongBook - '.$playlistContent['title']);
         }
 
@@ -193,7 +194,7 @@ switch ($action) {
     case 'displaySong':
         //$css[] = CSS_PATH.'index.css';
         $css[] = CSS_PATH.'menu.css';
-        $css[] = CSS_PATH.'song_lyrics.css';
+        $css[] = CSS_PATH.'song-lyrics.css';
         $key = null;
         $singer = null;
         $capo = null;
@@ -253,7 +254,7 @@ switch ($action) {
     case 'editSong':
         $css[] = CSS_PATH.'index.css';
         $css[] = CSS_PATH.'menu.css';
-        $css[] = CSS_PATH.'song_edit.css';
+        $css[] = CSS_PATH.'song-edit.css';
         if (array_key_exists('update',$_POST)) {
             switch ($_POST['update']) {
             case "addNewSong":
