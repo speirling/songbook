@@ -30,6 +30,16 @@
 }
 
 
+.playlist-page .playlist .detail {
+	display:none;	
+}
+.playlist-page {
+	page-break-after: always;
+}
+.playlist-page .title{
+	font-weight: normal;
+}
+
 .song .capo,
 .song .id {
 	font-size: 0.8em;

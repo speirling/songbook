@@ -26,3 +26,21 @@ body {
 	padding:3em;
 	font-weight: bold;
 }
+
+
+
+
+::-webkit-input-placeholder{
+	font-weight: normal;
+	margin-top: 4px;
+	margin-bottom: 4px;
+	margin-left: 3px;
+	margin-right: 3px;
+}
+input:-moz-placeholder {
+	font-weight: normal;
+	margin-top: 4px;
+	margin-bottom: 4px;
+	margin-left: 3px;
+	margin-right: 3px;
+}

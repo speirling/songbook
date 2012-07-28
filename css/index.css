@@ -40,12 +40,6 @@ span.song {
 
 
 
-.playlist-page {
-	page-break-after: always;
-}
-.playlist-page .title{
-	font-weight: bold;
-}
 .spec {
 	display: inline-block;	
 	color: black;
@@ -67,9 +61,6 @@ span.song {
 .spec .singer {
 	font-size: 0.8em;
 	text-align: left;
-}
-.playlist-page .playlist .detail {
-	display:none;	
 }
 input.duration {
 	width: 3em;
@@ -119,92 +110,6 @@ li.dummy {
 	line-height:3px;
 }
 
-::-webkit-input-placeholder{
-    font-size: 1.2em;
-	font-weight: normal;
-	margin-top: 4px;
-	margin-bottom: 4px;
-	margin-left: 3px;
-	margin-right: 3px;
-}
-input:-moz-placeholder {
-    font-size: 1.2em;
-	font-weight: normal;
-	margin-top: 4px;
-	margin-bottom: 4px;
-	margin-left: 3px;
-	margin-right: 3px;
-}
-
-
-.key ,
-.capo,
-.DELETE {
-	background-color: transparent;
-	border: 0;
-	text-align: center;
-	margin-right: 3px;
-	display: inline-block;
-}
-.key, .DELETE {
-	width: 2em;
-	font-weight: bold;
-}
-.capo {
-	width: 4em;
-	font-size: 0.8em;
-	font-style: inherit;
-	font-weight: bold;
-	text-align: left;
-}
-.singer,
-.DELETE {
- 	width: 5em;
-	background-color: transparent;
-	border: 0;
-	color: gray;
-	font-size:1.3em;
-	margin-right: 3px;
-}
-
-.key:focus, 
-.singer:focus, 
-.capo:focus {
-	border:1px solid silver;
-	background-color: white;
-}
-
-#playlist-holder,
-#song_picker {
-    padding: 1em;
-    position: absolute;
-    top: 4em; 
-    bottom: 0;
-}
-#playlist-holder {
-    padding-top: 3em; 
-    width: 60%;
-}
-#song_picker {
-	right: 1%;
-	left: 64%;
-	padding-top: 0;
-}
-
-.introduction {
-	font-size: 0.8em;
-	display: none;
-	vertical-align: top;
-	position: relative;
-	left: 0;
-	width: 100%;
-}
-.introduction .introduction_text {
-	color: gray;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	width: 80%;
-	font-size: 1em;
-}
 
 /* available song picker */
 #available-songs {
@@ -260,38 +165,6 @@ form#allsongsearch {
 #available-songs li .introduction {
 	display: none;
 }
-a#savePlaylist,
-a#toggle-introductions,
-a#add-new-set {
-	position:absolute;
-	top: 0;
-	z-index:10;
-	display: block;
-	background-color: transparent;
-	color: silver;
-	border-radius: 1em;
-	font-size: 1.2em;
-	text-decoration: none;
-	padding:0.3em;
-	padding-left:1.3em;
-	padding-right:1.3em;
-}
-a#savePlaylist {
-	right:3em;
-}
-a#toggle-introductions {
-	right:9em;
-}
-a#add-new-set {
-	right:25em;
-}
-a#savePlaylist:hover,
-a#toggle-introductions:hover,
-a#add-new-set:hover {
-	background-color: #008080;
-	color: white;
-}
-
 #available-songs .numberofrecords {
 	display: none;
 }

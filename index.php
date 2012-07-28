@@ -3,7 +3,7 @@ require_once('admin/configure.inc.php');
 require_once("wkhtml2pdf_integration.php");
 
 error_log("******************************* Run songbook index *******************************");
-$songBookContent = "";
+
 
 if(array_key_exists('action', $_GET)) {
 	$action = $_GET['action'];
@@ -13,23 +13,14 @@ if(array_key_exists('action', $_GET)) {
 
 $all_playlists = $all_playlists.']';
 
-$STANDARD_JAVASCRIPTS[] = "index.js";
+$js = $STANDARD_JAVASCRIPTS;
+$js[] = "index.js";
 $page_title = $action.' (playlists)';
 $display = '';
-
 $menu = '';
-$menu = $menu.'<div class="menu">';
-$menu = $menu.'<div class="menu main">';
-$menu = $menu.'<span class="menu-list-of-playlists"></span>';
-$menu = $menu.'<span class="buttons">';
-$menu = $menu.'<a href="?action=index">index of all songs</a>';
-$menu = $menu.'<a href="?action=displayPlaylist">Add a new playlist</a> ';
-$menu = $menu.'<a href="?action=editSong">Add new song</a> ';
-$menu = $menu.'</span>';
-$menu = $menu.'</div>';
 
 $css = array();
-define(CSS_PATH, 'css/');
+define('CSS_PATH', '/songbook/css/');
 $css[] = CSS_PATH.'common.css';
 
 switch ($action) {
@@ -45,6 +36,7 @@ switch ($action) {
             });
         </script>";
 
+        sbk_output_html($display, $menu, $page_title, $css, $js);
     break;
 
     case 'index':
@@ -65,6 +57,8 @@ switch ($action) {
         }
 
         $display = $display.sbk_generate_index($ID_array);
+
+        sbk_output_html($display, $menu, $page_title, $css, $js);
     break;
 
     case 'listAllPlaylists':
@@ -80,11 +74,14 @@ switch ($action) {
 				new SBK.AllPlaylists(jQuery('#playlist-list')).render();
             });
         </script>";
+
+        sbk_output_html($display, $menu, $page_title, $css, $js);
     break;
 
     case 'displayPlaylist':
         $css[] = CSS_PATH.'index.css';
         $css[] = CSS_PATH.'menu.css';
+        $css[] = CSS_PATH.'playlist-edit.css';
         $playlist = $_GET['playlist'];
         $page_title = "[".$playlist."]";
 
@@ -119,6 +116,8 @@ switch ($action) {
 				songpicker.render();
             });
         </script>";
+
+        sbk_output_html($display, $menu, $page_title, $css, $js);
     break;
 
     case 'pdfSong':
@@ -143,7 +142,7 @@ switch ($action) {
         $this_record = sbk_get_song_record($id);
         $display = sbk_song_html($this_record, $key, $singer, $capo);
 
-        sbk_output_pdf($display, $this_record['title']);
+        sbk_output_pdf($display, $this_record['title'], $css, $js);
     break;
 
     case 'pdfPlaylist':
@@ -152,7 +151,7 @@ switch ($action) {
         $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
         $display = sbk_convert_playlistXML_to_table($playlistContent);
         if($_GET['pdf']) {
-            sbk_output_pdf($display, $playlistContent['title'], 'landscape');
+            sbk_output_pdf($display, $playlistContent['title'], $css, $js, 'landscape');
         }
     break;
 
@@ -161,6 +160,8 @@ switch ($action) {
         $playlist = $_GET['playlist'];
         $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
         $display = sbk_convert_playlistXML_to_orderedlist($playlistContent, $show_key = TRUE, $show_capo = TRUE, $show_singer = TRUE, $show_id = FALSE, $show_writtenby = FALSE, $show_performedby = FALSE);
+
+        sbk_output_html($display, $menu, $page_title, $css, $js);
     break;
 
     case 'playlistBook':
@@ -177,10 +178,6 @@ switch ($action) {
         $display = $display.sbk_generate_index($ID_array);
         sort($ID_array);
         $display = $display.sbk_print_multiple_songs($ID_array);
-        if(array_key_exists('pdf', $_GET)) {
-          $display = acradisp_standardHTMLheader($page_title, $css, $STANDARD_JAVASCRIPTS).$display.'</body></html>';
-          sbk_output_pdf($display, 'SongBook - '.$playlistContent['title']);
-        }
 
         $display = $display."
         <script type=\"text/javascript\">
@@ -189,6 +186,12 @@ switch ($action) {
             	playlist.render();
             });
         </script>";
+
+        if(array_key_exists('pdf', $_GET)) {
+            sbk_output_pdf($display, 'SongBook - '.$playlistContent['title'], $css, $js);
+        } else {
+            sbk_output_html($display, $menu, $page_title, $css, $js);
+        }
     break;
 
     case 'displaySong':
@@ -249,6 +252,8 @@ switch ($action) {
         $this_record = sbk_get_song_record($id);
         $display = $display.sbk_song_html($this_record, $key, $singer, $capo);
         $page_title = $this_record['title'].' - playlists';
+
+        sbk_output_html($display, $menu, $page_title, $css, $js);
     break;
 
     case 'editSong':
@@ -295,28 +300,10 @@ switch ($action) {
         $display = $display.'<span class="edit">';
         $display = $display.sbk_song_edit_form ($id, $playlist, true);
         $display = $display."</span>";
+
+        sbk_output_html($display, $menu, $page_title, $css, $js);
     break;
 }
-
-$menu = $menu.'</div>';
-$menu = $menu."
-<script type=\"text/javascript\">
-    $(document).ready(function() {
-		new SBK.PlaylistSelector(jQuery('.menu-list-of-playlists')).render(
-			function (list) {
-				list.change(function () {
-        			location.href = \"?action=displayPlaylist&playlist=\" + jQuery(this).val();
-        		});
-			}
-		);
-    });
-</script>";
-
-$display = $menu.$display;
-$display = acradisp_standardHTMLheader($page_title, $css, $STANDARD_JAVASCRIPTS).$display.'</body></html>';
-
-echo $display;
-
 
 
 ?>

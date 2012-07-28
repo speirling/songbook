@@ -640,14 +640,49 @@ function sbk_print_multiple_songs($id_array) {
     return $output;
 }
 
-function sbk_output_pdf($display, $title = '', $orientation = 'portrait') {
+function sbk_output_html($display, $local_menu, $page_title, $css, $js) {
+    //p($display);
+    $menu_output = $menu_output.'<div class="menu">';
+    $menu_output = $menu_output.'<div class="menu main">';
+    $menu_output = $menu_output.'<span class="menu-list-of-playlists"></span>';
+    $menu_output = $menu_output.'<span class="buttons">';
+    $menu_output = $menu_output.'<a href="?action=index">index of all songs</a>';
+    $menu_output = $menu_output.'<a href="?action=displayPlaylist">Add a new playlist</a> ';
+    $menu_output = $menu_output.'<a href="?action=editSong">Add new song</a> ';
+    $menu_output = $menu_output.'</span>';
+    $menu_output = $menu_output.'</div>';
+    $menu_output = $menu_output.$local_menu;
+    $menu_output = $menu_output.'</div>';
+    $menu_output = $menu_output."
+    <script type=\"text/javascript\">
+        $(document).ready(function() {
+    		new SBK.PlaylistSelector(jQuery('.menu-list-of-playlists')).render(
+    			function (list) {
+    				list.change(function () {
+            			location.href = \"?action=displayPlaylist&playlist=\" + jQuery(this).val();
+            		});
+    			}
+    		);
+        });
+    </script>";
+
+    $display = $menu_output.$display;
+    $display = acradisp_standardHTMLheader($page_title, $css, $js).$display.'</body></html>';
+
+    echo $display;
+
+}
+
+function sbk_output_pdf($display, $page_title = '', $css = array(), $js = array(), $orientation = 'portrait') {
+    //p($css, $js);
         $pdf = new WKPDF();
         $pdf->set_orientation($orientation);
-        $display = '<html><head><title>'.$title.'</title><link href="../index.css" rel="stylesheet" type="text/css" /></head><body class="pdf">'.$display.'</body></html>';
+        $display = acradisp_standardHTMLheader($page_title, $css, $js).$display.'</body></html>';
         $display = preg_replace('/&nbsp;/', '&#160;', $display); //&nbsp; doesn't work in XML unless it's specifically declared.
+        //echo $display;
         $pdf->set_html($display);
         $pdf->render();
-        $pdf->output(WKPDF::$PDF_DOWNLOAD, $title.".pdf");
+        $pdf->output(WKPDF::$PDF_DOWNLOAD, $page_title.".pdf");
 }
 
 
@@ -1098,6 +1133,8 @@ Handle other attributes when it's an array
 
     return $setHTML;
 }
+
+
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
