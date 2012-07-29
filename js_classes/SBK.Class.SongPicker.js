@@ -3,7 +3,6 @@ SBK.SongPicker = SBK.Class.extend({
 		var self = this;
 
 		self.container = container;
-		self.template = jQuery('#jsr-playlist-picker');
 		self.pleasewait = new SBK.PleaseWait(self.container);
 		self.http_request = new SBK.HTTPRequest();
 
@@ -33,29 +32,29 @@ SBK.SongPicker = SBK.Class.extend({
 	render: function () {
 		var self = this, exclusion_list;
 
-		self.pleasewait.show();
-		self.http_request.api_call(
-		    {action: 'get_available_playlists'},
-		    function (response) {
-		    	self.display_playlist_picker(response.data);
-		    	self.show_all_songs();
-		    	self.pleasewait.hide();
-    		}
-		);
+		self.pleasewait.show();	
+	    self.display_playlist_picker();
+	    self.show_all_songs();
+
 	},
 	
-	display_playlist_picker: function (data) {
+	display_playlist_picker: function () {
 		var self = this;
 
-		self.picker = jQuery(self.template.render(data)).appendTo(self.playlist_picker_holder);
-		self.picker.change(function () {
-			var value = jQuery(this).val(), available_song_list;
-			if (value === 'all') {
-				self.show_all_songs();
-			} else {
-				self.show_playlist(value);
+		new SBK.PlaylistSelector(self.playlist_picker_holder).render(
+			function (list) {
+				list.change(function () {
+					var value = jQuery(this).val(), available_song_list;
+					
+					if (value === 'all') {
+						self.show_all_songs();
+					} else {
+						self.show_playlist(value);
+					}
+        		});
+				self.pleasewait.hide();
 			}
-		});
+		);
 	},
 	
 	show_all_songs: function () {
