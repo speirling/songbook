@@ -23,7 +23,7 @@ SBK.SongPicker = SBK.Class.extend({
 		if(self.linked_playlist === null) {
 			exclusion_list = null;
 		} else {
-			exclusion_list = self.linked_playlist.data_json;
+			exclusion_list = self.linked_playlist;
 		}
 
 		return exclusion_list;

@@ -1,18 +1,16 @@
 <div id="all-song-list">
 <ol class="songlist">
   	{{for songs}}
-    <li class="song" id="{{:id}}">
+	
+    <li class="song{{if filter_display == true}} filter_display{{/if}}" id="{{:id}}">
       <input type="text" class="singer" placeholder="singer" value="{{:singer}}" />
       <input type="text" class="key" placeholder="key" value="{{:key}}" />
       <input type="text" class="capo" placeholder="capo" value="{{:capo}}" />
       <span class="id">{{:id}}</span>
       <input type="text" class="duration" placeholder="mm:ss" value="{{:duration}}" />
       <span class="title">{{:title}}</span>
-      <span class="introduction" style="display: none">
-		<textarea class="introduction_text" placeholder="Introduction text">{{:introduction.text}}</textarea>
-		<input type="text" class="introduction_duration" placeholder="Introduction duration" value="{{:introduction.duration}}" />
-      </span>
     </li>
+	
 	{{/for}}
 </ol>
 </div>

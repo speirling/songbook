@@ -109,11 +109,14 @@ switch ($action) {
         <script type=\"text/javascript\">
             $(document).ready(function() {
             	var playlist = new SBK.PlayList('".$playlist."', jQuery('#playlist-holder'));
-            	playlist.render();
-
 				var songpicker = new SBK.SongPicker(jQuery('#song_picker'));
 				songpicker.link_to_playlist(playlist);
-				songpicker.render();
+
+            	playlist.render(function () {
+            		songpicker.render();
+				});
+
+
             });
         </script>";
 
