@@ -2,7 +2,9 @@
 .song-index {
 	page-break-after: always;
 }
-.song-index td {
+.song-index .column {
+	vertical-align: top;
+	padding: 1em;
 }
 .song-index h1 {
 	font-size: 12pt;
