@@ -1155,40 +1155,47 @@ $(document).ready(function(){
 
     // -----------------------------------
     module("SongList class");
-    test("flatten_exclusion_list", 3, function () {
+    test("flatten_exclusion_list", 5, function () {
         var test_playlist, exclusion_list, div;
 
-        exclusion_songlist = {sets:[{songs:[{id:"34"}, {id:"37"}, {id:"39"}, {id:"45"}]}, {songs:[{id:"38"}, {id:"20"}]}]};
+        exclusion_songlist = {data_json:{sets:[{songs:[{id:"34"}, {id:"37"}, {id:"39"}, {id:"45"}]}, {songs:[{id:"38"}, {id:"20"}]}]}};
         div = jQuery("<div></div>");
         test_songlist = new SBK.SongList(div, '#jsr-playlist-list', exclusion_songlist);
 
-        same(test_songlist.flatten_exclusion_list({}), [], 'flatten_exclusion_list with no parameters - empty list');
-        same(test_songlist.flatten_exclusion_list({songs:[{id:"34"}, {id:"37"}, {id:"39"}, {id:"45"}]}), ["34", "37", "39", "45"], 'flatten_exclusion_list just song list');
+        test_songlist.exclusion_songlist = null;
+        same(test_songlist.flatten_exclusion_list(), [], 'No Songlist specified');
+        test_songlist.exclusion_songlist = {};
+        same(test_songlist.flatten_exclusion_list(), [], 'No Songlist specified');
+        test_songlist.exclusion_songlist = {data_json:{}};
+        same(test_songlist.flatten_exclusion_list(), [], 'flatten_exclusion_list with no parameters - empty list');
+        test_songlist.exclusion_songlist = {data_json:{songs:[{id:"34"}, {id:"37"}, {id:"39"}, {id:"45"}]}};
+        same(test_songlist.flatten_exclusion_list(), ["34", "37", "39", "45"], 'flatten_exclusion_list just song list');
+        test_songlist.exclusion_songlist = exclusion_songlist;
         same(test_songlist.flatten_exclusion_list(exclusion_songlist), ["34", "37", "39", "45", "38", "20"], 'flatten_exclusion_list full playlist');
     });
 
     test("filter_songlist_json_before_display", 4, function () {
         var test_playlist, exclusion_list, div;
 
-        exclusion_songlist = {sets:[{songs:[{id:"34"}, {id:"37"}, {id:"39"}, {id:"45"}]}, {songs:[{id:"38"}, {id:"20"}]}]};
+        exclusion_songlist = {data_json:{sets:[{songs:[{id:"34"}, {id:"37"}, {id:"39"}, {id:"45"}]}, {songs:[{id:"38"}, {id:"20"}]}]}};
         div = jQuery("<div></div>");
         test_songlist = new SBK.SongList(div, '#jsr-playlist-list', exclusion_songlist);
 
         test_songlist.data_json = {songs:[{id:"34"}, {id:"37"}, {id:"39"}, {id:"45"}]};
         test_songlist.filter_songlist_json_before_display();
-        same(test_songlist.data_json, {songs:[]}, 'all songlist entries are in exclusion list');
+        same(test_songlist.data_json, {songs:[{id:"34", filter_display: true}, {id:"37", filter_display: true}, {id:"39", filter_display: true}, {id:"45", filter_display: true}]}, 'all songlist entries are in exclusion list');
 
         test_songlist.data_json = {sets:[{songs:[{id:"34"}, {id:"37"}, {id:"39"}, {id:"45"}]}, {songs:[{id:"38"}, {id:"20"}]}]};
         test_songlist.filter_songlist_json_before_display();
-        same(test_songlist.data_json, {sets:[{songs:[]}, {songs:[]}]}, 'playlist = exclusion list');
+        same(test_songlist.data_json, {sets:[{songs:[{id:"34", filter_display: true}, {id:"37", filter_display: true}, {id:"39", filter_display: true}, {id:"45", filter_display: true}]}, {songs:[{id:"38", filter_display: true}, {id:"20", filter_display: true}]}]}, 'playlist = exclusion list');
 
         test_songlist.data_json = {songs:[{id:"34"}, {id:"500"}, {id:"37"}, {id:"39"}, {id:"45"}, {id:"23"}]};
         test_songlist.filter_songlist_json_before_display();
-        same(test_songlist.data_json, {songs:[{id:"500"}, {id:"23"}]});
+        same(test_songlist.data_json, {songs:[{id:"34", filter_display: true}, {id:"500"}, {id:"37", filter_display: true}, {id:"39", filter_display: true}, {id:"45", filter_display: true}, {id:"23"}]});
 
         test_songlist.data_json = {sets:[{songs:[{id:"34"}, {id:"37"}, {id:"40"}, {id:"39"}, {id:"45"}]}, {songs:[{id:"38"}, {id:"41"}, {id:"20"}]}]};
         test_songlist.filter_songlist_json_before_display();
-        same(test_songlist.data_json, {sets:[{songs:[{id:"40"}]}, {songs:[{id:"41"}]}]});
+        same(test_songlist.data_json, {sets:[{songs:[{id:"34", filter_display: true}, {id:"37", filter_display: true}, {id:"40"}, {id:"39", filter_display: true}, {id:"45", filter_display: true}]}, {songs:[{id:"38", filter_display: true}, {id:"41"}, {id:"20", filter_display: true}]}]});
     });
 });
 

@@ -7,30 +7,34 @@ SBK.SongList = SBK.Class.extend({
 		self.pleasewait = new SBK.PleaseWait(self.container);
 		self.http_request = new SBK.HTTPRequest();
 		if(typeof(exclusion_songlist) === 'undefined') {
-			self.exclusion_list = null;
+			self.exclusion_songlist = null;
 		} else {
-			self.exclusion_list = self.flatten_exclusion_list(exclusion_songlist);
+			self.exclusion_songlist = exclusion_songlist;
 		}
 	},
 	
-	flatten_exclusion_list: function (exclusion_songlist) {
+	flatten_exclusion_list: function () {
 		var self = this, song_index, set_index, set, output_array = [];
 
-		if(typeof(exclusion_songlist.songs) !== 'undefined') {
-			for (song_index = 0; song_index < exclusion_songlist.songs.length; song_index = song_index + 1) {
-				output_array[output_array.length] = exclusion_songlist.songs[song_index].id;
-			}
-		}
-
-		if(typeof(exclusion_songlist.sets) !== 'undefined') {
-			for (set_index = 0; set_index < exclusion_songlist.sets.length; set_index = set_index + 1) {
-				set = exclusion_songlist.sets[set_index];
-				for (song_index = 0; song_index < set.songs.length; song_index = song_index + 1) {
-					output_array[output_array.length] = set.songs[song_index].id;
+		if(self.exclusion_songlist !== null) {
+			if(typeof(self.exclusion_songlist.data_json) !== 'undefined') {
+				if(typeof(self.exclusion_songlist.data_json.songs) !== 'undefined') {
+					for (song_index = 0; song_index < self.exclusion_songlist.data_json.songs.length; song_index = song_index + 1) {
+						output_array[output_array.length] = self.exclusion_songlist.data_json.songs[song_index].id;
+					}
+				}
+		
+				if(typeof(self.exclusion_songlist.data_json.sets) !== 'undefined') {
+					for (set_index = 0; set_index < self.exclusion_songlist.data_json.sets.length; set_index = set_index + 1) {
+						set = self.exclusion_songlist.data_json.sets[set_index];
+						for (song_index = 0; song_index < set.songs.length; song_index = song_index + 1) {
+							output_array[output_array.length] = set.songs[song_index].id;
+						}
+					}
 				}
 			}
 		}
-		
+
 		return output_array;
 	},
 
@@ -142,27 +146,35 @@ SBK.SongList = SBK.Class.extend({
 	},
 	
 	filter_songlist_json_before_display: function () {
-		var self = this, song_index, set_index, set, id_index;
+		var self = this, song_index, set_index, set, id_index, flat_list;
+		
+		flat_list = self.flatten_exclusion_list();
 
-		if(self.exclusion_list !== null) {
+		if(flat_list !== null) {
 			if(typeof(self.data_json.songs) !== 'undefined') {
 				for (song_index = 0; song_index < self.data_json.songs.length; song_index = song_index + 1) {
-					id_index = jQuery.inArray('' + self.data_json.songs[song_index].id, self.exclusion_list);
+					id_index = jQuery.inArray('' + self.data_json.songs[song_index].id, flat_list);
 					if(id_index !== -1) {
-						self.data_json.songs.splice(song_index, 1);
-						song_index = song_index -1;
+						self.data_json.songs[song_index].filter_display = true;
 					}
 				}
 			}
 			
 			if(typeof(self.data_json.sets) !== 'undefined') {
+				//somewhere in the PI - SimpleXML to json conversions, a single set is represented as an object, ot an array of one object. 
+				//workaround:
+				if(typeof(self.data_json.sets.length) === 'undefined') {
+					self.data_json.sets = [self.data_json.sets];
+				}
+				console.log('data contains sets - this is a playlist', self.data_json.sets);
 				for (set_index = 0; set_index < self.data_json.sets.length; set_index = set_index + 1) {
 					set = self.data_json.sets[set_index];
+					console.log(set, set.songs.length);
 					for (song_index = 0; song_index < set.songs.length; song_index = song_index + 1) {
-						id_index = jQuery.inArray('' + set.songs[song_index].id, self.exclusion_list);
+						id_index = jQuery.inArray('' + set.songs[song_index].id, flat_list);
 						if(id_index !== -1) {
-							set.songs.splice(song_index, 1);
-							song_index = song_index -1;
+							self.data_json.sets[set_index].songs[song_index].filter_display = true;
+							console.log(self.data_json.sets[set_index].songs[song_index]);
 						}
 					}
 				}

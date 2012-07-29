@@ -173,4 +173,6 @@ a#add-new-set:hover {
 	color: white;
 }
 
-
+.filter_display {
+	color: silver;
+}

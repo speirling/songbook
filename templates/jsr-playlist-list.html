@@ -16,7 +16,7 @@
 	  </span>
 	  <ol class="songlist">
 	  	{{for songs}}
-	    <li class="song" id="{{:id}}">
+	    <li class="song{{if filter_display == true}} filter_display{{/if}}" id="{{:id}}">
 	      <input type="text" class="singer" placeholder="singer" value="{{:singer}}" />
 	      <input type="text" class="key" placeholder="key" value="{{:key}}" />
 	      <input type="text" class="capo" placeholder="capo" value="{{:capo}}" />
