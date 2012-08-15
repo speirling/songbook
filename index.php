@@ -11,8 +11,6 @@ if(array_key_exists('action', $_GET)) {
     $action = 'list';
 }
 
-$all_playlists = $all_playlists.']';
-
 $js = $STANDARD_JAVASCRIPTS;
 $js[] = "index.js";
 $page_title = $action.' (playlists)';

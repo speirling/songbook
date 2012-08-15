@@ -1,3 +1,6 @@
+<ul class="all_playlists">{{for acts}}
+<li>{{:act}}
 <ul>{{for playlists}}
     <li><a href="?action=displayPlaylist&playlist={{:filename}}">{{:title}}</a></li>
+{{/for}}</ul></li>
 {{/for}}</ul>

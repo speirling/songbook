@@ -29,7 +29,8 @@ li.set ul {
 #playlist-holder .set {
 	border-top: 1px solid silver;
 }
-.playlist-holder .playlist,
+#playlist-holder .playlist,
+#available-songs .playlist,
 #all-song-list {
 	position: absolute;
 	top: 3em;
@@ -38,9 +39,15 @@ li.set ul {
 	left: 1em;
 	overflow: auto;
 }
+#playlist-holder .playlist {
+	font-size: 0.8em;
+}
+#playlist-holder .playlist input {
+	font-size: 1em;
+}
 .playlist li {
 	margin: 1px;
-	padding: 0.5em;
+	padding: 0.2em;
 }
 .displayPlaylist .playlist li {
 	padding: 0.2em;
@@ -88,7 +95,6 @@ li.set ul {
 }
 .playlist .capo {
 	width: 4em;
-	font-size: 0.8em;
 	font-style: inherit;
 	font-weight: bold;
 	text-align: left;
