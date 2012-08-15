@@ -40,3 +40,37 @@ ul.menu li {
 .menu.main a:hover {
     background-color:#eef0ff;
 }
+
+/* the menu in display song is presented asa UL, and it needs to be buttons because it'sfor navigations */
+ul.menu.local {
+    display: inline-block;
+	margin: 0;
+}
+ul.menu.local {
+    background-color: #ffffff;
+	border-bottom: 1px solid #aabbcc;
+	width: 270px;
+	padding: 0;
+}
+ul.menu.local li {
+    display: inline-block;
+}
+ul.menu.local li a {
+    color: black;
+    text-decoration: none;
+    display: inline-block;
+    height: 1.5em;
+    line-height: 1.5em;
+    vertical-align:middle;
+    margin: 2px;
+    text-align:center;
+    font-size: 0.9em;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+}
+ul.menu.local li a {
+    border:1px solid gray;
+}
+ul.menu.local li a:hover {
+    background-color:#eef0ff;
+}

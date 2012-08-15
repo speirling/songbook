@@ -169,3 +169,22 @@ form#allsongsearch {
 	display: none;
 }
 
+
+/* Playlist list */
+.all_playlists>li {
+	list-style: none;
+	margin: 2em;
+	font-weight: bold;
+}
+.all_playlists li li {
+	list-style: none;
+	margin: 0.5em;
+}
+.all_playlists li li a {
+	color: blue;
+	text-decoration: none;
+}
+.all_playlists li li a:hover {
+	color: red;
+	text-decoration: none;
+}

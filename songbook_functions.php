@@ -642,6 +642,7 @@ function sbk_print_multiple_songs($id_array) {
 
 function sbk_output_html($display, $local_menu, $page_title, $css, $js) {
     //p($display);
+    $menu_output = '';
     $menu_output = $menu_output.'<div class="menu">';
     $menu_output = $menu_output.'<div class="menu main">';
     $menu_output = $menu_output.'<span class="menu-list-of-playlists"></span>';
@@ -760,7 +761,6 @@ function sbk_song_edit_form ($id, $playlist = false, $all_fields_editable = true
 
 //For API ----------------------------------
 function sbk_playlist_text_to_attributes($playlist_simplexml) {
-    p($playlist_simplexml);
     if(sizeof($playlist_simplexml->introduction) > 0) {
         $playlist_simplexml->introduction[0]->addAttribute('text', $playlist_simplexml->introduction[0]);
     }
@@ -779,7 +779,6 @@ function sbk_playlist_text_to_attributes($playlist_simplexml) {
             $this_song['id'] = $this_song['id'];
         }
     }
-    p($playlist_simplexml);
     return $playlist_simplexml;
 }
 
@@ -806,12 +805,15 @@ function sbk_convert_simpleXML_playlist_to_json_string($playlist_simplexml) {
 }
 
 function sbk_update_playlist_file($filename, $data_string) {
+    $data_string = str_replace('\\"', '"', trim($data_string, '()'));
     $data_string = str_replace('\"', '"', trim($data_string, '()'));
     $data_string = str_replace("\'", "'", trim($data_string, '()'));
     $data = json_decode(trim($data_string, '()'));
     $playlist_XML = sbk_convert_parsedjson_to_playlistXML($data);
-
     $destination = str_replace('\\','/',getcwd()).'/'.PLAYLIST_DIRECTORY.'/'.$filename.'.playlist';
+    if(file_exists($destination)) {
+        copy($destination, str_replace('\\','/',getcwd()).'/'.PLAYLIST_DIRECTORY.'/safety/'.$filename.date('YmdHis').'.playlist');
+    }
     if($playlist_XML->saveXML($destination)) {
          $result = '{"success": true}';
     } else {
