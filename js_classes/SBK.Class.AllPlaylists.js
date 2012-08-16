@@ -20,7 +20,6 @@ SBK.AllPlaylists = SBK.Class.extend({
 		    {action: 'get_available_playlists'},
 		    function (response) {
 		    	playlist_grouped_by_act = {acts: self.group_by_act(response.data)};
-		    	console.log(playlist_grouped_by_act);
 		    	all_playlists = jQuery(self.template.render(playlist_grouped_by_act)).appendTo(self.container);
 		    	if(typeof(callback) === 'function') {
 		    		callback(all_playlists);

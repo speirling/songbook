@@ -166,10 +166,8 @@ SBK.SongList = SBK.Class.extend({
 				if(typeof(self.data_json.sets.length) === 'undefined') {
 					self.data_json.sets = [self.data_json.sets];
 				}
-				console.log('data contains sets - this is a playlist', self.data_json.sets);
 				for (set_index = 0; set_index < self.data_json.sets.length; set_index = set_index + 1) {
 					set = self.data_json.sets[set_index];
-					console.log(set, set.songs.length);
 					for (song_index = 0; song_index < set.songs.length; song_index = song_index + 1) {
 						id_index = jQuery.inArray('' + set.songs[song_index].id, flat_list);
 						if(id_index !== -1) {
