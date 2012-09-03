@@ -738,6 +738,7 @@ function sbk_song_edit_form ($id, $playlist = false, $all_fields_editable = true
     //$display = $display.'<div class="original_filename"><span class="label">orignal filename: </span>                                                     <'.$textarea.' name="original_filename" id="original_filename">'.$this_record['original_filename'].'</'.$textarea.'></div>';
     $display = $display.'<input type=submit value="Save changes" />';
     $display = $display.'</form>';
+    $display = $display.'<script language="javascript">jQuery(document).ready(function (){sbk_exit_add_chords_mode()});</script>';
 
     return $display;
 }
