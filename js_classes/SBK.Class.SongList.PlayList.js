@@ -90,7 +90,7 @@ SBK.PlayList = SBK.SongList.extend({
 		});
 		self.hide_introductions();
 		self.set_up_context_menus();
-		jQuery('.playlist', self.container).sortable();
+		jQuery('.playlist ul', self.container).sortable();
 		jQuery('.songlist', self.container).sortable({connectWith: '.songlist'});
 	},
 	
@@ -143,7 +143,7 @@ SBK.PlayList = SBK.SongList.extend({
 
 		self.update();
 		self.data_json.sets[self.data_json.sets.length] = {
-			label: ('enter a title for this set'),
+			label: (''),
 			introduction: {duration: '', text: ''},
 			songs: []
 		};

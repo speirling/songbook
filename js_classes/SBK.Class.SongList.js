@@ -168,11 +168,13 @@ SBK.SongList = SBK.Class.extend({
 				}
 				for (set_index = 0; set_index < self.data_json.sets.length; set_index = set_index + 1) {
 					set = self.data_json.sets[set_index];
-					for (song_index = 0; song_index < set.songs.length; song_index = song_index + 1) {
-						id_index = jQuery.inArray('' + set.songs[song_index].id, flat_list);
-						if(id_index !== -1) {
-							self.data_json.sets[set_index].songs[song_index].filter_display = true;
-							console.log(self.data_json.sets[set_index].songs[song_index]);
+					if(typeof(set.songs) !== 'undefined') {
+						for (song_index = 0; song_index < set.songs.length; song_index = song_index + 1) {
+							id_index = jQuery.inArray('' + set.songs[song_index].id, flat_list);
+							if(id_index !== -1) {
+								self.data_json.sets[set_index].songs[song_index].filter_display = true;
+								console.log(self.data_json.sets[set_index].songs[song_index]);
+							}
 						}
 					}
 				}

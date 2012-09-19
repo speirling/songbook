@@ -77,6 +77,7 @@ switch ($action) {
     break;
 
     case 'displayPlaylist':
+    case 'emailPlaylist':
         $css[] = CSS_PATH.'index.css';
         $css[] = CSS_PATH.'menu.css';
         $css[] = CSS_PATH.'playlist-edit.css';
@@ -84,8 +85,9 @@ switch ($action) {
         $page_title = "[".$playlist."]";
 
         $menu = $menu.'<select class="menu local">';
-        $menu = $menu.'<option value="?action=pdfPlaylist&playlist='.$playlist.'">table</option>';
-        $menu = $menu.'<option value="?action=pdfPlaylist&playlist='.$playlist.'&pdf">table pdf</option>';
+        $menu = $menu.'<option value="">View...</option>';
+        $menu = $menu.'<!-- option value="?action=pdfPlaylist&playlist='.$playlist.'">table</option>';
+        $menu = $menu.'<option value="?action=pdfPlaylist&playlist='.$playlist.'&pdf">table pdf</option -->';
         $menu = $menu.'<option value="?action=emailPlaylist&playlist='.$playlist.'&pdf">email</option>';
         $menu = $menu.'<option value="?action=index&playlist='.$playlist.'">Show an index of the songs in this playlist</option>';
         $menu = $menu.'<option value="?action=playlistBook&playlist='.$playlist.'" target="new">Playlist as a book</option>';
@@ -103,21 +105,32 @@ switch ($action) {
         $display = $display.'<div id="playlist-holder"></div>';
         $display = $display.'<div id="song_picker"></div>';
 
-        $display = $display."
-        <script type=\"text/javascript\">
-            $(document).ready(function() {
-            	var playlist = new SBK.PlayList('".$playlist."', jQuery('#playlist-holder'));
-				var songpicker = new SBK.SongPicker(jQuery('#song_picker'));
-				songpicker.link_to_playlist(playlist);
+        if($action === 'displayPlaylist') {
+            $display = $display."
+            <script type=\"text/javascript\">
+                $(document).ready(function() {
+                	var playlist = new SBK.PlayList('".$playlist."', jQuery('#playlist-holder'));
+    				var songpicker = new SBK.SongPicker(jQuery('#song_picker'));
+    				songpicker.link_to_playlist(playlist);
 
-            	playlist.render(function () {
-            		songpicker.render();
-				});
+                	playlist.render(function () {
+                		songpicker.render();
+    				});
 
 
-            });
-        </script>";
-
+                });
+            </script>";
+        } elseif ($action === 'emailPlaylist') {
+            $display = $display."
+            <script type=\"text/javascript\">
+                $(document).ready(function() {
+                	var playlist = new SBK.PlayListTable('".$playlist."', jQuery('#playlist-holder'));
+                	playlist.render();
+                });
+            </script>";
+        } else {
+            //error
+        }
         sbk_output_html($display, $menu, $page_title, $css, $js);
     break;
 
@@ -154,15 +167,6 @@ switch ($action) {
         if($_GET['pdf']) {
             sbk_output_pdf($display, $playlistContent['title'], $css, $js, 'landscape');
         }
-    break;
-
-    case 'emailPlaylist':
-        $css[] = CSS_PATH.'index.css';
-        $playlist = $_GET['playlist'];
-        $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
-        $display = sbk_convert_playlistXML_to_orderedlist($playlistContent, $show_key = TRUE, $show_capo = TRUE, $show_singer = TRUE, $show_id = FALSE, $show_writtenby = FALSE, $show_performedby = FALSE);
-
-        sbk_output_html($display, $menu, $page_title, $css, $js);
     break;
 
     case 'playlistBook':
