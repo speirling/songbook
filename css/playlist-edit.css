@@ -68,6 +68,9 @@ li.set ul {
 	white-space: nowrap;
 }
 
+.playlist li.set {
+	cursor: n-resize;
+}
 
 
 .playlist .key ,
