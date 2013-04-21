@@ -34,7 +34,9 @@ switch ($action) {
             });
         </script>";
 
-        sbk_output_html($display, $menu, $page_title, $css, $js);
+        $menu_output = sbk_menu_html($menu);
+		$display = $menu_output.$display;
+		 sbk_output_html($display, $page_title, $css, $js);
     break;
 
     case 'index':
@@ -56,7 +58,9 @@ switch ($action) {
 
         $display = $display.sbk_generate_index($ID_array);
 
-        sbk_output_html($display, $menu, $page_title, $css, $js);
+        $menu_output = sbk_menu_html($menu);
+		$display = $menu_output.$display;
+		 sbk_output_html($display, $page_title, $css, $js);
     break;
 
     case 'listAllPlaylists':
@@ -73,11 +77,12 @@ switch ($action) {
             });
         </script>";
 
-        sbk_output_html($display, $menu, $page_title, $css, $js);
+        $menu_output = sbk_menu_html($menu);
+		$display = $menu_output.$display;
+		 sbk_output_html($display, $page_title, $css, $js);
     break;
 
     case 'displayPlaylist':
-    case 'emailPlaylist':
         $css[] = CSS_PATH.'index.css';
         $css[] = CSS_PATH.'menu.css';
         $css[] = CSS_PATH.'playlist-edit.css';
@@ -131,7 +136,29 @@ switch ($action) {
         } else {
             //error
         }
-        sbk_output_html($display, $menu, $page_title, $css, $js);
+        $menu_output = sbk_menu_html($menu);
+		$display = $menu_output.$display;
+		sbk_output_html($display, $page_title, $css, $js);
+    break;
+
+    case 'emailPlaylist':
+        $css[] = CSS_PATH.'index.css';
+        $css[] = CSS_PATH.'menu.css';
+        $css[] = CSS_PATH.'playlist-text.css';
+        $playlist = $_GET['playlist'];
+        $page_title = "[".$playlist."]";
+
+        $display = $display.'<div id="playlist-holder-email"></div>';
+
+        $display = $display."
+        <script type=\"text/javascript\">
+            $(document).ready(function() {
+            	var playlist = new SBK.PlayListText('".$playlist."', jQuery('#playlist-holder-email'));
+            	playlist.render();
+            });
+        </script>";
+
+		 sbk_output_html($display, $page_title, $css, $js);
     break;
 
     case 'pdfSong':
@@ -195,7 +222,9 @@ switch ($action) {
         if(array_key_exists('pdf', $_GET)) {
             sbk_output_pdf($display, 'SongBook - '.$playlistContent['title'], $css, $js);
         } else {
-            sbk_output_html($display, $menu, $page_title, $css, $js);
+            $menu_output = sbk_menu_html($menu);
+		$display = $menu_output.$display;
+		 sbk_output_html($display, $page_title, $css, $js);
         }
     break;
 
@@ -206,7 +235,7 @@ switch ($action) {
         $key = null;
         $singer = null;
         $capo = null;
-        if (array_key_exists('update',$_POST)) {
+        if (array_key_exists('update', $_POST)) {
             switch ($_POST['update']) {
             case "addNewSong":
                 //a new song has been added - submit to database before displaying
@@ -242,23 +271,26 @@ switch ($action) {
         $menu = $menu.'<li><a href="?action=editSong&id='.$id.'">Edit this song</a></li>';
         $menu = $menu.'<li><a href="?action=pdfSong&id='.$id;
         if(!is_null($key)) {
-            $display = $display.'&key='.urlencode($key);
+            $menu = $menu.'&key='.urlencode($key);
         }
         if(!is_null($singer)) {
-            $display = $display.'&singer='.$singer;
+            $menu = $menu.'&singer='.$singer;
         }
         if(!is_null($capo)) {
-            $display = $display.'&capo='.$capo;
+            $menu = $menu.'&capo='.$capo;
         }
         $menu = $menu.'">.pdf</a></li>';
         $menu = $menu.'<li><a href="?action=displaySong&id='.($id + 1).'">Next &raquo;</a></li>';
         $menu = $menu.'</ul>';
 
         $this_record = sbk_get_song_record($id);
-        $display = $display.sbk_song_html($this_record, $key, $singer, $capo);
+        //$display = $display.sbk_song_html($this_record, $key, $singer, $capo);
+        $display = $display.sbk_song_html_single_column($this_record, $key, $singer, $capo);
         $page_title = $this_record['title'].' - playlists';
 
-        sbk_output_html($display, $menu, $page_title, $css, $js);
+        $menu_output = sbk_menu_html($menu);
+		$display = $menu_output.$display;
+		sbk_output_html($display, $page_title, $css, $js);
     break;
 
     case 'editSong':
@@ -306,7 +338,9 @@ switch ($action) {
         $display = $display.sbk_song_edit_form ($id, $playlist, true);
         $display = $display."</span>";
 
-        sbk_output_html($display, $menu, $page_title, $css, $js);
+        $menu_output = sbk_menu_html($menu);
+		$display = $menu_output.$display;
+		 sbk_output_html($display, $page_title, $css, $js);
     break;
 }
 

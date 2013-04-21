@@ -521,7 +521,7 @@ function sbk_get_song_html($id, $key = null, $singer = null, $capo = null) {
 function sbk_song_html($this_record, $key = null, $singer = null, $capo = null) {
 
     $display = '';
-    $number_of_lyric_lines_per_page = 55;
+    $number_of_lyric_lines_per_page = 45;
     $number_of_columns_per_page = 2;
     $target_key = null;
     if(is_null($key)) {
@@ -627,6 +627,65 @@ function sbk_song_html($this_record, $key = null, $singer = null, $capo = null) 
     return $display;
 }
 
+
+function sbk_song_html_single_column($this_record, $key = null, $singer = null, $capo = null) {
+
+    $display = '';
+    $target_key = null;
+    if(is_null($key)) {
+        $key = $this_record['base_key'];
+    } else {
+        if(is_integer($capo)) {
+            $target_key = sbk_shift_note($key, -1 * $capo);
+        } else {
+            $target_key = $key;
+        }
+    }
+    if(is_null($this_record['base_key'])) {
+        if(!is_null) {
+            p("sbk_song_html() :: This song ( no. ".$this_record['id'].", ".$this_record['title'].") does not have a base key specified. It will not be transposed");
+        }
+    }
+    $contentHTML = sbk_convert_song_content_to_HTML($this_record['content'], $this_record['base_key'], $target_key);
+
+    $contentXML = new SimpleXMLElement($contentHTML);
+    $page = new SimpleXMLElement('<div class="song-page" id="page_'.$this_record['id'].'"></div>');
+    $dom_page = dom_import_simplexml($page);
+
+    foreach($contentXML->xpath('//div[@class="line"]') as $this_line) {
+        $dom_line = dom_import_simplexml($this_line);
+        $dom_line = $dom_page->ownerDocument->importNode($dom_line, true);
+        $dom_page->appendChild($dom_line);
+    }
+
+    $page_header = '<div class="page_header">';
+    $page_header = $page_header.'<div class="title">'.$this_record['title'].'</div>';
+    $page_header = $page_header.'<span class="songnumber"><span class="label">Song no. </span><span class="data">'.$this_record['id'].'</span></span>';
+    $page_header = $page_header.'<span class="pagenumber"><span class="label">page</span><span class="data" id="page_number">test</span><span class="label">of</span><span class="data" id="number_of_pages">test</span></span>';
+    $page_header = $page_header.'<div class="written_by"><span class="data">'.str_replace('&', 'and', $this_record['written_by']).'</span></div>';
+    $page_header = $page_header.'<div class="performed_by"><span class="label">performed by: </span><span class="data">'.$this_record['performed_by'].'</span></div>';
+
+    $page_header = $page_header.'<div class="key"> ';//space needed here, or else if there's nulls you can end up with '<div class="key"/></div>', whcih messes up the page
+    if(!is_null($singer)) {
+        $page_header = $page_header.'<div class="singer"><span class="label">chords for </span><span class="data">'.$singer.'</span></div>';
+    }
+    if(!is_null($capo)) {
+        $page_header = $page_header.'<div class="capo"><span class="label">Capo </span><span class="data">'.$capo.'</span></div>';
+        $page_header = $page_header.'<div class="target_key">(<span class="label">actual key: </span><span class="data">'.$key.'</span>)</div>';
+    } else {
+        $page_header = $page_header.'<div class="target_key"><span class="label">key: </span><span class="data">'.$key.'</span></div>';
+    }
+    $page_header = $page_header.'</div>';
+
+    $page_header = $page_header.'</div>';
+    $page_headerXML = new SimpleXMLElement($page_header);
+
+        $display = $display.str_replace('<?xml version="1.0"?'.'>', '', $page->asXML());
+        $display = str_replace("<span class=\"text\">\n</span>", '&nbsp;', $display);//the &#160; got lost somewhere along the way (DOM part?) and <span>&nbsp;</span> doesn't display on screen
+
+    return $display;
+}
+
 function sbk_print_multiple_songs($id_array) {
     $output = '';
 
@@ -640,7 +699,7 @@ function sbk_print_multiple_songs($id_array) {
     return $output;
 }
 
-function sbk_output_html($display, $local_menu, $page_title, $css, $js) {
+function sbk_menu_html($local_menu) {
     //p($display);
     $menu_output = '';
     $menu_output = $menu_output.'<div class="menu">';
@@ -667,7 +726,12 @@ function sbk_output_html($display, $local_menu, $page_title, $css, $js) {
         });
     </script>";
 
-    $display = $menu_output.$display;
+    return $menu_output;
+
+}
+
+function sbk_output_html($display, $page_title, $css, $js) {
+    //p($display);
     $display = acradisp_standardHTMLheader($page_title, $css, $js).$display.'</body></html>';
 
     echo $display;
