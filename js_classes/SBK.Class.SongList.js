@@ -27,8 +27,10 @@ SBK.SongList = SBK.Class.extend({
 				if(typeof(self.exclusion_songlist.data_json.sets) !== 'undefined') {
 					for (set_index = 0; set_index < self.exclusion_songlist.data_json.sets.length; set_index = set_index + 1) {
 						set = self.exclusion_songlist.data_json.sets[set_index];
-						for (song_index = 0; song_index < set.songs.length; song_index = song_index + 1) {
-							output_array[output_array.length] = set.songs[song_index].id;
+						if(typeof(set.songs) !== 'undefined') {
+    						for (song_index = 0; song_index < set.songs.length; song_index = song_index + 1) {
+    							output_array[output_array.length] = set.songs[song_index].id;
+    						}
 						}
 					}
 				}
