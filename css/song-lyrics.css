@@ -2,7 +2,7 @@ div.song-page {
 	width: 720px;
 	position: relative;
 	font-family: Arial, Helvetica, sans-serif;
-	padding-top:1em;
+	padding-top: 1em;
 	/*border:1px solid red;*/
 	page-break-after: always;
 	
@@ -19,8 +19,8 @@ div.song-page td.detail {
 	text-align: right;
 }
 div.song-page .line {
-	margin-top: 0.2em;
-	font-size:0.8em;
+	margin-top: 0.4em;
+	font-size: 1.2em;
 	white-space: pre;
 }
 div.song-page .line .text {
