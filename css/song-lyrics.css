@@ -1,5 +1,4 @@
 div.song-page {
-	width: 720px;
 	position: relative;
 	font-family: Arial, Helvetica, sans-serif;
 	padding-top: 1em;
@@ -13,18 +12,16 @@ div.song-page table {
 
 div.song-page td {
 	vertical-align: top;
-	width: 50%;
 }
 div.song-page td.detail {
 	text-align: right;
 }
 div.song-page .line {
-	margin-top: 0.4em;
-	font-size: 1.2em;
-	white-space: pre;
+	margin-top: 6px;
+	font-size: 16px;
 }
 div.song-page .line .text {
-	white-space: normal;
+	display: inline;
 } 
 div.song-page .chord {
 	display: inline-block;
@@ -42,10 +39,11 @@ div.song-page .page_header {
 	position: relative;
 	border-bottom: 1px solid silver;
 	margin-bottom: 1em;
-	font-size: 1.2em;
+	font-size: 14px;
 }
 div.song-page .title {
-    font-size: 1.2em;
+    font-size: 16px;
+    padding-top: 12px;
 	color:#004080;
 }
 div.song-page .performed_by,
@@ -59,7 +57,7 @@ div.song-page .songnumber {
 	color: #4080c0;
 	position: absolute;
 	right: 0;
-	top: 0.3em;
+	top: 0;
 }
 div.song-page .songnumber .data {
 	font-weight:bold;
@@ -71,20 +69,21 @@ div.song-page .songnumber .label {
 
 div.song-page .pagenumber {
 	display: block;
-	font-size: 0.6em;
+	font-size: 9px;
 	position: absolute;
 	right: 0;
-	top: 2.5em;
+	top: 16px;
 }
 
-div.song-page.first_page .title {
+div.song-page.page_0 .title {
     font-size: 2em;
 	color:#004080;
 	overflow: hidden;
 	white-space: nowrap;
 	width: 600px;
+	padding-top: 0;
 }
-div.song-page.first_page .performed_by {
+div.song-page.page_0 .performed_by {
 	display: block;
 	font-size:0.6em;
     color: gray;
@@ -92,35 +91,40 @@ div.song-page.first_page .performed_by {
 	right: 0;
 	top: 4em;
 }
-div.song-page.first_page .written_by {
+div.song-page.page_0 .written_by {
 	display: block;
 	font-size:0.8em;
     color: gray;
 }
-div.song-page.first_page .performed_by .label,
-div.song-page.first_page .written_by .label {
+div.song-page.page_0 .performed_by .label,
+div.song-page.page_0 .written_by .label {
 }
-div.song-page.first_page .songnumber .data {
+div.song-page.page_0 .songnumber .data {
 	font-weight:bold;
 	font-size:1.2em;
 }
-div.song-page.first_page .songnumber .label {
+div.song-page.page_0 .songnumber .label {
 	font-size:0.8em;
 }
 
 div.song-page .page_header .key {
-	font-size: 0.8em;
-	position: absolute;
-	left: 30%;
-	right: 30%;
-	bottom: 0;
-	width: auto;
-	background-color: #f3f3f3;
-	padding-left: 0.5em;
-	padding-right: 0.5em;
-	font-weight: bold;
-	display: inline-block;
+    font-size: 0.8em;
+    position: absolute;
+    left: 30%;
+    right: 30%;
+    bottom: 0;
+    width: auto;
+    background-color: #f3f3f3;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    font-weight: bold;
+    display: none;
 }
+
+div.song-page.page_0 .page_header .key {
+    display: inline-block;
+}
+
 div.song-page .page_header .key .label {
 	font-style:normal;
 }

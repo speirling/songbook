@@ -205,26 +205,34 @@ switch ($action) {
         $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
         $ID_array = sbk_getIDarray($playlistContent);
         $display = '';
-
         $display = $display.'<div class="playlist-page"></div>';
-        $display = $display.sbk_generate_index($ID_array);
-        sort($ID_array);
-        $display = $display.sbk_print_multiple_songs($ID_array);
 
         $display = $display."
         <script type=\"text/javascript\">
             $(document).ready(function() {
             	var playlist = new SBK.PlayListPrint('".$playlist."', jQuery('.playlist-page'));
-            	playlist.render();
+            	playlist.render(function () {
+            	    var paginatedPlaylistHTML = new SBK.PaginatedHTML(jQuery('.playlist-page .playlist'), '.playlist_heading', 'playlist');
+                });
+
+            	jQuery('.song_index_section').each(function () {
+            	    var paginatedIndexHTML = new SBK.PaginatedHTML(jQuery(this), 'h1', 'song_index_section');
+            	});
+            	jQuery('.multiple-songs .song-page').each(function () {
+            	    var paginatedHTML = new SBK.PaginatedHTML(jQuery(this), '.page_header', 'song-page');
+            	});
             });
         </script>";
+        $display = $display.sbk_generate_index($ID_array);
+        sort($ID_array);
+        $display = $display.sbk_print_multiple_songs($ID_array);
 
         if(array_key_exists('pdf', $_GET)) {
             sbk_output_pdf($display, 'SongBook - '.$playlistContent['title'], $css, $js);
         } else {
-            $menu_output = sbk_menu_html($menu);
-		$display = $menu_output.$display;
-		 sbk_output_html($display, $page_title, $css, $js);
+            //$menu_output = sbk_menu_html($menu);
+		    //$display = $menu_output.$display;
+		    sbk_output_html($display, $page_title, $css, $js);
         }
     break;
 
@@ -285,7 +293,7 @@ switch ($action) {
 
         $this_record = sbk_get_song_record($id);
         //$display = $display.sbk_song_html($this_record, $key, $singer, $capo);
-        $display = $display.sbk_song_html_single_column($this_record, $key, $singer, $capo);
+        $display = $display.sbk_song_html($this_record, $key, $singer, $capo);
         $page_title = $this_record['title'].' - playlists';
 
         $menu_output = sbk_menu_html($menu);

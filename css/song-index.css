@@ -18,12 +18,10 @@
 	margin-bottom: 0.3em;
 	font-weight: normal;
 }
-.song-index .indent {
-	padding-left: 2em;
-}
 .song-index .song {
 	white-space: nowrap;
 	font-size: 8pt;
+	margin-left: 10px;
 }
 .song-index .song:hover {
 	background-color: #008080;

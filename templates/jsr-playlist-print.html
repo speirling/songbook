@@ -1,13 +1,14 @@
 <div class="playlist">
-	<span class="playlist-title">{{:title}}</span>
-	<span class="act">{{:act}}</span>
-	<span class="introduction songlist">
-		<span class="introduction_text">{{:introduction.text}}</span>
-		<span class="introduction_duration">{{:introduction.duration}}</span>
+	<span class="playlist_heading"></span>
+		<span class="playlist-title">{{:title}}</span>
+		<span class="act">{{:act}}</span>
+		<span class="introduction songlist">
+			<span class="introduction_text">{{:introduction.text}}</span>
+			<span class="introduction_duration">{{:introduction.duration}}</span>
+		</span>
 	</span>
-	<ul>
 	{{for sets}}
-	<li class="set">
+	<span class="set">
 	  <span class="set-title">{{:label}}</span>
 	  <span class="duration"></span>
 	  <span class="introduction set" style="display: none">
@@ -25,7 +26,6 @@
 	    </li>
 		{{/for}}
 	  </ol>
-	</li>
+	</span>
 	{{/for}}
-	</ul>
 </div>

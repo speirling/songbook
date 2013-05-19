@@ -308,63 +308,24 @@ function sbk_evaluate_page_break($column_count, $page_width) {
 }
 
 function sbk_section_html($index, $sort_fieldname, $section_heading) {
-    global $line_count;
-    global $column_count;
-    global $page_start;
-    global $page_end;
-    global $column_start;
-    global $column_end;
-    global $page_dimensions;
-
-    $height_of_h1 = 3;
-    $height_of_h2 = 2;
-    $height_of_field = 1;
 
     $html = '';
-
-    if(sbk_evaluate_column_break($line_count, $height_of_h1, $page_dimensions['column_height'])) {
-        $html = $html . $column_end . $column_start;
-        $line_count = 0;
-        if(sbk_evaluate_page_break($column_count, $page_dimensions['page_width'])) {
-            $html = $html . $column_end . $page_end . $page_start. $column_start;
-            $column_count = 0;
-        }
-        $column_count = $column_count + 1;
-    }
-
-    $html = $html.'<div class="indent">';
+    $html = $html.'<span class="song_index_section">';
     $html = $html.'<h1>'.$section_heading.'</h1>';
     $line_count = $line_count + $height_of_h1;
     ksort($index[$sort_fieldname]);
     foreach($index[$sort_fieldname] as $this_field => $this_songarray) {
-        if(sbk_evaluate_column_break($line_count, $height_of_h2, $page_dimensions['column_height'])) {
-            $html = $html . $column_end . $column_start;
-            $line_count = 0;
-            $column_count = $column_count + 1;
-            if(sbk_evaluate_page_break($column_count, $page_dimensions['page_width'])) {
-                $html = $html . $column_end . $page_end . $page_start. $column_start;
-                $column_count = 0;
-            }
-        }
         $html = $html.'<h2>'.ucwords($this_field).'</h2>';
         $line_count = $line_count + $height_of_h2;
         ksort($this_songarray);
         foreach($this_songarray as $this_title => $this_html) {
             $html = $html.$this_html;
-            if(sbk_evaluate_column_break($line_count, $height_of_field, $page_dimensions['column_height'])) {
-                $html = $html . $column_end . $column_start;
-                $line_count = 0;
-                $column_count = $column_count + 1;
-                if(sbk_evaluate_page_break($column_count, $page_dimensions['page_width'])) {
-                    $html = $html . $column_end . $page_end . $page_start. $column_start;
-                    $column_count = 0;
-                }
-            }
             $line_count = $line_count + $height_of_field;
         }
         p($line_count, $column_count);
     }
-    $html = $html.'</div>';
+
+    $html = $html.'</span>';
 
     return $html;
 }
@@ -385,15 +346,9 @@ function sbk_index_parts($this_record, $section, $this_title, $this_html) {
 
 
 function sbk_generate_index($ID_array) {
-    global $line_count;
-    global $column_count;
-    global $page_start;
-    global $page_end;
-    global $column_start;
-    global $column_end;
-    global $page_dimensions;
 
     $html = '';
+    $html = $html.'<span class="song-index">';
     $index = Array(
         'title' => Array(),
         'written_by' => Array(),
@@ -402,18 +357,6 @@ function sbk_generate_index($ID_array) {
     );
 
     $id_csv = sbk_covert_array_to_csv_string($ID_array);
-
-
-    $line_count = 0; //a line is a heading, a song, a space between paragraphs, a main heading is 2 lines
-    $column_count = 0;
-    $page_start = '<table class="song-index"><tr>';
-    $page_end = '</tr></table>';
-    $column_start = '<td class="column">';
-    $column_end = '</td>';
-    $page_dimensions = array(
-        'column_height' => 80, //lines - songs or headings
-        'page_width' => 3 //columns
-    );
 
     $result = acradb_get_query_result("select * from ".SBK_TABLE_NAME." WHERE id IN ".$id_csv, SBK_DATABASE_NAME);
     while ($this_record = mysql_fetch_assoc($result)) {
@@ -427,15 +370,12 @@ function sbk_generate_index($ID_array) {
         $index['meta_tags'] = array_merge_recursive($index['meta_tags'], sbk_index_parts($this_record, 'meta_tags', $this_title, $this_html) );
     }
 
-    $html = $html.$page_start;
-    $html = $html.$column_start;
     $html = $html.sbk_section_html($index, 'title', 'Sorted by title');
     $html = $html.sbk_section_html($index, 'written_by', 'Sorted by composer');
     $html = $html.sbk_section_html($index, 'performed_by', 'Sorted by performer');
     $html = $html.sbk_section_html($index, 'meta_tags', 'Sorted by category');
-    $html = $html.$column_end;
-    $html = $html.$page_end;
 
+    $html = $html.'</span>';
     return $html;
 }
 
@@ -486,7 +426,7 @@ function sbk_convert_song_content_to_HTML($content, $base_key = 'null', $target_
     }
     $contentHTML = $content;
     $contentHTML = preg_replace('/&([^#n])/', '&#38;$1', $contentHTML);
-    $contentHTML = str_replace(' ', '&#160;', $contentHTML);
+    //$contentHTML = str_replace(' ', '&#160;', $contentHTML);
     $contentHTML = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $contentHTML);
     $contentHTML = preg_replace('/<div class=\"line\"><span class=\"text\">[\s]*?<\/span><\/div>/', '<div class="line"><span class="text">&nbsp;</span></div>', $contentHTML);
     $contentHTML = preg_replace_callback('/\[(.*?)\]/', create_function('$matches', 'return sbk_chord_replace_callback($matches[1]'.$params.');'), $contentHTML);
@@ -521,8 +461,6 @@ function sbk_get_song_html($id, $key = null, $singer = null, $capo = null) {
 function sbk_song_html($this_record, $key = null, $singer = null, $capo = null) {
 
     $display = '';
-    $number_of_lyric_lines_per_page = 45;
-    $number_of_columns_per_page = 2;
     $target_key = null;
     if(is_null($key)) {
         $key = $this_record['base_key'];
@@ -541,13 +479,8 @@ function sbk_song_html($this_record, $key = null, $singer = null, $capo = null) 
     $contentHTML = sbk_convert_song_content_to_HTML($this_record['content'], $this_record['base_key'], $target_key);
 
     $contentXML = new SimpleXMLElement($contentHTML);
-    $line_count = 0;
-    $page_index = 0;
     $pageXML = array();
-    $pageXML[$page_index] = new SimpleXMLElement('<div class="song-page first_page" id="page_'.$this_record['id'].'_'.$page_index.'"></div>');
-    $table_row = $pageXML[$page_index]->addChild('table')->addChild('tr');
-    $column_count = -2;
-    $current_column = $table_row->addChild('td');
+    $current_column = new SimpleXMLElement('<div class="song-page" id="page_'.$this_record['id'].'_'.$page_index.'"></div>');
     $dom_current_column = dom_import_simplexml($current_column);
     $this_column_height = 0;
     $previous_column_height = 0;
@@ -558,30 +491,9 @@ function sbk_song_html($this_record, $key = null, $singer = null, $capo = null) 
        } else {
         $line_spacing = 1;
        }
-       $line_count = $line_count + $line_spacing;
-       //p($line_count, $number_of_lyric_lines_per_page, $column_count, $number_of_columns_per_page, $line_count % $number_of_lyric_lines_per_page, $column_count % $number_of_columns_per_page);
-       $this_column_height = ($line_count % $number_of_lyric_lines_per_page);
-       $previous_page_width = 0;
-       if($this_column_height < $previous_column_height) {
-           //too many lines - start a new column
-           $this_page_width = ($column_count % $number_of_columns_per_page);
-            if($this_page_width < $previous_page_width) {
-                //too many columns - start a new page
-                $page_index = $page_index + 1;
-                $pageXML[$page_index] = new SimpleXMLElement('<div class="song-page page_'.$page_index.'"></div>');
-                $table_row = $pageXML[$page_index]->addChild('table')->addChild('tr');
-                $column_count = -2;
-                $dom_current_column = dom_import_simplexml($current_column);
-            }
-            $current_column = $table_row->addChild('td');
-            $column_count = $column_count + 1;
-            $dom_current_column = dom_import_simplexml($current_column);
-            $previous_page_width = $this_page_width;
-        }
-        $dom_line = dom_import_simplexml($this_line);
-        $dom_line = $dom_current_column->ownerDocument->importNode($dom_line, true);
-        $dom_current_column->appendChild($dom_line);
-        $previous_column_height = $this_column_height;
+       $dom_line = dom_import_simplexml($this_line);
+       $dom_line = $dom_current_column->ownerDocument->importNode($dom_line, true);
+       $dom_current_column->appendChild($dom_line);
     }
 
     $page_header = '<div class="page_header">';
@@ -606,82 +518,13 @@ function sbk_song_html($this_record, $key = null, $singer = null, $capo = null) 
     $page_header = $page_header.'</div>';
     $page_headerXML = new SimpleXMLElement($page_header);
 
-    $page_number = 0;
-    foreach($pageXML as $page_contentXML) {
-        $page_number = $page_number + 1;
+    $dom_page = dom_import_simplexml($current_column);
+    $dom_header = dom_import_simplexml($page_headerXML);
+    $dom_header = $dom_page->ownerDocument->importNode($dom_header, true);
+    $dom_page->insertBefore($dom_header, $dom_page->firstChild);
 
-        $page_number_holder = $page_headerXML->xpath('//span[@id="page_number"]');
-        $number_of_pages_holder = $page_headerXML->xpath('//span[@id="number_of_pages"]');
-        dom_import_simplexml($page_number_holder[0])->nodeValue = $page_number;
-        dom_import_simplexml($number_of_pages_holder[0])->nodeValue = ($page_index + 1);
-
-        $dom_page = dom_import_simplexml($page_contentXML);
-        $dom_header = dom_import_simplexml($page_headerXML);
-        $dom_header = $dom_page->ownerDocument->importNode($dom_header, true);
-        $dom_page->insertBefore($dom_header, $dom_page->firstChild);
-
-        $display = $display.str_replace('<?xml version="1.0"?'.'>', '', $page_contentXML->asXML());
-        $display = str_replace("<span class=\"text\">\n</span>", '&nbsp;', $display);//the &#160; got lost somewhere along the way (DOM part?) and <span>&nbsp;</span> doesn't display on screen
-    }
-
-    return $display;
-}
-
-
-function sbk_song_html_single_column($this_record, $key = null, $singer = null, $capo = null) {
-
-    $display = '';
-    $target_key = null;
-    if(is_null($key)) {
-        $key = $this_record['base_key'];
-    } else {
-        if(is_integer($capo)) {
-            $target_key = sbk_shift_note($key, -1 * $capo);
-        } else {
-            $target_key = $key;
-        }
-    }
-    if(is_null($this_record['base_key'])) {
-        if(!is_null) {
-            p("sbk_song_html() :: This song ( no. ".$this_record['id'].", ".$this_record['title'].") does not have a base key specified. It will not be transposed");
-        }
-    }
-    $contentHTML = sbk_convert_song_content_to_HTML($this_record['content'], $this_record['base_key'], $target_key);
-
-    $contentXML = new SimpleXMLElement($contentHTML);
-    $page = new SimpleXMLElement('<div class="song-page" id="page_'.$this_record['id'].'"></div>');
-    $dom_page = dom_import_simplexml($page);
-
-    foreach($contentXML->xpath('//div[@class="line"]') as $this_line) {
-        $dom_line = dom_import_simplexml($this_line);
-        $dom_line = $dom_page->ownerDocument->importNode($dom_line, true);
-        $dom_page->appendChild($dom_line);
-    }
-
-    $page_header = '<div class="page_header">';
-    $page_header = $page_header.'<div class="title">'.$this_record['title'].'</div>';
-    $page_header = $page_header.'<span class="songnumber"><span class="label">Song no. </span><span class="data">'.$this_record['id'].'</span></span>';
-    $page_header = $page_header.'<span class="pagenumber"><span class="label">page</span><span class="data" id="page_number">test</span><span class="label">of</span><span class="data" id="number_of_pages">test</span></span>';
-    $page_header = $page_header.'<div class="written_by"><span class="data">'.str_replace('&', 'and', $this_record['written_by']).'</span></div>';
-    $page_header = $page_header.'<div class="performed_by"><span class="label">performed by: </span><span class="data">'.$this_record['performed_by'].'</span></div>';
-
-    $page_header = $page_header.'<div class="key"> ';//space needed here, or else if there's nulls you can end up with '<div class="key"/></div>', whcih messes up the page
-    if(!is_null($singer)) {
-        $page_header = $page_header.'<div class="singer"><span class="label">chords for </span><span class="data">'.$singer.'</span></div>';
-    }
-    if(!is_null($capo)) {
-        $page_header = $page_header.'<div class="capo"><span class="label">Capo </span><span class="data">'.$capo.'</span></div>';
-        $page_header = $page_header.'<div class="target_key">(<span class="label">actual key: </span><span class="data">'.$key.'</span>)</div>';
-    } else {
-        $page_header = $page_header.'<div class="target_key"><span class="label">key: </span><span class="data">'.$key.'</span></div>';
-    }
-    $page_header = $page_header.'</div>';
-
-    $page_header = $page_header.'</div>';
-    $page_headerXML = new SimpleXMLElement($page_header);
-
-        $display = $display.str_replace('<?xml version="1.0"?'.'>', '', $page->asXML());
-        $display = str_replace("<span class=\"text\">\n</span>", '&nbsp;', $display);//the &#160; got lost somewhere along the way (DOM part?) and <span>&nbsp;</span> doesn't display on screen
+    $display = $display.str_replace('<?xml version="1.0"?'.'>', '', $current_column->asXML());
+    $display = str_replace("<span class=\"text\">\n</span>", '&nbsp;', $display);//the &#160; got lost somewhere along the way (DOM part?) and <span>&nbsp;</span> doesn't display on screen
 
     return $display;
 }
@@ -689,12 +532,14 @@ function sbk_song_html_single_column($this_record, $key = null, $singer = null, 
 function sbk_print_multiple_songs($id_array) {
     $output = '';
 
+    $output = $output.'<div class="multiple-songs">';
     foreach ($id_array as $this_id => $this_song_playlist_data) {
         foreach($this_song_playlist_data->attributes() as $attribute_name => $value) {
             $attributes[$attribute_name] = (string) $value;
         }
         $output = $output.sbk_get_song_html($attributes['id'], $attributes['key'], $attributes['singer'], $attributes['capo']);
     }
+    $output = $output.'</div>';
 
     return $output;
 }
