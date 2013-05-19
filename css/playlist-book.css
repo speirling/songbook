@@ -30,16 +30,25 @@
 }
 
 
+.playlist-page {
+    page-break-after: always;
+}
+.playlist-page .playlist {
+	font-size:16px;
+}
 .playlist-page .playlist .detail {
 	display:none;	
-}
-.playlist-page {
-	page-break-after: always;
 }
 .playlist-page .title{
 	font-weight: normal;
 }
-
+.playlist-page .song {
+	margin: 10px;
+}
+.playlist-page .song .title {
+	font-weight: bold;
+	font-family: arial;
+}
 .song .capo,
 .song .id {
 	font-size: 0.8em;
@@ -68,4 +77,12 @@
 }
 .song .id {
 	font-style: italic;
+}
+
+.paginated-page {
+	page-break-after: always;
+}
+
+.paginated-page td {
+	vertical-align: top;
 }

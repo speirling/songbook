@@ -56,7 +56,7 @@ function process_post($post_data) {
             foreach($directoryList as $filename) {
                 if(!is_dir($filename)) {
                     $path_parts = pathinfo($filename);
-                    if($path_parts['extension'] === 'playlist' && $path_parts['filename'] != '') {
+                    if(array_key_exists('extension', $path_parts) && $path_parts['extension'] === 'playlist' && $path_parts['filename'] != '') {
                         $thisPlaylistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$path_parts['filename'].'.playlist');
     		            $all_playlists = $all_playlists.'{"filename": "'.$path_parts['filename'].'", "title": "'.$thisPlaylistContent['title'].'", "act": "'.$thisPlaylistContent['act'].'"}, ';
                     }
