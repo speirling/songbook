@@ -17,8 +17,8 @@
 	  </span>
 	  <ol class="songlist">
 	  	{{for songs}}
-	    <li class="song" id="{{:id}}">
-	      <span class="title">{{:title}}</span>
+	    <li class="song" id="playlist_song_{{:id}}">
+	      <a href="#song_{{:id}}" class="title">{{:title}}</a>
 	      <span class="id">({{:id}})</span>
 	      <span class="singer">{{:singer}}</span>
 	      <span class="key">{{:key}}</span>
