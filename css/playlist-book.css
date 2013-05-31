@@ -27,6 +27,8 @@
 }
 .playlist .set-title {
 	font-weight: bold;
+	color: #660000;
+	border-bottom: 1px solid silver;
 }
 
 
@@ -48,6 +50,8 @@
 .playlist-page .song .title {
 	font-weight: bold;
 	font-family: arial;
+	text-decoration: none;
+	color: black;
 }
 .song .capo,
 .song .id {
@@ -81,6 +85,9 @@
 
 .paginated-page {
 	page-break-after: always;
+    border:1px solid silver;
+    margin: 10px;
+    padding:10px;
 }
 
 .paginated-page td {

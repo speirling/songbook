@@ -205,8 +205,6 @@ switch ($action) {
         $playlistContent = simplexml_load_file(PLAYLIST_DIRECTORY.'/'.$playlist.'.playlist');
         $ID_array = sbk_getIDarray($playlistContent);
         $display = '';
-        $display = $display.'<div class="playlist-page"></div>';
-
         $display = $display."
         <script type=\"text/javascript\">
             $(document).ready(function() {
@@ -215,14 +213,16 @@ switch ($action) {
             	    var paginatedPlaylistHTML = new SBK.PaginatedHTML(jQuery('.playlist-page .playlist'), '.playlist_heading', 'playlist');
                 });
 
-            	jQuery('.song_index_section').each(function () {
-            	    var paginatedIndexHTML = new SBK.PaginatedHTML(jQuery(this), 'h1', 'song_index_section');
+            	jQuery('.song-index').each(function () {
+            	    var paginatedIndexHTML = new SBK.PaginatedHTML(jQuery(this), '', 'song-index');
+            	    jQuery('<h1>Index</h2>').prependTo(jQuery(this));
             	});
             	jQuery('.multiple-songs .song-page').each(function () {
             	    var paginatedHTML = new SBK.PaginatedHTML(jQuery(this), '.page_header', 'song-page');
             	});
             });
         </script>";
+        $display = $display.'<div class="playlist-page"></div>';
         $display = $display.sbk_generate_index($ID_array);
         sort($ID_array);
         $display = $display.sbk_print_multiple_songs($ID_array);
@@ -230,8 +230,6 @@ switch ($action) {
         if(array_key_exists('pdf', $_GET)) {
             sbk_output_pdf($display, 'SongBook - '.$playlistContent['title'], $css, $js);
         } else {
-            //$menu_output = sbk_menu_html($menu);
-		    //$display = $menu_output.$display;
 		    sbk_output_html($display, $page_title, $css, $js);
         }
     break;

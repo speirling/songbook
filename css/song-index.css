@@ -6,13 +6,13 @@
 	vertical-align: top;
 	padding: 1em;
 }
-.song-index h1 {
+.song-index h2 {
 	font-size: 12pt;
 	color:#bb5555;
 	margin-bottom: 0.1em #bb5555;
 	border-top: 1px solid 
 }
-.song-index h2 {
+.song-index h3 {
 	font-size: 10pt;
 	color:#555599;
 	margin-bottom: 0.3em;

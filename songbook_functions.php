@@ -310,22 +310,18 @@ function sbk_evaluate_page_break($column_count, $page_width) {
 function sbk_section_html($index, $sort_fieldname, $section_heading) {
 
     $html = '';
-    $html = $html.'<span class="song_index_section">';
-    $html = $html.'<h1>'.$section_heading.'</h1>';
-    $line_count = $line_count + $height_of_h1;
+    $html = $html.'<h2>'.$section_heading.'</h2>';
     ksort($index[$sort_fieldname]);
     foreach($index[$sort_fieldname] as $this_field => $this_songarray) {
-        $html = $html.'<h2>'.ucwords($this_field).'</h2>';
-        $line_count = $line_count + $height_of_h2;
+        if($this_field !== '') {
+            $html = $html.'<h3>'.ucwords($this_field).'</h3>';
+        }
         ksort($this_songarray);
         foreach($this_songarray as $this_title => $this_html) {
             $html = $html.$this_html;
             $line_count = $line_count + $height_of_field;
         }
-        p($line_count, $column_count);
     }
-
-    $html = $html.'</span>';
 
     return $html;
 }
@@ -362,7 +358,7 @@ function sbk_generate_index($ID_array) {
     while ($this_record = mysql_fetch_assoc($result)) {
 
         $this_title = trim($this_record['title']);
-        $this_html = '<div class="song" id="'.$this_record['id'].'"><span class="id">'.$this_record['id'].'</span><span class="title">'.$this_record['title'].'</span></div>';
+        $this_html = '<div class="song" id="index_song_'.$this_record['id'].'"><span class="id">'.$this_record['id'].'</span><span class="title">'.$this_record['title'].'</span></div>';
 
         $index['title'][' '][$this_title] = $this_html;
         $index['written_by'] = array_merge_recursive($index['written_by'], sbk_index_parts($this_record, 'written_by', $this_title, $this_html) );
@@ -497,7 +493,7 @@ function sbk_song_html($this_record, $key = null, $singer = null, $capo = null) 
     }
 
     $page_header = '<div class="page_header">';
-    $page_header = $page_header.'<div class="title">'.$this_record['title'].'</div>';
+    $page_header = $page_header.'<h2 class="title" id="song_'.$this_record['id'].'">'.$this_record['title'].'</h2>';
     $page_header = $page_header.'<span class="songnumber"><span class="label">Song no. </span><span class="data">'.$this_record['id'].'</span></span>';
     $page_header = $page_header.'<span class="pagenumber"><span class="label">page</span><span class="data" id="page_number">test</span><span class="label">of</span><span class="data" id="number_of_pages">test</span></span>';
     $page_header = $page_header.'<div class="written_by"><span class="data">'.str_replace('&', 'and', $this_record['written_by']).'</span></div>';
@@ -533,6 +529,7 @@ function sbk_print_multiple_songs($id_array) {
     $output = '';
 
     $output = $output.'<div class="multiple-songs">';
+    $output = $output.'<div class="song-page"><h1 class="section_title">Songs</h1></div>';
     foreach ($id_array as $this_id => $this_song_playlist_data) {
         foreach($this_song_playlist_data->attributes() as $attribute_name => $value) {
             $attributes[$attribute_name] = (string) $value;

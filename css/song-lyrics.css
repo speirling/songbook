@@ -2,9 +2,7 @@ div.song-page {
 	position: relative;
 	font-family: Arial, Helvetica, sans-serif;
 	padding-top: 1em;
-	/*border:1px solid red;*/
 	page-break-after: always;
-	
 }
 div.song-page table {
 	width: 100%;
@@ -45,6 +43,7 @@ div.song-page .title {
     font-size: 16px;
     padding-top: 12px;
 	color:#004080;
+    margin: 0;
 }
 div.song-page .performed_by,
 div.song-page .written_by {

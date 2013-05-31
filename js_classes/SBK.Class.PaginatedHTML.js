@@ -8,8 +8,8 @@ SBK.PaginatedHTML = SBK.Class.extend({
         self.to_be_processed.html(subject.html());
         subject.remove();
         //A4 empirically measured
-        self.page_height = 1000;
-        self.page_width = 800;
+        self.page_height = 1020;
+        self.page_width = 740;
         self.no_of_columns = 2;
         self.in_process = jQuery('<div id="in_process"></div>').appendTo(self.container);
         self.in_process.width(self.page_width);
