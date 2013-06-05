@@ -224,7 +224,7 @@ switch ($action) {
         </script>";
         $display = $display.'<div class="playlist-page"></div>';
         $display = $display.sbk_generate_index($ID_array);
-        sort($ID_array);
+        $ID_array = sbk_sortIDarray($ID_array);
         $display = $display.sbk_print_multiple_songs($ID_array);
 
         if(array_key_exists('pdf', $_GET)) {

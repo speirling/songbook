@@ -278,6 +278,20 @@ function sbk_getIDarray($playlistXML = false) {
     return $ID_array;
 }
 
+function sbk_sortIDarray($unsorted_ID_array) {
+    $just_IDs = Array();
+    $sorted_ID_array = Array();
+    foreach ($unsorted_ID_array as $ID => $data) {
+        $just_IDs[] = $ID;
+    }
+    sort($just_IDs);
+    foreach ($just_IDs as $ID) {
+        $sorted_ID_array[] = $unsorted_ID_array[$ID];
+    }
+
+    return $sorted_ID_array;
+}
+
 
 
 //---should be in client?------------------------
@@ -319,7 +333,6 @@ function sbk_section_html($index, $sort_fieldname, $section_heading) {
         ksort($this_songarray);
         foreach($this_songarray as $this_title => $this_html) {
             $html = $html.$this_html;
-            $line_count = $line_count + $height_of_field;
         }
     }
 
@@ -476,7 +489,7 @@ function sbk_song_html($this_record, $key = null, $singer = null, $capo = null) 
 
     $contentXML = new SimpleXMLElement($contentHTML);
     $pageXML = array();
-    $current_column = new SimpleXMLElement('<div class="song-page" id="page_'.$this_record['id'].'_'.$page_index.'"></div>');
+    $current_column = new SimpleXMLElement('<div class="song-page" id="song_'.$this_record['id'].'"></div>');
     $dom_current_column = dom_import_simplexml($current_column);
     $this_column_height = 0;
     $previous_column_height = 0;
