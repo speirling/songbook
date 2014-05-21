@@ -15,6 +15,8 @@ if(array_key_exists('filename', $_POST)) {
     $playlist_XML = sbk_convert_parsedjson_to_playlistXML($data);
 
     $destination = str_replace('\\','/',getcwd()).'/'.PLAYLIST_DIRECTORY.'/'.$filename.'.playlist';
+    $playlist_XML->preserveWhiteSpace = false;
+    $playlist_XML->formatOutput = true;
     if($playlist_XML->saveXML($destination)) {
          $display = '{"success": true, "destination": "'.$destination.'"}';
     }

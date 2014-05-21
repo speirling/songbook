@@ -10,6 +10,7 @@
 	<li class="set">
 	  <input type="text" class="set-title" placeholder="set title" value="{{:label}}" />
 	  <span class="duration"></span>
+	  <span class="button remove">remove</span>
 	  <span class="introduction set" style="display: none">
 		<textarea class="introduction_text" placeholder="Introduction text">{{:introduction.text}}</textarea>
 		<input type="text" class="introduction_duration" placeholder="Introduction duration" value="{{:introduction.duration}}" />
@@ -22,7 +23,12 @@
 	      <input type="text" class="capo" placeholder="capo" value="{{:capo}}" />
 	      <input type="text" class="duration" placeholder="mm:ss" value="{{:duration}}" />
 	      <span class="title">{{:title}}</span>
-	      <span class="id">({{:id}})</span>
+          <span class="id">({{:id}})</span>
+          <a class="button lyrics" href="?action=displaySong&id={{:id}}&key={{:key}}&singer={{:singer}}&capo={{:capo}}" target="new">lyics</a>
+          <a class="button edit" href="?action=editSong&id={{:id}}" target="new">edit</a>
+          <span class="button remove">remove</span>
+          <span class="button move">move to...</span>
+          <span class="button toggle-introduction">intro</span>
 	      <span class="introduction" style="display: none">
 			<textarea class="introduction_text" placeholder="Introduction text">{{:introduction.text}}</textarea>
 			<input type="text" class="introduction_duration" placeholder="Introduction duration" value="{{:introduction.duration}}" />
