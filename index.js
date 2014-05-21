@@ -1,4 +1,6 @@
-$(document).ready(function() {
+/*global jQuery document */
+
+jQuery(document).ready(function() {
 
 });
 

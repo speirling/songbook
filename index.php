@@ -36,7 +36,7 @@ switch ($action) {
 
         $menu_output = sbk_menu_html($menu);
 		$display = $menu_output.$display;
-		 sbk_output_html($display, $page_title, $css, $js);
+		sbk_output_html($display, $page_title, $css, $js);
     break;
 
     case 'index':
@@ -60,7 +60,7 @@ switch ($action) {
 
         $menu_output = sbk_menu_html($menu);
 		$display = $menu_output.$display;
-		 sbk_output_html($display, $page_title, $css, $js);
+		sbk_output_html($display, $page_title, $css, $js);
     break;
 
     case 'listAllPlaylists':
@@ -181,7 +181,16 @@ switch ($action) {
         }
 
         $this_record = sbk_get_song_record($id);
-        $display = sbk_song_html($this_record, $key, $singer, $capo);
+        $display = '';
+        $display = $display."
+        <script type=\"text/javascript\">
+            $(document).ready(function() {
+            	jQuery('.song-page').each(function () {
+            	    var paginatedHTML = new SBK.PaginatedHTML(jQuery(this), '.page_header', 'song-page');
+            	});
+            });
+        </script>";
+        $display = $display.sbk_song_html($this_record, $key, $singer, $capo);
 
         sbk_output_pdf($display, $this_record['title'], $css, $js);
     break;
@@ -291,6 +300,14 @@ switch ($action) {
 
         $this_record = sbk_get_song_record($id);
         //$display = $display.sbk_song_html($this_record, $key, $singer, $capo);
+        $display = $display."
+        <script type=\"text/javascript\">
+            $(document).ready(function() {
+            	jQuery('.song-page').each(function () {
+            	    var paginatedHTML = new SBK.PaginatedHTML(jQuery(this), '.page_header', 'song-page');
+            	});
+            });
+        </script>";
         $display = $display.sbk_song_html($this_record, $key, $singer, $capo);
         $page_title = $this_record['title'].' - playlists';
 

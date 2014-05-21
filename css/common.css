@@ -44,3 +44,18 @@ input:-moz-placeholder {
 	margin-left: 3px;
 	margin-right: 3px;
 }
+
+.button {
+	display: inline-block;
+	margin: 3px;
+	padding: 3px;
+	border: 1px solid gray;
+	cursor: pointer;
+	background-color: #f3f3f3;
+    color: gray;
+    font-size: 0.8em;
+}
+.button a {
+	color: gray;
+	text-decoration: none;
+}

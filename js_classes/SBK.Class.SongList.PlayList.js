@@ -1,3 +1,5 @@
+/*global jQuery SBK alert */
+
 SBK.PlayList = SBK.SongList.extend({
 	init: function (playlist_name, container, exclusion_list) {
 		var self = this;
@@ -42,6 +44,12 @@ SBK.PlayList = SBK.SongList.extend({
 		}
 	},
 
+	get_set_names: function () {
+		var self = this;
+		
+		return self.set_names; //defined in SBK.Class.SongList.js.filter_songlist_json_before_display()
+	},
+	
 	save_playlist: function () {
 		var self = this;
 
@@ -77,6 +85,7 @@ SBK.PlayList = SBK.SongList.extend({
 		var self = this;
 		
 		self.container.html(self.playlist_html);
+		// set up buttons on 
 		self.save_button = jQuery('<a href="#" id="savePlaylist">Save</a>').prependTo(self.container).click(function() {
 			self.pleasewait.show();
 			self.update();
@@ -89,41 +98,26 @@ SBK.PlayList = SBK.SongList.extend({
 			self.add_set();
 		});
 		self.hide_introductions();
-		self.set_up_context_menus();
+		
+		// set up the buttons on each song
+		jQuery('li .remove', self.container).click(function(){ jQuery(this).parent().remove(); });
+		jQuery('li .toggle-introduction', self.container).click(function(element){
+        	jQuery('.introduction', element).toggle();
+        });
+        
 		jQuery('.playlist ul', self.container).sortable();
 		jQuery('.songlist', self.container).sortable({connectWith: '.songlist'});
+		
+		
 	},
 	
 	set_up_context_menus: function () {
 		var self = this;
-
-		jQuery('li li', self.container).contextMenu('context-menu', {
-		    'show lyrics': {
-		        click: function(element){ 
-		        	window.open('?action=displaySong&id=' + element.attr('id').replace('id_', '') + 
-	        			'&key=' + escape(element.children('.key').val()) +
-	        			'&singer=' + element.children('.singer').val() +
-	        			'&capo=' + element.children('.capo').val()
-		        	);
-		        }
-		    },
-		    'edit song': {
-		        click: function(element){ window.open('?action=editSong&id=' + element.attr('id').replace('id_', '')); }
-		    },
-		    'remove from playlist': {
-		        click: function(element){ element.remove(); }
-		    },
-		    'toggle introduction': {
-		        click: function(element){
-		        	jQuery('.introduction', element).toggle();
-		        }
-		    }
-		});
-		jQuery('li.set', self.container).contextMenu('context-menu', {
-		    'remove from playlist': {
-		        click: function(element){ element.remove(); }
-		    }
-		});
+/* conext menu disabled. Moving to buttons (early 2014). */
+		jQuery('li .remove', self.container).click(function(){ jQuery(this).parent().remove(); });
+		jQuery('li .toggle-introduction', self.container).click(function(element){
+        	jQuery('.introduction', element).toggle();
+        });
 	},
 
 	toggle_introductions: function() {

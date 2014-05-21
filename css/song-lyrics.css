@@ -18,6 +18,9 @@ div.song-page .line {
 	margin-top: 6px;
 	font-size: 16px;
 }
+div.song-page .multi-column .line {
+	font-size: 12px;
+}
 div.song-page .line .text {
 	display: inline;
 } 
@@ -32,14 +35,24 @@ div.song-page .chord {
 	font-weight: bold;
 }
 
+div.song-page .chord.full-width {
+	width: auto;
+	margin-right: 10px;
+}
+
 div.song-page .page_header {
 	width: 100%;
 	position: relative;
 	border-bottom: 1px solid silver;
 	margin-bottom: 1em;
 	font-size: 14px;
+	padding-top: 12px;
 }
-div.song-page .title {
+div.song-page.page_0 .page_header {
+    padding-top: 0;
+}
+div.song-page .title,
+div.song-page  .page_header span.song-title {
     font-size: 16px;
     padding-top: 12px;
 	color:#004080;
@@ -174,6 +187,7 @@ div.song-page .page_header .key .singer .data {
 }
 .chord .bass_note_modifier {
 	color: gray;
+	font-weight: normal;
 }
 .chord .separator {
 	margin-left: 0.2em;

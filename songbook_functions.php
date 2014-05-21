@@ -295,31 +295,6 @@ function sbk_sortIDarray($unsorted_ID_array) {
 
 
 //---should be in client?------------------------
-function sbk_evaluate_column_break($line_count, $increment, $column_height) {
-    $v1 = $line_count % $column_height;
-    $v2 = ($line_count + $increment) % $column_height;
-
-    if($v2 < $v1) {
-        $column_break = true;
-    } else {
-        $column_break = false;
-    }
-
-    return $column_break;
-}
-
-function sbk_evaluate_page_break($column_count, $page_width) {
-    $v1 = $column_count % $page_width;
-    $v2 = ($column_count + 1) % $page_width;
-
-    if($v2 < $v1) {
-        $page_break = true;
-    } else {
-        $page_break = false;
-    }
-
-    return $page_break;
-}
 
 function sbk_section_html($index, $sort_fieldname, $section_heading) {
 
@@ -351,8 +326,6 @@ function sbk_index_parts($this_record, $section, $this_title, $this_html) {
     }
     return $output;
 }
-
-
 
 function sbk_generate_index($ID_array) {
 
@@ -388,17 +361,6 @@ function sbk_generate_index($ID_array) {
     return $html;
 }
 
-// end of should be in client---------
-
-
-
-
-
-
-
-
-
-
 function sbk_covert_array_to_csv_string($array) {
     $csv = "(";
 
@@ -410,6 +372,15 @@ function sbk_covert_array_to_csv_string($array) {
 
     return $csv;
 }
+// end of should be in client---------
+
+
+
+
+
+
+
+
 
 function sbk_create_blank_playlist($filename) {
     $playlistContent = new SimpleXMLElement('<?xml version="1.0" standalone="yes"?><songlist title="(Enter a title for the PLAYLIST here)"><set label="(Enter a label for this SET here)"></set></songlist>');
@@ -421,10 +392,16 @@ function sbk_create_blank_playlist($filename) {
 
 //--song to html page --------------------
 function sbk_chord_replace_callback($chord, $base_key = null, $target_key = null) {
+    if($chord[strlen($chord)-1] === "!") {
+        //This is one of those chords followed by whitepace, that needs to be set to greater than 0 space.
+        //I'll use a class for that
+        $fullsize_class = " full-width";
+        $chord = substr($chord, 0, -1);
+    }
     if(!is_null($base_key) && !is_null($target_key) && $base_key !== '' && $target_key !== '') {
         $chord = sbk_transpose_chord($chord, $base_key, $target_key);
     }
-    return '</span><span class="chord">'.$chord.'</span><span class="text">';
+    return '</span><span class="chord'.$fullsize_class.'">'.$chord.'</span><span class="text">';
 }
 
 function sbk_convert_song_content_to_HTML($content, $base_key = 'null', $target_key = null) {
@@ -438,6 +415,10 @@ function sbk_convert_song_content_to_HTML($content, $base_key = 'null', $target_
     //$contentHTML = str_replace(' ', '&#160;', $contentHTML);
     $contentHTML = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $contentHTML);
     $contentHTML = preg_replace('/<div class=\"line\"><span class=\"text\">[\s]*?<\/span><\/div>/', '<div class="line"><span class="text">&nbsp;</span></div>', $contentHTML);
+    // chords that are close together - [Am][D] etc ... even [Am]  [D].... should be separated by characters equal in width to the chord
+    //I'll mark these kinds of chords with "!" so that I can set their class in  sbk_chord_replace_callback
+    // "\h" matches a 'horizontal whitespace' character so the expression '/\](\h*?)\[/' should find relevant chords
+    $contentHTML = preg_replace('/\](\h*?)\[/', '!]$1[', $contentHTML);
     $contentHTML = preg_replace_callback('/\[(.*?)\]/', create_function('$matches', 'return sbk_chord_replace_callback($matches[1]'.$params.');'), $contentHTML);
     $contentHTML = preg_replace('#<span class="chord">([^<]*?)/([^<]*?)</span>#','<span class="chord">$1<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">$2</span></span>', $contentHTML);
     $contentHTML = preg_replace('/&nbsp;/', '&#160;', $contentHTML); //&nbsp; doesn't work in XML unless it's specifically declared.
@@ -585,10 +566,37 @@ function sbk_menu_html($local_menu) {
 
 }
 
-function sbk_output_html($display, $page_title, $css, $js) {
+function sbk_output_html($display, $page_title, $stylesheets = Null, $javaScripts = NULL, $localJavascriptStatements = NULL) {
+	global $JSR_TEMPLATES;
     //p($display);
-    $display = acradisp_standardHTMLheader($page_title, $css, $js).$display.'</body></html>';
+    
+    
+    $outputHTML = "";
+	$outputHTML .=  "<!DOCTYPE html>\n"; 
+	$outputHTML .=  "<html>\n";
+	$outputHTML .=  "<head>\n";
+	$outputHTML .=  '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+	$outputHTML .=  "<title>".$page_title."</title>\n";
 
+	if($stylesheets) {
+		foreach($stylesheets as $thisStyleSheet) {
+			$outputHTML .=  '<link type="text/css" rel="stylesheet" href="'.$thisStyleSheet.'"></link>';
+		}
+	}
+
+	if($javaScripts) {
+		foreach($javaScripts as $thisScript) {
+			$outputHTML .=  '<script src="'.$thisScript.'" type="text/javascript"/></script>';
+		}
+	}
+
+	foreach($JSR_TEMPLATES as $thisTemplate) {
+		$outputHTML .=  '<script id="'.preg_replace("/\\.[^.\\s]{3,4}$/", "", $thisTemplate[1]).'"  type="text/x-jquery-tmpl">';
+		$outputHTML .=  file_get_contents($thisTemplate[0].'/'.$thisTemplate[1]);
+		$outputHTML .=  '</script>';
+	}
+
+    $display = $outputHTML.'</head><body>'.$display.'</body></html>';
     echo $display;
 
 }
@@ -602,6 +610,7 @@ function sbk_output_pdf($display, $page_title = '', $css = array(), $js = array(
         //echo $display;
         $pdf->set_html($display);
         $pdf->render();
+        sleep(5);
         $pdf->output(WKPDF::$PDF_DOWNLOAD, $page_title.".pdf");
 }
 

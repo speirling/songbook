@@ -1,3 +1,5 @@
+/*global jQuery SBK alert */
+
 SBK.SongList = SBK.Class.extend({
 	init: function (container, jsr_template_selector, exclusion_songlist) {
 		var self = this;
@@ -11,6 +13,7 @@ SBK.SongList = SBK.Class.extend({
 		} else {
 			self.exclusion_songlist = exclusion_songlist;
 		}
+		self.set_names = [];
 	},
 	
 	flatten_exclusion_list: function () {
@@ -163,13 +166,14 @@ SBK.SongList = SBK.Class.extend({
 			}
 			
 			if(typeof(self.data_json.sets) !== 'undefined') {
-				//somewhere in the PI - SimpleXML to json conversions, a single set is represented as an object, ot an array of one object. 
+				//somewhere in the PI - SimpleXML to json conversions, a single set is represented as an object, not an array of one object. 
 				//workaround:
 				if(typeof(self.data_json.sets.length) === 'undefined') {
 					self.data_json.sets = [self.data_json.sets];
 				}
 				for (set_index = 0; set_index < self.data_json.sets.length; set_index = set_index + 1) {
 					set = self.data_json.sets[set_index];
+					self.set_names[set_index] = set.label;
 					if(typeof(set.songs) !== 'undefined') {
 						for (song_index = 0; song_index < set.songs.length; song_index = song_index + 1) {
 							id_index = jQuery.inArray('' + set.songs[song_index].id, flat_list);

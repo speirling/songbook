@@ -109,7 +109,19 @@ define("SBK_KEYFIELD_NAME", 'id');
 require('/fileserver/data/www'."/songbook/songbook_functions.php");
 define('PLAYLIST_DIRECTORY', 'playlists');
 define('JAVASCRIPT_CLASSES_DIRECTORY', BASE_URL.'/js_classes');
-
+define('JAVASCRIPT_DEPENDENCIES_DIRECTORY', BASE_URL.'/js_dependencies');
+$STANDARD_JAVASCRIPTS = array();
+//$STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.js";
+$STANDARD_JAVASCRIPTS[] = JAVASCRIPT_DEPENDENCIES_DIRECTORY.'/jquery.js';
+        //"http://code.jquery.com/jquery.js",
+        //URL_TO_ACRA_SCRIPTS."/js/constants2js.php?configFile=".CONFIGURATION_FILE, //THIS MUST BE ADDED LOCALLY and hardcoded - unless you've got ALL files under document root in the filesystem
+//$STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jqModal.js",
+$STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.ui/jquery-ui-1.8.23.custom.min.js";
+//$STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/jMP3/jquery.jmp3.js",
+//$STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.wait.js", // required for custom fields - hints
+//$STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.validate.js", // form validation
+//
+$STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS.'/js/jsrender/jsrender.js';
 $STANDARD_JAVASCRIPTS[] = BASE_URL.'/admin/constants2js.php';
 $STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.contextMenu/jquery.contextMenu.js";
 $STANDARD_JAVASCRIPTS[] = URL_TO_ACRA_SCRIPTS."/js/jquery.a-tools.js";
