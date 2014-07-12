@@ -1,0 +1,120 @@
+
+.input-container,
+.input-container .label {
+	display: block;
+	margin: 0;
+}
+.input-container .label {
+    margin-top: 1em;
+}
+
+.input-box {
+	left: 0;
+	right: 0;
+	margin: 0;
+	border: 1px solid silver;
+	padding: 0.5em;
+}
+
+
+/*
+form.edit-song-form {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border: 1ps solid red;
+	
+}
+form.edit-song-form .song_id {
+	margin-top: 4em;
+}
+form.edit-song-form textarea#title,
+form.edit-song-form textarea#performed_by,
+form.edit-song-form textarea#written_by,
+form.edit-song-form textarea#base_key,
+form.edit-song-form textarea#meta_tags,
+form.edit-song-form textarea#original_filename {
+	width: 35em;
+	height: 3em; 	
+}
+form.edit-song-form div.content {
+	position: absolute;
+	top: 2em;
+	right:0;
+	left: 40em;
+	bottom: 0;
+}
+form.edit-song-form div.content textarea {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+}
+
+ 
+
+.edit {
+	position: absolute;
+	display: block;
+	top: 5em;
+	bottom:0;
+	left: 1em;;
+	right: 0;
+}
+.edit #title {
+	font-weight: bold;
+}
+.edit .song_id .label  {
+	display: inline-block;
+}
+
+.edit .label {
+	display: block;
+}
+
+.edit a#remove_linebreaks,
+.edit a#add_chords {
+	position: absolute;
+	top: 0em;
+	display: block;
+	opacity:0.4;
+	text-decoration: none;
+	color: gray;
+	z-index: 2;
+	padding: 0.3em;
+	border-radius: 0.3em;
+	border: 1px solid white;
+	text-align: center;
+}
+
+.edit a#remove_linebreaks {
+	right: 2em;
+}
+
+.edit a#add_chords {
+	right: 18em;
+}
+
+.edit a#add_chords.chord_mode {
+	opacity: 1;
+	background-color: #990000;
+	color: white;
+	font-weight: bold;
+}
+.edit a#add_chords {
+	width:10em;
+}
+.edit a#add_chords.chord_mode:hover {
+	color: white;
+	text-decoration: none;
+	background-color: #000099;
+}
+.edit a#remove_linebreaks:hover,
+.edit a#add_chords:hover {
+	opacity: 1;
+	color: gray;
+	border: 1px solid gray;
+}
+*/

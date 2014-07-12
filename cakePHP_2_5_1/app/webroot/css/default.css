@@ -1,0 +1,205 @@
+span.currency_symbol
+{
+	float:left;
+	margin-right:3px;
+}
+div.editableDiv
+{
+	/* This is a div representing an input field, whose value is not directly editable, but instead opens a popup (e.g. list) */
+	border:1px solid gray;
+	background-color:white;
+}
+
+
+div#stringList.inputCollection div#list div.item span
+{
+	display:none;
+}
+
+/*===================================================================*
+ *  Edit Form                                                        *
+ *===================================================================*/
+
+
+form#database_entrytable.editForm
+{
+	
+}
+	table.editForm th
+	{
+	
+	}
+	table.editForm td
+	{
+	
+	}
+		table.editForm td input
+		{
+		
+		}
+		table.editForm td textarea
+		{
+		
+		}
+		table.editForm td span.fixedInput
+		{
+		
+		}
+/* end of Edit Form
+ *===================================================================*/
+
+
+
+
+
+
+/*===================================================================*
+ *  Confirm Delete                                                   *
+ *===================================================================*/
+
+form#database_entry
+{
+
+}
+
+
+div#deleteConfirm
+{
+
+}
+
+	div#deleteConfirm p
+	{
+	
+	}
+	div#deleteConfirm b
+	{
+	
+	}
+	
+	div#deleteConfirm div#data_to_be_deleted
+	{
+	
+	}
+		div#deleteConfirm div#data_to_be_deleted h2
+		{
+		
+		}
+		div#deleteConfirm div#data_to_be_deleted input@submit
+		{
+		
+		}
+		div#deleteConfirm div#data_to_be_deleted a.button
+		{
+		
+		}
+/* end of Confirm Delete
+ *===================================================================*/
+
+/*===================================================================*
+ *  Sequential List                                                   *
+ *===================================================================*/
+
+table.sequentialList
+{
+	
+}
+
+	table.sequentialList td
+	{
+		/*border:1px solid blue;*/
+	}
+	div.acradb_recordHolder
+	{
+		border:1px solid gray;
+		padding:10px;
+	}
+	div.acradb_recordHolder div.label
+	{
+		color:#999999;
+	}
+		
+
+	/*Labels and Data -------------------------------------------------*/  
+
+	table.sequentialList td div.date
+	{
+	
+	}
+	table.sequentialList td div.time
+	{
+	
+	}
+	table.sequentialList td div.datetime
+	{
+	
+	}
+	
+/* end of Sequential List
+ *===================================================================*/
+
+
+
+
+
+
+/*===================================================================*
+ *  Sortable Grid                                                    *
+ *===================================================================*/
+
+
+table.sortableGrid
+{
+	border:2px solid black;
+}
+
+	/*Column Headings -------------------------------------------------*/  
+	table.sortableGrid th
+	{
+		border-bottom:1px solid gray;
+		padding:7px;
+	}
+		table.sortableGrid th a
+		{
+			color:#993300;
+			text-decoration:none;
+		}
+		table.sortableGrid th a:hover
+		{
+		
+		}
+
+
+
+
+	/*Data Rows -------------------------------------------------*/  
+	table.sortableGrid tr
+	{
+	
+	}
+	table.sortableGrid tr.rowStyle_0
+	{
+		background-color:#FFFFFF;
+	}
+	table.sortableGrid tr.rowStyle_1
+	{
+		background-color:#ffeedd;
+	}	
+
+	/*Column Headings -------------------------------------------------*/  
+
+
+
+	/*Data cells -------------------------------------------------*/  
+
+	table.sortableGrid td
+	{
+		padding:7px;
+		border-left:1px solid silver;
+		
+	}
+
+
+/* end of Sortable Grid
+ *===================================================================*/
+
