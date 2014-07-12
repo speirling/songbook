@@ -1,0 +1,9 @@
+/*global jQuery SBK alert */
+
+SBK.Dialog = SBK.Class.extend({
+	init: function () {
+		var self = this;
+		
+		
+    }
+});
