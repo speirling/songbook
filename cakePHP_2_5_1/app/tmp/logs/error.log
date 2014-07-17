@@ -4827,3 +4827,146 @@ Request URL: /songbook-cake/js/js_dependencies/jsrender.min.js.map
 Stack Trace:
 #0 /fileserver/data/www/songbook-cake/cakePHP_2_5_1/app/webroot/index.php(161): Dispatcher->dispatch(Object(CakeRequest), Object(CakeResponse))
 #1 {main}
+2014-07-17 20:38:14 Error: 678
+2014-07-17 20:40:51 Error: 678
+2014-07-17 20:41:31 Error: 678
+2014-07-17 20:50:50 Error: 678
+2014-07-17 20:50:50 Error: Fatal Error (1): Call to undefined method ApiController::print_r() in [/fileserver/data/www/songbook-cake/cakePHP_2_5_1/app/Controller/ApiController.php, line 108]
+2014-07-17 20:50:50 Error: [FatalErrorException] Call to undefined method ApiController::print_r()
+Request URL: /songbook-cake/api/get_song
+Stack Trace:
+#0 /fileserver/data/www/songbook-cake/cakePHP_2_5_1/lib/Cake/Error/ErrorHandler.php(203): ErrorHandler::handleFatalError(1, 'Call to undefin...', '/fileserver/dat...', 108)
+#1 [internal function]: ErrorHandler::handleError(1, 'Call to undefin...', '/fileserver/dat...', 108, Array)
+#2 /fileserver/data/www/songbook-cake/cakePHP_2_5_1/lib/Cake/Core/App.php(929): call_user_func('ErrorHandler::h...', 1, 'Call to undefin...', '/fileserver/dat...', 108, Array)
+#3 /fileserver/data/www/songbook-cake/cakePHP_2_5_1/lib/Cake/Core/App.php(902): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2014-07-17 20:51:22 Error: 678
+2014-07-17 20:51:23 Error: Fatal Error (1): Call to undefined method ApiController::debug() in [/fileserver/data/www/songbook-cake/cakePHP_2_5_1/app/Controller/ApiController.php, line 108]
+2014-07-17 20:51:23 Error: [FatalErrorException] Call to undefined method ApiController::debug()
+Request URL: /songbook-cake/api/get_song
+Stack Trace:
+#0 /fileserver/data/www/songbook-cake/cakePHP_2_5_1/lib/Cake/Error/ErrorHandler.php(203): ErrorHandler::handleFatalError(1, 'Call to undefin...', '/fileserver/dat...', 108)
+#1 [internal function]: ErrorHandler::handleError(1, 'Call to undefin...', '/fileserver/dat...', 108, Array)
+#2 /fileserver/data/www/songbook-cake/cakePHP_2_5_1/lib/Cake/Core/App.php(929): call_user_func('ErrorHandler::h...', 1, 'Call to undefin...', '/fileserver/dat...', 108, Array)
+#3 /fileserver/data/www/songbook-cake/cakePHP_2_5_1/lib/Cake/Core/App.php(902): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2014-07-17 20:51:47 Error: 678
+2014-07-17 20:52:07 Error: 678
+2014-07-17 20:52:44 Error: 678
+2014-07-17 20:53:26 Error: 678
+2014-07-17 20:54:06 Error: 678
+2014-07-17 20:54:42 Error: 678
+2014-07-17 20:57:07 Error: 678
+2014-07-17 20:59:25 Error: 678
+2014-07-17 20:59:47 Error: 678
+2014-07-17 21:00:16 Error: 678
+2014-07-17 21:01:04 Error: 678
+2014-07-17 21:01:16 Error: 678
+2014-07-17 21:01:38 Error: 677
+2014-07-17 21:02:24 Error: 677
+2014-07-17 21:02:59 Error: 677
+2014-07-17 21:03:51 Error: 678
+2014-07-17 21:05:44 Error: 678
+2014-07-17 21:06:39 Error: 678
+2014-07-17 21:06:54 Error: 678
+2014-07-17 21:07:12 Error: 678
+2014-07-17 21:07:41 Error: 678
+2014-07-17 21:08:14 Error: 678
+2014-07-17 21:50:02 Error: 678
+2014-07-17 21:51:02 Error: 678
+2014-07-17 21:51:49 Error: 678
+2014-07-17 21:53:48 Error: 678
+2014-07-17 21:54:28 Error: 678
+2014-07-17 21:55:12 Error: 678
+2014-07-17 21:55:13 Error: 679
+2014-07-17 21:55:24 Error: 680
+2014-07-17 21:55:52 Error: 679
+2014-07-17 21:55:53 Error: 678
+2014-07-17 21:55:55 Error: 677
+2014-07-17 21:56:01 Error: 677
+2014-07-17 21:56:09 Error: 676
+2014-07-17 21:56:14 Error: 677
+2014-07-17 21:56:21 Error: 677
+2014-07-17 21:57:12 Error: 677
+2014-07-17 21:57:12 Error: Fatal Error (1): Call to undefined function array_length() in [/fileserver/data/www/songbook-cake/cakePHP_2_5_1/app/Controller/ApiController.php, line 113]
+2014-07-17 21:57:12 Error: [FatalErrorException] Call to undefined function array_length()
+Request URL: /songbook-cake/api/get_song
+Stack Trace:
+#0 /fileserver/data/www/songbook-cake/cakePHP_2_5_1/lib/Cake/Error/ErrorHandler.php(203): ErrorHandler::handleFatalError(1, 'Call to undefin...', '/fileserver/dat...', 113)
+#1 [internal function]: ErrorHandler::handleError(1, 'Call to undefin...', '/fileserver/dat...', 113, Array)
+#2 /fileserver/data/www/songbook-cake/cakePHP_2_5_1/lib/Cake/Core/App.php(929): call_user_func('ErrorHandler::h...', 1, 'Call to undefin...', '/fileserver/dat...', 113, Array)
+#3 /fileserver/data/www/songbook-cake/cakePHP_2_5_1/lib/Cake/Core/App.php(902): App::_checkFatalError()
+#4 [internal function]: App::shutdown()
+#5 {main}
+2014-07-17 21:58:42 Error: 677
+2014-07-17 21:59:10 Error: 678
+2014-07-17 21:59:45 Error: 678
+2014-07-17 22:00:05 Error: 677
+2014-07-17 22:00:15 Error: 677
+2014-07-17 22:01:09 Error: 677
+2014-07-17 22:02:18 Error: 677
+2014-07-17 22:02:52 Error: 678
+2014-07-17 22:29:49 Error: 678
+2014-07-17 22:31:15 Error: 678
+2014-07-17 22:31:52 Error: 677
+2014-07-17 22:32:54 Error: 678
+2014-07-17 22:33:24 Error: 678
+2014-07-17 22:34:56 Error: 678
+2014-07-17 22:35:06 Error: 677
+2014-07-17 22:36:22 Error: 678
+2014-07-17 22:36:36 Error: 677
+2014-07-17 22:36:50 Error: 677
+2014-07-17 22:42:22 Error: 677
+2014-07-17 22:42:33 Error: 677
+2014-07-17 22:43:26 Error: 678
+2014-07-17 22:43:42 Error: 678
+2014-07-17 22:44:08 Error: 678
+2014-07-17 22:44:35 Error: 678
+2014-07-17 22:53:40 Error: 678
+2014-07-17 22:55:29 Error: 678
+2014-07-17 22:55:36 Error: 677
+2014-07-17 22:55:51 Error: 677
+2014-07-17 22:56:02 Error: 678
+2014-07-17 22:56:09 Error: 678
+2014-07-17 22:56:35 Error: 678
+2014-07-17 22:57:02 Error: 678
+2014-07-17 22:57:10 Error: 677
+2014-07-17 22:57:35 Error: 677
+2014-07-17 22:57:44 Error: 678
+2014-07-17 22:58:02 Error: 678
+2014-07-17 22:58:08 Error: 677
+2014-07-17 22:59:11 Error: 677
+2014-07-17 22:59:17 Error: 678
+2014-07-17 22:59:27 Error: 678
+2014-07-17 23:00:28 Error: 678
+2014-07-17 23:00:33 Error: 677
+2014-07-17 23:01:02 Error: 677
+2014-07-17 23:01:13 Error: 678
+2014-07-17 23:01:50 Error: 678
+2014-07-17 23:02:23 Error: 678
+2014-07-17 23:03:03 Error: 678
+2014-07-17 23:03:16 Error: 677
+2014-07-17 23:03:35 Error: 677
+2014-07-17 23:03:47 Error: 678
+2014-07-17 23:06:49 Error: 678
+2014-07-17 23:07:12 Error: 678
+2014-07-17 23:08:56 Error: 678
+2014-07-17 23:09:44 Error: 678
+2014-07-17 23:10:35 Error: 677
+2014-07-17 23:11:19 Error: 678
+2014-07-17 23:11:30 Error: 678
+2014-07-17 23:12:17 Error: 678
+2014-07-17 23:12:51 Error: 678
+2014-07-17 23:13:39 Error: 678
+2014-07-17 23:14:29 Error: 678
+2014-07-17 23:14:55 Error: 678
+2014-07-17 23:15:08 Error: 679
+2014-07-17 23:20:33 Error: 679
+2014-07-17 23:20:36 Error: 678
+2014-07-17 23:21:03 Error: 678
+2014-07-17 23:22:17 Error: 678
+2014-07-17 23:22:29 Error: 679
+2014-07-17 23:22:35 Error: 690
+2014-07-17 23:22:39 Error: 890
