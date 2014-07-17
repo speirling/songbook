@@ -99,15 +99,17 @@ class ApiController extends AppController {
     public function get_song() {
         $this->RequestHandler->renderAs($this, 'json');
         $conditions =  array();
-        $id = $this->request->data ['id'];
-        
-        $song = $this->Song->find('first', array(
-            //'fields' => array('Song.id', 'Song.title'),
+        $id = $this->request->data['id'];
+        $this->log($id);
+        if($song = $this->Song->find('first', array(
             'conditions' => array('Song.id' => $id)
-        ));
-
-        $this->set ( 'success', true );
-        $this->set ( 'data', $song );
+        ))) {
+            $this->set ( 'success', true );
+            $this->set ( 'data', $song );
+        } else {
+            $this->set ( 'success', false );
+            $this->set ( 'data', "id=".$id." does not match any songs" );
+        }
         $this->set ( '_serialize', array ( 'success', 'data' ) );
     }
 
