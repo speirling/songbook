@@ -74,7 +74,7 @@ SBK.SongList = SBK.Class.extend({
 	to_html: function (data_json) {
 		var self = this;
 
-		return self.template.render(data_json);
+		throw ('not implemented');
 	},
 
 	update: function () {
@@ -194,5 +194,17 @@ SBK.SongList = SBK.Class.extend({
 
 		jQuery('#playlist-holder .introduction', self.container).hide();
 		jQuery('#toggle-introductions', self.container).removeClass('open');
-	}
+	},
+    
+    value_or_blank: function (value) {
+        var self = this, result;
+        
+        if (typeof(value) === 'string') {
+            result = value;
+        } else {
+            result = '';
+        }
+        
+        return result;
+    }
 });

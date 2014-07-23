@@ -32,13 +32,14 @@ SBK.SongListItemSong = SBK.Class.extend({
             move: jQuery('<span class="button move">move to...</span>').appendTo(self.container),
             //intro_toggle: jQuery('<span class="button toggle-introduction">intro</span>').appendTo(self.container)
         };
-        
-        song_introduction_container = jQuery('<span class="introduction" style="display: none"></span>').appendTo(self.container);
-        self.inputs.introduction = {
-            text: jQuery('<textarea class="introduction_text" placeholder="Introduction text">' + self.playlist.value_or_blank(self.data.introduction.text) + '</textarea>').appendTo(song_introduction_container),
-            duration: jQuery('<input type="text" class="introduction_duration" placeholder="Introduction duration" value="' + self.playlist.value_or_blank(self.data.introduction.duration) + '" />').appendTo(song_introduction_container)
-        };
-        
+        if (typeof(self.data.introduction) !== 'undefined') {
+            song_introduction_container = jQuery('<span class="introduction" style="display: none"></span>').appendTo(self.container);
+            self.inputs.introduction = {
+                text: jQuery('<textarea class="introduction_text" placeholder="Introduction text">' + self.playlist.value_or_blank(self.data.introduction.text) + '</textarea>').appendTo(song_introduction_container),
+                duration: jQuery('<input type="text" class="introduction_duration" placeholder="Introduction duration" value="' + self.playlist.value_or_blank(self.data.introduction.duration) + '" />').appendTo(song_introduction_container)
+            };
+        }
+
         self.bind_buttons();
     },
     
