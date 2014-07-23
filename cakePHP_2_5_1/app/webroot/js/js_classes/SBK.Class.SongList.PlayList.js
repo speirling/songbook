@@ -115,14 +115,14 @@ SBK.PlayList = SBK.SongList.extend({
 		self.container.append(self.to_html(self.data_json));
 
 		// set up buttons on 
-		self.save_button = jQuery('<a>Save</a>').appendTo(button_bar).click(function() {
+		self.save_button = jQuery('<a class="button save">Save</a>').appendTo(button_bar).click(function() {
 			self.pleasewait.show();
 			self.save_playlist();
 		});
-		self.toggle_intro_button = jQuery('<a>Toggle all Introductions</a>').appendTo(button_bar).click(function() {
+		self.toggle_intro_button = jQuery('<a class="button toggle_intro">Toggle all Introductions</a>').appendTo(button_bar).click(function() {
 			self.toggle_introductions();
 		});
-		self.add_set_button = jQuery('<a>Add a new set</a>').appendTo(button_bar).click(function() {
+		self.add_set_button = jQuery('<a class="button add_new_set">Add a new set</a>').appendTo(button_bar).click(function() {
 			self.add_set();
 		});
 		self.hide_introductions();
@@ -259,25 +259,36 @@ SBK.PlayList = SBK.SongList.extend({
         song_lyrics.render();
     },
     
-    display_song_picker: function (song_list_item) {
+    display_song_picker: function (set_index) {
         var self = this, navigation_panel, previous_button, previous_song, next_button, next_song, lyrics_pane, song_lyrics;
 
         self.dialog_frame = jQuery('<div class="song-picker-frame"></div>').appendTo(self.container);
         navigation_panel = jQuery('<span class="navigation-panel"></span>').appendTo(self.dialog_frame);
-        previous_button = jQuery('<span class="button cancel">cancel</span>').appendTo(navigation_panel);
-        next_button = jQuery('<span class="button save">save</span>').appendTo(navigation_panel);
+        cancel_button = jQuery('<span class="button cancel">cancel</span>').appendTo(navigation_panel).click(function () {
+            self.dialog_frame.remove();
+        });
+        /*save_button = jQuery('<span class="button save">save</span>').appendTo(navigation_panel).click(function () {
+            
+        });*/
         
-       picker_panel = jQuery('<span class="picker-panel"></span>').appendTo(self.dialog_frame);
-       song_picker = new SBK.SongPicker(
+        picker_panel = jQuery('<span class="picker-panel"></span>').appendTo(self.dialog_frame);
+        song_picker = new SBK.SongPicker(
             picker_panel,
-            function () {
-                self.dialog_frame.remove();
+            self,
+            function (set_index, songs_selected) {
+                self.add_songs_to_set(set_index, songs_selected);
             },
             function () {
                 self.dialog_frame.remove();
             }
         );
         song_picker.render();
+    },
+    
+    add_songs_to_set: function (set_index, songs_selected) {
+        var self = this;
+
+        return self.data_json.sets[set_index].push(songs_selected);
     },
     
     get_length: function (set_index) {

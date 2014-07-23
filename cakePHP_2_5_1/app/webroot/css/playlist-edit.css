@@ -1,5 +1,10 @@
 #playlist-list {
-	position: relative;
+	position: absolute;
+	top: 5px;
+	bottom: 5px;
+	left: 5px;
+	right: 5px;
+	overflow: auto;
 }
 input.playlist-title,
 input.set-title,
