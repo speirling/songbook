@@ -1,5 +1,5 @@
 SBK.SongPicker = SBK.Class.extend({
-	init: function (container) {
+	init: function (container, on_save, on_cancel) {
 		var self = this;
 
 		self.container = container;
@@ -9,6 +9,8 @@ SBK.SongPicker = SBK.Class.extend({
 		self.playlist_picker_holder = jQuery('<div id="playlist-picker"></div>').appendTo(self.container);
 		self.song_list_holder = jQuery('<div id="available-songs"></div>').appendTo(self.container);
 		self.linked_playlist = null;
+        self.on_save = on_save;
+        self.on_cancel = on_cancel;
 	},
 
 	link_to_playlist: function (playlist) {
@@ -66,6 +68,6 @@ SBK.SongPicker = SBK.Class.extend({
 	show_playlist: function (playlist) {
 		var self = this;
 
-		new SBK.PlayList(playlist, self.song_list_holder, self.get_exclusion_list()).render();
+		new SBK.PlayList.Selector(playlist, self.song_list_holder, self.get_exclusion_list()).render();
 	}
 });

@@ -1,4 +1,6 @@
-
+#playlist-list {
+	position: relative;
+}
 input.playlist-title,
 input.set-title,
 input.act {
@@ -198,4 +200,18 @@ a#add-new-set:hover {
 .playlist li.ui-sortable-helper {
     cursor: hand;
     background-color: #e9ec7b;
+}
+
+
+
+.song-frame,
+.song-picker-frame {
+	position: absolute;
+	top: 15px;
+	left: 15px;
+	right: 15px;
+	bottom: 15px;
+	background-color: silver;
+	border: 2px solid gray;
+	padding: 15px;
 }

@@ -71,10 +71,10 @@ SBK.SongList = SBK.Class.extend({
 		throw ('not implemented');
 	},
 
-	to_html: function () {
+	to_html: function (data_json) {
 		var self = this;
 
-		return self.template.render(self.data_json);
+		return self.template.render(data_json);
 	},
 
 	update: function () {
@@ -134,61 +134,64 @@ SBK.SongList = SBK.Class.extend({
 		var self = this;
 
 		self.fetch(function(server_data){
-			self.process_server_data(server_data);
+			self.data_json = self.filter_songlist_json_before_display(server_data.data);
+			self.redraw();
 			if(typeof(callback) === 'function') {
 				callback();
 			}
 		});
 	},
 
-	process_server_data: function (server_data) {
+	redraw: function (server_data) {
 		var self = this;
 
-		self.data_json = server_data.data;
-		self.filter_songlist_json_before_display();
-		self.playlist_html = self.to_html();
+		self.playlist_html = self.to_html(self.data_json);
 		self.display_content();
 	},
 	
-	filter_songlist_json_before_display: function () {
+	filter_songlist_json_before_display: function (data_json) {
 		var self = this, song_index, set_index, set, id_index, flat_list;
 		
 		flat_list = self.flatten_exclusion_list();
 
 		if(flat_list !== null) {
-			if(typeof(self.data_json.songs) !== 'undefined') {
-				for (song_index = 0; song_index < self.data_json.songs.length; song_index = song_index + 1) {
-					id_index = jQuery.inArray('' + self.data_json.songs[song_index].id, flat_list);
+			if(typeof(data_json.songs) !== 'undefined') {
+				for (song_index = 0; song_index < data_json.songs.length; song_index = song_index + 1) {
+					id_index = jQuery.inArray('' + data_json.songs[song_index].id, flat_list);
 					if(id_index !== -1) {
-						self.data_json.songs[song_index].filter_display = true;
+						data_json.songs[song_index].filter_display = true;
 					}
 				}
 			}
 			
-			if(typeof(self.data_json.sets) !== 'undefined') {
+			if(typeof(data_json.sets) !== 'undefined') {
 				//somewhere in the PI - SimpleXML to json conversions, a single set is represented as an object, not an array of one object. 
 				//workaround:
-				if(typeof(self.data_json.sets.length) === 'undefined') {
-					self.data_json.sets = [self.data_json.sets];
+				if(typeof(data_json.sets.length) === 'undefined') {
+					data_json.sets = [data_json.sets];
 				}
-				for (set_index = 0; set_index < self.data_json.sets.length; set_index = set_index + 1) {
-					set = self.data_json.sets[set_index];
+				for (set_index = 0; set_index < data_json.sets.length; set_index = set_index + 1) {
+					set = data_json.sets[set_index];
 					self.set_names[set_index] = set.label;
 					if(typeof(set.songs) !== 'undefined') {
 						for (song_index = 0; song_index < set.songs.length; song_index = song_index + 1) {
 							id_index = jQuery.inArray('' + set.songs[song_index].id, flat_list);
 							if(id_index !== -1) {
-								self.data_json.sets[set_index].songs[song_index].filter_display = true;
-								console.log(self.data_json.sets[set_index].songs[song_index]);
+								data_json.sets[set_index].songs[song_index].filter_display = true;
+								console.log(data_json.sets[set_index].songs[song_index]);
 							}
 						}
 					}
 				}
 			}
 		}
+		
+		return data_json;
 	},
 
 	hide_introductions: function() {
+		var self = this;
+
 		jQuery('#playlist-holder .introduction', self.container).hide();
 		jQuery('#toggle-introductions', self.container).removeClass('open');
 	}
