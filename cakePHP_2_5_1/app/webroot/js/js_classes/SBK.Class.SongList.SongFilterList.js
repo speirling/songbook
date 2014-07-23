@@ -1,8 +1,8 @@
-SBK.SongFilterList = SBK.SongList.extend({
-	init: function (container, exclusion_list) {
+SBK.SongFilterList = SBK.Playlist.extend({
+	init: function (container, exclusion_list, playlist) {
 		var self = this;
 
-		self.call_super(container, '#jsr-song-selector-list', exclusion_list);
+		self.call_super(null, container, exclusion_list, playlist.app, true);
 		self.fetch_parameters = {action: 'get_available_songs', search_string: ''};
 	},
 

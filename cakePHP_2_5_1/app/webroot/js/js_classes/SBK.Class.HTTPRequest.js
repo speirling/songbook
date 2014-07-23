@@ -1,3 +1,5 @@
+/*global jQuery SBK alert */
+
 SBK.HTTPRequest = SBK.Class.extend({
 	init: function (container) {
 		var self = this;
@@ -7,7 +9,7 @@ SBK.HTTPRequest = SBK.Class.extend({
 
     make_post_request: function (url, data, success, failure) {
         var self = this;
-console.log(url, JSON.stringify(data));
+console.log(url, data, success, failure);
         try {
             jQuery.ajax({
                 cache: true,

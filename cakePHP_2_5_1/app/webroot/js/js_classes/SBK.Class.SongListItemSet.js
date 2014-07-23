@@ -12,7 +12,7 @@ SBK.SongListItemSet = SBK.Class.extend({
 	},
 
     render: function () {
-        var self = this, introduction_container, song_index;
+        var self = this, introduction_container, song_index, set_ol;
 
         self.container = jQuery('<li class="set"></li>').appendTo(self.parent_container);
         self.inputs = {

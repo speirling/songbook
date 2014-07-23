@@ -61,6 +61,12 @@ input:-moz-placeholder {
     color: gray;
     font-size: 0.8em;
 }
+
+.button.disabled {
+	background-color: transparent;
+	color: white;
+	border-color: white;
+}
 .button a {
 	color: gray;
 	text-decoration: none;

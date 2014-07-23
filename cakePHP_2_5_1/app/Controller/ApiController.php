@@ -34,9 +34,16 @@ class ApiController extends AppController {
 
     public function update_playlist() {
         $this->RequestHandler->renderAs($this, 'json');
+
         if (array_key_exists ( 'playlist_name', $this->request->data )) {
             if (array_key_exists ( 'playlist_data', $this->request->data )) {
-                return $this->update_playlist_file ( $this->request->data ['playlist_name'], $this->request->data ['playlist_data'] );
+                if ($this->update_playlist_file ( $this->request->data ['playlist_name'], $this->request->data ['playlist_data'] ) == true) {
+                    $this->set ( 'success', true );
+                    $this->set ( 'data', "update playlist file [".$this->request->data ['playlist_name']."] was successful" );
+                } else {
+                    $this->set ( 'success', false );
+                    $this->set ( 'data', "could not update playlist file [".$this->request->data ['playlist_name']."]" );
+                }
             } else {
                 $this->set ( 'success', false );
                 $this->set ( 'data', "no playlist_data given" );
@@ -172,23 +179,78 @@ class ApiController extends AppController {
         return utf8_encode($song['Song']['title']);
     }
 
-    protected function update_playlist_file($filename, $data_string) {
-        $data_string = str_replace ( '\\"', '"', trim ( $data_string, '()' ) );
-        $data_string = str_replace ( '\"', '"', trim ( $data_string, '()' ) );
-        $data_string = str_replace ( "\'", "'", trim ( $data_string, '()' ) );
-        $data = json_decode ( trim ( $data_string, '()' ) );
-        $playlist_XML = sbk_convert_parsedjson_to_playlistXML ( $data );
-        $destination = str_replace ( '\\', '/', getcwd () ) . '/' . Configure::read('Songbook.playlist_directory') . '/' . $filename . '.playlist';
+    protected function update_playlist_file($filename, $data_array) {
+
+        $playlist_XML = $this->convert_parsedjson_to_playlistXML ( $data_array );
+
+        $destination = Configure::read('Songbook.playlist_directory') . '/' . $filename . '.playlist';
+
         if (file_exists ( $destination )) {
-            copy ( $destination, str_replace ( '\\', '/', getcwd () ) . '/' . Configure::read('Songbook.playlist_directory') . '/safety/' . $filename . date ( 'YmdHis' ) . '.playlist' );
+            copy ( $destination, Configure::read('Songbook.playlist_directory') . '/safety/' . $filename . date ( 'YmdHis' ) . '.playlist' );
         }
+
         if ($playlist_XML->saveXML ( $destination )) {
-            $this->set ( 'success', true );
+            return true;
         } else {
-            $this->set ( 'success', false );
+            return false;
         }
-        $this->set ( '_serialize', array ( 'success', 'data' ) );
     }
+    
+    protected function convert_parsedjson_to_playlistXML($data_array) {
+        $playlistContent = new SimpleXMLElement('<?xml version="1.0" standalone="yes"?><songlist></songlist>');
+        $playlistContent->addAttribute('title', $data_array["title"]);
+        $playlistContent->addAttribute('act', $data_array["act"]);
+    
+        $show_introduction = $playlistContent->addChild('introduction', (string) $data_array["introduction"]["text"]);
+        $show_introduction->addAttribute('duration',(string) $data_array["introduction"]["duration"]);
+    
+        foreach($data_array["sets"] as $thisSet) {
+            $set_duration = 0;
+            $XMLset = $playlistContent->addChild('set');
+            $XMLset->addAttribute('label', $thisSet["label"]);
+    
+            $set_introduction = $XMLset->addChild('introduction', (string) $thisSet["introduction"]["text"]);
+            $set_introduction->addAttribute('duration',(string) $thisSet["introduction"]["duration"]);
+    
+            foreach($thisSet["songs"] as $thisSong) {
+                $this_id = (string) $thisSong["id"];
+                $this_id = str_replace('id_', '', $this_id); // not required, 'id_' has been removed... but this should still work
+                if(is_numeric($this_id)) {
+                    $set_duration = $set_duration + $this->duration_string_to_seconds((string) $thisSong["duration"]);
+    
+                    $XMLsong = $XMLset->addChild('song', '');
+                    $XMLsong->addAttribute('id', $this_id);
+                    $XMLsong->addAttribute('key',(string) $thisSong["key"]);
+                    $XMLsong->addAttribute('singer',(string) $thisSong["singer"]);
+                    $XMLsong->addAttribute('capo',(string) $thisSong["capo"]);
+                    $XMLsong->addAttribute('duration',(string) $thisSong["duration"]);
+    
+                    if($thisSong["introduction"]) {
+                        $introduction = $XMLsong->addChild('introduction', (string) $thisSong["introduction"]["text"]);
+                        $introduction->addAttribute('duration',(string) $thisSong["introduction"]["duration"]);
+                    }
+                }
+            }
+        }
+    
+        return $playlistContent;
+    }
+    
+    protected function duration_string_to_seconds($individual_duration_string) {
+        if($individual_duration_string !== '') {
+            //assumes duration is mm:ss - so less than a minute would be 00:ss
+            $time_bits = preg_split('/:/', $individual_duration_string);
+            $duration_seconds = $time_bits[0] * 60 + $time_bits[1];
+        } else {
+            $duration_seconds = 0;
+        }
+        return $duration_seconds;
+    }
+        
+
 }
+
+
+
 
 ?>

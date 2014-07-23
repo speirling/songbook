@@ -1,5 +1,7 @@
+/*global jQuery SBK */
+
 SBK.SongLyricsDisplay = SBK.Class.extend({
-	init: function (container, id, app, key, capo, next_song_id, previous_song_id) {
+	init: function (container, id, app, key, capo, on_close) {
 		var self = this;
 
 		self.container = container;
@@ -9,12 +11,15 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
 		self.capo = capo;
 		self.pleasewait = new SBK.PleaseWait(self.container);
 		self.http_request = new SBK.HTTPRequest();
-		self.next_song_id = next_song_id;
-		self.previous_song_id = previous_song_id;
+		if(typeof(on_close) === 'function') {
+		    self.on_close = on_close;
+		} else {
+			self.on_close = null;
+		}
 	},
     
     render: function (callback) {
-        var self = this, all_playlists;
+        var self = this;
 
         self.container.html('');
         self.pleasewait.show();
@@ -22,7 +27,6 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
             'get_song',
             {id: self.id},
             function (response) {
-                console.log(response);
                 self.song = self.render_response(response);
                 if(typeof(callback) === 'function') {
                     callback(self.song);
@@ -33,13 +37,14 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
     },
     
     render_response: function (response) {
-        var self = this, target_key_container;
+        var self = this, target_key_container, song_data, key_container;
 
         song_data = response.data.Song;
         self.base_key = song_data.base_key;
 
         self.buttons = {
-                edit: jQuery('<a class="button edit">Edit</a>').appendTo(self.container)
+            edit: jQuery('<a class="button edit"><span>Edit</span></a>').appendTo(self.container),
+            close: jQuery('<a class="button close"><span>Close</span></a>').appendTo(self.container)
         };
         self.header_container = jQuery('<div class="page_header"></div>').appendTo(self.container);
         jQuery('<h2 id="song_' + song_data. id + '" class="title">' + song_data.title + '</h2>').appendTo(self.header_container);
@@ -101,5 +106,18 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         self.buttons.edit.click(function () {
             self.app.edit_song(self.id);
         });
+
+        self.buttons.close.click(function () {
+            self.close();
+        });
+    },
+
+    close: function () {
+    	var self = this;
+ 
+    	self.container.remove();
+    	if(typeof(self.on_close) === 'function') {
+		    self.on_close();
+		}
     }
 });

@@ -6,7 +6,7 @@ SBK.SongListItemSong = SBK.Class.extend({
 
 		self.container = jQuery('<li class="song" id="' + data.id + '"></li>').appendTo(parent_container);
 		if (data.filter_display === true) {
-		    self.container.addClass(filter_display);
+		    self.container.addClass('filter-display');
 		}
 		self.data = data;
         self.set = set;
@@ -30,7 +30,7 @@ SBK.SongListItemSong = SBK.Class.extend({
             lyrics: jQuery('<span class="button lyrics">lyics</span>').appendTo(self.container),
             remove: jQuery('<span class="button remove">remove</span>').appendTo(self.container),
             move: jQuery('<span class="button move">move to...</span>').appendTo(self.container),
-            intro_toggle: jQuery('<span class="button toggle-introduction">intro</span>').appendTo(self.container)
+            //intro_toggle: jQuery('<span class="button toggle-introduction">intro</span>').appendTo(self.container)
         };
         
         song_introduction_container = jQuery('<span class="introduction" style="display: none"></span>').appendTo(self.container);
@@ -65,7 +65,10 @@ SBK.SongListItemSong = SBK.Class.extend({
         var self = this;
 
         self.buttons.lyrics.click(function () {
-            self.playlist.display_song(self);
+            self.playlist.display_song({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});
+        });
+        self.buttons.remove.click(function () {
+            self.playlist.remove_song({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});
         });
     }
 });
