@@ -6,6 +6,7 @@ SBK.SongListItemSet.Selector = SBK.SongListItemSet.extend({
         var self = this, introduction_container, song_index, set_ol;
 
         self.container = jQuery('<li class="set"></li>').appendTo(self.parent_container);
+        self.container.append(self.data.label);
         
         set_ol = jQuery('<ol class="songlist"></ol>').appendTo(self.container);
         for (song_index = 0; song_index < self.data.songs.length; song_index = song_index + 1) {

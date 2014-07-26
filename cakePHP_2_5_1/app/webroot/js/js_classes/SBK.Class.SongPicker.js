@@ -1,15 +1,14 @@
 SBK.SongPicker = SBK.Class.extend({
-	init: function (container, playlist, on_save, on_cancel) {
+	init: function (container, playlist, set_index, on_save, on_cancel) {
 		var self = this;
 
 		self.container = container;
 		self.pleasewait = new SBK.PleaseWait(self.container);
 		self.http_request = new SBK.HTTPRequest();
 
-		self.playlist_picker_holder = jQuery('<div id="playlist-picker"></div>').appendTo(self.container);
-		self.song_list_holder = jQuery('<div id="available-songs"></div>').appendTo(self.container);
 		self.linked_playlist = null;
 		self.playlist = playlist,
+		self.set_index = set_index;
         self.on_save = on_save;
         self.on_cancel = on_cancel;
 	},
@@ -35,10 +34,17 @@ SBK.SongPicker = SBK.Class.extend({
 	render: function () {
 		var self = this, exclusion_list;
 
-		self.pleasewait.show();	
+		self.container.html('');
+        self.submit_button = jQuery('<a class="button submit">Add the selected songs to the playlist</a>').appendTo(self.container);
+        self.playlist_picker_holder = jQuery('<div class="playlist-picker"></div>').appendTo(self.container);
+        self.song_list_holder = jQuery('<div class="available-songs"></div>').appendTo(self.container);
+		self.pleasewait.show();
 	    self.display_playlist_picker();
 	    self.show_all_songs();
 
+	    self.submit_button.click(function () {
+	       self.on_save(self.set_index, self.song_list.get_selected()); 
+	    });
 	},
 	
 	display_playlist_picker: function () {
@@ -47,8 +53,7 @@ SBK.SongPicker = SBK.Class.extend({
 		new SBK.PlaylistPicker(self.playlist_picker_holder).render(
 			function (list) {
 				list.change(function () {
-					var value = jQuery(this).val(), available_song_list;
-					
+					var value = jQuery(this).val();
 					if (value === 'all') {
 						self.show_all_songs();
 					} else {
@@ -63,12 +68,14 @@ SBK.SongPicker = SBK.Class.extend({
 	show_all_songs: function () {
 		var self = this;
 
-		new SBK.SongFilterList(self.song_list_holder, self.get_exclusion_list(), self.playlist).render();
+		self.song_list = new SBK.SongFilterList(self.song_list_holder, self.get_exclusion_list(), self.playlist);
+		self.song_list.render();
 	},
-	
-	show_playlist: function (playlist) {
-		var self = this;
+    
+    show_playlist: function (playlist) {
+        var self = this;
 
-		new SBK.PlayList.Selector(playlist, self.song_list_holder, self.get_exclusion_list()).render();
-	}
+        self.song_list = new SBK.PlayList.Selector(playlist, self.song_list_holder, self.get_exclusion_list());
+        self.song_list.render();
+    }
 });
