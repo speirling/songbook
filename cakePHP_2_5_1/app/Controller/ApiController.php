@@ -143,6 +143,7 @@ class ApiController extends AppController {
 
     protected function convert_simpleXML_playlist_to_json_string($playlist_simplexml) {
         $text_as_attributes = $this->playlist_text_to_attributes ( $playlist_simplexml );
+//print_r($text_as_attributes);
         $json_string = json_encode ( $text_as_attributes );
         $json_string = str_replace ( '"song"', '"songs"', $json_string );
         $json_string = str_replace ( '"set"', '"sets"', $json_string );
@@ -207,27 +208,56 @@ class ApiController extends AppController {
         foreach($data_array["sets"] as $thisSet) {
             $set_duration = 0;
             $XMLset = $playlistContent->addChild('set');
-            $XMLset->addAttribute('label', $thisSet["label"]);
+            if(array_key_exists("label", $thisSet)) {
+                $XMLset->addAttribute('label', $thisSet["label"]);
+            } else {
+                $XMLset->addAttribute('label', '(unnamed)');
+            }
     
-            $set_introduction = $XMLset->addChild('introduction', (string) $thisSet["introduction"]["text"]);
-            $set_introduction->addAttribute('duration',(string) $thisSet["introduction"]["duration"]);
+            if(array_key_exists("introduction", $thisSet)) {
+                $set_introduction = $XMLset->addChild('introduction', (string) $thisSet["introduction"]["text"]);
+                $set_introduction->addAttribute('duration',(string) $thisSet["introduction"]["duration"]);
+            } else {
+                $set_introduction = $XMLset->addChild('introduction', '');
+                $set_introduction->addAttribute('duration', '');
+            }
     
-            foreach($thisSet["songs"] as $thisSong) {
-                $this_id = (string) $thisSong["id"];
-                $this_id = str_replace('id_', '', $this_id); // not required, 'id_' has been removed... but this should still work
-                if(is_numeric($this_id)) {
-                    $set_duration = $set_duration + $this->duration_string_to_seconds((string) $thisSong["duration"]);
-    
-                    $XMLsong = $XMLset->addChild('song', '');
-                    $XMLsong->addAttribute('id', $this_id);
-                    $XMLsong->addAttribute('key',(string) $thisSong["key"]);
-                    $XMLsong->addAttribute('singer',(string) $thisSong["singer"]);
-                    $XMLsong->addAttribute('capo',(string) $thisSong["capo"]);
-                    $XMLsong->addAttribute('duration',(string) $thisSong["duration"]);
-    
-                    if($thisSong["introduction"]) {
-                        $introduction = $XMLsong->addChild('introduction', (string) $thisSong["introduction"]["text"]);
-                        $introduction->addAttribute('duration',(string) $thisSong["introduction"]["duration"]);
+            if(array_key_exists("songs", $thisSet)) {
+                foreach($thisSet["songs"] as $thisSong) {
+                    $this_id = (string) $thisSong["id"];
+                    $this_id = str_replace('id_', '', $this_id); // not required, 'id_' has been removed... but this should still work
+                    if(is_numeric($this_id)) {
+                        if(array_key_exists("duration", $thisSong)) {
+                            $set_duration = $set_duration + $this->duration_string_to_seconds((string) $thisSong["duration"]);
+                        }
+        
+                        $XMLsong = $XMLset->addChild('song', '');
+                        $XMLsong->addAttribute('id', $this_id);
+                        if(array_key_exists("key", $thisSong)) {
+                            $XMLsong->addAttribute('key',(string) $thisSong["key"]);
+                        } else {
+                            $XMLsong->addAttribute('key', '');
+                        }
+                        if(array_key_exists("singer", $thisSong)) {
+                            $XMLsong->addAttribute('singer',(string) $thisSong["singer"]);
+                        } else {
+                            $XMLsong->addAttribute('singer', '');
+                        }
+                        if(array_key_exists("capo", $thisSong)) {
+                            $XMLsong->addAttribute('capo',(string) $thisSong["capo"]);
+                        } else {
+                            $XMLsong->addAttribute('capo', '');
+                        }
+                        if(array_key_exists("duration", $thisSong)) {
+                            $XMLsong->addAttribute('duration',(string) $thisSong["duration"]);
+                        } else {
+                            $XMLsong->addAttribute('duration', '');
+                        }
+        
+                        if (array_key_exists("introduction", $thisSong)) {
+                            $introduction = $XMLsong->addChild('introduction', (string) $thisSong["introduction"]["text"]);
+                            $introduction->addAttribute('duration',(string) $thisSong["introduction"]["duration"]);
+                        }
                     }
                 }
             }
@@ -240,7 +270,12 @@ class ApiController extends AppController {
         if($individual_duration_string !== '') {
             //assumes duration is mm:ss - so less than a minute would be 00:ss
             $time_bits = preg_split('/:/', $individual_duration_string);
-            $duration_seconds = $time_bits[0] * 60 + $time_bits[1];
+            if(sizeof($time_bits) == 2) {
+                $duration_seconds = $time_bits[0] * 60 + $time_bits[1];
+            } else {
+                //not a valid time string!
+                $duration_seconds = 0;
+            }
         } else {
             $duration_seconds = 0;
         }

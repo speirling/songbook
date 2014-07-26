@@ -31,9 +31,9 @@ SBK.PlayList.Selector = SBK.PlayList.extend({
     get_selected: function () {
         var self = this, set_index, song_index, set_selected_data, selected_songs = [];
 
-        for (set_index = 0; set_index < self.set_index.length; set_index = set_index + 1) {
+        for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
            set_selected_data = self.set_objects[set_index].get_selected();
-           for (song_index = 0; song_index < self.song_objects.length; song_index = song_index + 1) {
+           for (song_index = 0; song_index < set_selected_data.length; song_index = song_index + 1) {
                selected_songs.push(set_selected_data[song_index]);
            }
         }

@@ -40,15 +40,17 @@ li.set ul {
 	border-top: 1px solid silver;
 }
 #playlist-holder .playlist,
-#available-songs .playlist,
-#all-song-list {
-	position: absolute;
-	top: 3em;
-	bottom: 1em;
-	right: 1em;
-	left: 1em;
-	overflow: auto;
+.available-songs .playlist {
+    position: absolute;
+    bottom: 1em;
+    right: 1em;
+    left: 1em;
+    overflow: auto;
 }
+#playlist-holder .playlist {
+    top: 3em;
+}
+
 #playlist-holder .playlist {
 	font-size: 0.8em;
 }
@@ -63,12 +65,7 @@ li.set ul {
 	padding: 0.2em;
 	list-style-type: none;
 }
-#available-songs .playlist li {
-	margin: 0;
-	padding: 0;
-	border:0;
-	background-color: white;
-}
+
 .playlist li.song {
 	background-color: #f0f0c0;
 	white-space: nowrap;
@@ -97,6 +94,22 @@ li.set ul {
 .playlist input.capo:-moz-placeholder {
 	font-weight: normal;
 }
+
+
+.available-songs .playlist {
+    top: 7em;
+}
+.available-songs ul {
+    padding: 0;
+}
+.available-songs .playlist li {
+    margin: 0;
+    padding: 0;
+    border:0;
+    background-color: white;
+    list-style: none;
+}
+
 
 .duration {
 	width: 2em;
@@ -219,4 +232,11 @@ a#add-new-set:hover {
 	background-color: silver;
 	border: 2px solid gray;
 	padding: 15px;
+}
+
+
+.playlist-picker h1 {
+	font-size: 14px;
+	margin: 0;
+	display: inline-block;
 }

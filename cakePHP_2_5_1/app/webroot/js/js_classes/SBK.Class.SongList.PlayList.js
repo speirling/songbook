@@ -49,7 +49,7 @@ SBK.PlayList = SBK.SongList.extend({
 	save_playlist: function () {
 		var self = this;
 
-		if(self.playlist_name === '') {
+		if (self.playlist_name === '') {
 			if(self.data_json.title === '') {
 				alert('please enter a title for the playlist');
 				return;
@@ -58,7 +58,7 @@ SBK.PlayList = SBK.SongList.extend({
 				self.fetch_parameters.playlist_name = self.playlist_name;
 			}
 		}
-		if(self.playlist_name === '') {
+		if (self.playlist_name === '') {
 			alert('please enter a Playlist Name');
 			return;
 		} else {
@@ -67,7 +67,7 @@ SBK.PlayList = SBK.SongList.extend({
 			    'update_playlist',
 			    {
 			        playlist_name: self.playlist_name,
-			        playlist_data: self.data_json
+			        playlist_data: self.get_data()
 			    },
 			    function () {
 					self.render();
@@ -94,6 +94,9 @@ SBK.PlayList = SBK.SongList.extend({
         ul = jQuery('<ul></ul>').appendTo(playlist_container);
      
         for (set_index = 0; set_index < data_json.sets.length; set_index = set_index + 1) {
+            /* WORKAROUND:: simplexml converts a single song into an object, not an array. make sure data_json.sets[set_index].songs is an array!!! */
+            data_json.sets[set_index].songs = [].concat(data_json.sets[set_index].songs);
+            
             self.set_objects[set_index] = new SBK.SongListItemSet(ul, self, set_index, data_json.sets[set_index]);
             self.set_objects[set_index].render();
         }
@@ -112,6 +115,7 @@ SBK.PlayList = SBK.SongList.extend({
 	
 		self.container.html('');
 		button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);
+		console.log(self.data_json);
 		self.container.append(self.to_html(self.data_json));
 
 		// set up buttons on 
@@ -154,15 +158,6 @@ SBK.PlayList = SBK.SongList.extend({
         //);
         
     },
-	
-	set_up_context_menus: function () {
-		var self = this;
-
-		jQuery('li .remove', self.container).click(function(){ jQuery(this).parent().remove(); });
-		jQuery('li .toggle-introduction', self.container).click(function(element){
-        	jQuery('.introduction', element).toggle();
-        });
-	},
 
 	toggle_introductions: function() {
 		var self = this;
@@ -226,6 +221,9 @@ SBK.PlayList = SBK.SongList.extend({
         navigation_panel = jQuery('<span class="navigation-panel"></span>').appendTo(self.dialog_frame);
         previous_button = jQuery('<span class="button previous">&laquo; Previous</span>').appendTo(navigation_panel);
         next_button = jQuery('<span class="button next">next &raquo;</span>').appendTo(navigation_panel);
+        close_button = jQuery('<span class="button close">close</span>').appendTo(navigation_panel).click(function () {
+            self.dialog_frame.remove();
+        });
         
         next_song = self.get_next_song(song_list_item.index, song_list_item.set_index);
         if (next_song === null) {
@@ -275,8 +273,10 @@ SBK.PlayList = SBK.SongList.extend({
         song_picker = new SBK.SongPicker(
             picker_panel,
             self,
+            set_index,
             function (set_index, songs_selected) {
                 self.add_songs_to_set(set_index, songs_selected);
+                self.dialog_frame.remove();
             },
             function () {
                 self.dialog_frame.remove();
@@ -288,7 +288,11 @@ SBK.PlayList = SBK.SongList.extend({
     add_songs_to_set: function (set_index, songs_selected) {
         var self = this;
 
-        return self.data_json.sets[set_index].push(songs_selected);
+        console.log(set_index, songs_selected, self.data_json.sets[set_index]);
+        jQuery.merge(self.data_json.sets[set_index].songs, songs_selected);
+        console.log(self.data_json.sets[set_index].songs);
+        
+        self.redraw();
     },
     
     get_length: function (set_index) {
@@ -306,7 +310,7 @@ SBK.PlayList = SBK.SongList.extend({
             if (previous_set === null) {
                 previous_song = null;
             } else {
-                if (next_set.previous_set.length > 0) {
+                if (previous_set.songs.length > 0) {
                     previous_song = previous_set.songs[previous_set.songs.length - 1];
                     previous_song.set_index = previous_set.set_index;
                     previous_song.index = previous_set.songs.length;
@@ -376,9 +380,16 @@ SBK.PlayList = SBK.SongList.extend({
     },
     
     remove_song: function (song_details) {
-    	var self = this;
+        var self = this;
 
-    	self.data_json.sets[song_details.set_index].songs.splice(song_details.index, 1);
-    	self.redraw();
+        self.data_json.sets[song_details.set_index].songs.splice(song_details.index, 1);
+        self.redraw();
+    },
+    
+    remove_set: function (set_details) {
+        var self = this;
+
+        self.data_json.sets.splice(set_details.set_index, 1);
+        self.redraw();
     }
 });

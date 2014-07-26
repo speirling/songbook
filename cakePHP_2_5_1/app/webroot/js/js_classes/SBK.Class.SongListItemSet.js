@@ -32,7 +32,7 @@ SBK.SongListItemSet = SBK.Class.extend({
             };
         }
         set_ol = jQuery('<ol class="songlist"></ol>').appendTo(self.container);
-        console.log(self.data.songs);
+
         for (song_index = 0; song_index < self.data.songs.length; song_index = song_index + 1) {
             self.song_objects[song_index] = new SBK.SongListItemSong(
                 set_ol, 
