@@ -32,6 +32,9 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
                     callback(self.song);
                 }
                 self.pleasewait.hide();
+            },
+            function (response) {
+                self.render_error_response(response);
             }
         );
     },
@@ -43,11 +46,15 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         self.base_key = song_data.base_key;
 
         self.buttons = {
-            edit: jQuery('<a class="button edit"><span>Edit</span></a>').appendTo(self.container),
-            close: jQuery('<a class="button close"><span>Close</span></a>').appendTo(self.container)
+            edit: jQuery('<a class="button edit"><span>Edit</span></a>').appendTo(self.container).click(function () {
+                self.app.edit_song(self.id);
+            }),
+            close: jQuery('<a class="button close"><span>Close</span></a>').appendTo(self.container).click(function () {
+                self.close();
+            })
         };
         self.header_container = jQuery('<div class="page_header"></div>').appendTo(self.container);
-        jQuery('<h2 id="song_' + song_data. id + '" class="title">' + song_data.title + '</h2>').appendTo(self.header_container);
+        jQuery('<h2 id="song_' + song_data.id + '" class="title">' + song_data.title + '</h2>').appendTo(self.header_container);
         jQuery('<span class="songnumber"><span class="label">Song no. </span><span class="data">' + song_data.id + '</span></span>').appendTo(self.header_container);
         jQuery('<span class="pagenumber"><span class="label">page</span><span id="page_number" class="data">' + '</span><span class="label">of</span><span id="number_of_pages" class="data">' + '</span></span>').appendTo(self.header_container);
         jQuery('<div class="written_by"><span class="data">' + song_data.written_by + '</span></div>').appendTo(self.header_container);
@@ -58,8 +65,19 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         jQuery('<span class="data"></span>').appendTo(target_key_container);
         self.song_content_container = jQuery('<div class="content"></div>').appendTo(self.container);
         self.song_content_container.html(self.song_content_to_html(song_data.content));
+    },
+    
+    render_error_response: function (response) {
+        var self = this, target_key_container, song_data, key_container;
 
-        self.bind_buttons();
+        self.buttons = {
+            close: jQuery('<a class="button close"><span>Close</span></a>').appendTo(self.container).click(function () {
+                self.close();
+            })
+        };
+        self.header_container = jQuery('<div class="page_header"></div>').appendTo(self.container);
+        jQuery('<h2 class="title">Error: ' + response.data + '</h2>').appendTo(self.header_container);
+
     },
     
     song_content_to_html: function (content_response) {
@@ -98,18 +116,6 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         }
 
         return '</span><span class="chord' + fullsize_class + '">' + chord + '</span><span class="text">';
-    },
-
-    bind_buttons: function () {
-        var self = this;
-
-        self.buttons.edit.click(function () {
-            self.app.edit_song(self.id);
-        });
-
-        self.buttons.close.click(function () {
-            self.close();
-        });
     },
 
     close: function () {

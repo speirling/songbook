@@ -50,10 +50,13 @@ SBK.SongList = SBK.Class.extend({
 		self.http_request.api_call(
 		    self.api_destination,
 		    self.fetch_parameters,
-		    function (data) {
-		    	callback(data);
-		    	self.pleasewait.hide();
-    		}
+            function (data) {
+                callback(data);
+                self.pleasewait.hide();
+            },
+            function (data) {
+                console.log(data);
+            }
 		);
 	},
 	

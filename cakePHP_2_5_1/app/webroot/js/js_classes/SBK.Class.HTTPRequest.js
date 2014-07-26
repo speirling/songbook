@@ -29,7 +29,11 @@ console.log(url, data, success, failure);
                     	if(server_data.success === true) {
                     		success(server_data);
                     	} else {
-                    		throw('Got a response from server, but the data indicated an error');
+                    	    if (typeof(failure) === 'function') {
+                    	        failure(server_data);
+                    	    } else {
+                    		    throw('Got a response from server, but the data indicated an error');
+                    	    }
                     	}
                     }
                 },

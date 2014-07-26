@@ -12,7 +12,7 @@ SBK.SongListItemSet = SBK.Class.extend({
 	},
 
     render: function () {
-        var self = this, introduction_container, song_index, set_ol;
+        var self = this, song_index, set_ol;
 
         self.container = jQuery('<li class="set"></li>').appendTo(self.parent_container);
         self.inputs = {
@@ -24,11 +24,11 @@ SBK.SongListItemSet = SBK.Class.extend({
             remove: jQuery('<span class="button remove">remove this set</span>').appendTo(self.container),
             add_song: jQuery('<span class="button add">add songs to this set</span>').appendTo(self.container)
         };
-        introduction_container = jQuery('<span class="introduction set" style="display: none"></span>').appendTo(self.container);
+        self.introduction_container = jQuery('<span class="introduction set" style="display: none"></span>').appendTo(self.container);
         if (typeof(self.data.introduction) !== 'undefined') {
             self.inputs.introduction = {
-                text: jQuery('<textarea class="introduction_text" placeholder="Introduction text">' + self.playlist.value_or_blank(self.data.introduction.text) + '</textarea>').appendTo(introduction_container),
-                duration: jQuery('<input type="text" class="introduction_duration" placeholder="Introduction duration" value="' + self.playlist.value_or_blank(self.data.introduction.duration) + '" />').appendTo(introduction_container)
+                text: jQuery('<textarea class="introduction_text" placeholder="Introduction text">' + self.playlist.value_or_blank(self.data.introduction.text) + '</textarea>').appendTo(self.introduction_container),
+                duration: jQuery('<input type="text" class="introduction_duration" placeholder="Introduction duration" value="' + self.playlist.value_or_blank(self.data.introduction.duration) + '" />').appendTo(self.introduction_container)
             };
         }
         set_ol = jQuery('<ol class="songlist"></ol>').appendTo(self.container);
@@ -135,5 +135,25 @@ SBK.SongListItemSet = SBK.Class.extend({
         self.buttons.remove.click(function () {
             self.playlist.remove_set({set_index: self.index});
         });
+    },
+
+    hide_introductions: function() {
+        var self = this, song_index;
+
+        self.introduction_container.hide();
+
+        for (song_index = 0; song_index < self.song_objects.length; song_index = song_index + 1) {
+            self.song_objects[song_index].hide_introductions();
+        }
+    },
+
+    show_introductions: function() {
+        var self = this, song_index;
+     
+        self.introduction_container.show();
+
+        for (song_index = 0; song_index < self.song_objects.length; song_index = song_index + 1) {
+            self.song_objects[song_index].show_introductions();
+        }
     }
 });
