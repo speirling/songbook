@@ -78,17 +78,17 @@ SBK.PlayList = SBK.SongList.extend({
 	},
 
     to_html: function (data_json) {
-        var self = this, set_index, playlist_container, playlist_introduction_container, ul;
+        var self = this, set_index, playlist_container, ul;
 
         playlist_container = jQuery('<div class="playlist"></div>');
         self.inputs = {
             title: jQuery('<input type="text" class="playlist-title" placeholder="playlist title" value="' + self.value_or_blank(data_json.title) + '" />').appendTo(playlist_container),
             act: jQuery('<input type="text" class="act" placeholder="act" value="' + self.value_or_blank(data_json.act) + '" />').appendTo(playlist_container)
         };
-        playlist_introduction_container = jQuery('<span class="introduction songlist" style="display: none"></span>').appendTo(playlist_container);
+        self.introduction_container = jQuery('<span class="introduction songlist" style="display: none"></span>').appendTo(playlist_container);
         self.inputs.introduction = {
-            text: jQuery('<textarea class="introduction_text" placeholder="Introduction text">' + self.value_or_blank(data_json.introduction.text) + '</textarea>').appendTo(playlist_introduction_container),
-            duration: jQuery('<input type="text" class="introduction_duration" placeholder="Introduction duration" value="' + self.value_or_blank(data_json.introduction.duration) + '" />').appendTo(playlist_introduction_container)
+            text: jQuery('<textarea class="introduction_text" placeholder="Introduction text">' + self.value_or_blank(data_json.introduction.text) + '</textarea>').appendTo(self.introduction_container),
+            duration: jQuery('<input type="text" class="introduction_duration" placeholder="Introduction duration" value="' + self.value_or_blank(data_json.introduction.duration) + '" />').appendTo(self.introduction_container)
         };
         
         ul = jQuery('<ul></ul>').appendTo(playlist_container);
@@ -118,12 +118,15 @@ SBK.PlayList = SBK.SongList.extend({
 		console.log(self.data_json);
 		self.container.append(self.to_html(self.data_json));
 
-		// set up buttons on 
-		self.save_button = jQuery('<a class="button save">Save</a>').appendTo(button_bar).click(function() {
-			self.pleasewait.show();
-			self.save_playlist();
-		});
-		self.toggle_intro_button = jQuery('<a class="button toggle_intro">Toggle all Introductions</a>').appendTo(button_bar).click(function() {
+		// set up buttons
+        self.close_playlist = jQuery('<a class="button close">&laquo; List all Playists</a>').appendTo(button_bar).click(function() {
+            self.app.display_playlist_list();
+        });
+        self.save_button = jQuery('<a class="button save">Save</a>').appendTo(button_bar).click(function() {
+            self.pleasewait.show();
+            self.save_playlist();
+        });
+		self.toggle_intro_button = jQuery('<a class="button toggl-intro">Toggle all Introductions</a>').appendTo(button_bar).click(function() {
 			self.toggle_introductions();
 		});
 		self.add_set_button = jQuery('<a class="button add_new_set">Add a new set</a>').appendTo(button_bar).click(function() {
@@ -147,29 +150,40 @@ SBK.PlayList = SBK.SongList.extend({
     on_sortable_change: function (event, ui) {
         var self = this, song_li_item;
 
-        //clearTimeout(self.update_timer);
-        //self.update_timer = setTimeout(
-            //function () {
-                console.log(self.data_json.sets[0].songs);
-                self.data_json = self.from_html();
-                console.log(self.data_json.sets[0].songs);
-            //},
-            //1000
-        //);
-        
+        self.data_json = self.get_data();
     },
 
 	toggle_introductions: function() {
 		var self = this;
 
-		if(jQuery('#toggle-introductions', self.container).hasClass('open')) {
-			jQuery('.introduction', self.container).hide();
-			jQuery('#toggle-introductions', self.container).removeClass('open');
+		if(self.toggle_intro_button.hasClass('open')) {
+		    self.hide_introductions();
+		    self.toggle_intro_button.removeClass('open');
 		} else {
-			jQuery('.introduction', self.container).show();
-			jQuery('#toggle-introductions', self.container).addClass('open');
+			self.show_introductions();
+			self.toggle_intro_button.addClass('open');
 		}
 	},
+
+    hide_introductions: function() {
+        var self = this, set_index;
+     
+        self.introduction_container.hide();
+
+        for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
+            self.set_objects[set_index].hide_introductions();
+        }
+    },
+
+    show_introductions: function() {
+        var self = this, set_index;
+     
+        self.introduction_container.show();
+
+        for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
+            self.set_objects[set_index].show_introductions();
+        }
+    },
 
 	add_set: function() {
 		var self = this;
@@ -217,12 +231,15 @@ SBK.PlayList = SBK.SongList.extend({
     display_song: function (song_list_item) {
         var self = this, navigation_panel, previous_button, previous_song, next_button, next_song, lyrics_pane, song_lyrics;
 
-        self.dialog_frame = jQuery('<div class="song-frame"></div>').appendTo(self.container);
+        if (typeof(self.dialog_frame) === 'undefined') {
+            self.dialog_frame = jQuery('<div class="song-frame"></div>').appendTo(self.container);
+        }
+        self.dialog_frame.html('').show();
         navigation_panel = jQuery('<span class="navigation-panel"></span>').appendTo(self.dialog_frame);
         previous_button = jQuery('<span class="button previous">&laquo; Previous</span>').appendTo(navigation_panel);
         next_button = jQuery('<span class="button next">next &raquo;</span>').appendTo(navigation_panel);
         close_button = jQuery('<span class="button close">close</span>').appendTo(navigation_panel).click(function () {
-            self.dialog_frame.remove();
+            self.dialog_frame.hide();
         });
         
         next_song = self.get_next_song(song_list_item.index, song_list_item.set_index);
@@ -251,7 +268,7 @@ SBK.PlayList = SBK.SongList.extend({
             song_list_item.key, 
             song_list_item.capo,
             function () {
-                self.dialog_frame.remove();
+                self.dialog_frame.hide();
             }
         );
         song_lyrics.render();

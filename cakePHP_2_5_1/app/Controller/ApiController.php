@@ -177,7 +177,12 @@ class ApiController extends AppController {
         $song = $this->Song->find('first', array(
             'conditions' => array('Song.id' => $song_id)
         ));
-        return utf8_encode($song['Song']['title']);
+
+        if(array_key_exists('Song', $song)) {
+            return $song['Song']['title'];
+        } else {
+            return null;
+        }
     }
 
     protected function update_playlist_file($filename, $data_array) {
