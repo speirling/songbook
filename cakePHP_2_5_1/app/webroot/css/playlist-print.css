@@ -1,0 +1,16 @@
+.playlist.print li.song {
+	background-color: transparent;
+}
+
+.playlist ul {
+    padding: 0;
+}
+.playlist ul .title.set {
+    margin: 10px;
+    font-weight:  bold;
+    font-size: 14px;
+}
+
+.playlist li.set {
+    list-style-type: none;
+}

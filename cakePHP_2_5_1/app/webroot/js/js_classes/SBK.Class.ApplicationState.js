@@ -22,7 +22,8 @@ SBK.ApplicationState = SBK.Class.extend({
         self.tab_id[1] = 'edit_playlist';
         self.tab_id[2] = 'song_lyrics';
         self.tab_id[3] = 'edit_song';
-        self.tab_id[4] = 'playlist_book';
+        self.tab_id[4] = 'playlist_book';;
+        self.tab_id[5] = 'playlist_print';
     },
     
     start_handling_hashchange: function () {

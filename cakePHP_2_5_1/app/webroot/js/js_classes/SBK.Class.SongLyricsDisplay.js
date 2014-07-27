@@ -84,7 +84,6 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         var self = this, html;
 
         html = content_response.replace(/&([^#n])/g, '&#38;$1');
-        //html = str_replace(' ', '&#160;', html);
         html = html.replace(/\n/g,'</span></div><div class="line"><span class="text">');
         html = html.replace(/<div class="line"><span class="text">[\s]*?<\/span><\/div>/g, '<div class="line"><span class="text">&nbsp;</span></div>');
         // chords that are close together - [Am][D] etc ... even [Am]  [D].... should be separated by characters equal in width to the chord

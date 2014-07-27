@@ -122,16 +122,21 @@ SBK.PlayList = SBK.SongList.extend({
         self.close_playlist = jQuery('<a class="button close">&laquo; List all Playists</a>').appendTo(button_bar).click(function() {
             self.app.display_playlist_list();
         });
-        self.save_button = jQuery('<a class="button save">Save</a>').appendTo(button_bar).click(function() {
-            self.pleasewait.show();
-            self.save_playlist();
-        });
-		self.toggle_intro_button = jQuery('<a class="button toggl-intro">Toggle all Introductions</a>').appendTo(button_bar).click(function() {
-			self.toggle_introductions();
-		});
-		self.add_set_button = jQuery('<a class="button add_new_set">Add a new set</a>').appendTo(button_bar).click(function() {
-			self.add_set();
-		});
+        self.buttons = {
+            save: jQuery('<a class="button save">Save</a>').appendTo(button_bar).click(function() {
+                self.pleasewait.show();
+                self.save_playlist();
+            }),
+            print: jQuery('<a class="button print">Print</a>').appendTo(button_bar).click(function() {
+                self.app.playlist_print(self.playlist_name);
+            }),
+    		intro: jQuery('<a class="button toggl-intro">Toggle all Introductions</a>').appendTo(button_bar).click(function() {
+    			self.toggle_introductions();
+    		}),
+    		add_set: jQuery('<a class="button add_new_set">Add a new set</a>').appendTo(button_bar).click(function() {
+    			self.add_set();
+    		})
+        }
 		self.hide_introductions();
 		
 		jQuery('.playlist ul', self.container).sortable({ 
@@ -282,9 +287,6 @@ SBK.PlayList = SBK.SongList.extend({
         cancel_button = jQuery('<span class="button cancel">cancel</span>').appendTo(navigation_panel).click(function () {
             self.dialog_frame.remove();
         });
-        /*save_button = jQuery('<span class="button save">save</span>').appendTo(navigation_panel).click(function () {
-            
-        });*/
         
         picker_panel = jQuery('<span class="picker-panel"></span>').appendTo(self.dialog_frame);
         song_picker = new SBK.SongPicker(

@@ -31,6 +31,10 @@ SBK.SongbookApplication = SBK.Class.extend({
             self._display_playlist_list();
         } else if (self.tab === 'edit_playlist') {
             self._display_playlist();
+        } else if (self.tab === 'playlist_print') {
+            self._playlist_print();
+        } else if (self.tab === 'playlist_book') {
+            self._playlist_print();
         } else if (self.tab === 'song_lyrics') {
             self._display_lyrics();
         } else if (self.tab === 'edit_song') {
@@ -54,6 +58,32 @@ SBK.SongbookApplication = SBK.Class.extend({
 
         self.application_state.set({
             tab: 'edit_playlist',
+            filename: filename,
+            id: null,
+            key: null,
+            capo: null
+        }, false);
+        
+    },
+
+    playlist_print: function (filename) {
+        var self = this;
+
+        self.application_state.set({
+            tab: 'playlist_print',
+            filename: filename,
+            id: null,
+            key: null,
+            capo: null
+        }, false);
+        
+    },
+
+    playlist_book: function (filename) {
+        var self = this;
+
+        self.application_state.set({
+            tab: 'playlist_book',
             filename: filename,
             id: null,
             key: null,
@@ -117,6 +147,20 @@ SBK.SongbookApplication = SBK.Class.extend({
         var self = this;
 
         self.playlist = new SBK.PlayList(self.application_state.playlist_filename, self.content_container, null, self);
+        self.playlist.render();
+    },
+
+    _playlist_print: function (filename) {
+        var self = this;
+
+        self.playlist = new SBK.PlayListPrint(self.application_state.playlist_filename, self.content_container, null, self);
+        self.playlist.render();
+    },
+
+    _playlist_book: function (filename) {
+        var self = this;
+
+        self.playlist = new SBK.PlayListBook(self.application_state.playlist_filename, self.content_container, null, self);
         self.playlist.render();
     },
 
