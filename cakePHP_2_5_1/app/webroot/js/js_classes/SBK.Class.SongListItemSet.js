@@ -140,7 +140,9 @@ SBK.SongListItemSet = SBK.Class.extend({
     hide_introductions: function() {
         var self = this, song_index;
 
-        self.introduction_container.hide();
+        if(typeof(self.introduction_container) !== 'undefined') {
+            self.introduction_container.hide();
+        }
 
         for (song_index = 0; song_index < self.song_objects.length; song_index = song_index + 1) {
             self.song_objects[song_index].hide_introductions();

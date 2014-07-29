@@ -115,7 +115,6 @@ SBK.PlayList = SBK.SongList.extend({
 	
 		self.container.html('');
 		button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);
-		console.log(self.data_json);
 		self.container.append(self.to_html(self.data_json));
 
 		// set up buttons
@@ -129,6 +128,9 @@ SBK.PlayList = SBK.SongList.extend({
             }),
             print: jQuery('<a class="button print">Print</a>').appendTo(button_bar).click(function() {
                 self.app.playlist_print(self.playlist_name);
+            }),
+            book: jQuery('<a class="button book">Book</a>').appendTo(button_bar).click(function() {
+                self.app.playlist_book(self.playlist_name);
             }),
     		intro: jQuery('<a class="button toggl-intro">Toggle all Introductions</a>').appendTo(button_bar).click(function() {
     			self.toggle_introductions();
