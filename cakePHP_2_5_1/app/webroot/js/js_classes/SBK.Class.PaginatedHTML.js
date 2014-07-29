@@ -1,23 +1,33 @@
 SBK.PaginatedHTML = SBK.Class.extend({
-    init: function (subject, page_header_selector, page_class_name) {
+    init: function (subject, page_header_selector, page_class_name, content_selector) {
         var self = this;
 
         self.container = subject.parent();
         self.page_class_name = page_class_name;
-        self.to_be_processed = jQuery('<div id="to_be_processed"></div>').appendTo(self.container);
-        self.to_be_processed.html(subject.html());
-        subject.remove();
         //A4 empirically measured - Firefox print preview set to 100% (not size to fit) printed to pdfWriter set to A4
         self.page_height = 925;
         self.page_width = 600;
         self.no_of_columns = 2;
         self.in_process = jQuery('<div id="in_process"></div>').appendTo(self.container);
         self.in_process.width(self.page_width);
-
-        header = jQuery(page_header_selector, self.to_be_processed);
-        header.remove();
-        content = jQuery(self.to_be_processed.html());
-        self.to_be_processed.remove();
+        
+         if (typeof(content_selector) === 'undefined') {
+            self.to_be_processed = jQuery('<div id="to_be_processed"></div>').appendTo(self.container);
+            self.to_be_processed.html(subject.html());
+            subject.remove();
+    
+            header = jQuery(page_header_selector, self.to_be_processed);
+            header.remove();
+            content = jQuery(self.to_be_processed.html());
+            self.to_be_processed.remove();
+        } else {
+            self.to_be_processed = jQuery(content_selector, subject);
+            header = jQuery(page_header_selector, subject);
+            content = jQuery(self.to_be_processed.html());
+            subject.remove();
+        }
+        
+        
         self.break_lines(header, content);
     },
 

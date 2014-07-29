@@ -75,8 +75,10 @@ SBK.SongListItemSong = SBK.Class.extend({
 
     hide_introductions: function() {
         var self = this;
-     
-        self.introduction_container.hide();
+
+        if(typeof(self.introduction_container) !== 'undefined') {
+            self.introduction_container.hide();
+        }
     },
 
     show_introductions: function() {

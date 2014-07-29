@@ -18,7 +18,7 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
 		}
 	},
     
-    render: function (callback) {
+    render: function (callback, buttons_displayed, paginated) {
         var self = this;
 
         self.container.html('');
@@ -27,7 +27,7 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
             'get_song',
             {id: self.id},
             function (response) {
-                self.song = self.render_response(response);
+                self.song = self.render_response(response, buttons_displayed, paginated);
                 if(typeof(callback) === 'function') {
                     callback(self.song);
                 }
@@ -39,21 +39,33 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         );
     },
     
-    render_response: function (response) {
+    render_response: function (response, buttons_displayed, paginated) {
         var self = this, target_key_container, song_data, key_container;
 
+        if (typeof(buttons_displayed) === 'undefined') {
+            buttons_displayed = true;
+        }
+        if (typeof(paginated) === 'undefined') {
+            paginated = false;
+        }
         song_data = response.data.Song;
         self.base_key = song_data.base_key;
-
-        self.buttons = {
-            edit: jQuery('<a class="button edit"><span>Edit</span></a>').appendTo(self.container).click(function () {
+        if (buttons_displayed) {
+            button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);
+            self.buttons = {
+                edit: jQuery('<a class="button edit"><span>Edit</span></a>').appendTo(button_bar),
+                close: jQuery('<a class="button close"><span>Close</span></a>').appendTo(button_bar)
+            };
+            
+            self.buttons.edit.click(function () {
                 self.app.edit_song(self.id);
-            }),
-            close: jQuery('<a class="button close"><span>Close</span></a>').appendTo(self.container).click(function () {
+            });
+            self.buttons.close.click(function () {
                 self.close();
-            })
-        };
-        self.header_container = jQuery('<div class="page_header"></div>').appendTo(self.container);
+            });
+        }
+
+        self.header_container = jQuery('<div class="page-header"></div>').appendTo(self.container);
         jQuery('<h2 id="song_' + song_data.id + '" class="title">' + song_data.title + '</h2>').appendTo(self.header_container);
         jQuery('<span class="songnumber"><span class="label">Song no. </span><span class="data">' + song_data.id + '</span></span>').appendTo(self.header_container);
         jQuery('<span class="pagenumber"><span class="label">page</span><span id="page_number" class="data">' + '</span><span class="label">of</span><span id="number_of_pages" class="data">' + '</span></span>').appendTo(self.header_container);
@@ -65,6 +77,11 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         jQuery('<span class="data"></span>').appendTo(target_key_container);
         self.song_content_container = jQuery('<div class="content"></div>').appendTo(self.container);
         self.song_content_container.html(self.song_content_to_html(song_data.content));
+
+
+        if (paginated) {
+            new SBK.PaginatedHTML(self.container, '.page-header', 'song-page', '.content');
+        }
     },
     
     render_error_response: function (response) {
@@ -75,7 +92,7 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
                 self.close();
             })
         };
-        self.header_container = jQuery('<div class="page_header"></div>').appendTo(self.container);
+        self.header_container = jQuery('<div class="page-header"></div>').appendTo(self.container);
         jQuery('<h2 class="title">Error: ' + response.data + '</h2>').appendTo(self.header_container);
 
     },
@@ -93,7 +110,8 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         html = html.replace(/\[(.*?)\]/g, self.chord_replace_callback);
         html = html.replace(/#<span class="chord">([^<]*?)\/([^<]*?)<\/span>#/g,'<span class="chord">$1<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">$2</span></span>');
         html = html.replace(/&nbsp;/g, '&#160;'); //&nbsp; doesn't work in XML unless it's specifically declared.
-
+        html = '<div class="line">' + html;
+        
         return html;
     },
     

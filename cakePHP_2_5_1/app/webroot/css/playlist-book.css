@@ -6,90 +6,93 @@
 }
 
 
-.playlist-title {
+.print .playlist-title {
 	font-size: 20px;
 	font-weight: bold;
 	display: block;
 }
-.act {
+.print .act {
 	display: block;
 }
 
-.introduction {
+.print .introduction {
 	display: none;
 }
-.playlist ul {
+.print .playlist ul {
 	padding: 0;
 }
-.playlist ul li.set {
+.print .playlist ul li.set {
 	list-style: none;
 	margin: 1em;
 }
-.playlist .set-title {
+.print .playlist .set-title {
 	font-weight: bold;
 	color: #660000;
 	border-bottom: 1px solid silver;
 }
 
 
-.playlist-page {
+.print .playlist-page,
+.print .lyrics-panel {
     page-break-after: always;
+    border: 1px solid gray;
+    padding: 10px;
 }
-.playlist-page .playlist {
+.print .playlist-page .playlist {
 	font-size:14px;
 }
-.playlist-page .playlist .detail {
+.print .playlist-page .playlist .detail {
 	display:none;	
 }
-.playlist-page .title{
+.print .playlist-page .title{
 	font-weight: normal;
 }
-.playlist-page .song {
-	margin: 10px;
+.print .playlist-page .song {
+
 }
-.playlist-page .song .title {
+.print .playlist-page .song .title {
 	font-weight: bold;
 	font-family: arial;
 	text-decoration: none;
 	color: black;
 }
-.song .capo,
-.song .id {
+.print .song .capo,
+.print .song .id {
 	font-size: 0.8em;
 }
-.song .key,
-.song .capo {
+.print .song .key,
+.print .song .capo {
 	background-color: transparent;
 	border: 0;
 	text-align: center;
 	margin-right: 3px;
 	display: inline-block;
 }
-.song .key {
+.print .song .key {
 	font-weight: bold;
 }
-.song .capo {
+.print .song .capo {
 	font-style: inherit;
 	font-weight: bold;
 	text-align: left;
 }
-.song .singer {
+.print .song .singer {
 	background-color: transparent;
 	border: 0;
 	color: gray;
 	margin-right: 3px;
 }
-.song .id {
+.print .song .id {
 	font-style: italic;
 }
 
-.paginated-page {
+.print .paginated-page {
 	page-break-after: always;
     border:1px solid silver;
     margin: 10px;
     padding:10px;
 }
 
-.paginated-page td {
+.print .paginated-page td {
 	vertical-align: top;
 }

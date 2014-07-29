@@ -13,7 +13,6 @@ SBK.SongbookApplication = SBK.Class.extend({
 		var self = this, all_playlists;
 		
 		self.container.html('');
-        self.content_container = jQuery('<div id="playlist-list"></div>').appendTo(self.container);
         // Set the initial application state
         self.application_state = new SBK.ApplicationState();
         self.application_state.register_callback(function () {
@@ -34,7 +33,7 @@ SBK.SongbookApplication = SBK.Class.extend({
         } else if (self.tab === 'playlist_print') {
             self._playlist_print();
         } else if (self.tab === 'playlist_book') {
-            self._playlist_print();
+            self._playlist_book();
         } else if (self.tab === 'song_lyrics') {
             self._display_lyrics();
         } else if (self.tab === 'edit_song') {
@@ -140,12 +139,14 @@ SBK.SongbookApplication = SBK.Class.extend({
     _display_playlist_list: function () {
         var self = this;
 
+        self.content_container = jQuery('<div id="playlists-list"></div>').appendTo(self.container);
         self.all_playlists = new SBK.AllPlaylists(self.content_container, self).render();
     },
 
     _display_playlist: function (filename) {
         var self = this;
 
+        self.content_container = jQuery('<div id="playlist-display"></div>').appendTo(self.container);
         self.playlist = new SBK.PlayList(self.application_state.playlist_filename, self.content_container, null, self);
         self.playlist.render();
     },
@@ -153,6 +154,7 @@ SBK.SongbookApplication = SBK.Class.extend({
     _playlist_print: function (filename) {
         var self = this;
 
+        self.content_container = jQuery('<div id="playlist-print"></div>').appendTo(self.container);
         self.playlist = new SBK.PlayListPrint(self.application_state.playlist_filename, self.content_container, null, self);
         self.playlist.render();
     },
@@ -160,6 +162,7 @@ SBK.SongbookApplication = SBK.Class.extend({
     _playlist_book: function (filename) {
         var self = this;
 
+        self.content_container = jQuery('<div id="playlist-book"></div>').appendTo(self.container);
         self.playlist = new SBK.PlayListBook(self.application_state.playlist_filename, self.content_container, null, self);
         self.playlist.render();
     },
@@ -167,6 +170,7 @@ SBK.SongbookApplication = SBK.Class.extend({
     _display_lyrics: function () {
         var self = this;
 
+        self.content_container = jQuery('<div id="lyrics-display"></div>').appendTo(self.container);
         self.song = new SBK.SongLyricsDisplay(
             self.content_container, 
             self.application_state.id,
@@ -180,6 +184,7 @@ SBK.SongbookApplication = SBK.Class.extend({
     _edit_song: function () {
         var self = this;
 
+        self.content_container = jQuery('<div id="lyrics-edit"></div>').appendTo(self.container);
         self.song = new SBK.SongLyricsEdit(
             self.content_container, 
             self.application_state.id,
