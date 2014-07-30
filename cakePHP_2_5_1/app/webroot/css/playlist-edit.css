@@ -1,6 +1,6 @@
 #playlists-list {
 	position: absolute;
-	top: 5px;
+	top: 15px;
 	bottom: 5px;
 	left: 5px;
 	right: 5px;
@@ -232,6 +232,7 @@ a#add-new-set:hover {
 	background-color: silver;
 	border: 2px solid gray;
 	padding: 15px;
+	overflow: auto;
 }
 
 

@@ -58,13 +58,16 @@ SBK.PaginatedHTML = SBK.Class.extend({
         }
         page[page_count] = self.add_page(self.in_process.html(), page_count);
 
-        for (index = 0; index < page.length; index = index + 1) {
-            jQuery('.page_header .pagenumber #page_number', page[index]).html(index + 1);
-            jQuery('.page_header .pagenumber #number_of_pages', page[index]).html(page.length);
-            if(index > 0) {
-                heading_text = jQuery('.page_header h2', page[index]).html();
-                jQuery('.page_header h2', page[index]).replaceWith('<span class="song-title">' + heading_text + '</span>');
+        if (page.length > 1) {
+            for (index = 0; index < page.length; index = index + 1) {
+                jQuery('.page_header .pagenumber #page_number', page[index]).html(index + 1);
+                jQuery('.page_header .pagenumber #number_of_pages', page[index]).html(page.length);
+                if(index > 0) {
+                    heading_text = jQuery('.page_header h2', page[index]).html();
+                    jQuery('.page_header h2', page[index]).replaceWith('<span class="song-title">' + heading_text + '</span>');
+                }
             }
+            jQuery('.page_header .pagenumber').show();
         }
         self.in_process.remove();
     },
