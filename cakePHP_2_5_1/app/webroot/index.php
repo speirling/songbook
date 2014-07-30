@@ -125,6 +125,7 @@ Configure::write(
                     'js_classes/SBK.Class.SongList.PlayList.Table.js',
                     'js_classes/SBK.Class.SongList.PlayList.Text.js',
                     'js_classes/SBK.Class.SongList.SongFilterList.js',
+                    'js_classes/SBK.Class.SongList.SongFilterList.Lyrics.js',
                     'js_classes/SBK.Class.SongPicker.js',
                     'js_classes/SBK.Class.AllPlaylists.js',
                     'js_classes/SBK.Class.AllPlaylists.PlaylistPicker.js',
@@ -135,6 +136,7 @@ Configure::write(
                     'js_classes/SBK.Class.SongListItemSet.Print.js',
                     'js_classes/SBK.Class.SongListItemSong.js',
                     'js_classes/SBK.Class.SongListItemSong.Selector.js',
+                    'js_classes/SBK.Class.SongListItemSong.Lyrics.js',
                     'js_classes/SBK.Class.SongListItemSong.Print.js',
                     'js_classes/SBK.Class.SongLyricsDisplay.js',
                     'js_classes/SBK.Class.SongLyricsEdit.js'

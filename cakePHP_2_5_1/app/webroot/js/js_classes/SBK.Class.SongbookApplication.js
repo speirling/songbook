@@ -36,7 +36,7 @@ SBK.SongbookApplication = SBK.Class.extend({
         } else if (self.tab === 'playlist_book') {
             self._playlist_book();
         } else if (self.tab === 'song_lyrics') {
-            self._display_lyrics();
+            self._display_song(self.application_state.id, self.application_state.key, self.application_state.capo);
         } else if (self.tab === 'edit_song') {
             self._edit_song();
         } else if (self.tab === 'list_all_songs') {
@@ -105,15 +105,25 @@ SBK.SongbookApplication = SBK.Class.extend({
         
     },
     
-    display_song: function (song) {
-        var self = this, next_song, previous_song;
+    _display_song: function (id, key, capo) {
+        var self = this, navigation_panel, previous_button, previous_song, next_button, next_song, lyrics_pane, song_lyrics;
 
-        next_song = song.set.get_next_song(song.index);
-        previous_song = song.set.get_previous_song(song.index);
-        self.display_lyrics(song.data.id, song.data.key, song.data.capo, song.set, song.index, song.set.index, song.index);
+        self.content_container = jQuery('<div id="lyrics-panel"></div>').appendTo(self.container);
+        
+        song_lyrics = new SBK.SongLyricsDisplay(
+            self.content_container,
+            id,
+            self,
+            key, 
+            capo,
+            function () {
+                self.list_all_songs();
+            }
+        );
+        song_lyrics.render();
     },
 
-    display_lyrics: function (song_id, key, capo, new_window) {
+    display_song: function (song_list_item) {
         var self = this;
 
         if (typeof(new_window) !== 'undefined' && new_window === true) {
@@ -125,9 +135,9 @@ SBK.SongbookApplication = SBK.Class.extend({
         self.application_state.set({
             tab: 'song_lyrics',
             playlist_filename: null,
-            id: song_id,
-            key: key,
-            capo: capo
+            id: song_list_item.id,
+            key: song_list_item.key,
+            capo: song_list_item.capo
         }, new_window);
     },
 
@@ -152,26 +162,27 @@ SBK.SongbookApplication = SBK.Class.extend({
     _list_all_songs: function () {
         var self = this;
 
-        button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);
+        
+        self.content_container = jQuery('<div id="all-songs-list"></div>').appendTo(self.container);
+        button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.content_container);
         self.buttons = {
             all_playlists: jQuery('<a class="button all-songs">List all Playists</a>').appendTo(button_bar).click(function() {
                 self.display_playlist_list();
             })
         };
-        self.content_container = jQuery('<div id="all-songs-list"></div>').appendTo(self.container);
-        self.all_songs = new SBK.SongFilterList(self.content_container, self).render();
+        self.all_songs = new SBK.SongFilterList.Lyrics(self.content_container, null, self).render();
     },
 
     _display_playlist_list: function () {
         var self = this;
 
-        button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);
+        self.content_container = jQuery('<div id="playlists-list"></div>').appendTo(self.container);
+        button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.content_container);
         self.buttons = {
             all_songs: jQuery('<a class="button all-songs">List all songs</a>').appendTo(button_bar).click(function() {
                 self.list_all_songs();
             })
         };
-        self.content_container = jQuery('<div id="playlists-list"></div>').appendTo(self.container);
         self.all_playlists = new SBK.AllPlaylists(self.content_container, self).render();
     },
 
@@ -223,5 +234,18 @@ SBK.SongbookApplication = SBK.Class.extend({
             self
         );
         self.song.render();
+    },
+
+    
+    value_or_blank: function (value) {
+        var self = this, result;
+        
+        if (typeof(value) === 'string') {
+            result = value;
+        } else {
+            result = '';
+        }
+        
+        return result;
     }
 });
