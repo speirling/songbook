@@ -138,7 +138,7 @@ SBK.PlayList = SBK.SongList.extend({
     		add_set: jQuery('<a class="button add_new_set">Add a new set</a>').appendTo(button_bar).click(function() {
     			self.add_set();
     		})
-        }
+        };
 		self.hide_introductions();
 		
 		jQuery('.playlist ul', self.container).sortable({ 

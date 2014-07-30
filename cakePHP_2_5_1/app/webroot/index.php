@@ -134,6 +134,7 @@ Configure::write(
                     'js_classes/SBK.Class.SongListItemSet.Selector.js',
                     'js_classes/SBK.Class.SongListItemSet.Print.js',
                     'js_classes/SBK.Class.SongListItemSong.js',
+                    'js_classes/SBK.Class.SongListItemSong.Selector.js',
                     'js_classes/SBK.Class.SongListItemSong.Print.js',
                     'js_classes/SBK.Class.SongLyricsDisplay.js',
                     'js_classes/SBK.Class.SongLyricsEdit.js'
