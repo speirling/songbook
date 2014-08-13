@@ -17,7 +17,7 @@
 	overflow: auto;
 }
 #playlist-display .playlist {
-	height: 200px;
+
 }
 input {
     font-size: 1em;
@@ -101,7 +101,6 @@ li.set ul {
 
 .playlist li.song {
 	background-color: #f0f0c0;
-	white-space: nowrap;
 }
 
 .playlist li.set {
@@ -295,17 +294,19 @@ a#add-new-set:hover {
 	display: inline-block;
 }
 
-.button-bar {
-	line-height: 2em;
-	white-space: normal;
-	clear: both;
-}
 .navigation-bar {
 	/*position: fixed;
 	top: 0;*/
 }
-.button-bar .button {
-    
+.navigation-bar .button {
+	background-color: #9393b3;
+	color: white;
+}
+.navigation-panel {
+	position: fixed;
+	top: 0;
+	z-index: 10;
+	background-color: white;
 }
 
 ol.songlist {
