@@ -1,13 +1,61 @@
 body,
 #container {
     font-family: trebuchet, verdana, sans-serif;
-    font-size: 12px;
+    /*font-size: 12px;*/
 	position: absolute;
 	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
 }
+
+/* Large desktops and laptops */
+@media (min-width: 1200px) {
+	body,
+	#container {
+	    font-size: 12px;
+	}
+}
+
+/* Portrait tablets and medium desktops */
+@media (min-width: 992px) and (max-width: 1199px) {
+    body,
+    #container {
+        font-size: 42px;
+        background-color: #ffeeee;
+    }
+}
+
+/* Portrait tablets and small desktops */
+@media (min-width: 768px) and (max-width: 991px) {
+    body,
+    #container {
+        font-size: 36px;
+        background-color: #eeffee;
+    }
+
+}
+
+/* Landscape phones and portrait tablets */
+@media (max-width: 767px) {
+    body,
+    #container {
+        font-size: 12px;
+        background-color: #eeeeff;
+    }
+
+}
+
+/* Landscape phones and smaller */
+@media (max-width: 480px) {
+    body,
+    #container {
+        font-size: 12px;
+        background-color: #eeeeee;
+    }
+
+}
+
 a {
 	cursor: pointer;
 }
@@ -54,13 +102,15 @@ input:-moz-placeholder {
 
 .button {
 	display: inline-block;
-	margin: 3px;
-	padding: 3px;
+    white-space: nowrap;
+	margin: 0.5em;
+	padding: 0.5em;
 	border: 1px solid gray;
 	cursor: pointer;
 	background-color: #f3f3f3;
     color: gray;
     font-size: 0.8em;
+    text-align: center;
 }
 
 .button.disabled {

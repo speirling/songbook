@@ -16,14 +16,15 @@ div.song-page td.detail {
 	text-align: right;
 }
 div.song-page .line {
-	margin-top: 6px;
-	font-size: 16px;
+	margin-top: 0.5em;
+	font-size: 1em;
 }
 div.song-page .multi-column .line {
-	font-size: 12px;
+	font-size: 0.8em;
 }
 .line .text {
 	display: inline;
+    vertical-align: bottom;
 } 
 .chord {
 	display: inline-block;
@@ -38,7 +39,7 @@ div.song-page .multi-column .line {
 
 .chord.full-width {
 	width: auto;
-	margin-right: 10px;
+	margin-right: 1em;
 }
 .page-header,
 .content {
@@ -48,8 +49,8 @@ div.song-page .multi-column .line {
 .page-header {
 	position: relative;
 	border-bottom: 1px solid silver;
-	font-size: 14px;
-	padding-top: 12px;
+	font-size: 1em;
+	padding-top: 0.8em;
 }
 .lyrics-panel .page-header,
 .page_0 .page-header {
@@ -58,8 +59,8 @@ div.song-page .multi-column .line {
 .lyrics-panel .title,
 .song-page .title, 
  .page-header span.song-title {
-    font-size: 16px;
-    padding-top: 12px;
+    font-size: 1.3em;
+    padding-top: 0.8em;
 	color:#004080;
     margin: 0;
 }
@@ -86,7 +87,7 @@ div.song-page .multi-column .line {
 
 .pagenumber {
 	display: block;
-	font-size: 9px;
+	font-size: 0.5em;
 	position: absolute;
 	right: 1em;
 	top: 5em;
@@ -94,7 +95,7 @@ div.song-page .multi-column .line {
 
 .lyrics-panel .title,
 .page_0 .title {
-    font-size: 2em;
+    font-size: 1.5em;
 	color:#004080;
 	overflow: hidden;
 	white-space: nowrap;
@@ -182,14 +183,14 @@ div.song-page .multi-column .line {
 }
 
 .line {
-	margin-top: 1em;
+	margin-bottom: 1em;
 }
 
 .chord {
 	display: inline-block;
 	position:relative;
-	bottom: 1.2em;
-	width:1px;
+	bottom: 0;
+	width: 1px;
 	color: #660000;
 	font-size: 0.8em;
 	font-family: verdana;
