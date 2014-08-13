@@ -122,3 +122,26 @@ input:-moz-placeholder {
 	color: gray;
 	text-decoration: none;
 }
+
+.button-bar {
+	display: inline;
+    line-height: 2em;
+    white-space: normal;
+    vertical-align: middle;
+}
+.button-bar.flyout {
+    display: inline-block;
+    background-image: url('../img/flyout-o.svg');
+    background-size: 3em;
+    background-repeat: no-repeat; 
+    background-position: 0.31em 0.5em ;
+}
+.button-bar.flyout.closed {
+    background-image: url('../img/flyout-c.svg');
+    height: 3.75em;
+    width: 3.75em;
+    overflow: hidden;
+}
+.button-bar.flyout :first-child {
+	margin-left: 5em;
+}
