@@ -143,13 +143,12 @@ Configure::write(
                 ),
                 'css_library' => array(
                     'common.css',
-                    //'index.css',
-                    //'pdf.css',
+                    'playlists-list.css',
+                    'songss-list.css',
                     'playlist-book.css',
                     'playlist-edit.css',
                     'playlist-print.css',
                     'song-edit.css',
-                    //'song-index.css',
                     'song-lyrics.css'
                 )
               )

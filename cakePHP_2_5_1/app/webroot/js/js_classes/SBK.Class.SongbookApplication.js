@@ -162,9 +162,9 @@ SBK.SongbookApplication = SBK.Class.extend({
     _list_all_songs: function () {
         var self = this;
 
-        
+        self.container.html('');
         self.content_container = jQuery('<div id="all-songs-list"></div>').appendTo(self.container);
-        button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.content_container);
+        button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);
         self.buttons = {
             all_playlists: jQuery('<a class="button all-songs">List all Playists</a>').appendTo(button_bar).click(function() {
                 self.display_playlist_list();
