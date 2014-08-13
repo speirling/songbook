@@ -101,7 +101,9 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         var self = this, html;
 
         html = content_response.replace(/&([^#n])/g, '&#38;$1');
+
         html = html.replace(/\n/g,'</span></div><div class="line"><span class="text">');
+        //empty lines - put in a non-breaking space so that they don't collapse?
         html = html.replace(/<div class="line"><span class="text">[\s]*?<\/span><\/div>/g, '<div class="line"><span class="text">&nbsp;</span></div>');
         // chords that are close together - [Am][D] etc ... even [Am]  [D].... should be separated by characters equal in width to the chord
         //I'll mark these kinds of chords with "!" so that I can set their class in  sbk_chord_replace_callback
@@ -110,7 +112,7 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         html = html.replace(/\[(.*?)\]/g, self.chord_replace_callback);
         html = html.replace(/#<span class="chord">([^<]*?)\/([^<]*?)<\/span>#/g,'<span class="chord">$1<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">$2</span></span>');
         html = html.replace(/&nbsp;/g, '&#160;'); //&nbsp; doesn't work in XML unless it's specifically declared.
-        html = '<div class="line">' + html;
+        html = '<div class="line"><span class="text">' + html;
         
         return html;
     },

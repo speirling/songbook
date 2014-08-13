@@ -1,3 +1,13 @@
+#playlist-display {
+	/*position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	overflow: auto;*/
+	
+	
+}
 #playlists-list {
 	position: absolute;
 	top: 15px;
@@ -6,6 +16,13 @@
 	right: 5px;
 	overflow: auto;
 }
+#playlist-display .playlist {
+	height: 200px;
+}
+input {
+    font-size: 1em;
+    display: inline-block;
+}
 input.playlist-title,
 input.set-title,
 input.act {
@@ -13,7 +30,25 @@ input.act {
 }
 input.playlist-title,
 input.act {
+   
+}
+span.playlist-title,
+span.playlist-act {
 	display: inline-block;
+	white-space: nowrap;
+	margin-top: 0.3em;
+}
+input.playlist-title {
+    margin-right: 1em;
+}
+input.act {
+    font-size: 1em;
+    padding: 0.5em;
+}
+input.playlist-title,
+input.set-title {
+    font-size: 1.3em;
+    padding: 0.5em;
 }
 #playlist-holder .detail {
 	display: none;
@@ -21,12 +56,10 @@ input.act {
 
 .playlist-title {
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 1.5em;
 	font-weight: bold;
 }
 .set-title {
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 1.8em;
 	font-weight: bold;
 	color: #daa;
 }
@@ -76,15 +109,39 @@ li.set ul {
 }
 
 
-.playlist .key ,
+.playlist .key,
 .playlist .capo {
 	background-color: transparent;
 	border: 0;
 	text-align: center;
 	margin-right: 3px;
-	display: inline-block;
 }
 
+.playlist .title-bar {
+    position: relative;
+    font-size: 1em;
+    height: 100%;
+    width: 100%;
+}
+
+.playlist .title-bar td {
+	vertical-align: middle;
+	height: 100%;
+}
+.playlist .lyrics-button-container {
+	width: 3em;
+}
+.playlist .title-bar .key {
+	margin-left: 1em;
+	font-size: 0.8em;
+	color: gray;
+	border-left: 1px solid gray;
+	width: 2em;
+	text-align: center;
+}
+.playlist .title-bar .button {
+    float: right;
+}
 
 .playlist .key::-webkit-input-placeholder,
 .playlist .capo::-webkit-input-placeholder{
@@ -120,7 +177,6 @@ li.set ul {
 }
 .capo {
 	width: 2em;
-	font-style: inherit;
 	font-weight: bold;
 	text-align: left;
 }
@@ -132,9 +188,6 @@ li.set ul {
 	margin-right: 3px;
 }
 .title {
-	display: inline-block;
-	margin-left: 1em;
-	margin-right: 1em;
 }
 .key:focus, 
 .singer:focus, 
@@ -240,4 +293,21 @@ a#add-new-set:hover {
 	font-size: 14px;
 	margin: 0;
 	display: inline-block;
+}
+
+.button-bar {
+	line-height: 2em;
+	white-space: normal;
+	clear: both;
+}
+.navigation-bar {
+	/*position: fixed;
+	top: 0;*/
+}
+.button-bar .button {
+    
+}
+
+ol.songlist {
+	padding-left: 2em;
 }

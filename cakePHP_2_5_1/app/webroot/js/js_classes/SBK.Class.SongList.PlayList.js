@@ -19,6 +19,7 @@ SBK.PlayList = SBK.SongList.extend({
 		    self.app = app;
 		}
 		self.update_timer = {};
+		self.edit_buttons_visible = false;
 	},
 
 	fetch: function (callback) {
@@ -78,20 +79,24 @@ SBK.PlayList = SBK.SongList.extend({
 	},
 
     to_html: function (data_json) {
-        var self = this, set_index, playlist_container, ul;
+        var self = this, set_index, ul, input_container_title, input_container_act, internal_navigation_bar;
 
-        playlist_container = jQuery('<div class="playlist"></div>');
+        self.playlist_container = jQuery('<div class="playlist"></div>');
+        input_container_title = jQuery('<span class="playlist-title"><label>Playlist: </label></span>').appendTo(self.playlist_container);
+        input_container_act = jQuery('<span class="playlist-act"><label>Act: </label></span>').appendTo(self.playlist_container);
         self.inputs = {
-            title: jQuery('<input type="text" class="playlist-title" placeholder="playlist title" value="' + self.value_or_blank(data_json.title) + '" />').appendTo(playlist_container),
-            act: jQuery('<input type="text" class="act" placeholder="act" value="' + self.value_or_blank(data_json.act) + '" />').appendTo(playlist_container)
+            title: jQuery('<input type="text" class="playlist-title" size="15" placeholder="playlist title" value="' + self.value_or_blank(data_json.title) + '" />').appendTo(input_container_title),
+            act: jQuery('<input type="text" class="act" size="8" placeholder="act" value="' + self.value_or_blank(data_json.act) + '" />').appendTo(input_container_act)
         };
-        self.introduction_container = jQuery('<span class="introduction songlist" style="display: none"></span>').appendTo(playlist_container);
+        self.introduction_container = jQuery('<span class="introduction songlist" style="display: none"></span>').appendTo(self.playlist_container);
         self.inputs.introduction = {
             text: jQuery('<textarea class="introduction_text" placeholder="Introduction text">' + self.value_or_blank(data_json.introduction.text) + '</textarea>').appendTo(self.introduction_container),
             duration: jQuery('<input type="text" class="introduction_duration" placeholder="Introduction duration" value="' + self.value_or_blank(data_json.introduction.duration) + '" />').appendTo(self.introduction_container)
         };
+
+        internal_navigation_bar = jQuery('<div class="navigation-bar button-bar"><label>Sets : </labels></div>').appendTo(self.container);
         
-        ul = jQuery('<ul></ul>').appendTo(playlist_container);
+        ul = jQuery('<ul></ul>').appendTo(self.playlist_container);
      
         for (set_index = 0; set_index < data_json.sets.length; set_index = set_index + 1) {
             /* WORKAROUND:: simplexml converts a single song into an object, not an array. make sure data_json.sets[set_index].songs is an array!!! */
@@ -99,9 +104,28 @@ SBK.PlayList = SBK.SongList.extend({
             
             self.set_objects[set_index] = new SBK.SongListItemSet(ul, self, set_index, data_json.sets[set_index]);
             self.set_objects[set_index].render();
+            jQuery('<a class="button">' + data_json.sets[set_index].label + '</a>').click(self.make_internal_navigation_click(self.set_objects[set_index])).appendTo(internal_navigation_bar);
         }
        
-        return playlist_container;
+        return self.playlist_container;
+    },
+    
+    make_internal_navigation_click: function (object) {
+        var self = this, object_container;
+        
+        object_container = object.container;
+
+        return function () {
+            jQuery(window).scrollTop(object_container.offset().top);
+        };
+        /*
+         * object_container = object.container;
+
+        return function() {
+            console.log(self.playlist_container, object_container.position().top, self.playlist_container.offset().top);
+            self.playlist_container.scrollTop(object_container.position().top - self.playlist_container.offset().top);
+        };
+         */
     },
 
 	get_set_names: function () {
@@ -114,32 +138,51 @@ SBK.PlayList = SBK.SongList.extend({
 		var self = this, button_bar;
 	
 		self.container.html('');
-		button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);
+		button_bar = jQuery('<div class="button-bar"></div>').appendTo(self.container);
 		self.container.append(self.to_html(self.data_json));
 
 		// set up buttons
-        self.close_playlist = jQuery('<a class="button close">&laquo; List all Playists</a>').appendTo(button_bar).click(function() {
+        self.close_playlist = jQuery('<a class="button close">&laquo; List Playists</a>').appendTo(button_bar).click(function() {
             self.app.display_playlist_list();
         });
         self.buttons = {
-            save: jQuery('<a class="button save">Save</a>').appendTo(button_bar).click(function() {
-                self.pleasewait.show();
-                self.save_playlist();
-            }),
-            print: jQuery('<a class="button print">Print</a>').appendTo(button_bar).click(function() {
-                self.app.playlist_print(self.playlist_name);
-            }),
-            book: jQuery('<a class="button book">Book</a>').appendTo(button_bar).click(function() {
-                self.app.playlist_book(self.playlist_name);
-            }),
-    		intro: jQuery('<a class="button toggl-intro">Toggle all Introductions</a>').appendTo(button_bar).click(function() {
-    			self.toggle_introductions();
-    		}),
-    		add_set: jQuery('<a class="button add_new_set">Add a new set</a>').appendTo(button_bar).click(function() {
-    			self.add_set();
-    		})
+            details: jQuery('<a class="button toggle-details">Details</a>').appendTo(button_bar),
+            edit_buttons: jQuery('<a class="button toggle-buttons">Buttons</a>').appendTo(button_bar),
+            add_set: jQuery('<a class="button add_new_set">Add set</a>').appendTo(button_bar),
+            book: jQuery('<a class="button book">Book</a>').appendTo(button_bar),
+            intro: jQuery('<a class="button toggle-intro">Intros</a>').appendTo(button_bar),
+            save: jQuery('<a class="button save">Save</a>').appendTo(button_bar),
+            print: jQuery('<a class="button print">Print</a>').appendTo(button_bar)
         };
-		self.hide_introductions();
+        self.buttons.save.click(function() {
+            self.pleasewait.show();
+            self.save_playlist();
+        });
+        self.buttons.print.click(function() {
+            self.app.playlist_print(self.playlist_name);
+        });
+        self.buttons.book.click(function() {
+            self.app.playlist_book(self.playlist_name);
+        });
+        self.buttons.intro.click(function() {
+            self.toggle_introductions();
+        });
+        self.buttons.details.click(function() {
+            self.toggle_details();
+        });
+        self.buttons.edit_buttons.click(function() {
+            self.toggle_edit_buttons();
+        });
+        self.buttons.add_set.click(function() {
+            self.add_set();
+        });
+        
+        //initially... hide intros, details and (if required) edit buttons
+        self.hide_introductions();
+        self.hide_details();
+        if (self.edit_buttons_visible === false) {
+            self.hide_edit_buttons();
+        }
 		
 		jQuery('.playlist ul', self.container).sortable({ 
             update: function (event, ui) {
@@ -160,17 +203,43 @@ SBK.PlayList = SBK.SongList.extend({
         self.data_json = self.get_data();
     },
 
-	toggle_introductions: function() {
-		var self = this;
+    toggle_introductions: function() {
+        var self = this;
 
-		if(self.toggle_intro_button.hasClass('open')) {
-		    self.hide_introductions();
-		    self.toggle_intro_button.removeClass('open');
-		} else {
-			self.show_introductions();
-			self.toggle_intro_button.addClass('open');
-		}
-	},
+        if(self.buttons.intro.hasClass('open')) {
+            self.hide_introductions();
+            self.buttons.intro.removeClass('open');
+        } else {
+            self.show_introductions();
+            self.buttons.intro.addClass('open');
+        }
+    },
+
+    toggle_details: function() {
+        var self = this;
+
+        if(self.buttons.details.hasClass('open')) {
+            self.hide_details();
+            self.buttons.details.removeClass('open');
+        } else {
+            self.show_details();
+            self.buttons.details.addClass('open');
+        }
+    },
+
+    toggle_edit_buttons: function() {
+        var self = this;
+
+        if(self.buttons.edit_buttons.hasClass('open')) {
+            self.hide_edit_buttons();
+            self.buttons.edit_buttons.removeClass('open');
+            self.edit_buttons_visible = false;
+        } else {
+            self.show_edit_buttons();
+            self.buttons.edit_buttons.addClass('open');
+            self.edit_buttons_visible = true;
+        }
+    },
 
     hide_introductions: function() {
         var self = this, set_index;
@@ -189,6 +258,38 @@ SBK.PlayList = SBK.SongList.extend({
 
         for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
             self.set_objects[set_index].show_introductions();
+        }
+    },
+
+    show_details: function() {
+        var self = this, set_index;
+
+        for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
+            self.set_objects[set_index].show_details();
+        }
+    },
+
+    hide_details: function() {
+        var self = this, set_index;
+
+        for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
+            self.set_objects[set_index].hide_details();
+        }
+    },
+
+    show_edit_buttons: function() {
+        var self = this, set_index;
+        console.log('show_edit_buttons', self.set_objects);
+        for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
+            self.set_objects[set_index].show_edit_buttons();
+        }
+    },
+
+    hide_edit_buttons: function() {
+        var self = this, set_index;
+
+        for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
+            self.set_objects[set_index].hide_edit_buttons();
         }
     },
 
@@ -242,7 +343,7 @@ SBK.PlayList = SBK.SongList.extend({
             self.dialog_frame = jQuery('<div class="song-frame"></div>').appendTo(self.container);
         }
         self.dialog_frame.html('').show();
-        navigation_panel = jQuery('<span class="navigation-panel"></span>').appendTo(self.dialog_frame);
+        navigation_panel = jQuery('<span class="button-bar"></span>').appendTo(self.dialog_frame);
         previous_button = jQuery('<span class="button previous">&laquo; Previous</span>').appendTo(navigation_panel);
         next_button = jQuery('<span class="button next">next &raquo;</span>').appendTo(navigation_panel);
         close_button = jQuery('<span class="button close">close</span>').appendTo(navigation_panel).click(function () {
@@ -304,16 +405,6 @@ SBK.PlayList = SBK.SongList.extend({
             }
         );
         song_picker.render();
-    },
-    
-    add_songs_to_set: function (set_index, songs_selected) {
-        var self = this;
-
-        console.log(set_index, songs_selected, self.data_json.sets[set_index]);
-        jQuery.merge(self.data_json.sets[set_index].songs, songs_selected);
-        console.log(self.data_json.sets[set_index].songs);
-        
-        self.redraw();
     },
     
     get_length: function (set_index) {
@@ -401,16 +492,114 @@ SBK.PlayList = SBK.SongList.extend({
     },
     
     remove_song: function (song_details) {
-        var self = this;
 
         self.data_json.sets[song_details.set_index].songs.splice(song_details.index, 1);
         self.redraw();
     },
     
+    add_songs_to_set: function (set_index, songs_selected) {
+        var self = this;
+
+        jQuery.merge(self.data_json.sets[set_index].songs, songs_selected);
+        
+        self.redraw();
+    },
+
     remove_set: function (set_details) {
         var self = this;
 
         self.data_json.sets.splice(set_details.set_index, 1);
+        self.redraw();
+    },
+
+    move_song_up_one: function (song_details) {
+        var self = this, starting_index, insert_details, destination_set_index, destination_index_within_set;
+
+        starting_index = song_details.index;
+
+        if (starting_index === 0) {
+            new_set = self.get_previous_set(song_details.set_index);
+            if(new_set === null) {
+                destination_set_index = null;
+            } else {
+                destination_set_index = new_set.set_index;
+                destination_index_within_set = new_set.songs.length;
+            }
+        } else {
+            destination_set_index = song_details.set_index;
+            destination_index_within_set = starting_index - 1;
+        }
+
+        if (destination_set_index !== null) {
+            self.move_song_to(song_details, destination_set_index, destination_index_within_set);
+        }
+    },
+
+    move_song_down_one: function (song_details) {
+        var self = this, starting_index, insert_details, destination_set_index, destination_index_within_set;
+
+        starting_index = song_details.index;
+
+        if (starting_index === (self.data_json.sets[song_details.set_index].songs.length - 1)) {
+            new_set = self.get_next_set(song_details.set_index);
+            if(new_set === null) {
+                destination_set_index = null;
+            } else {
+                destination_set_index = new_set.set_index;
+                destination_index_within_set = 0;
+            }
+        } else {
+            destination_set_index = song_details.set_index;
+            destination_index_within_set = starting_index + 1;
+        }
+
+        if (destination_set_index !== null) {
+            self.move_song_to(song_details, destination_set_index, destination_index_within_set);
+        }
+    },
+
+    display_move_song_destination_chooser: function (song_details) {
+        var self = this, starting_index, insert_details, set_index, set_row;
+
+        if (typeof(self.dialog_frame) === 'undefined') {
+            self.dialog_frame = jQuery('<div class="song-frame"></div>').appendTo(self.container);
+        }
+        self.dialog_frame.html('').show();
+        navigation_panel = jQuery('<span class="button-bar"></span>').appendTo(self.dialog_frame);
+
+        //close button
+        jQuery('<span class="button close">close</span>').appendTo(navigation_panel).click(function () {
+            self.dialog_frame.hide();
+        });
+        
+        chooser_panel = jQuery('<span class="chooser-panel"></span>').appendTo(self.dialog_frame);
+
+        for (set_index = 0; set_index < self.data_json.sets.length; set_index = set_index + 1) {
+            console.log(self.data_json.sets[set_index]);
+            set_row = jQuery('<div class="set-row"><div>').appendTo(chooser_panel);
+            jQuery('<label>' + self.data_json.sets[set_index].label + '</label>').appendTo(set_row);
+            jQuery('<a class="button">move to start</a>').appendTo(set_row).click(self.make_destination_click_function(song_details, set_index, 0));
+            jQuery('<a class="button">move to end</a>').appendTo(set_row).click(self.make_destination_click_function(song_details, set_index, self.data_json.sets[set_index].songs.length));
+        }
+    },
+    
+    make_destination_click_function: function (song_details, set_index, song_index) {
+        var self = this;
+        
+        return function () {
+            self.move_song_to(song_details, set_index, song_index);
+            self.dialog_frame.hide();
+        }
+    },
+
+    move_song_to: function (song_details, destination_set_index, destination_index_within_set) {
+        var self = this, starting_index, insert_details;
+
+        console.log('move_song_to', song_details, destination_set_index, destination_index_within_set);
+        starting_index = song_details.index;
+        insert_details = self.data_json.sets[song_details.set_index].songs[starting_index];
+        self.data_json.sets[song_details.set_index].songs.splice(starting_index, 1);
+        self.data_json.sets[destination_set_index].songs.splice(destination_index_within_set, 0, insert_details);
         self.redraw();
     }
 });

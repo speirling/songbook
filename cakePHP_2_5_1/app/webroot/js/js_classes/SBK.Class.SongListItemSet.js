@@ -14,16 +14,24 @@ SBK.SongListItemSet = SBK.Class.extend({
     render: function () {
         var self = this, song_index, set_ol;
 
-        self.container = jQuery('<li class="set"></li>').appendTo(self.parent_container);
+        self.container = jQuery('<li class="set" id="set_' + self.index + '"></li>').appendTo(self.parent_container);
+        self.button_bar = jQuery('<div class="button-bar"></div>').appendTo(self.container);
         self.inputs = {
-           title: jQuery('<input type="text" class="set-title" placeholder="set title" value="' + self.playlist.value_or_blank(self.data.label) + '" />').appendTo(self.container)
+           title: jQuery('<label>Set: </label><input type="text" class="set-title" placeholder="set title" value="' + self.playlist.value_or_blank(self.data.label) + '" />').appendTo(self.container)
         };
         jQuery('<span class="duration"></span>').appendTo(self.container);
         
         self.buttons = {
-            remove: jQuery('<span class="button remove">remove this set</span>').appendTo(self.container),
-            add_song: jQuery('<span class="button add">add songs to this set</span>').appendTo(self.container)
+            remove: jQuery('<span class="button remove">remove this set</span>').appendTo(self.button_bar),
+            add_song: jQuery('<span class="button add">add songs to this set</span>').appendTo(self.button_bar)
         };
+        self.buttons.add_song.click(function () {
+            self.playlist.display_song_picker(self.index);
+        });
+        self.buttons.remove.click(function () {
+            self.playlist.remove_set({set_index: self.index});
+        });
+
         self.introduction_container = jQuery('<span class="introduction set" style="display: none"></span>').appendTo(self.container);
         if (typeof(self.data.introduction) !== 'undefined') {
             self.inputs.introduction = {
@@ -42,7 +50,6 @@ SBK.SongListItemSet = SBK.Class.extend({
             );
             self.song_objects[song_index].render();
         }
-        self.bind_buttons();
     },
     
     get_data: function () {
@@ -116,25 +123,13 @@ SBK.SongListItemSet = SBK.Class.extend({
     get_first_song: function (index) {
         var self = this;
         
-        return self.data.songs[0]
+        return self.data.songs[0];
     },
     
     get_last_song: function (index) {
         var self = this;
 
         return self.data.songs[self.data.songs.length - 1];
-    },
-
-    bind_buttons: function () {
-        var self = this;
-
-        self.buttons.add_song.click(function () {
-            console.log(self.index);
-            self.playlist.display_song_picker(self.index);
-        });
-        self.buttons.remove.click(function () {
-            self.playlist.remove_set({set_index: self.index});
-        });
     },
 
     hide_introductions: function() {
@@ -156,6 +151,42 @@ SBK.SongListItemSet = SBK.Class.extend({
 
         for (song_index = 0; song_index < self.song_objects.length; song_index = song_index + 1) {
             self.song_objects[song_index].show_introductions();
+        }
+    },
+
+    show_details: function() {
+        var self = this, song_index;
+
+        for (song_index = 0; song_index < self.song_objects.length; song_index = song_index + 1) {
+            self.song_objects[song_index].show_details();
+        }
+    },
+
+    hide_details: function() {
+        var self = this, song_index;
+
+        for (song_index = 0; song_index < self.song_objects.length; song_index = song_index + 1) {
+            self.song_objects[song_index].hide_details();
+        }
+    },
+
+    show_edit_buttons: function() {
+        var self = this, song_index;
+        
+        self.button_bar.show();
+
+        for (song_index = 0; song_index < self.song_objects.length; song_index = song_index + 1) {
+            self.song_objects[song_index].show_buttons();
+        }
+    },
+
+    hide_edit_buttons: function() {
+        var self = this, song_index;
+
+        self.button_bar.hide();
+
+        for (song_index = 0; song_index < self.song_objects.length; song_index = song_index + 1) {
+            self.song_objects[song_index].hide_buttons();
         }
     }
 });
