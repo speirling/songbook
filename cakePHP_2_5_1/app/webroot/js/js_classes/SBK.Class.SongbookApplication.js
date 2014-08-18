@@ -6,7 +6,7 @@ SBK.SongbookApplication = SBK.Class.extend({
         self.song = null;
         self.set = null;
         self.playlist = null;
-
+        self.pleasewait = new SBK.PleaseWait(self.container);
 	},
 	
 	render: function (callback) {
@@ -108,7 +108,7 @@ SBK.SongbookApplication = SBK.Class.extend({
     _display_song: function (id, key, capo) {
         var self = this, navigation_panel, previous_button, previous_song, next_button, next_song, lyrics_pane, song_lyrics;
 
-        self.content_container = jQuery('<div id="lyrics-panel"></div>').appendTo(self.container);
+        self.content_container = jQuery('<div class="lyrics-panel"></div>').appendTo(self.container);
         
         song_lyrics = new SBK.SongLyricsDisplay(
             self.content_container,
@@ -170,7 +170,16 @@ SBK.SongbookApplication = SBK.Class.extend({
                 self.display_playlist_list();
             })
         };
-        self.all_songs = new SBK.SongFilterList.Lyrics(self.content_container, null, self).render();
+        self.all_songs = new SBK.SongFilterList.Lyrics(
+            self.content_container, 
+            self, 
+            null, 
+            {
+                display_song: function (song_list_item) { 
+                    self.display_song(song_list_item);
+                }
+            }
+        ).render();
     },
 
     _display_playlist_list: function () {
@@ -179,11 +188,12 @@ SBK.SongbookApplication = SBK.Class.extend({
         self.container.html('');
         self.content_container = jQuery('<div id="playlists-list"></div>').appendTo(self.container);
         button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);
-        self.buttons = {
-            all_songs: jQuery('<a class="button all-songs">List all songs</a>').appendTo(button_bar).click(function() {
-                self.list_all_songs();
-            })
-        };
+
+        //Buttons
+        jQuery('<a class="button all-songs">List all songs</a>').appendTo(button_bar).click(function() {
+            self.list_all_songs();
+        });
+
         self.all_playlists = new SBK.AllPlaylists(self.content_container, self).render();
     },
 

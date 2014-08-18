@@ -1,18 +1,22 @@
 /*global jQuery SBK alert */
 
 SBK.SongList = SBK.Class.extend({
-	init: function (container, jsr_template, exclusion_songlist) {
+	init: function (container, app, jsr_template, exclusion_songlist) {
 		var self = this;
 
 		self.container = container;
 		self.template = jsr_template;
-		self.pleasewait = new SBK.PleaseWait(self.container);
 		self.http_request = new SBK.HTTPRequest();
 		if(typeof(exclusion_songlist) === 'undefined') {
 			self.exclusion_songlist = null;
 		} else {
 			self.exclusion_songlist = exclusion_songlist;
 		}
+        if (typeof(app) === 'undefined') {
+            self.app = null;
+        } else {
+            self.app = app;
+        }
 		self.set_names = [];
 	},
 	
@@ -46,13 +50,13 @@ SBK.SongList = SBK.Class.extend({
 	_fetch: function (callback) {
 		var self = this;
 
-		self.pleasewait.show();
+		self.app.pleasewait.show();
 		self.http_request.api_call(
 		    self.api_destination,
 		    self.fetch_parameters,
             function (data) {
                 callback(data);
-                self.pleasewait.hide();
+                self.app.pleasewait.hide();
             },
             function (data) {
                 console.log(data);

@@ -144,7 +144,7 @@ Configure::write(
                 'css_library' => array(
                     'common.css',
                     'playlists-list.css',
-                    'songss-list.css',
+                    'songs-list.css',
                     'playlist-book.css',
                     'playlist-edit.css',
                     'playlist-print.css',
