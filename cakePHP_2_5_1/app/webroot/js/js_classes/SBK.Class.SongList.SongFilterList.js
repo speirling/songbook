@@ -1,10 +1,10 @@
 SBK.SongFilterList = SBK.SongList.extend({
-	init: function (container, exclusion_list, playlist) {
+	init: function (container, app, exclusion_list, playlist) {
 		var self = this;
 
 		self.api_destination = 'get_available_songs';
 		self.playlist = playlist;
-		self.call_super(container, '', exclusion_list);
+		self.call_super(container, app, '', exclusion_list);
 		self.fetch_parameters = {search_string: ''};
 	},
 
@@ -37,12 +37,12 @@ SBK.SongFilterList = SBK.SongList.extend({
 		
 		self.container.html('');
 		self.filter_form = jQuery('<form id="allsongsearch"></form>').appendTo(self.container);
-        filter_container = jQuery('<span class="label">Filter: </span>').appendTo(self.filter_form);
-        count_container = jQuery('<span class="label">Number of songs displayed: </span>').appendTo(self.filter_form);
+        filter_container = jQuery('<span class="filter"><label>Filter: </label></span>').appendTo(self.filter_form);
+        count_container = jQuery('<span class="number"><label> songs displayed</label></span>').appendTo(self.filter_form);
         filter_string_input = jQuery('<input type="text" id="search_string" value="" />').appendTo(filter_container);
-	    number_of_songs = jQuery('<span class="number-of-records"></span>').appendTo(count_container);
+	    number_of_songs = jQuery('<span class="number-of-records"></span>').prependTo(count_container);
 
-		number_of_songs.html(self.data_json.songs.length);
+		number_of_songs.html(Object.keys(self.data_json.songs).length);
 		filter_string_input.val(self.fetch_parameters.search_string);
 		
 		self.container.append(self.to_html(self.data_json));

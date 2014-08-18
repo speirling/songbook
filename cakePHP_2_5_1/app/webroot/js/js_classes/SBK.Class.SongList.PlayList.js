@@ -4,7 +4,7 @@ SBK.PlayList = SBK.SongList.extend({
 	init: function (playlist_name, container, exclusion_list, app) {
 		var self = this;
 
-		self.call_super(container, '', exclusion_list);
+		self.call_super(container, app, '', exclusion_list);
 		if (typeof(playlist_name) === 'undefined' || playlist_name === null) {
 			self.playlist_name = '';
 		} else {
@@ -13,11 +13,6 @@ SBK.PlayList = SBK.SongList.extend({
 		self.api_destination = 'get_playlist';
 		self.fetch_parameters = {playlist_name: self.playlist_name};
 		self.set_objects = [];
-		if (typeof(app) === 'undefined') {
-            self.app = null;
-		} else {
-		    self.app = app;
-		}
 		self.update_timer = {};
 		self.edit_buttons_visible = false;
 	},
@@ -134,63 +129,47 @@ SBK.PlayList = SBK.SongList.extend({
 		    jQuery(this).toggleClass('closed');
 		    self.container.css('padding-top', self.navigation_panel.height());
 		});
-		self.container.append(self.to_html(self.data_json));
 
-		// set up buttons
-        self.close_playlist = jQuery('<a class="button close">&laquo; List Playists</a>').appendTo(button_bar).click(function() {
+        //buttons
+        jQuery('<a class="button close">&laquo; Playists</a>').appendTo(button_bar).click(function() {
             self.app.display_playlist_list();
         });
-        self.buttons = {
-            details: jQuery('<a class="button toggle-details">Details</a>').appendTo(button_bar),
-            edit_buttons: jQuery('<a class="button toggle-buttons">Buttons</a>').appendTo(button_bar),
-            add_set: jQuery('<a class="button add_new_set">Add set</a>').appendTo(button_bar),
-            book: jQuery('<a class="button book">Book</a>').appendTo(button_bar),
-            intro: jQuery('<a class="button toggle-intro">Intros</a>').appendTo(button_bar),
-            save: jQuery('<a class="button save">Save</a>').appendTo(button_bar),
-            print: jQuery('<a class="button print">Print</a>').appendTo(button_bar)
-        };
-        self.buttons.save.click(function() {
+        jQuery('<a class="button all-songs">&laquo; All songs</a>').appendTo(button_bar).click(function() {
+            self.app.list_all_songs();
+        });
+        jQuery('<a class="button toggle-details">Details</a>').appendTo(button_bar).click(function() {
+            self.toggle_details();
+        });
+        jQuery('<a class="button toggle-buttons">Buttons</a>').appendTo(button_bar).click(function() {
+            self.toggle_edit_buttons();
+        });
+        jQuery('<a class="button add_new_set">Add set</a>').appendTo(button_bar).click(function() {
+            self.add_set();
+        });
+        jQuery('<a class="button book">Book</a>').appendTo(button_bar).click(function() {
+            self.app.playlist_book(self.playlist_name);
+        });
+        jQuery('<a class="button toggle-intro">Intros</a>').appendTo(button_bar).click(function() {
+            self.toggle_introductions();
+        });
+        jQuery('<a class="button save">Save</a>').appendTo(button_bar).click(function() {
             self.pleasewait.show();
             self.save_playlist();
         });
-        self.buttons.print.click(function() {
+        jQuery('<a class="button print">Print</a>').appendTo(button_bar).click(function() {
             self.app.playlist_print(self.playlist_name);
         });
-        self.buttons.book.click(function() {
-            self.app.playlist_book(self.playlist_name);
-        });
-        self.buttons.intro.click(function() {
-            self.toggle_introductions();
-        });
-        self.buttons.details.click(function() {
-            self.toggle_details();
-        });
-        self.buttons.edit_buttons.click(function() {
-            self.toggle_edit_buttons();
-        });
-        self.buttons.add_set.click(function() {
-            self.add_set();
-        });
-        
+
+        // Main playlist content
+        self.container.append(self.to_html(self.data_json));
+
         //initially... hide intros, details and (if required) edit buttons
         self.hide_introductions();
         self.hide_details();
         if (self.edit_buttons_visible === false) {
             self.hide_edit_buttons();
         }
-		
-		jQuery('.playlist ul', self.container).sortable({ 
-            update: function (event, ui) {
-                self.on_sortable_change(event, ui);
-            }
-        });
-		jQuery('.songlist', self.container).sortable({
-		    connectWith: '.songlist', 
-		    update: function (event, ui) {
-		        self.on_sortable_change(event, ui);
-		    }
-		});
-		
+
         internal_navigation_bar = jQuery('<div class="navigation-bar button-bar"></div>').appendTo(self.navigation_panel);
      
         for (set_index = 0; set_index < self.data_json.sets.length; set_index = set_index + 1) {
@@ -198,6 +177,11 @@ SBK.PlayList = SBK.SongList.extend({
         }
         
         self.container.css('padding-top', self.navigation_panel.height());
+
+        required_padding_bottom = (self.app.container.height() - self.navigation_panel.height()) - self.set_objects[self.data_json.sets.length - 1].container.height();
+        if (required_padding_bottom > 0) {
+            self.container.css('padding-bottom', required_padding_bottom);
+        }
 	},
 
     on_sortable_change: function (event, ui) {

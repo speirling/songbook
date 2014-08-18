@@ -9,23 +9,16 @@ div.song-page table {
 	width: 100%;
 }
 
-div.song-page td {
+.song-page td {
 	vertical-align: top;
 }
-div.song-page td.detail {
+.song-page td.detail {
 	text-align: right;
-}
-div.song-page .line {
-	margin-top: 0.5em;
-	font-size: 1em;
 }
 div.song-page .multi-column .line {
 	font-size: 0.8em;
 }
-.line .text {
-	display: inline;
-    vertical-align: bottom;
-} 
+
 .chord {
 	display: inline-block;
 	/*position:relative;*/
@@ -184,8 +177,16 @@ div.song-page .multi-column .line {
 
 .line {
 	margin-bottom: 1em;
+    margin-top: 0.5em;
+    font-size: 0.8em;
 }
-
+.lyrics-panel {
+	font-size: 1em;
+}
+.lyrics-panel .line .text {
+    display: inline;
+    vertical-align: bottom;
+} 
 .chord {
 	display: inline-block;
 	position:relative;

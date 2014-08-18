@@ -131,10 +131,6 @@ li.dummy {
 	border-radius:1em;
 	border:1px solid gray;
 }
-#all-song-list .pleasewait {
-	font-size: 0.8em;
-	color:silver;
-}
 #available-songs form {
 	display:block;
 }

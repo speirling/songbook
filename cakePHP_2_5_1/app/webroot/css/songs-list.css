@@ -18,3 +18,7 @@
 	list-style-type: none;
 	padding-left: 0;
 }
+.number, .filter label {
+	font-size: 0.8em;
+	color: gray;
+}

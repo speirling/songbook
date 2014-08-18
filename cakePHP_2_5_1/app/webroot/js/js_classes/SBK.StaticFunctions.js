@@ -176,5 +176,17 @@ SBK.StaticFunctions = {
         } else {
             return value;
         }
+    },
+    
+    value_or_blank: function (value) {
+        var self = this, result;
+        
+        if (typeof(value) === 'string') {
+            result = value;
+        } else {
+            result = '';
+        }
+        
+        return result;
     }
 };
