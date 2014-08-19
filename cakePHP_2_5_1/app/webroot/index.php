@@ -116,6 +116,7 @@ Configure::write(
                     'js_classes/SBK.Class.CallbackList.js',
                     'js_classes/SBK.Class.ApplicationState.js',
                     'js_classes/SBK.Class.PleaseWait.js',
+                    'js_classes/SBK.Class.Button.js',
                     'js_classes/SBK.Class.HTTPRequest.js',
                     'js_classes/SBK.Class.SongList.js',
                     'js_classes/SBK.Class.SongList.PlayList.js',

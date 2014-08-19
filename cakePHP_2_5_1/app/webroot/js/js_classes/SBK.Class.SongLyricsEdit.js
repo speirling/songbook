@@ -34,7 +34,6 @@ SBK.SongLyricsEdit = SBK.Class.extend({
                 {id: self.id},
                 function (response) {
                     self.render_response(response);
-                    self.bind_buttons();
                     self.pleasewait.hide();
                 }
             );
@@ -47,10 +46,10 @@ SBK.SongLyricsEdit = SBK.Class.extend({
         song_data = response.data.Song;
 
         self.buttons = {
-            save: jQuery('<a class="button save">Save</a>').appendTo(self.container),
-            cancel: jQuery('<a class="button cancel">Cancel</a>').appendTo(self.container),
-            chord_mode: jQuery('<a class="button chord-mode">Chord mode</a>').appendTo(self.container),
-            lyrics_mode: jQuery('<a class="button lyrics">Lyrics mode</a>').appendTo(self.container)
+            save: new SBK.Button(self.container, 'save', 'Save', function () {self.save_song();}),
+            cancel: new SBK.Button(self.container, 'cancel', 'Cancel', function () {self.app.back();}),
+            chord_mode: new SBK.Button(self.container, 'chord-mode', 'Chord mode'),
+            lyrics_mode: new SBK.Button(self.container, 'lyrics', 'Lyrics mode')
         };
         self.header_container = jQuery('<div class="song_headings"></div>').appendTo(self.container);
         self.inputs = {
@@ -97,16 +96,5 @@ SBK.SongLyricsEdit = SBK.Class.extend({
                 }
             }
         );
-    },
-
-    bind_buttons: function () {
-        var self = this;
-
-        self.buttons.save.click(function () {
-            self.save_song();
-        });
-        self.buttons.cancel.click(function () {
-            self.app.back();
-        });
     }
 });

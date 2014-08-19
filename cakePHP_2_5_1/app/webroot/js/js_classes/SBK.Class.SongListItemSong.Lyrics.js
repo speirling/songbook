@@ -8,8 +8,6 @@ SBK.SongListItemSong.Lyrics = SBK.SongListItemSong.extend({
         jQuery('<span class="title">' + SBK.StaticFunctions.value_or_blank(self.data.title) + '</span>').appendTo(self.container);
         jQuery('<span class="id">(' + SBK.StaticFunctions.value_or_blank(self.data.id) + ')</span>').appendTo(self.container);
         button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);
-        jQuery('<span class="button lyrics">lyics</span>').appendTo(button_bar).click(function () {
-            self.playlist.display_song({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});
-        });
+        new SBK.Button(button_bar, 'lyrics', 'lyics', function() {self.playlist.display_song({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});});
     }
 });

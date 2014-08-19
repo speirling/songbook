@@ -34,27 +34,12 @@ SBK.SongListItemSong = SBK.Class.extend({
         };
         jQuery('<span class="id">(' + self.playlist.value_or_blank(self.data.id) + ')</span>').appendTo(self.details_bar);
         self.buttons = {
-            lyrics: jQuery('<span class="button lyrics">lyics</span>').appendTo(lyrics_button_container),
-            remove: jQuery('<span class="button remove">remove</span>').appendTo(self.button_bar),
-            move_up: jQuery('<span class="button move">up</span>').appendTo(self.button_bar),
-            move_down: jQuery('<span class="button move">down</span>').appendTo(self.button_bar),
-            move_to: jQuery('<span class="button move">move to...</span>').appendTo(self.button_bar)
+            lyrics: new SBK.Button(self.button_bar, 'lyrics', 'lyics', function () {self.playlist.display_song({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});}),
+            remove: new SBK.Button(self.button_bar, 'remove', 'remove', function () {self.playlist.remove_song({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});}),
+            move_up: new SBK.Button(self.button_bar, 'move move-up', 'up', function () {self.playlist.move_song_up_one({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});}), 
+            move_down: new SBK.Button(self.button_bar, 'move move-down', 'down', function () {self.playlist.move_song_down_one({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});}), 
+            move_to: new SBK.Button(self.button_bar, 'move move-to', 'move to...', function () {self.playlist.display_move_song_destination_chooser({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});}) 
         };
-        self.buttons.lyrics.click(function () {
-            self.playlist.display_song({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});
-        });
-        self.buttons.remove.click(function () {
-            self.playlist.remove_song({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});
-        });
-        self.buttons.move_up.click(function () {
-            self.playlist.move_song_up_one({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});
-        });
-        self.buttons.move_down.click(function () {
-            self.playlist.move_song_down_one({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});
-        });
-        self.buttons.move_to.click(function () {
-            self.playlist.display_move_song_destination_chooser({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});
-        });
 
         if (typeof(self.data.introduction) !== 'undefined') {
             self.introduction_container = jQuery('<span class="introduction" style="display: none"></span>').appendTo(self.container);

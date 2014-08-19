@@ -35,16 +35,12 @@ SBK.SongPicker = SBK.Class.extend({
 		var self = this, exclusion_list;
 
 		self.container.html('');
-        self.submit_button = jQuery('<a class="button submit">Add the selected songs to the playlist</a>').appendTo(self.container);
+        self.submit_button = new SBK.Button(self.container, 'submit', 'Add the selected songs to the playlist', function () {self.on_save(self.set_index, self.song_list.get_selected());});
         self.playlist_picker_holder = jQuery('<div class="playlist-picker"></div>').appendTo(self.container);
         self.song_list_holder = jQuery('<div class="available-songs"></div>').appendTo(self.container);
 		self.pleasewait.show();
 	    self.display_playlist_picker();
 	    self.show_all_songs();
-
-	    self.submit_button.click(function () {
-	       self.on_save(self.set_index, self.song_list.get_selected()); 
-	    });
 	},
 	
 	display_playlist_picker: function () {

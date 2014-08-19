@@ -22,15 +22,9 @@ SBK.SongListItemSet = SBK.Class.extend({
         jQuery('<span class="duration"></span>').appendTo(self.container);
         
         self.buttons = {
-            remove: jQuery('<span class="button remove">remove this set</span>').appendTo(self.button_bar),
-            add_song: jQuery('<span class="button add">add songs to this set</span>').appendTo(self.button_bar)
+            remove: new SBK.Button(self.button_bar, 'remove', 'remove this set', function () {self.playlist.remove_set({set_index: self.index});}),
+            add_song: new SBK.Button(self.button_bar, 'add', 'add songs to this set', function () {self.playlist.display_song_picker(self.index);})
         };
-        self.buttons.add_song.click(function () {
-            self.playlist.display_song_picker(self.index);
-        });
-        self.buttons.remove.click(function () {
-            self.playlist.remove_set({set_index: self.index});
-        });
 
         self.introduction_container = jQuery('<span class="introduction set" style="display: none"></span>').appendTo(self.container);
         if (typeof(self.data.introduction) !== 'undefined') {

@@ -53,16 +53,9 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         if (buttons_displayed) {
             button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);
             self.buttons = {
-                edit: jQuery('<a class="button edit"><span>Edit</span></a>').appendTo(button_bar),
-                close: jQuery('<a class="button close"><span>Close</span></a>').appendTo(button_bar)
+                edit: new SBK.Button(button_bar, 'edit', 'Edit', function () {self.app.edit_song(self.id);}), 
+                close: new SBK.Button(button_bar, 'close', 'Close', function () {self.close();})
             };
-            
-            self.buttons.edit.click(function () {
-                self.app.edit_song(self.id);
-            });
-            self.buttons.close.click(function () {
-                self.close();
-            });
         }
 
         self.header_container = jQuery('<div class="page-header"></div>').appendTo(self.container);
@@ -88,9 +81,7 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         var self = this, target_key_container, song_data, key_container;
 
         self.buttons = {
-            close: jQuery('<a class="button close"><span>Close</span></a>').appendTo(self.container).click(function () {
-                self.close();
-            })
+            close: new SBK.Button(button_bar, 'close', 'Close', function () {self.close();})
         };
         self.header_container = jQuery('<div class="page-header"></div>').appendTo(self.container);
         jQuery('<h2 class="title">Error: ' + response.data + '</h2>').appendTo(self.header_container);
