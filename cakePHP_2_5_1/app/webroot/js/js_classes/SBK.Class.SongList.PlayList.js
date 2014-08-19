@@ -297,18 +297,6 @@ SBK.PlayList = SBK.SongList.extend({
         return data;
     },
     
-    value_or_blank: function (value) {
-        var self = this, result;
-        
-        if (typeof(value) === 'string') {
-            result = value;
-        } else {
-            result = '';
-        }
-        
-        return result;
-    },
-    
     display_song: function (song_list_item) {
         var self = this, navigation_panel, previous_button, previous_song, next_button, next_song, lyrics_pane, song_lyrics;
 
@@ -350,7 +338,7 @@ SBK.PlayList = SBK.SongList.extend({
         var self = this, navigation_panel, previous_button, previous_song, next_button, next_song, lyrics_pane, song_lyrics;
 
         self.container.html('').css('padding-top', 0);
-        navigation_panel = jQuery('<span class="navigation-panel"></span>').appendTo(self.container);
+        navigation_panel = jQuery('<span class="button-bar"></span>').appendTo(self.container); // button-bar so that it gets inline styling....
         new SBK.Button(navigation_panel, 'cancel', 'cancel', function () {self.redraw();});
         
         picker_panel = jQuery('<span class="picker-panel"></span>').appendTo(self.container);

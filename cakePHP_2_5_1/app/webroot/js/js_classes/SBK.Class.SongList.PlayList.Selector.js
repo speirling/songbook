@@ -6,7 +6,7 @@ SBK.PlayList.Selector = SBK.PlayList.extend({
     to_html: function (data_json) {
         var self = this, set_index, playlist_container, playlist_introduction_container, ul;
 
-        playlist_container = jQuery('<div class="playlist"></div>');
+        playlist_container = jQuery('<div class="playlist playlist-selector"></div>');
         
         ul = jQuery('<ul></ul>').appendTo(playlist_container);
      
