@@ -64,14 +64,14 @@ SBK.SongPicker = SBK.Class.extend({
 	show_all_songs: function () {
 		var self = this;
 
-		self.song_list = new SBK.SongFilterList(self.song_list_holder, self.get_exclusion_list(), self.playlist);
+		self.song_list = new SBK.SongFilterList(self.song_list_holder, self.playlist.app, self.get_exclusion_list(), self.playlist);
 		self.song_list.render();
 	},
     
     show_playlist: function (playlist) {
         var self = this;
 
-        self.song_list = new SBK.PlayList.Selector(playlist, self.song_list_holder, self.get_exclusion_list());
+        self.song_list = new SBK.PlayList.Selector(playlist, self.song_list_holder, self.get_exclusion_list(), self.playlist.app);
         self.song_list.render();
     }
 });

@@ -18,6 +18,9 @@ input {
     width: 100%;
     box-sizing: border-box;
 }
+input[type=checkbox] {
+	width: 2em;
+}
 input.playlist-title,
 input.set-title,
 input.act {
@@ -144,7 +147,16 @@ li.set ul {
 
 
 .available-songs .playlist {
+    top: 0;
+}
+.picker-panel .available-songs .song-filter-list{
+    top: 11em;
+}
+.picker-panel .available-songs .playlist-selector {
     top: 7em;
+}
+.picker-panel .available-songs .playlist-selector > ul {
+	margin-top: 0;
 }
 .available-songs ul {
     padding: 0;
@@ -302,4 +314,9 @@ a#add-new-set:hover {
 
 ol.songlist {
 	padding-left: 2em;
+}
+.id {
+	margin-left: 1em;
+	font-size: 0.8em;
+	color: silver;
 }

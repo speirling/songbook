@@ -118,6 +118,7 @@ input:-moz-placeholder {
     color: gray;
     font-size: 0.8em;
     text-align: center;
+    line-height: 2em;
 }
 
 .button.disabled {

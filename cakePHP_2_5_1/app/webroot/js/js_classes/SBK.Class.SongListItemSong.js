@@ -21,20 +21,20 @@ SBK.SongListItemSong = SBK.Class.extend({
         self.details_bar = jQuery('<div class="details-bar"></div>').appendTo(self.container);
         self.button_bar = jQuery('<div class="button-bar"></div>').appendTo(self.container);
 
-        jQuery('<td class="title">' + self.playlist.value_or_blank(self.data.title) + '</td>').appendTo(title_bar);
-        if(self.playlist.value_or_blank(self.data.key) !== '') {
-            jQuery(' <td class="key">' + self.playlist.value_or_blank(self.data.key) + '</td>').appendTo(title_bar);
+        jQuery('<td class="title">' + SBK.StaticFunctions.value_or_blank(self.data.title) + '</td>').appendTo(title_bar);
+        if (SBK.StaticFunctions.value_or_blank(self.data.key) !== '') {
+            jQuery(' <td class="key">' + SBK.StaticFunctions.value_or_blank(self.data.key) + '</td>').appendTo(title_bar);
         }
         lyrics_button_container = jQuery('<td class="lyrics-button-container"></td>').appendTo(title_bar);
         self.inputs = {
-            singer: jQuery('<input type="text" class="singer" size="5" placeholder="singer" value="' + self.playlist.value_or_blank(self.data.singer) + '" />').appendTo(self.details_bar),
-            key: jQuery('<input type="text" class="key" size="2" placeholder="key" value="' + self.playlist.value_or_blank(self.data.key) + '" />').appendTo(self.details_bar),
-            capo: jQuery('<input type="text" class="capo" size="3" placeholder="capo" value="' + self.playlist.value_or_blank(self.data.capo) + '" />').appendTo(self.details_bar),
-            duration: jQuery('<input type="text" class="duration" size="3" placeholder="mm:ss" value="' + self.playlist.value_or_blank(self.data.duration) + '" />').appendTo(self.details_bar)
+            singer: jQuery('<input type="text" class="singer" size="5" placeholder="singer" value="' + SBK.StaticFunctions.value_or_blank(self.data.singer) + '" />').appendTo(self.details_bar),
+            key: jQuery('<input type="text" class="key" size="2" placeholder="key" value="' + SBK.StaticFunctions.value_or_blank(self.data.key) + '" />').appendTo(self.details_bar),
+            capo: jQuery('<input type="text" class="capo" size="3" placeholder="capo" value="' + SBK.StaticFunctions.value_or_blank(self.data.capo) + '" />').appendTo(self.details_bar),
+            duration: jQuery('<input type="text" class="duration" size="3" placeholder="mm:ss" value="' + SBK.StaticFunctions.value_or_blank(self.data.duration) + '" />').appendTo(self.details_bar)
         };
-        jQuery('<span class="id">(' + self.playlist.value_or_blank(self.data.id) + ')</span>').appendTo(self.details_bar);
+        jQuery('<span class="id">(' + SBK.StaticFunctions.value_or_blank(self.data.id) + ')</span>').appendTo(self.details_bar);
         self.buttons = {
-            lyrics: new SBK.Button(self.button_bar, 'lyrics', 'lyics', function () {self.playlist.display_song({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});}),
+            lyrics: new SBK.Button(lyrics_button_container, 'lyrics', 'lyics', function () {self.playlist.display_song({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});}),
             remove: new SBK.Button(self.button_bar, 'remove', 'remove', function () {self.playlist.remove_song({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});}),
             move_up: new SBK.Button(self.button_bar, 'move move-up', 'up', function () {self.playlist.move_song_up_one({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});}), 
             move_down: new SBK.Button(self.button_bar, 'move move-down', 'down', function () {self.playlist.move_song_down_one({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});}), 
@@ -44,8 +44,8 @@ SBK.SongListItemSong = SBK.Class.extend({
         if (typeof(self.data.introduction) !== 'undefined') {
             self.introduction_container = jQuery('<span class="introduction" style="display: none"></span>').appendTo(self.container);
             self.inputs.introduction = {
-                text: jQuery('<textarea class="introduction_text" placeholder="Introduction text">' + self.playlist.value_or_blank(self.data.introduction.text) + '</textarea>').appendTo(self.introduction_container),
-                duration: jQuery('<input type="text" class="introduction_duration" placeholder="Introduction duration" value="' + self.playlist.value_or_blank(self.data.introduction.duration) + '" />').appendTo(self.introduction_container)
+                text: jQuery('<textarea class="introduction_text" placeholder="Introduction text">' + SBK.StaticFunctions.value_or_blank(self.data.introduction.text) + '</textarea>').appendTo(self.introduction_container),
+                duration: jQuery('<input type="text" class="introduction_duration" placeholder="Introduction duration" value="' + SBK.StaticFunctions.value_or_blank(self.data.introduction.duration) + '" />').appendTo(self.introduction_container)
             };
         }
     },
