@@ -120,7 +120,11 @@ input:-moz-placeholder {
     text-align: center;
     line-height: 2em;
 }
-
+.button.pressed {
+    background-color: green;
+    color: white;
+    border-color: white;
+}
 .button.disabled {
 	background-color: transparent;
 	color: white;
