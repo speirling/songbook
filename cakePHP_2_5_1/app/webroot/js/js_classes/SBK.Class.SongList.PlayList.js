@@ -131,34 +131,20 @@ SBK.PlayList = SBK.SongList.extend({
 		});
 
         //buttons
-        jQuery('<a class="button close">&laquo; Playists</a>').appendTo(button_bar).click(function() {
-            self.app.display_playlist_list();
-        });
-        jQuery('<a class="button all-songs">&laquo; All songs</a>').appendTo(button_bar).click(function() {
-            self.app.list_all_songs();
-        });
-        jQuery('<a class="button toggle-details">Details</a>').appendTo(button_bar).click(function() {
-            self.toggle_details();
-        });
-        jQuery('<a class="button toggle-buttons">Buttons</a>').appendTo(button_bar).click(function() {
-            self.toggle_edit_buttons();
-        });
-        jQuery('<a class="button add_new_set">Add set</a>').appendTo(button_bar).click(function() {
-            self.add_set();
-        });
-        jQuery('<a class="button book">Book</a>').appendTo(button_bar).click(function() {
-            self.app.playlist_book(self.playlist_name);
-        });
-        jQuery('<a class="button toggle-intro">Intros</a>').appendTo(button_bar).click(function() {
-            self.toggle_introductions();
-        });
-        jQuery('<a class="button save">Save</a>').appendTo(button_bar).click(function() {
-            self.pleasewait.show();
-            self.save_playlist();
-        });
-        jQuery('<a class="button print">Print</a>').appendTo(button_bar).click(function() {
-            self.app.playlist_print(self.playlist_name);
-        });
+		self.buttons = {
+            close: new SBK.Button(button_bar, 'close', '&laquo; Playists', function () {self.app.display_playlist_list();}),
+            all_songs: new SBK.Button(button_bar, 'all-songs', '&laquo; All songs', function () {self.app.list_all_songs();}),
+            details: new SBK.Button(button_bar, 'toggle-details', 'Details', function () {self.toggle_details();}),
+            edit_buttons: new SBK.Button(button_bar, 'toggle-buttons', 'Buttons', function () {self.toggle_edit_buttons();}),
+            new_set: new SBK.Button(button_bar, 'add_new_set', 'Add set', function () {self.add_set();}),
+            book: new SBK.Button(button_bar, 'book', 'Book', function () {self.app.playlist_book(self.playlist_name);}),
+            intro: new SBK.Button(button_bar, 'toggle-intro', 'Intros', function () {self.toggle_introductions();}),
+            save: new SBK.Button(button_bar, 'save', 'Save', function() {
+                    self.pleasewait.show();
+                    self.save_playlist();
+                }),
+            print: new SBK.Button(button_bar, 'print', 'Print', function () {self.app.playlist_print(self.playlist_name)})
+		};
 
         // Main playlist content
         self.container.append(self.to_html(self.data_json));
@@ -173,7 +159,7 @@ SBK.PlayList = SBK.SongList.extend({
         internal_navigation_bar = jQuery('<div class="navigation-bar button-bar"></div>').appendTo(self.navigation_panel);
      
         for (set_index = 0; set_index < self.data_json.sets.length; set_index = set_index + 1) {
-            jQuery('<a class="button">' + self.data_json.sets[set_index].label + '</a>').click(self.make_internal_navigation_click(self.set_objects[set_index])).appendTo(internal_navigation_bar);
+            new SBK.Button(internal_navigation_bar, 'set-link', self.data_json.sets[set_index].label, self.make_internal_navigation_click(self.set_objects[set_index]));
         }
         
         self.container.css('padding-top', self.navigation_panel.height());
@@ -266,7 +252,7 @@ SBK.PlayList = SBK.SongList.extend({
 
     show_edit_buttons: function() {
         var self = this, set_index;
-        console.log('show_edit_buttons', self.set_objects);
+
         for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
             self.set_objects[set_index].show_edit_buttons();
         }
@@ -327,31 +313,25 @@ SBK.PlayList = SBK.SongList.extend({
         var self = this, navigation_panel, previous_button, previous_song, next_button, next_song, lyrics_pane, song_lyrics;
 
         self.container.html('').css('padding-top', 0);
+
         navigation_panel = jQuery('<span class="button-bar"></span>').appendTo(self.container);
-        previous_button = jQuery('<span class="button previous">&laquo; Previous</span>').appendTo(navigation_panel);
-        next_button = jQuery('<span class="button next">next &raquo;</span>').appendTo(navigation_panel);
-        close_button = jQuery('<span class="button close">close</span>').appendTo(navigation_panel).click(function () {
-            self.redraw();
-        });
-        
-        next_song = self.get_next_song(song_list_item.index, song_list_item.set_index);
-        if (next_song === null) {
-            next_button.addClass('disabled');
-        } else {
-            next_button.click(function () {
-                self.display_song(next_song);
-            });
-        }
-        
+
         previous_song = self.get_previous_song(song_list_item.index, song_list_item.set_index);
         if (previous_song === null) {
-            previous_button.addClass('disabled');
+            previous_button = new SBK.Button(navigation_panel, 'previous', '&laquo; Previous').disable();
         } else {
-            previous_button.click(function () {
-                self.display_song(previous_song);
-            });
+            previous_button = new SBK.Button(navigation_panel, 'previous', '&laquo; Previous', function () {self.display_song(previous_song)});
+        }
+
+        next_song = self.get_next_song(song_list_item.index, song_list_item.set_index);
+        if (next_song === null) {
+            next_button = new SBK.Button(navigation_panel, 'next', 'next &raquo;').disable();
+        } else {
+            next_button = new SBK.Button(navigation_panel, 'next', 'next &raquo;', function () {self.display_song(next_song)});
         }
         
+        close_button = new SBK.Button(navigation_panel, 'close', 'close', function () {self.redraw();});
+
         lyrics_pane = jQuery('<span class="lyrics-panel"></span>').appendTo(self.container);
         song_lyrics = new SBK.SongLyricsDisplay(
             lyrics_pane,
@@ -371,9 +351,7 @@ SBK.PlayList = SBK.SongList.extend({
 
         self.container.html('').css('padding-top', 0);
         navigation_panel = jQuery('<span class="navigation-panel"></span>').appendTo(self.container);
-        cancel_button = jQuery('<span class="button cancel">cancel</span>').appendTo(navigation_panel).click(function () {
-            self.redraw();
-        });
+        new SBK.Button(navigation_panel, 'cancel', 'cancel', function () {self.redraw();});
         
         picker_panel = jQuery('<span class="picker-panel"></span>').appendTo(self.container);
         song_picker = new SBK.SongPicker(
@@ -549,9 +527,7 @@ SBK.PlayList = SBK.SongList.extend({
         navigation_panel = jQuery('<span class="button-bar"></span>').appendTo(self.container);
 
         //close button
-        jQuery('<span class="button close">close</span>').appendTo(navigation_panel).click(function () {
-            self.redraw();
-        });
+        new SBK.Button(navigation_panel, 'close', 'close', function () {self.redraw();});
         
         chooser_panel = jQuery('<span class="chooser-panel"></span>').appendTo(self.container);
 
@@ -559,8 +535,9 @@ SBK.PlayList = SBK.SongList.extend({
             console.log(self.data_json.sets[set_index]);
             set_row = jQuery('<div class="set-row"><div>').appendTo(chooser_panel);
             jQuery('<label>' + self.data_json.sets[set_index].label + '</label>').appendTo(set_row);
-            jQuery('<a class="button">move to start</a>').appendTo(set_row).click(self.make_destination_click_function(song_details, set_index, 0));
-            jQuery('<a class="button">move to end</a>').appendTo(set_row).click(self.make_destination_click_function(song_details, set_index, self.data_json.sets[set_index].songs.length));
+
+            new SBK.Button(set_row, 'move-to-start', 'move to start', self.make_destination_click_function(song_details, set_index, 0));
+            new SBK.Button(set_row, 'move-to-end', 'move to end', self.make_destination_click_function(song_details, set_index, self.data_json.sets[set_index].songs.length));
         }
     },
     
