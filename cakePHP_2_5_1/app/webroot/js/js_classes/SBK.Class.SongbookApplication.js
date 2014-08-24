@@ -30,7 +30,8 @@ SBK.SongbookApplication = SBK.Class.extend({
         if (self.tab === 'playlist_list') {
             self._display_playlist_list();
         } else if (self.tab === 'edit_playlist') {
-            self._display_playlist();
+            console.log(self.application_state.playlist_filename);
+            self._display_playlist(self.application_state.playlist_filename);
         } else if (self.tab === 'playlist_print') {
             self._playlist_print();
         } else if (self.tab === 'playlist_book') {
@@ -66,12 +67,12 @@ SBK.SongbookApplication = SBK.Class.extend({
         }, false);
     },
 
-    display_playlist: function (filename) {
+    display_playlist: function (playlist_filename) {
         var self = this;
 
         self.application_state.set({
             tab: 'edit_playlist',
-            filename: filename,
+            playlist_filename: playlist_filename,
             id: null,
             key: null,
             capo: null
@@ -79,12 +80,12 @@ SBK.SongbookApplication = SBK.Class.extend({
         
     },
 
-    playlist_print: function (filename) {
+    playlist_print: function (playlist_filename) {
         var self = this;
 
         self.application_state.set({
             tab: 'playlist_print',
-            filename: filename,
+            playlist_filename: playlist_filename,
             id: null,
             key: null,
             capo: null
@@ -92,12 +93,12 @@ SBK.SongbookApplication = SBK.Class.extend({
         
     },
 
-    playlist_book: function (filename) {
+    playlist_book: function (playlist_filename) {
         var self = this;
 
         self.application_state.set({
             tab: 'playlist_book',
-            filename: filename,
+            playlist_filename: playlist_filename,
             id: null,
             key: null,
             capo: null
@@ -146,7 +147,7 @@ SBK.SongbookApplication = SBK.Class.extend({
 
         self.application_state.set({
             tab: 'edit_song',
-            filename: null,
+            playlist_filename: null,
             id: song_id,
             key: null,
             capo: null
@@ -194,27 +195,27 @@ SBK.SongbookApplication = SBK.Class.extend({
         self.all_playlists = new SBK.AllPlaylists(self.content_container, self).render();
     },
 
-    _display_playlist: function (filename) {
+    _display_playlist: function (playlist_filename) {
         var self = this;
 
         self.content_container = jQuery('<div id="playlist-display"></div>').appendTo(self.container);
-        self.playlist = new SBK.PlayList(self.application_state.playlist_filename, self.content_container, null, self);
+        self.playlist = new SBK.PlayList(playlist_filename, self.content_container, null, self);
         self.playlist.render();
     },
 
-    _playlist_print: function (filename) {
+    _playlist_print: function (playlist_filename) {
         var self = this;
 
         self.content_container = jQuery('<div id="playlist-print"></div>').appendTo(self.container);
-        self.playlist = new SBK.PlayListPrint(self.application_state.playlist_filename, self.content_container, null, self);
+        self.playlist = new SBK.PlayListPrint(playlist_filename, self.content_container, null, self);
         self.playlist.render();
     },
 
-    _playlist_book: function (filename) {
+    _playlist_book: function (playlist_filename) {
         var self = this;
 
         self.content_container = jQuery('<div id="playlist-book"></div>').appendTo(self.container);
-        self.playlist = new SBK.PlayListBook(self.application_state.playlist_filename, self.content_container, null, self);
+        self.playlist = new SBK.PlayListBook(playlist_filename, self.content_container, null, self);
         self.playlist.render();
     },
 

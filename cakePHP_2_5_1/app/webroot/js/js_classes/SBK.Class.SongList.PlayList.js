@@ -1,14 +1,14 @@
 /*global jQuery SBK alert */
 
 SBK.PlayList = SBK.SongList.extend({
-	init: function (playlist_name, container, exclusion_list, app) {
+	init: function (playlist_filename, container, exclusion_list, app) {
 		var self = this;
 
 		self.call_super(container, app, '', exclusion_list);
-		if (typeof(playlist_name) === 'undefined' || playlist_name === null) {
+		if (typeof(playlist_filename) === 'undefined' || playlist_filename === null) {
 			self.playlist_name = '';
 		} else {
-			self.playlist_name = playlist_name;
+			self.playlist_name = playlist_filename;
 		}
 		self.api_destination = 'get_playlist';
 		self.fetch_parameters = {playlist_name: self.playlist_name};
@@ -70,6 +70,7 @@ SBK.PlayList = SBK.SongList.extend({
 			    function () {
 					self.render();
 				    self.app.pleasewait.hide();
+				    self.app.application_state.set({playlist_filename: self.playlist_name})
 	    		}
 			);
 		}
@@ -98,10 +99,10 @@ SBK.PlayList = SBK.SongList.extend({
             /* problem with this if there are NO songs */
             if (typeof(data_json.sets[set_index].songs) !== 'undefined') {
                 data_json.sets[set_index].songs = [].concat(data_json.sets[set_index].songs);
-                
-                self.set_objects[set_index] = new SBK.SongListItemSet(ul, self, set_index, data_json.sets[set_index]);
-                self.set_objects[set_index].render();
-            }
+            } 
+            self.set_objects[set_index] = new SBK.SongListItemSet(ul, self, set_index, data_json.sets[set_index]);
+            self.set_objects[set_index].render();
+            
         }
        
         return self.playlist_container;
@@ -124,7 +125,7 @@ SBK.PlayList = SBK.SongList.extend({
 	},
 
 	display_content: function () {
-		var self = this, button_bar, set_index, internal_navigation_bar;
+		var self = this, button_bar, set_index, internal_navigation_bar, label ;
 	
 		self.container.html('').css('padding-top', 0);
 		self.navigation_panel = jQuery('<div class="navigation-panel"></div>').appendTo(self.container);
@@ -163,10 +164,15 @@ SBK.PlayList = SBK.SongList.extend({
 
         internal_navigation_bar = jQuery('<div class="navigation-bar button-bar"></div>').appendTo(self.navigation_panel);
      
-        if ((self.data_json.sets.length > 1) || (self.data_json.sets[0].label !== '')) {
+        if (self.data_json.sets.length > 0) {
             for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
                 if(typeof(self.set_objects[set_index]) !== 'undefined') {
-                    new SBK.Button(internal_navigation_bar, 'set-link', self.data_json.sets[set_index].label, self.make_internal_navigation_click(self.set_objects[set_index]));
+                    if (self.data_json.sets[set_index].label === '') {
+                        label = '(untitled)';
+                    } else {
+                        label = self.data_json.sets[set_index].label;
+                    }
+                    new SBK.Button(internal_navigation_bar, 'set-link', label, self.make_internal_navigation_click(self.set_objects[set_index]));
                 }
             }
         } else {
@@ -231,8 +237,10 @@ SBK.PlayList = SBK.SongList.extend({
      
         self.introduction_container.hide();
 
-        for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
-            self.set_objects[set_index].hide_introductions();
+        if(typeof(set_objects) !== 'undefined') {
+            for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
+                self.set_objects[set_index].hide_introductions();
+            }
         }
     },
 
@@ -256,9 +264,10 @@ SBK.PlayList = SBK.SongList.extend({
 
     hide_details: function() {
         var self = this, set_index;
-
-        for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
-            self.set_objects[set_index].hide_details();
+        if(typeof(set_objects) !== 'undefined') {
+            for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
+                self.set_objects[set_index].hide_details();
+            }
         }
     },
 
@@ -273,14 +282,16 @@ SBK.PlayList = SBK.SongList.extend({
     hide_edit_buttons: function() {
         var self = this, set_index;
 
-        for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
-            self.set_objects[set_index].hide_edit_buttons();
+        if(typeof(set_objects) !== 'undefined') {
+            for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
+                self.set_objects[set_index].hide_edit_buttons();
+            }
         }
     },
 
 	add_set: function() {
 		var self = this;
-
+console.log('sadd_set ', self.data_json.sets.length, self.data_json.sets);
 		self.data_json.sets[self.data_json.sets.length] = {
 			label: (''),
 			introduction: {duration: '', text: ''},
@@ -351,6 +362,7 @@ SBK.PlayList = SBK.SongList.extend({
 
         //before blanking the container, save any changes to data_json
         self.update();
+        console.log('display_song_picker :', set_index);
         self.container.html('').css('padding-top', 0);
         navigation_panel = jQuery('<span class="button-bar"></span>').appendTo(self.container); // button-bar so that it gets inline styling....
         new SBK.Button(navigation_panel, 'cancel', 'cancel', function () {self.redraw();});
@@ -525,6 +537,7 @@ SBK.PlayList = SBK.SongList.extend({
     display_move_song_destination_chooser: function (song_details) {
         var self = this, starting_index, insert_details, set_index, set_row;
 
+        self.update();
         self.container.html('').css('padding-top', 0);
         navigation_panel = jQuery('<span class="button-bar"></span>').appendTo(self.container);
 
