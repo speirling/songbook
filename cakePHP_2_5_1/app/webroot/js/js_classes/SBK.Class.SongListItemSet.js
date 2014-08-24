@@ -12,12 +12,13 @@ SBK.SongListItemSet = SBK.Class.extend({
 	},
 
     render: function () {
-        var self = this, song_index, set_ol;
+        var self = this, song_index, set_ol, title_input_holder;
 
         self.container = jQuery('<li class="set" id="set_' + self.index + '"></li>').appendTo(self.parent_container);
         self.button_bar = jQuery('<div class="button-bar"></div>').appendTo(self.container);
+        title_input_holder = jQuery('<span class="set-title"><label>Set: </label></span>').appendTo(self.container);
         self.inputs = {
-           title: jQuery('<label>Set: </label><input type="text" class="set-title" placeholder="set title" value="' + self.playlist.value_or_blank(self.data.label) + '" />').appendTo(self.container)
+           title: jQuery('<input type="text" class="set-title" placeholder="set title" value="' + self.playlist.value_or_blank(self.data.label) + '" />').appendTo(title_input_holder)
         };
         jQuery('<span class="duration"></span>').appendTo(self.container);
         

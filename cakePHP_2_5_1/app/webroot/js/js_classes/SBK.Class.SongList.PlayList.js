@@ -45,6 +45,8 @@ SBK.PlayList = SBK.SongList.extend({
 	save_playlist: function () {
 		var self = this;
 
+		self.update();
+		console.log(self.data_json);
 		if (self.playlist_name === '') {
 			if(self.data_json.title === '') {
 				alert('please enter a title for the playlist');
@@ -58,7 +60,7 @@ SBK.PlayList = SBK.SongList.extend({
 			alert('please enter a Playlist Name');
 			return;
 		} else {
-			self.pleasewait.show();
+			self.app.pleasewait.show();
 			self.http_request.api_call(
 			    'update_playlist',
 			    {
@@ -67,7 +69,7 @@ SBK.PlayList = SBK.SongList.extend({
 			    },
 			    function () {
 					self.render();
-				    self.pleasewait.hide();
+				    self.app.pleasewait.hide();
 	    		}
 			);
 		}
@@ -80,8 +82,8 @@ SBK.PlayList = SBK.SongList.extend({
         input_container_title = jQuery('<span class="playlist-title"><label>Playlist: </label></span>').appendTo(self.playlist_container);
         input_container_act = jQuery('<span class="playlist-act"><label>Act: </label></span>').appendTo(self.playlist_container);
         self.inputs = {
-            title: jQuery('<input type="text" class="playlist-title" size="15" placeholder="playlist title" value="' + self.value_or_blank(data_json.title) + '" />').appendTo(input_container_title),
-            act: jQuery('<input type="text" class="act" size="8" placeholder="act" value="' + self.value_or_blank(data_json.act) + '" />').appendTo(input_container_act)
+            title: jQuery('<input type="text" class="playlist-title" size="20" placeholder="playlist title" value="' + self.value_or_blank(data_json.title) + '" />').appendTo(input_container_title),
+            act: jQuery('<input type="text" class="act" size="20" placeholder="act" value="' + self.value_or_blank(data_json.act) + '" />').appendTo(input_container_act)
         };
         self.introduction_container = jQuery('<span class="introduction songlist" style="display: none"></span>').appendTo(self.playlist_container);
         self.inputs.introduction = {
@@ -93,10 +95,13 @@ SBK.PlayList = SBK.SongList.extend({
      
         for (set_index = 0; set_index < data_json.sets.length; set_index = set_index + 1) {
             /* WORKAROUND:: simplexml converts a single song into an object, not an array. make sure data_json.sets[set_index].songs is an array!!! */
-            data_json.sets[set_index].songs = [].concat(data_json.sets[set_index].songs);
-            
-            self.set_objects[set_index] = new SBK.SongListItemSet(ul, self, set_index, data_json.sets[set_index]);
-            self.set_objects[set_index].render();
+            /* problem with this if there are NO songs */
+            if (typeof(data_json.sets[set_index].songs) !== 'undefined') {
+                data_json.sets[set_index].songs = [].concat(data_json.sets[set_index].songs);
+                
+                self.set_objects[set_index] = new SBK.SongListItemSet(ul, self, set_index, data_json.sets[set_index]);
+                self.set_objects[set_index].render();
+            }
         }
        
         return self.playlist_container;
@@ -140,7 +145,7 @@ SBK.PlayList = SBK.SongList.extend({
             book: new SBK.Button(button_bar, 'book', 'Book', function () {self.app.playlist_book(self.playlist_name);}),
             intro: new SBK.Button(button_bar, 'toggle-intro', 'Intros', function () {self.toggle_introductions();}),
             save: new SBK.Button(button_bar, 'save', 'Save', function() {
-                    self.pleasewait.show();
+                    self.app.pleasewait.show();
                     self.save_playlist();
                 }),
             print: new SBK.Button(button_bar, 'print', 'Print', function () {self.app.playlist_print(self.playlist_name)})
@@ -158,15 +163,22 @@ SBK.PlayList = SBK.SongList.extend({
 
         internal_navigation_bar = jQuery('<div class="navigation-bar button-bar"></div>').appendTo(self.navigation_panel);
      
-        for (set_index = 0; set_index < self.data_json.sets.length; set_index = set_index + 1) {
-            new SBK.Button(internal_navigation_bar, 'set-link', self.data_json.sets[set_index].label, self.make_internal_navigation_click(self.set_objects[set_index]));
+        if ((self.data_json.sets.length > 1) || (self.data_json.sets[0].label !== '')) {
+            for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
+                if(typeof(self.set_objects[set_index]) !== 'undefined') {
+                    new SBK.Button(internal_navigation_bar, 'set-link', self.data_json.sets[set_index].label, self.make_internal_navigation_click(self.set_objects[set_index]));
+                }
+            }
+        } else {
+            jQuery('<span class="set-link"></span>').appendTo(internal_navigation_bar);
         }
         
         self.container.css('padding-top', self.navigation_panel.height());
-
-        required_padding_bottom = (self.app.container.height() - self.navigation_panel.height()) - self.set_objects[self.data_json.sets.length - 1].container.height();
-        if (required_padding_bottom > 0) {
-            self.container.css('padding-bottom', required_padding_bottom);
+        if (self.set_objects.length > 0) {
+            required_padding_bottom = (self.app.container.height() - self.navigation_panel.height()) - self.set_objects[self.set_objects.length - 1].container.height();
+            if (required_padding_bottom > 0) {
+                self.container.css('padding-bottom', required_padding_bottom);
+            }
         }
 	},
 
@@ -337,6 +349,8 @@ SBK.PlayList = SBK.SongList.extend({
     display_song_picker: function (set_index) {
         var self = this, navigation_panel, previous_button, previous_song, next_button, next_song, lyrics_pane, song_lyrics;
 
+        //before blanking the container, save any changes to data_json
+        self.update();
         self.container.html('').css('padding-top', 0);
         navigation_panel = jQuery('<span class="button-bar"></span>').appendTo(self.container); // button-bar so that it gets inline styling....
         new SBK.Button(navigation_panel, 'cancel', 'cancel', function () {self.redraw();});

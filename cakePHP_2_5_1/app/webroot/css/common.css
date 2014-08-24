@@ -10,15 +10,15 @@ body,
 }
 
 /* Large desktops and laptops */
-@media (min-width: 1200px) {
+@media (orientation:landscape) {
 	body,
 	#container {
 	    font-size: 12px;
 	}
 }
 
-/* Portrait tablets and medium desktops */
-@media (min-width: 992px) and (max-width: 1199px) {
+/* Portrait high res tablet */
+@media (orientation:portrait) and (min-width: 992px) {
     body,
     #container {
         font-size: 42px;
@@ -27,7 +27,7 @@ body,
 }
 
 /* Portrait tablets and small desktops */
-@media (min-width: 768px) and (max-width: 991px) {
+@media (orientation:portrait) and (min-width: 768px) and (max-width: 991px) {
     body,
     #container {
         font-size: 36px;
@@ -37,7 +37,7 @@ body,
 }
 
 /* Landscape phones and portrait tablets */
-@media (max-width: 767px) {
+@media (orientation:portrait) and (max-width: 767px) {
     body,
     #container {
         font-size: 12px;
@@ -47,7 +47,7 @@ body,
 }
 
 /* Landscape phones and smaller */
-@media (max-width: 480px) {
+@media (orientation:landscape) and (max-width: 480px) {
     body,
     #container {
         font-size: 12px;
@@ -150,6 +150,7 @@ input:-moz-placeholder {
 }
 .button-bar.flyout.closed {
     background-image: url('../img/flyout-c.svg');
+    background-repeat: no-repeat;
     height: 3.75em;
     width: 3.75em;
     overflow: hidden;
@@ -157,3 +158,26 @@ input:-moz-placeholder {
 .button-bar.flyout :first-child {
 	margin-left: 5em;
 }
+
+
+/* from http://www.lotusseedsdesign.com/blog/make-checkbox-or-radio-button-in-mobile-browsers-render-consistently-using-before-pseudo-element */
+/*input[type="checkbox"] {width: 1.5em;height: 1.5em}
+
+input[type=checkbox]:after{
+content:"";
+display:inline-block;
+width: 1.5em; height: 1.5em;
+background-color:#F6FFCF;
+border:1px solid #ccc;
+margin-right:10px;
+top:12px;
+left:0;
+position:absolute;}
+
+input[type=checkbox]:checked:after {
+content:"✓";
+background-color:#fff;
+border:1px solid #ccc;
+color:#8EB120;font-size: 1.5em;
+position:absolute;
+top: 1em;left:0;}*/

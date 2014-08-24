@@ -95,8 +95,8 @@ SBK.SongList = SBK.Class.extend({
 
 		output_json = {};
 
-		output_json.title = jQuery('.playlist-title', source).val();
-		output_json.act = jQuery('.act', source).val();
+		output_json.title = jQuery('input.playlist-title', source).val();
+		output_json.act = jQuery('input.act', source).val();
 		output_json.introduction = {
 			"duration": jQuery('.introduction.songlist .introduction_duration', source).val(),
 		    "text": jQuery('.introduction.songlist .introduction_text', source).val()
@@ -107,7 +107,7 @@ SBK.SongList = SBK.Class.extend({
 			var this_set = jQuery(this), song_count;
 
 			output_json.sets[set_count] = {
-				"label": jQuery('.set-title', this_set).val(),
+				"label": jQuery('input.set-title', this_set).val(),
 				"introduction": {
 					"duration": jQuery('.introduction.set .introduction_duration', this_set).val(),
 					"text": jQuery('.introduction.set .introduction_text', this_set).val()
@@ -120,11 +120,11 @@ SBK.SongList = SBK.Class.extend({
 
 				output_json.sets[set_count].songs[song_count] = {
 					"id": self.attr('id'),
-					"key": jQuery('.key', self).val(),
-					"singer": jQuery('.singer', self).val(),
-					"capo": jQuery('.capo', self).val(),
-					"duration": jQuery('.duration', self).val(),
-					"title": jQuery('.title', self).html(),
+					"key": jQuery('input.key', self).val(),
+					"singer": jQuery('input.singer', self).val(),
+					"capo": jQuery('input.capo', self).val(),
+					"duration": jQuery('input.duration', self).val(),
+					"title": jQuery('td.title', self).html(),
 					"introduction": {
 						"duration": jQuery('.introduction_duration', self).val(),
 						"text": jQuery('.introduction_text', self).val()
@@ -134,6 +134,8 @@ SBK.SongList = SBK.Class.extend({
 			});
 			set_count = set_count +1;
 		});
+		
+		console.log(output_json);
 		return output_json;
 	},
 
