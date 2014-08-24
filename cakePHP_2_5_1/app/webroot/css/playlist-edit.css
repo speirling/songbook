@@ -18,6 +18,9 @@ input {
     width: 100%;
     box-sizing: border-box;
 }
+input.set-title {
+	width: auto;
+}
 input[type=checkbox] {
 	width: 2em;
 }
@@ -31,10 +34,18 @@ input.act {
    
 }
 span.playlist-title,
-span.playlist-act {
+span.playlist-act ,
+span.set-title {
 	display: inline-block;
 	white-space: nowrap;
 	margin-top: 0.3em;
+	margin-right: 3em;
+}
+span.playlist-title label,
+span.playlist-act label {
+	display: inline-block;
+	width: 4.5em;
+	text-align: right;
 }
 input.playlist-title {
     margin-right: 1em;
@@ -167,6 +178,7 @@ li.set ul {
     border:0;
     background-color: white;
     list-style: none;
+    font-size: 1em;
 }
 
 
@@ -290,16 +302,20 @@ a#add-new-set:hover {
 	overflow: auto;
 }
 
-
+.playlist-picker {
+	
+}
 .playlist-picker h1 {
-	font-size: 14px;
+	font-size: 1.5em;
 	margin: 0;
 	display: inline-block;
 }
+.playlist-picker select {
+	font-size: 1em;
+}
 
 .navigation-bar {
-	/*position: fixed;
-	top: 0;*/
+	height: 3.75em;
 }
 .navigation-bar .button {
 	background-color: #9393b3;

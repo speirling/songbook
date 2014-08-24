@@ -10,10 +10,10 @@ SBK.SongListItemSong.Selector = SBK.SongListItemSong.extend({
         };
         jQuery('<span class="title">' + self.playlist.value_or_blank(self.data.title) + '</span>').appendTo(self.container);
         jQuery('<span class="id">(' + self.playlist.value_or_blank(self.data.id) + ')</span>').appendTo(self.container);
-        if(typeof(self.data.singer) !== 'undefined') {
+        if(typeof(self.data.singer) !== 'undefined' && self.data.singer !== '') {
             jQuery('<span class="singer">(' + self.playlist.value_or_blank(self.data.singer) + ')</span>').appendTo(self.container);
         }
-        if(typeof(self.data.key) !== 'undefined') {
+        if(typeof(self.data.key) !== 'undefined' && self.data.key !== '') {
             jQuery('<span class="key">(' + self.playlist.value_or_blank(self.data.key) + ')</span>').appendTo(self.container);
         }
     },

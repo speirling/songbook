@@ -9,7 +9,7 @@ SBK.HTTPRequest = SBK.Class.extend({
 
     make_post_request: function (url, data, success, failure) {
         var self = this;
-console.log(url, data, success, failure);
+
         try {
             jQuery.ajax({
                 cache: true,
