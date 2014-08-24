@@ -237,7 +237,7 @@ SBK.PlayList = SBK.SongList.extend({
      
         self.introduction_container.hide();
 
-        if(typeof(set_objects) !== 'undefined') {
+        if(typeof(self.set_objects) !== 'undefined') {
             for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
                 self.set_objects[set_index].hide_introductions();
             }
@@ -264,7 +264,8 @@ SBK.PlayList = SBK.SongList.extend({
 
     hide_details: function() {
         var self = this, set_index;
-        if(typeof(set_objects) !== 'undefined') {
+        
+        if(typeof(self.set_objects) !== 'undefined') {
             for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
                 self.set_objects[set_index].hide_details();
             }
@@ -282,7 +283,7 @@ SBK.PlayList = SBK.SongList.extend({
     hide_edit_buttons: function() {
         var self = this, set_index;
 
-        if(typeof(set_objects) !== 'undefined') {
+        if(typeof(self.set_objects) !== 'undefined') {
             for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
                 self.set_objects[set_index].hide_edit_buttons();
             }
@@ -291,7 +292,7 @@ SBK.PlayList = SBK.SongList.extend({
 
 	add_set: function() {
 		var self = this;
-console.log('sadd_set ', self.data_json.sets.length, self.data_json.sets);
+
 		self.data_json.sets[self.data_json.sets.length] = {
 			label: (''),
 			introduction: {duration: '', text: ''},

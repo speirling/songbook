@@ -30,7 +30,6 @@ SBK.SongbookApplication = SBK.Class.extend({
         if (self.tab === 'playlist_list') {
             self._display_playlist_list();
         } else if (self.tab === 'edit_playlist') {
-            console.log(self.application_state.playlist_filename);
             self._display_playlist(self.application_state.playlist_filename);
         } else if (self.tab === 'playlist_print') {
             self._playlist_print();
