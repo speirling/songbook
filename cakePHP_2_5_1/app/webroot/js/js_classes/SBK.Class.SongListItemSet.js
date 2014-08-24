@@ -13,7 +13,7 @@ SBK.SongListItemSet = SBK.Class.extend({
 
     render: function () {
         var self = this, song_index, set_ol, title_input_holder;
-
+console.log('render set ', self.index);
         self.container = jQuery('<li class="set" id="set_' + self.index + '"></li>').appendTo(self.parent_container);
         self.button_bar = jQuery('<div class="button-bar"></div>').appendTo(self.container);
         title_input_holder = jQuery('<span class="set-title"><label>Set: </label></span>').appendTo(self.container);
@@ -36,14 +36,16 @@ SBK.SongListItemSet = SBK.Class.extend({
         }
         set_ol = jQuery('<ol class="songlist"></ol>').appendTo(self.container);
 
-        for (song_index = 0; song_index < self.data.songs.length; song_index = song_index + 1) {
-            self.song_objects[song_index] = new SBK.SongListItemSong(
-                set_ol, 
-                self,
-                song_index,
-                self.data.songs[song_index]
-            );
-            self.song_objects[song_index].render();
+        if (typeof(self.data.songs) !== 'undefined') {
+            for (song_index = 0; song_index < self.data.songs.length; song_index = song_index + 1) {
+                self.song_objects[song_index] = new SBK.SongListItemSong(
+                    set_ol, 
+                    self,
+                    song_index,
+                    self.data.songs[song_index]
+                );
+                self.song_objects[song_index].render();
+            }
         }
     },
     

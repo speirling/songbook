@@ -10,12 +10,7 @@ SBK.ApplicationState = SBK.Class.extend({
 
         self.app = app;
 
-        self.tab = 'playlist_list';
-        self.id = null;
-        self.capo = null;
-        self.playlist_filename = null;
-        self.set_index = null;
-        self.song_index = null;
+        self.initialise_state();
         
         self.tab_id = [];
         self.tab_id[0] = 'playlist_list';
@@ -27,9 +22,20 @@ SBK.ApplicationState = SBK.Class.extend({
         self.tab_id[6] = 'list_all_songs';
     },
     
+    initialise_state: function () {
+        var self = this;
+
+        self.tab = 'playlist_list';
+        self.id = null;
+        self.capo = null;
+        self.playlist_filename = null;
+        self.set_index = null;
+        self.song_index = null;
+    },
+    
     start_handling_hashchange: function () {
         var self = this;
-        
+
         jQuery(window).bind('hashchange', function () {
             self.update_from_hash();
         });
@@ -72,6 +78,8 @@ SBK.ApplicationState = SBK.Class.extend({
             id: /^\d+$/,            
         };
 
+        // Before extracting data from the hash, reset all current settings so that if  for example p is not present then the playlist filename gets set to null to create a new playlist.
+        self.initialise_state();
         for (index = 0; index < hash_array.length; index = index + 1) {
             split = hash_array[index].split('=');
             parameter = split[0];
@@ -139,8 +147,8 @@ SBK.ApplicationState = SBK.Class.extend({
         }
 
         // filename
-        if (SBK.StaticFunctions.undefined_to_null(desired_state.filename) !== null) {
-            state_string = state_string + '&p=' + desired_state.filename;
+        if (SBK.StaticFunctions.undefined_to_null(desired_state.playlist_filename) !== null) {
+            state_string = state_string + '&p=' + desired_state.playlist_filename;
         }
 
         // key
