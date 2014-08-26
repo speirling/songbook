@@ -127,7 +127,11 @@ class ApiController extends AppController {
             // If the form data can be validated and saved...
             if ($this->Song->save($this->request->data)) {
                 $this->set ( 'success', true );
-                $this->set ( 'data', '' );
+                if (array_key_exists('id', $this->request->data)) {
+                    $this->set ( 'data', '' );
+                } else {
+                    $this->set ( 'data', array( 'id' => $this->Song->getLastInsertID()));
+                }
             } else {
                 $this->set ( 'success', true );
                 $this->set ( 'data', $this->Song->validationErrors );

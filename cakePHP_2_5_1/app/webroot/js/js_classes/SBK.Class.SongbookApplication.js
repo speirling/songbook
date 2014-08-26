@@ -27,20 +27,31 @@ SBK.SongbookApplication = SBK.Class.extend({
         self.container.html('');
         delete self.content_container;
         self.tab = self.application_state.tab;
-        if (self.tab === 'playlist_list') {
-            self._display_playlist_list();
-        } else if (self.tab === 'edit_playlist') {
-            self._display_playlist(self.application_state.playlist_filename);
-        } else if (self.tab === 'playlist_print') {
-            self._playlist_print();
-        } else if (self.tab === 'playlist_book') {
-            self._playlist_book();
-        } else if (self.tab === 'song_lyrics') {
-            self._display_song(self.application_state.id, self.application_state.key, self.application_state.capo);
-        } else if (self.tab === 'edit_song') {
-            self._edit_song();
-        } else if (self.tab === 'list_all_songs') {
-            self._list_all_songs();
+        switch (self.tab) {
+            case 'playlist_list':
+                self._display_playlist_list();
+                break;
+            case 'edit_playlist':
+                self._display_playlist(self.application_state.playlist_filename);
+                break;
+            case 'playlist_print':
+                self._playlist_print();
+                break;
+            case 'playlist_book':
+                self._playlist_book();
+                break;
+            case 'song_lyrics':
+                self._display_song(self.application_state.id, self.application_state.key, self.application_state.capo);
+                break;
+            case 'edit_song':
+                self._edit_song(self.application_state.id);
+                break;
+            case 'add_new_song':
+                self._edit_song();
+                break;
+            case 'list_all_songs':
+                self._list_all_songs();
+                break;
         }
     },
 
@@ -166,7 +177,8 @@ SBK.SongbookApplication = SBK.Class.extend({
         self.content_container = jQuery('<div id="all-songs-list"></div>').appendTo(self.container);
         button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);
         self.buttons = {
-            all_playlists: new SBK.Button(button_bar, 'all-songs', 'List all Playists', function () {self.display_playlist_list();})
+            all_playlists: new SBK.Button(button_bar, 'all-songs', 'List all Playists', function () {self.display_playlist_list();}),
+            add_new_song: new SBK.Button(button_bar, 'add-new-song', 'Add a new Song', function () {self.add_new_song();})
         };
         self.all_songs = new SBK.SongFilterList.Lyrics(
             self.content_container, 
@@ -232,13 +244,16 @@ SBK.SongbookApplication = SBK.Class.extend({
         self.song.render();
     },
 
-    _edit_song: function () {
+    _edit_song: function (id) {
         var self = this;
 
+        if (typeof(id) === 'undefined') {
+            id = null;
+        }
         self.content_container = jQuery('<div id="lyrics-edit"></div>').appendTo(self.container);
         self.song = new SBK.SongLyricsEdit(
             self.content_container, 
-            self.application_state.id,
+            id,
             self
         );
         self.song.render();

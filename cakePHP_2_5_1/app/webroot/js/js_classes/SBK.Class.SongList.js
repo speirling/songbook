@@ -134,8 +134,7 @@ SBK.SongList = SBK.Class.extend({
 			});
 			set_count = set_count +1;
 		});
-		
-		console.log(output_json);
+
 		return output_json;
 	},
 
