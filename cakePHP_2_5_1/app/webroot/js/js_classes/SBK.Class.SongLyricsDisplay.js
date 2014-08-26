@@ -78,8 +78,9 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
     },
     
     render_error_response: function (response) {
-        var self = this, target_key_container, song_data, key_container;
-
+        var self = this, button_bar;
+        
+        button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);
         self.buttons = {
             close: new SBK.Button(button_bar, 'close', 'Close', function () {self.close();})
         };

@@ -363,7 +363,7 @@ SBK.PlayList = SBK.SongList.extend({
 
         //before blanking the container, save any changes to data_json
         self.update();
-        console.log('display_song_picker :', set_index);
+
         self.container.html('').css('padding-top', 0);
         navigation_panel = jQuery('<span class="button-bar"></span>').appendTo(self.container); // button-bar so that it gets inline styling....
         new SBK.Button(navigation_panel, 'cancel', 'cancel', function () {self.redraw();});
