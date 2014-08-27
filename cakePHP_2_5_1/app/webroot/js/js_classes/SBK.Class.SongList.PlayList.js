@@ -77,7 +77,7 @@ SBK.PlayList = SBK.SongList.extend({
 	},
 
     to_html: function (data_json) {
-        var self = this, set_index, ul, input_container_title, input_container_act, internal_navigation_bar;
+        var self = this, set_index, ul, input_container_title, input_container_act, internal_navigation_bar, filter_to;
 
         self.playlist_container = jQuery('<div class="playlist"></div>');
         input_container_title = jQuery('<span class="playlist-title"><label>Playlist: </label></span>').appendTo(self.playlist_container);
@@ -92,7 +92,7 @@ SBK.PlayList = SBK.SongList.extend({
             duration: jQuery('<input type="text" class="introduction_duration" placeholder="Introduction duration" value="' + self.value_or_blank(data_json.introduction.duration) + '" />').appendTo(self.introduction_container)
         };
         
-        ul = jQuery('<ul></ul>').appendTo(self.playlist_container);
+        self.playlist_ul = jQuery('<ul></ul>').appendTo(self.playlist_container);
      
         for (set_index = 0; set_index < data_json.sets.length; set_index = set_index + 1) {
             /* WORKAROUND:: simplexml converts a single song into an object, not an array. make sure data_json.sets[set_index].songs is an array!!! */
@@ -100,12 +100,24 @@ SBK.PlayList = SBK.SongList.extend({
             if (typeof(data_json.sets[set_index].songs) !== 'undefined') {
                 data_json.sets[set_index].songs = [].concat(data_json.sets[set_index].songs);
             } 
-            self.set_objects[set_index] = new SBK.SongListItemSet(ul, self, set_index, data_json.sets[set_index]);
+            self.set_objects[set_index] = new SBK.SongListItemSet(self.playlist_ul, self, set_index, data_json.sets[set_index]);
             self.set_objects[set_index].render();
             
         }
-       
+
         return self.playlist_container;
+    },
+    
+    filter_playlist_songs: function (filter_value) {
+        var self = this, current_li, show_this_li, song_title;
+
+        jQuery('li ol li', self.playlist_ul).each(function () {
+            current_li = jQuery(this);
+            song_title = jQuery('.title', current_li).html();
+            show_this_li = song_title.toLowerCase().indexOf(filter_value.toLowerCase()) !== -1;
+            current_li.toggle(show_this_li);
+        });
+        self.number_of_songs.html(jQuery('li.song:visible', self.container).length);
     },
     
     make_internal_navigation_click: function (object) {
@@ -178,6 +190,31 @@ SBK.PlayList = SBK.SongList.extend({
         } else {
             jQuery('<span class="set-link"></span>').appendTo(internal_navigation_bar);
         }
+
+        self.filter = jQuery('<div class="picker-filter"></div>').appendTo(internal_navigation_bar);
+        filter_border = jQuery('<div class="picker-filter-border"></div>').appendTo(self.filter);
+        filter_wrapper = jQuery('<div class="picker-filter-wrapper"></div>').appendTo(filter_border);
+        self.filter_input = jQuery('<input type="text" placeholder="type to filter"/>').appendTo(filter_wrapper);
+        self.filter_clear = jQuery('<span class="icon-close"></span>').appendTo(filter_border);
+        count_container = jQuery('<span class="number"><label> songs displayed</label></span>').appendTo(self.filter);
+        self.number_of_songs = jQuery('<span class="number-of-records"></span>').prependTo(count_container);
+
+        self.filter_input.unbind('keyup').keyup(function () {
+            if (filter_to) {
+                clearTimeout(filter_to);
+            }
+            filter_to = setTimeout(function () {
+                filter_value = self.filter_input.val();
+                self.filter_playlist_songs(filter_value);
+            }, 500);
+        });
+
+        self.filter_clear.bind('click', function () {
+            self.filter_input.val('');
+            self.filter_playlist_songs('');
+        });
+
+        self.number_of_songs.html(jQuery('li.song:visible', self.container).length);
         
         self.container.css('padding-top', self.navigation_panel.height());
         if (self.set_objects.length > 0) {
