@@ -326,6 +326,7 @@ a#add-new-set:hover {
 	top: 0;
 	z-index: 10;
 	background-color: white;
+	width: 97%;
 }
 
 ol.songlist {

@@ -60,6 +60,7 @@ SBK.SongbookApplication = SBK.Class.extend({
 
         self.application_state.set({
             tab: 'list_all_songs',
+            playlist_filename: null,
             id: null,
             key: null,
             capo: null
@@ -71,6 +72,7 @@ SBK.SongbookApplication = SBK.Class.extend({
 
         self.application_state.set({
             tab: 'playlist_list',
+            playlist_filename: null,
             id: null,
             key: null,
             capo: null
@@ -175,11 +177,7 @@ SBK.SongbookApplication = SBK.Class.extend({
 
         self.container.html('');
         self.content_container = jQuery('<div id="all-songs-list"></div>').appendTo(self.container);
-        button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);
-        self.buttons = {
-            all_playlists: new SBK.Button(button_bar, 'all-songs', 'List all Playists', function () {self.display_playlist_list();}),
-            add_new_song: new SBK.Button(button_bar, 'add-new-song', 'Add a new Song', function () {self.add_new_song();})
-        };
+
         self.all_songs = new SBK.SongFilterList.Lyrics(
             self.content_container, 
             self, 
