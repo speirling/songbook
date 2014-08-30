@@ -22,7 +22,7 @@ input.set-title {
 	width: auto;
 }
 input[type=checkbox] {
-	width: 2em;
+
 }
 input.playlist-title,
 input.set-title,
@@ -83,11 +83,11 @@ li.set ul {
 }
 #playlist-holder .playlist,
 .available-songs .playlist {
-    position: absolute;
+/*    position: absolute;
     bottom: 1em;
     right: 1em;
     left: 1em;
-    overflow: auto;
+    overflow: auto;*/
 }
 #playlist-holder .playlist {
     top: 3em;
@@ -109,9 +109,11 @@ li.set ul {
 }
 
 .playlist li.song {
-	background-color: #f0f0c0;
+    background-color: #f0f0c0;
 }
-
+.playlist li.song.selected {
+    background-color: #f0ffc0;
+}
 
 .playlist .key,
 .playlist .capo {
@@ -160,8 +162,8 @@ li.set ul {
 .available-songs .playlist {
     top: 0;
 }
-.picker-panel .available-songs .song-filter-list{
-    top: 11em;
+.picker-panel .available-songs .song-filter-list {
+
 }
 .picker-panel .available-songs .playlist-selector {
     top: 7em;
@@ -179,6 +181,7 @@ li.set ul {
     background-color: white;
     list-style: none;
     font-size: 1em;
+    cursor: pointer;
 }
 
 

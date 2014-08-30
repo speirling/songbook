@@ -234,3 +234,19 @@ top: 1em;left:0;}*/
 	left: 0.5em;
 	bottom: 0;
 }
+
+
+.checkbox {
+    border: 1px solid gray;
+    background-color: white;
+    border-radius: 0.2em;
+    display: inline-block;
+    height: 0.7em;
+    width: 0.7em;
+    margin-right: 0.5em;
+    vertical-align: middle;
+    margin-left: 5em;
+}
+.selected .checkbox {
+    background-color: black;
+}
