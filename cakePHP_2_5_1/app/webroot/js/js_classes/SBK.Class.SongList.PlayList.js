@@ -46,7 +46,7 @@ SBK.PlayList = SBK.SongList.extend({
 		var self = this;
 
 		self.update();
-		console.log(self.data_json);
+
 		if (self.playlist_name === '') {
 			if(self.data_json.title === '') {
 				alert('please enter a title for the playlist');
@@ -61,7 +61,7 @@ SBK.PlayList = SBK.SongList.extend({
 			return;
 		} else {
 			self.app.pleasewait.show();
-			self.http_request.api_call(
+			self.api.api_call(
 			    'update_playlist',
 			    {
 			        playlist_name: self.playlist_name,
@@ -137,7 +137,7 @@ SBK.PlayList = SBK.SongList.extend({
 	},
 
 	display_content: function () {
-		var self = this, button_bar, set_index, internal_navigation_bar, label ;
+		var self = this, button_bar, set_index, internal_navigation_bar, label, filter_to;
 	
 		self.container.html('').css('padding-top', 0);
 		self.navigation_panel = jQuery('<div class="navigation-panel"></div>').appendTo(self.container);

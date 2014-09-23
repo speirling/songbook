@@ -59,7 +59,7 @@ div.song-page .multi-column .line {
 }
 .performed_by,
 .written_by {
-	display:none;
+	/* display:none; this hides inputs in the song lyrics edit page */
 }
 .performed_by .label,
 .written_by .label {

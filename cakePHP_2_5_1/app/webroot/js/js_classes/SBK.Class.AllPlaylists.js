@@ -5,7 +5,7 @@ SBK.AllPlaylists = SBK.Class.extend({
 		self.container = container;
 		self.app = app; 
 		self.pleasewait = new SBK.PleaseWait(self.container);
-		self.http_request = new SBK.HTTPRequest();
+		self.api = new SBK.Api();
 	},
     
     render: function (callback) {
@@ -14,7 +14,7 @@ SBK.AllPlaylists = SBK.Class.extend({
         self.container.html('');
         jQuery('<h1>List of playlists:</h1>').appendTo(self.container);
         self.pleasewait.show();
-        self.http_request.api_call(
+        self.api.api_call(
             'get_all_playlists',
             {},
             function (response) {

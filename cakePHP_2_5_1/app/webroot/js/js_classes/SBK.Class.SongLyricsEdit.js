@@ -6,7 +6,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
         self.id = id;
 		self.app = app;
 		self.pleasewait = new SBK.PleaseWait(self.container);
-		self.http_request = new SBK.HTTPRequest();
+		self.api = new SBK.Api();
 	},
     
     render: function () {
@@ -29,7 +29,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
             });
         } else {
             self.pleasewait.show();
-            self.http_request.api_call(
+            self.api.api_call(
                 'get_song',
                 {id: self.id},
                 function (response) {
@@ -78,7 +78,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
 
         if (self.id === null) {
 
-            self.http_request.api_call(
+            self.api.api_call(
                 'update_song',
                 {Song: {
                     title: self.inputs.title.html(),
@@ -99,7 +99,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
                 }
             );
         } else {
-            self.http_request.api_call(
+            self.api.api_call(
                 'update_song',
                 {Song: {
                     id: self.id + '',

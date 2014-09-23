@@ -6,7 +6,7 @@ SBK.SongList = SBK.Class.extend({
 
 		self.container = container;
 		self.template = jsr_template;
-		self.http_request = new SBK.HTTPRequest();
+		self.api = new SBK.Api();
 		if(typeof(exclusion_songlist) === 'undefined') {
 			self.exclusion_songlist = null;
 		} else {
@@ -51,7 +51,7 @@ SBK.SongList = SBK.Class.extend({
 		var self = this;
 
 		self.app.pleasewait.show();
-		self.http_request.api_call(
+		self.api.api_call(
 		    self.api_destination,
 		    self.fetch_parameters,
             function (data) {
