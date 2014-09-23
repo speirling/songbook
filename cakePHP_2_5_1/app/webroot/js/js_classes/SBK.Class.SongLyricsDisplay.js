@@ -10,7 +10,7 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
 		self.key = key;
 		self.capo = capo;
 		self.pleasewait = new SBK.PleaseWait(self.container);
-		self.http_request = new SBK.HTTPRequest();
+		self.api = new SBK.Api();
 		if(typeof(on_close) === 'function') {
 		    self.on_close = on_close;
 		} else {
@@ -23,7 +23,7 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
 
         self.container.html('');
         self.pleasewait.show();
-        self.http_request.api_call(
+        self.api.api_call(
             'get_song',
             {id: self.id},
             function (response) {
