@@ -6,7 +6,8 @@ SBK.Api = SBK.Class.extend({
 
 		self.http_request = new SBK.HTTPRequest();
 		self.all_playlists = jQuery.getJSON('../local_data/all_playlists.json');
-		self.all_songs = jQuery.getJSON('../local_data/all_songs.json');
+		self.all_songs = jQuery.getJSON('/songbook-cake/js/songs.json');
+        console.log(self.all_playlists, self.all_songs);
 	},
     
     get_playlist: function (data, success, failure)  {
