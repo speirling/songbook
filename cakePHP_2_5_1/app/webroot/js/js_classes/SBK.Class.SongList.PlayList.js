@@ -360,7 +360,7 @@ SBK.PlayList = SBK.SongList.extend({
     
     display_song: function (song_list_item) {
         var self = this, navigation_panel, previous_button, previous_song, next_button, next_song, lyrics_pane, song_lyrics;
-
+/*
         self.container.html('').css('padding-top', 0);
 
         navigation_panel = jQuery('<span class="button-bar"></span>').appendTo(self.container);
@@ -393,6 +393,9 @@ SBK.PlayList = SBK.SongList.extend({
             }
         );
         song_lyrics.render();
+        */
+        
+        self.app.display_song(song_list_item);
     },
     
     display_song_picker: function (set_index) {
