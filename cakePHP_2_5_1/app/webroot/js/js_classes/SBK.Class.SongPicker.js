@@ -4,7 +4,7 @@ SBK.SongPicker = SBK.Class.extend({
 
 		self.container = container;
 		self.pleasewait = new SBK.PleaseWait(self.container);
-		self.api = new SBK.Api();
+		self.api = app.api;
 
 		self.linked_playlist = null;
 		self.playlist = playlist,

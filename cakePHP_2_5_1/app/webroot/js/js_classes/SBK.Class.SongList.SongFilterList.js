@@ -19,6 +19,7 @@ SBK.SongFilterList = SBK.SongList.extend({
         self.song_objects = [];
         for (song_number in data_json.songs) {
             if (data_json.songs.hasOwnProperty (song_number)) {
+                console.log(song_number, data_json.songs[song_number]);
                 self.song_objects[song_index] = new SBK.SongListItemSong.Selector(
                     ul, 
                     {index: 0, playlist: self},

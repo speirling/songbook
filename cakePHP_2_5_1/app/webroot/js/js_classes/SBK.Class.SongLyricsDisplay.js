@@ -10,7 +10,7 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
 		self.key = key;
 		self.capo = capo;
 		self.pleasewait = new SBK.PleaseWait(self.container);
-		self.api = new SBK.Api();
+		self.api = app.api;
 		if(typeof(on_close) === 'function') {
 		    self.on_close = on_close;
 		} else {
