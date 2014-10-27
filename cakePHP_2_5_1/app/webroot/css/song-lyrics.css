@@ -1,3 +1,10 @@
+@media print {
+	.button {
+	    display: none;
+	}
+}
+
+
 .song-page {
 	font-family: Arial, Helvetica, sans-serif;
 	padding: 1em;
