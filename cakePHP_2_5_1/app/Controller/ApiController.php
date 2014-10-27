@@ -139,6 +139,20 @@ class ApiController extends AppController {
         }
         $this->set ( '_serialize', array ( 'success', 'data' ) );
     }
+
+    public function export_all_songs() {
+        $this->RequestHandler->renderAs($this, 'json');
+        $this->set ( 'success', file_put_contents('../webroot/js/songs.json', $this->songs_create_json_file() ));
+
+        $this->set ( '_serialize', array ('success' ) );
+    }
+
+    public function export_all_playlists() {
+        $this->RequestHandler->renderAs($this, 'json');
+        $this->set ( 'success', file_put_contents('../webroot/js/playlists.json', $this->playlists_create_json_file() ));
+
+        $this->set ( '_serialize', array ('success' ) );
+    }
     
     
     
@@ -290,11 +304,40 @@ class ApiController extends AppController {
         }
         return $duration_seconds;
     }
-        
+
+
+    protected function songs_create_json_file() {
+    
+        $db_data = $this->Song->find('all');
+        $all_songs = Array();
+        foreach($db_data as $this_song) {
+            array_push($all_songs, $this_song["Song"]);
+        }
+    
+        return json_encode($all_songs);
+    }   
+
+
+    protected function playlists_create_json_file() {
+    
+        $all_playlists = array();
+        $directoryList = scandir ( Configure::read('Songbook.playlist_directory') );
+        foreach ( $directoryList as $filename ) {
+            if (! is_dir ( $filename )) {
+                $path_parts = pathinfo ( $filename );
+                if (array_key_exists ( 'extension', $path_parts ) && $path_parts ['extension'] === 'playlist' && $path_parts ['filename'] != '') {
+                    $thisPlaylistContent = simplexml_load_file ( Configure::read('Songbook.playlist_directory') . '/' . $path_parts ['filename'] . '.playlist' );
+                    $thisPlaylistContent["name"] = $path_parts ['filename'];
+                    $thisPlaylistContent["filename"] = $path_parts ['filename'];
+                    $all_playlists[] = json_decode($this->convert_simpleXML_playlist_to_json_string ( $thisPlaylistContent ));
+                }
+            }
+        }
+    
+        return json_encode($all_playlists);
+    }   
 
 }
-
-
 
 
 ?>
