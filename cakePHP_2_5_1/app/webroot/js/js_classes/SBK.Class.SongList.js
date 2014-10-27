@@ -6,7 +6,7 @@ SBK.SongList = SBK.Class.extend({
 
 		self.container = container;
 		self.template = jsr_template;
-		self.api = new SBK.Api();
+		self.api = app.api;
 		if(typeof(exclusion_songlist) === 'undefined') {
 			self.exclusion_songlist = null;
 		} else {
@@ -159,12 +159,13 @@ SBK.SongList = SBK.Class.extend({
 	
 	filter_songlist_json_before_display: function (data_json) {
 		var self = this, song_index, set_index, set, id_index, flat_list;
-		
+
 		flat_list = self.flatten_exclusion_list();
 
-		if(flat_list !== null) {
+		if(flat_list !== null && flat_list.length > 0) {
 			if(typeof(data_json.songs) !== 'undefined') {
 				for (song_index = 0; song_index < data_json.songs.length; song_index = song_index + 1) {
+			        console.log(data_json.songs[song_index], flat_list);
 					id_index = jQuery.inArray('' + data_json.songs[song_index].id, flat_list);
 					if(id_index !== -1) {
 						data_json.songs[song_index].filter_display = true;
@@ -173,7 +174,7 @@ SBK.SongList = SBK.Class.extend({
 			}
 			
 			if(typeof(data_json.sets) !== 'undefined') {
-				//somewhere in the PI - SimpleXML to json conversions, a single set is represented as an object, not an array of one object. 
+				//somewhere in the Playlist - SimpleXML to json conversions, a single set is represented as an object, not an array of one object. 
 				//workaround:
 				if(typeof(data_json.sets.length) === 'undefined') {
 					data_json.sets = [data_json.sets];

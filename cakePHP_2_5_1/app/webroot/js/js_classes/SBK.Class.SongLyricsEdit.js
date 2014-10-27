@@ -6,7 +6,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
         self.id = id;
 		self.app = app;
 		self.pleasewait = new SBK.PleaseWait(self.container);
-		self.api = new SBK.Api();
+		self.api = app.api;
 	},
     
     render: function () {

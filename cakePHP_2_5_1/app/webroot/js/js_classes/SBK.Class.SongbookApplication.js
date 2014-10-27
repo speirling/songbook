@@ -10,15 +10,23 @@ SBK.SongbookApplication = SBK.Class.extend({
 	},
 	
 	render: function (callback) {
-		var self = this, all_playlists;
+		var self = this;
 		
 		self.container.html('');
-        // Set the initial application state
-        self.application_state = new SBK.ApplicationState();
-        self.application_state.register_callback(function () {
-            self.on_application_state_change();
+		jQuery.getJSON('js/playlists.json', function (data){
+            self.all_playlists = data;
+            jQuery.getJSON('js/songs.json', function (data){
+                self.all_songs = data;
+
+                self.api = new SBK.Api(self.all_playlists, self.all_songs);
+                // Set the initial application state
+                self.application_state = new SBK.ApplicationState();
+                self.application_state.register_callback(function () {
+                    self.on_application_state_change();
+                });
+                self.application_state.startup(self);
+            });
         });
-        self.application_state.startup(self);
 	},
     
     on_application_state_change: function () {
