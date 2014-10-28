@@ -19,7 +19,6 @@ SBK.SongFilterList = SBK.SongList.extend({
         self.song_objects = [];
         for (song_number in data_json.songs) {
             if (data_json.songs.hasOwnProperty (song_number)) {
-                console.log(song_number, data_json.songs[song_number]);
                 self.song_objects[song_index] = new SBK.SongListItemSong.Selector(
                     ul, 
                     {index: 0, playlist: self},
@@ -40,7 +39,7 @@ SBK.SongFilterList = SBK.SongList.extend({
 		self.container.html('');
 		button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);
         self.buttons = {
-                all_playlists: new SBK.Button(button_bar, 'all-songs', 'List all Playists', function () {self.app.display_playlist_list();}),
+                all_playlists: new SBK.Button(button_bar, 'all-songs', 'List all Playlists', function () {self.app.display_playlist_list();}),
                 add_new_song: new SBK.Button(button_bar, 'add-new-song', 'Add a new Song', function () {self.app.application_state.set({
                     tab: 'add_new_song',
                     playlist_filename: null,

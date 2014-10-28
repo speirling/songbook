@@ -18,7 +18,7 @@ SBK.SongbookApplication = SBK.Class.extend({
             jQuery.getJSON('js/songs.json', function (data){
                 self.all_songs = data;
 
-                self.api = new SBK.Api(self.all_playlists, self.all_songs);
+                self.api = new SBK.Api(self);
                 // Set the initial application state
                 self.application_state = new SBK.ApplicationState();
                 self.application_state.register_callback(function () {
