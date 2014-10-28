@@ -52,6 +52,7 @@ class ApiController extends AppController {
             $this->set ( 'success', false );
             $this->set ( 'data', "no playlist name specified" );
         }
+        $this->export_all_playlists();
         $this->set ( '_serialize', array (
                         'success',
                         'data' 
@@ -137,6 +138,7 @@ class ApiController extends AppController {
                 $this->set ( 'data', $this->Song->validationErrors );
             }
         }
+        $this->export_all_songs();
         $this->set ( '_serialize', array ( 'success', 'data' ) );
     }
 
