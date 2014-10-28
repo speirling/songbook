@@ -29,7 +29,7 @@ SBK.AllPlaylists = SBK.Class.extend({
     
     render_response: function (response) {
         var self = this, playlist_grouped_by_act, ul, act_index, li_act, ul_act, li_pl, pl_index, link;
-console.log(response);
+
         playlist_grouped_by_act = self.group_by_act(response.data);
         ul = jQuery('<ul class="all_playlists"></ul>');
 

@@ -76,25 +76,27 @@ SBK.SongLyricsEdit = SBK.Class.extend({
     save_song: function () {
         var self = this;
 
+        self.inputs.content.html(self.inputs.content.html().replace(/<br\s*[\/]?>/gi, "\n"));
+
         if (self.id === null) {
 
             self.api.api_call(
                 'update_song',
                 {Song: {
-                    title: self.inputs.title.html(),
-                    written_by: self.inputs.written_by.html(),
-                    performed_by: self.inputs.performed_by.html(),
-                    base_key: self.inputs.base_key.html(),
-                    content: self.inputs.content.html(),
-                    meta_tags: self.inputs.meta_tags.html()
+                    title: self.inputs.title.text(),
+                    written_by: self.inputs.written_by.text(),
+                    performed_by: self.inputs.performed_by.text(),
+                    base_key: self.inputs.base_key.text(),
+                    content: self.inputs.content.text(),
+                    meta_tags: self.inputs.meta_tags.text()
                 }},
                 function (response) {
-                    if (response.success === true) {
+                    if (response.success !== false) { // could be a number
                         self.id = response.data.id;
                         self.app.display_song({id: self.id, key: null, capo: null});
                     } else {
-                        alert('Failed to save song');
-                        throw ('asdd new song request failed.' );
+                        alert('Failed to save new song. ' + response.success);
+                        throw ('"add new song" request failed. ' + response.success );
                     }
                 }
             );
@@ -103,19 +105,19 @@ SBK.SongLyricsEdit = SBK.Class.extend({
                 'update_song',
                 {Song: {
                     id: self.id + '',
-                    title: self.inputs.title.html(),
-                    written_by: self.inputs.written_by.html(),
-                    performed_by: self.inputs.performed_by.html(),
-                    base_key: self.inputs.base_key.html(),
-                    content: self.inputs.content.html(),
-                    meta_tags: self.inputs.meta_tags.html()
+                    title: self.inputs.title.text(),
+                    written_by: self.inputs.written_by.text(),
+                    performed_by: self.inputs.performed_by.text(),
+                    base_key: self.inputs.base_key.text(),
+                    content: self.inputs.content.text(),
+                    meta_tags: self.inputs.meta_tags.text()
                 }},
                 function (response) {
-                    if (response.success === true) {
+                    if (response.success !== false) { // could be a number
                         self.app.display_song({id: self.id, key: null, capo: null});
                     } else {
-                        alert('Failed to save song');
-                        throw ('update_song request failed.' );
+                        alert('Failed to update existing song. ' + response.success);
+                        throw ('update_song request failed. ' + response.success );
                     }
                 }
             );

@@ -59,12 +59,19 @@ SBK.SongListItemSong = SBK.Class.extend({
             singer: self.inputs.singer.val(),
             title: self.data.title,
             introduction: {
-                duration: self.inputs.introduction.duration.val(),
-                text: self.inputs.introduction.text.val()
+                duration: '',
+                text: ''
             },
             capo:  self.inputs.capo.val(),
             duration: self.inputs.duration.val()
         };
+
+        if (typeof(self.inputs.introduction) !== 'undefined') {
+            data.introduction = {
+                duration: self.inputs.introduction.duration.val(),
+                text: self.inputs.introduction.text.val()
+            };
+        }
 
         return data;
     },

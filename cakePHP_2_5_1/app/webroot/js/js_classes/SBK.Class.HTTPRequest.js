@@ -26,7 +26,7 @@ SBK.HTTPRequest = SBK.Class.extend({
                     	if(server_data === null) {
                     		throw('The server returned Null');
                     	}
-                    	if(server_data.success === true) {
+                    	if(server_data.success !== false) { // could be a number!
                     		success(server_data);
                     	} else {
                     	    if (typeof(failure) === 'function') {

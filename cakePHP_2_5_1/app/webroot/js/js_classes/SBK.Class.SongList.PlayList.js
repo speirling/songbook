@@ -70,7 +70,7 @@ SBK.PlayList = SBK.SongList.extend({
 			    function () {
 					self.render();
 				    self.app.pleasewait.hide();
-				    self.app.application_state.set({playlist_filename: self.playlist_name})
+				    self.app.display_playlist(self.playlist_name);
 	    		}
 			);
 		}
@@ -93,16 +93,21 @@ SBK.PlayList = SBK.SongList.extend({
         };
         
         self.playlist_ul = jQuery('<ul></ul>').appendTo(self.playlist_container);
-     
-        for (set_index = 0; set_index < data_json.sets.length; set_index = set_index + 1) {
-            /* WORKAROUND:: simplexml converts a single song into an object, not an array. make sure data_json.sets[set_index].songs is an array!!! */
-            /* problem with this if there are NO songs */
-            if (typeof(data_json.sets[set_index].songs) !== 'undefined') {
-                data_json.sets[set_index].songs = [].concat(data_json.sets[set_index].songs);
-            } 
-            self.set_objects[set_index] = new SBK.SongListItemSet(self.playlist_ul, self, set_index, data_json.sets[set_index]);
-            self.set_objects[set_index].render();
-            
+
+        if (typeof(data_json.sets) !== 'undefined') { //could happen when a playlist is first defined
+            data_json.sets = [].concat(data_json.sets); //same issue as WORKAROUND below
+            for (set_index = 0; set_index < data_json.sets.length; set_index = set_index + 1) {
+                /* WORKAROUND:: simplexml converts a single song into an object, not an array. make sure data_json.sets[set_index].songs is an array!!! */
+                /* problem with this if there are NO songs */
+                if (typeof(data_json.sets[set_index].songs) !== 'undefined') {
+                    data_json.sets[set_index].songs = [].concat(data_json.sets[set_index].songs);
+                }
+                self.set_objects[set_index] = new SBK.SongListItemSet(self.playlist_ul, self, set_index, data_json.sets[set_index]);
+                self.set_objects[set_index].render();
+                
+            }
+        } else {
+            console.log('no sets');
         }
 
         return self.playlist_container;
@@ -120,7 +125,6 @@ SBK.PlayList = SBK.SongList.extend({
         jQuery('li', self.playlist_ul).each(function () {
             if(jQuery('ol', this).length > 0) {
                 current_set = jQuery(this);
-                console.log(current_set, jQuery('li.song:visible', current_set), jQuery('li.song:visible', current_set).length);
                 if(jQuery('li.song:visible', current_set).length === 0 ) {
                     current_set.hide();
                 }
@@ -148,18 +152,18 @@ SBK.PlayList = SBK.SongList.extend({
 	display_content: function () {
 		var self = this, button_bar, set_index, internal_navigation_bar, label, filter_to;
 	
-		self.container.html('').css('padding-top', 0);
+		self.container.html('').css('padding-top', 0); //so that the navigation bar is always at the top of the screen
 		self.navigation_panel = jQuery('<div class="navigation-panel"></div>').appendTo(self.container);
 
 		button_bar = jQuery('<div class="button-bar flyout closed"></div>').appendTo(self.navigation_panel);
 		button_bar.click(function () {
 		    jQuery(this).toggleClass('closed');
-		    self.container.css('padding-top', self.navigation_panel.height());
+		    self.container.css('padding-top', self.navigation_panel.height());  //so that the navigation bar is always at the top of the screen
 		});
 
         //buttons
 		self.buttons = {
-            close: new SBK.Button(button_bar, 'close', '&laquo; Playists', function () {self.app.display_playlist_list();}),
+            close: new SBK.Button(button_bar, 'close', '&laquo; Playlists', function () {self.app.display_playlist_list();}),
             all_songs: new SBK.Button(button_bar, 'all-songs', '&laquo; All songs', function () {self.app.list_all_songs();}),
             details: new SBK.Button(button_bar, 'toggle-details', 'Details', function () {self.toggle_details();}),
             edit_buttons: new SBK.Button(button_bar, 'toggle-buttons', 'Buttons', function () {self.toggle_edit_buttons();}),
@@ -167,9 +171,9 @@ SBK.PlayList = SBK.SongList.extend({
             book: new SBK.Button(button_bar, 'book', 'Book', function () {self.app.playlist_book(self.playlist_name);}),
             intro: new SBK.Button(button_bar, 'toggle-intro', 'Intros', function () {self.toggle_introductions();}),
             save: new SBK.Button(button_bar, 'save', 'Save', function() {
-                    self.app.pleasewait.show();
-                    self.save_playlist();
-                }),
+                self.app.pleasewait.show();
+                self.save_playlist();
+            }),
             print: new SBK.Button(button_bar, 'print', 'Print', function () {self.app.playlist_print(self.playlist_name)})
 		};
 
@@ -185,7 +189,7 @@ SBK.PlayList = SBK.SongList.extend({
 
         internal_navigation_bar = jQuery('<div class="navigation-bar button-bar"></div>').appendTo(self.navigation_panel);
      
-        if (self.data_json.sets.length > 0) {
+        if (typeof(self.data_json.sets) !== 'undefined' && self.data_json.sets.length > 0) {
             for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
                 if(typeof(self.set_objects[set_index]) !== 'undefined') {
                     if (self.data_json.sets[set_index].label === '') {
@@ -225,7 +229,7 @@ SBK.PlayList = SBK.SongList.extend({
 
         self.number_of_songs.html(jQuery('li.song:visible', self.container).length);
         
-        self.container.css('padding-top', self.navigation_panel.height());
+        self.container.css('padding-top', self.navigation_panel.height());  //so that the navigation bar is always at the top of the screen
         if (self.set_objects.length > 0) {
             required_padding_bottom = (self.app.container.height() - self.navigation_panel.height()) - self.set_objects[self.set_objects.length - 1].container.height();
             if (required_padding_bottom > 0) {
@@ -339,6 +343,9 @@ SBK.PlayList = SBK.SongList.extend({
 	add_set: function() {
 		var self = this;
 
+		if (typeof(self.data_json.sets) === 'undefined') {
+		    self.data_json.sets = [];
+		}
 		self.data_json.sets[self.data_json.sets.length] = {
 			label: (''),
 			introduction: {duration: '', text: ''},
@@ -413,7 +420,7 @@ SBK.PlayList = SBK.SongList.extend({
         //before blanking the container, save any changes to data_json
         self.update();
 
-        self.container.html('').css('padding-top', 0);
+        self.container.html('').css('padding-top', 0);  //so that the navigation bar is always at the top of the screen
         navigation_panel = jQuery('<span class="button-bar"></span>').appendTo(self.container); // button-bar so that it gets inline styling....
         new SBK.Button(navigation_panel, 'cancel', 'cancel', function () {self.redraw();});
         
@@ -588,7 +595,7 @@ SBK.PlayList = SBK.SongList.extend({
         var self = this, starting_index, insert_details, set_index, set_row;
 
         self.update();
-        self.container.html('').css('padding-top', 0);
+        self.container.html('').css('padding-top', 0);  //so that the navigation bar is always at the top of the screen
         navigation_panel = jQuery('<span class="button-bar"></span>').appendTo(self.container);
 
         //close button
@@ -597,7 +604,6 @@ SBK.PlayList = SBK.SongList.extend({
         chooser_panel = jQuery('<span class="chooser-panel"></span>').appendTo(self.container);
 
         for (set_index = 0; set_index < self.data_json.sets.length; set_index = set_index + 1) {
-            console.log(self.data_json.sets[set_index]);
             set_row = jQuery('<div class="set-row"><div>').appendTo(chooser_panel);
             jQuery('<label>' + self.data_json.sets[set_index].label + '</label>').appendTo(set_row);
 
