@@ -1,3 +1,28 @@
+@media print {
+	.button,
+	.navigation-panel {
+	    display: none;
+	}
+	#playlist-display {
+	    padding: 0 !important;
+	}
+	body, 
+	#container,
+	.playlist li.song {
+	    background-color: white;
+	    width: 300px;
+	}
+	
+	
+}
+@media screen {
+	
+
+	.playlist li.song {
+	    background-color: #f0f0c0;
+	}
+}
+
 #playlist-display {
 	/*position: absolute;
 	top: 0;
@@ -106,10 +131,6 @@ li.set ul {
 .displayPlaylist .playlist li {
 	padding: 0.2em;
 	list-style-type: none;
-}
-
-.playlist li.song {
-    background-color: #f0f0c0;
 }
 .playlist li.song.selected {
     background-color: #f0ffc0;
