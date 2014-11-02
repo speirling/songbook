@@ -1,17 +1,18 @@
 @media print {
 	.button,
 	.navigation-panel {
-	    display: none;
+	    display: none !important;
 	}
 	#playlist-display {
 	    padding: 0 !important;
 	}
-	body, 
-	#container,
-	.playlist li.song {
-	    background-color: white;
-	    width: 300px;
-	}
+    body, 
+    #container,
+    .playlist li.song {
+        font-size: 12px;
+        background-color: white;
+        width: 250px;
+    }
 	
 	
 }
