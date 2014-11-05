@@ -2,16 +2,17 @@ SBK.Button = SBK.Class.extend({
 	init: function (parent_container, classname, text, onclick) {
 		var self = this;
 
-		self.container = jQuery('<a class="button ' + classname + '"></a>').appendTo(parent_container);
-		self.container.html(text);
-        if(typeof(onclick) === 'function') {
-            self.click(onclick);
-        }
-        self.container.bind('click', function () {self.indicate_button_press()});
-        if(typeof(classname) === 'string' && classname !== '') {
-            self.container.addClass(classname);
-        }
+		self.container = jQuery('<a class="button"></a>').appendTo(parent_container);
+		self.set_text(text);
+        self.click(onclick);
+        self.addClass(classname);
 	},
+    
+    set_text: function (text) {
+        var self = this;
+        
+        self.container.html(text);
+    },
     
 	indicate_button_press: function (onclick) {
         var self = this;
@@ -25,11 +26,15 @@ SBK.Button = SBK.Class.extend({
     click: function (onclick) {
         var self = this;
 
-        self.container.bind('click', function () {
-            setTimeout(function () {
-            onclick();
-            }, 100);
-        });
+        if(typeof(onclick) === 'function') {
+            self.container.unbind('click');
+            self.container.bind('click', function () {
+                setTimeout(function () {
+                onclick();
+                }, 100);
+            });
+            self.container.bind('click', function () {self.indicate_button_press()});
+        }
     },
     
     enable: function () {
