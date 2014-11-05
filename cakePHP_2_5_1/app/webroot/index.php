@@ -117,6 +117,7 @@ Configure::write(
                     'js_classes/SBK.Class.ApplicationState.js',
                     'js_classes/SBK.Class.PleaseWait.js',
                     'js_classes/SBK.Class.Button.js',
+                    'js_classes/SBK.Class.ChordEditor.js',
                     'js_classes/SBK.Class.HTTPRequest.js',
                     'js_classes/SBK.Class.Api.js',
                     'js_classes/SBK.Class.SongList.js',

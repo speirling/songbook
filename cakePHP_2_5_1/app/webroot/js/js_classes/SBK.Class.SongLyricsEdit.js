@@ -7,6 +7,11 @@ SBK.SongLyricsEdit = SBK.Class.extend({
 		self.app = app;
 		self.pleasewait = new SBK.PleaseWait(self.container);
 		self.api = app.api;
+		self.chord_editor = new SBK.ChordEditor(self.container, function (chord_string) { 
+		    console.log(chord_string);
+		    self.inputs.content.insertAtCaret('[' + chord_string + ']'); 
+		});
+		self.chord_editor.render();
 	},
     
     render: function () {
@@ -48,7 +53,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
         self.buttons = {
             save: new SBK.Button(self.container, 'save', 'Save', function () {self.save_song();}),
             cancel: new SBK.Button(self.container, 'cancel', 'Cancel', function () {self.app.back();}),
-            chord_mode: new SBK.Button(self.container, 'chord-mode', 'Chord mode'),
+            chord_mode: new SBK.Button(self.container, 'chord-mode', 'Chord mode', function () {self.enter_add_chords_mode();}),
             lyrics_mode: new SBK.Button(self.container, 'lyrics', 'Lyrics mode')
         };
         self.header_container = jQuery('<div class="song_headings"></div>').appendTo(self.container);
@@ -69,6 +74,16 @@ SBK.SongLyricsEdit = SBK.Class.extend({
         container = jQuery('<span class="' + id + ' input-container"></span>').appendTo(parent_container);
         jQuery('<span class="label">' + label_text + '<span class="separator">: </span></span>').appendTo(container);
         input = jQuery('<pre contentEditable="true" class="input-box" id="' + id + '">' + value + '</pre>').appendTo(container);
+
+        return input;
+    },
+    
+    make_textarea: function (parent_container, id, value, label_text) {
+        var self = this, container, input;
+
+        container = jQuery('<span class="' + id + ' input-container"></span>').appendTo(parent_container);
+        jQuery('<span class="label">' + label_text + '<span class="separator">: </span></span>').appendTo(container);
+        input = jQuery('<textarea class="input-box" id="' + id + '">' + value + '</textarea>').appendTo(container);
 
         return input;
     },
@@ -122,5 +137,25 @@ SBK.SongLyricsEdit = SBK.Class.extend({
                 }
             );
         }
+    },
+
+    enter_add_chords_mode: function () {
+        var self = this, caret_position, chord_text = '', key = false;
+
+        self.inputs.content.bind('click', function (event) {
+            self.chord_editor.open(event.pageX, event.pageY);
+        });
+        self.buttons.chord_mode.set_text('exit chord mode');
+        self.buttons.chord_mode.click(function () {self.exit_add_chords_mode();});
+        self.buttons.chord_mode.addClass('chord-mode-active');
+    },
+
+    exit_add_chords_mode: function () {
+        var self = this;
+        
+        self.inputs.content.unbind('keypress').unbind('click');
+        self.buttons.chord_mode.set_text('Chord mode');
+        self.buttons.chord_mode.click(function () {self.enter_add_chords_mode();});
+        self.buttons.chord_mode.removeClass('chord-mode-active');
     }
 });

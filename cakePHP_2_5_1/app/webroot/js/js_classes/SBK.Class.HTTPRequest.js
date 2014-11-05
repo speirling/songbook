@@ -4,7 +4,7 @@ SBK.HTTPRequest = SBK.Class.extend({
 	init: function (container) {
 		var self = this;
 
-		self.api_server = '/songbook/api/';
+		self.api_server = '/songbook-dev/api/';
 	},
 
     make_post_request: function (url, data, success, failure) {
