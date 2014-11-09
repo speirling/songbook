@@ -8,8 +8,11 @@ SBK.SongLyricsEdit = SBK.Class.extend({
 		self.pleasewait = new SBK.PleaseWait(self.container);
 		self.api = app.api;
 		self.chord_editor = new SBK.ChordEditor(self.container, function (chord_string) { 
-		    console.log(chord_string);
-		    self.inputs.content.insertAtCaret('[' + chord_string + ']'); 
+		    var text_node;
+		    
+		    console.log(chord_string, self.range);
+            text_node = document.createTextNode('[' + chord_string + ']');
+            self.range.insertNode(text_node);
 		});
 		self.chord_editor.render();
 	},
@@ -140,14 +143,40 @@ SBK.SongLyricsEdit = SBK.Class.extend({
     },
 
     enter_add_chords_mode: function () {
-        var self = this, caret_position, chord_text = '', key = false;
+        var self = this, caret_position, chord_text = '', key = false, selectionObject, current_value;
 
         self.inputs.content.bind('click', function (event) {
-            self.chord_editor.open(event.pageX, event.pageY);
+            self.chord_editor.close();
+            selectionObject = window.getSelection();
+            console.log(selectionObject, selectionObject.isCollapsed);
+            self.range = selectionObject.getRangeAt(0);
+            if (selectionObject.isCollapsed) {
+                current_value = '';
+            } else {
+                current_value = selectionObject.toString().trim();
+                console.log(current_value, current_value.length);
+                last_char = current_value.substr(current_value.length -1);
+                first_char = current_value.substr(0, 1);
+                console.log(last_char, first_char);
+                if (first_char === '[' && last_char === ']') {
+                    current_value = current_value.substr(1, current_value.length, -1);
+                } else {
+                    //not a legitimate range
+                    current_value = '';
+                }
+            }
+            self.chord_editor.open(event.pageX, event.pageY, current_value);
         });
         self.buttons.chord_mode.set_text('exit chord mode');
         self.buttons.chord_mode.click(function () {self.exit_add_chords_mode();});
         self.buttons.chord_mode.addClass('chord-mode-active');
+    },
+
+    insert_chord_string: function (chord_string) {
+        var self = this, text_node;
+
+        text_node = document.createTextNode('[' + chord_string + ']');
+        self.range.insertNode(text_node);
     },
 
     exit_add_chords_mode: function () {

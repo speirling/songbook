@@ -108,6 +108,19 @@ SBK.StaticFunctions = {
         }
     },
     
+    charCode_to_key_modifier: function (char_code) {
+        var codes = {
+            '66': 'b', //B
+            '98': 'b', //b
+            '35': '#'
+        };
+        if(typeof(codes[char_code]) === 'string') {
+            return codes[char_code];
+        } else {
+            return false;
+        }
+    },
+    
     find_note_number: function (original_value, adjustment) {
         var new_value;
 
@@ -212,22 +225,23 @@ SBK.StaticFunctions = {
         var second_char, modifier_start, slash_position;
         
         result = {};
-        
-        result.note = chord.substring(0, 1);
-        second_char = chord.substring(1, 1);
-        modifier_start = 1;
-        if (second_char === '#' || second_char == 'b') {
-            result.note = result.note + second_char;
-            modifier_start = 2;
+        if(chord_string !== '') {
+            result.note = chord.substring(0, 1);
+            second_char = chord.substring(1, 1);
+            modifier_start = 1;
+            if (second_char === '#' || second_char == 'b') {
+                result.note = result.note + second_char;
+                modifier_start = 2;
+            }
+            result.modifier = chord.substring(modifier_start);
+    
+            slash_position = result.modifier.indexOf('/');
+            if (slash_position > -1) {
+                result.bass_note = result.modifier.substring(slash_position + 1);
+                result.modifier = result.modifier.substring(0, slash_position);
+            }
         }
-        result.modifier = chord.substring(modifier_start);
 
-        slash_position = result.modifier.indexOf('/');
-        if (slash_position > -1) {
-            result.bass_note = result.modifier.substring(slash_position + 1);
-            result.modifier = result.modifier.substring(0, slash_position);
-        }
-console.log(chord_string, result)
         return result;
     },
     

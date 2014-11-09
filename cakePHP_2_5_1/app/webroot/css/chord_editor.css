@@ -1,0 +1,38 @@
+.button-note {
+	width: 16px;
+	margin: 0;
+	height: 50px;
+	background-color: white;
+    margin-left: 0px;
+    position: relative;
+    vertical-align: top;
+}
+
+.button-note span {
+	display: inline-block;
+	line-height: 80px;
+    vertical-align: bottom;
+}
+
+.button-note-black {
+	background-color: black;
+	color: white;
+	height: 25px;
+    margin-left: -16px;
+    margin-right: -4px;
+    z-index: 2;
+}
+
+.button-note-black span {
+    display: inline-block;
+    line-height: 40px;
+    vertical-align: bottom;
+}
+
+.button-note-b,
+.button-note-d,
+.button-note-e,
+.button-note-g,
+.button-note-a {
+    margin-left: -8px;
+}

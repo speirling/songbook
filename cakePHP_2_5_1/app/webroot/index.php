@@ -152,7 +152,8 @@ Configure::write(
                     'playlist-edit.css',
                     'playlist-print.css',
                     'song-edit.css',
-                    'song-lyrics.css'
+                    'song-lyrics.css',
+                    'chord_editor.css'
                 )
               )
 );
