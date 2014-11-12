@@ -525,6 +525,7 @@ SBK.PlayList = SBK.SongList.extend({
     },
     
     remove_song: function (song_details) {
+        var self = this;
 
         self.data_json.sets[song_details.set_index].songs.splice(song_details.index, 1);
         self.redraw();
