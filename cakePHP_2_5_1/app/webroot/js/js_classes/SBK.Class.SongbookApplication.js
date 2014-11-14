@@ -21,45 +21,49 @@ SBK.SongbookApplication = SBK.Class.extend({
                 self.api = new SBK.Api(self);
                 // Set the initial application state
                 self.application_state = new SBK.ApplicationState();
-                self.application_state.register_callback(function () {
-                    self.on_application_state_change();
+                self.application_state.register_callback(function (changed_parameters) {
+                    self.on_application_state_change(changed_parameters);
                 });
                 self.application_state.startup(self);
             });
         });
 	},
     
-    on_application_state_change: function () {
+    on_application_state_change: function (changed_parameters) {
         var self = this;
         
-        self.container.html('');
-        delete self.content_container;
-        self.tab = self.application_state.tab;
-        switch (self.tab) {
-            case 'playlist_list':
-                self._display_playlist_list();
-                break;
-            case 'edit_playlist':
-                self._display_playlist(self.application_state.playlist_filename);
-                break;
-            case 'playlist_print':
-                self._playlist_print();
-                break;
-            case 'playlist_book':
-                self._playlist_book();
-                break;
-            case 'song_lyrics':
-                self._display_song(self.application_state.id, self.application_state.key, self.application_state.capo);
-                break;
-            case 'edit_song':
-                self._edit_song(self.application_state.id);
-                break;
-            case 'add_new_song':
-                self._edit_song();
-                break;
-            case 'list_all_songs':
-                self._list_all_songs();
-                break;
+        if(typeof(changed_parameters.tab) !== 'undefined') {
+            if (typeof(changed_parameters.tab) !== 'undefined') {
+                self.container.html('');
+                delete self.content_container;
+                self.tab = self.application_state.tab;
+                switch (self.tab) {
+                    case 'playlist_list':
+                        self._display_playlist_list();
+                        break;
+                    case 'edit_playlist':
+                        self._display_playlist(self.application_state.playlist_filename);
+                        break;
+                    case 'playlist_print':
+                        self._playlist_print();
+                        break;
+                    case 'playlist_book':
+                        self._playlist_book();
+                        break;
+                    case 'song_lyrics':
+                        self._display_song(self.application_state.id, self.application_state.key, self.application_state.capo);
+                        break;
+                    case 'edit_song':
+                        self._edit_song(self.application_state.id);
+                        break;
+                    case 'add_new_song':
+                        self._edit_song();
+                        break;
+                    case 'list_all_songs':
+                        self._list_all_songs();
+                        break;
+                }
+            }
         }
     },
 

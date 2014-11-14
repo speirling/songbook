@@ -181,12 +181,23 @@ SBK.PlayList = SBK.SongList.extend({
         self.container.append(self.to_html(self.data_json));
 
         //initially... hide intros, details and (if required) edit buttons
-        self.hide_introductions();
-        self.hide_details();
-        if (self.edit_buttons_visible === false) {
+        if (self.app.application_state.introductions_visible_in_list) {
+            self.show_introductions();
+        } else {
+            self.hide_introductions();
+        }
+        if (self.app.application_state.buttons_visible_in_list) {
+            self.show_edit_buttons();
+        } else {
             self.hide_edit_buttons();
         }
-
+        if (self.app.application_state.details_visible_in_list) {
+            self.show_details();
+        } else {
+            self.hide_details();
+        }
+        
+        
         internal_navigation_bar = jQuery('<div class="navigation-bar button-bar"></div>').appendTo(self.navigation_panel);
      
         if (typeof(self.data_json.sets) !== 'undefined' && self.data_json.sets.length > 0) {
@@ -310,16 +321,18 @@ SBK.PlayList = SBK.SongList.extend({
         for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
             self.set_objects[set_index].show_details();
         }
+        self.app.application_state.set({details_visible_in_list: true});
     },
 
     hide_details: function() {
         var self = this, set_index;
         
-        if(typeof(self.set_objects) !== 'undefined') {
+        if (typeof(self.set_objects) !== 'undefined') {
             for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
                 self.set_objects[set_index].hide_details();
             }
         }
+        self.app.application_state.set({details_visible_in_list: false});
     },
 
     show_edit_buttons: function() {
@@ -328,6 +341,7 @@ SBK.PlayList = SBK.SongList.extend({
         for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
             self.set_objects[set_index].show_edit_buttons();
         }
+        self.app.application_state.set({buttons_visible_in_list: true});
     },
 
     hide_edit_buttons: function() {
@@ -338,6 +352,7 @@ SBK.PlayList = SBK.SongList.extend({
                 self.set_objects[set_index].hide_edit_buttons();
             }
         }
+        self.app.application_state.set({buttons_visible_in_list: false});
     },
 
 	add_set: function() {
@@ -592,7 +607,7 @@ SBK.PlayList = SBK.SongList.extend({
         }
     },
 
-    display_move_song_destination_chooser: function (song_details) {
+    display_move_song_destination_chooser: function (song_details) { //NOTE!!! this assumes only one of each song in a playlist!!!
         var self = this, starting_index, insert_details, set_index, set_row;
 
         self.update();

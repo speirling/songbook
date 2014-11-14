@@ -32,6 +32,9 @@ SBK.ApplicationState = SBK.Class.extend({
         self.playlist_filename = null;
         self.set_index = null;
         self.song_index = null;
+        self.introductions_visible_in_list = false;
+        self.buttons_visible_in_list = false;
+        self.details_visible_in_list = false;
     },
     
     start_handling_hashchange: function () {
@@ -68,25 +71,26 @@ SBK.ApplicationState = SBK.Class.extend({
     },
     
     update_from_hash: function () {
-        var self = this, index;
-
+        var self = this, index, changed_parameters;
+console.log('update_from_hash');
         hash = self.get_hash();
 
         hash_array = hash.split('&');
 
         valid_formats = {
             tab: /^\d+$/,
-            id: /^\d+$/,            
+            id: /^\d+$/
         };
 
-        // Before extracting data from the hash, reset all current settings so that if  for example p is not present then the playlist filename gets set to null to create a new playlist.
+        //changes to buttons and details attributes should not trigger a reload
+        changed_parameters = self.get_current_state();
+        // Before extracting data from the hash, reset all current settings so that if for example p is not present then the playlist filename gets set to null to create a new playlist.
         self.initialise_state();
         for (index = 0; index < hash_array.length; index = index + 1) {
             split = hash_array[index].split('=');
             parameter = split[0];
             value = split[1];
-
-            
+ 
             switch (parameter) {
             case 't':
                 if (valid_formats.tab.test(value)) {
@@ -111,10 +115,37 @@ SBK.ApplicationState = SBK.Class.extend({
             case 'capo':
                 self.capo = value;
                 break;
+
+            case 'ti':
+                self.set_index = value;
+                break;
+
+            case 'ni':
+                self.song_index = value;
+                break;
+
+            case 'iv':
+                self.introductions_visible_in_list = true;
+                break;
+
+            case 'bv':
+                self.buttons_visible_in_list = true;
+                break;
+
+            case 'dv':
+                self.details_visible_in_list = true;
+                break;
             }
         }
 
-        self.run_callbacks();
+        property_names = ['tab', 'id', 'playlist_filename', 'key', 'capo', 'set_index', 'song_index', 'introductions_visible_in_list', 'buttons_visible_in_list', 'details_visible_in_list'];
+        for (index = 0; index < property_names.length; index = index + 1) {
+            if (typeof(self[property_names[index]]) === 'undefined' || self[property_names[index]] === changed_parameters[property_names[index]]) {
+                delete changed_parameters[property_names[index]];
+            }
+        }
+        
+        self.run_callbacks(changed_parameters);
     },
 
     get_current_state: function () {
@@ -125,7 +156,12 @@ SBK.ApplicationState = SBK.Class.extend({
             id: self.id,
             playlist_filename: self.playlist_filename,
             key: self.key,
-            capo: self.capo
+            capo: self.capo,
+            set_index: self.set_index,
+            song_index: self.song_index,
+            introductions_visible_in_list: self.introductions_visible_in_list,
+            buttons_visible_in_list: self.buttons_visible_in_list,
+            details_visible_in_list: self.details_visible_in_list
         };
     },
 
@@ -141,7 +177,7 @@ SBK.ApplicationState = SBK.Class.extend({
                 state_string = 't=' + index;
             }
         }
-;
+
         // id
         if (SBK.StaticFunctions.undefined_to_null(desired_state.id) !== null) {
             state_string = state_string + '&id=' + desired_state.id;
@@ -160,6 +196,37 @@ SBK.ApplicationState = SBK.Class.extend({
         // capo
         if (SBK.StaticFunctions.undefined_to_null(desired_state.capo) !== null) {
             state_string = state_string + '&capo=' + desired_state.capo;
+        }
+
+        // set_index
+        if (SBK.StaticFunctions.undefined_to_null(desired_state.set_index) !== null) {
+            state_string = state_string + '&ti=' + desired_state.set_index;
+        }
+
+        // song_index
+        if (SBK.StaticFunctions.undefined_to_null(desired_state.song_index) !== null) {
+            state_string = state_string + '&ni=' + desired_state.song_index;
+        }
+
+        // introductions_visible_in_list
+        if (SBK.StaticFunctions.undefined_to_null(desired_state.introductions_visible_in_list) !== null) {
+            if(desired_state.introductions_visible_in_list === true) {
+                state_string = state_string + '&iv';
+            }
+        }
+
+        // buttons_visible_in_list
+        if (SBK.StaticFunctions.undefined_to_null(desired_state.buttons_visible_in_list) !== null) {
+            if(desired_state.buttons_visible_in_list === true) {
+                state_string = state_string + '&bv';
+            }
+        }
+
+        // details_visible_in_list
+        if (SBK.StaticFunctions.undefined_to_null(desired_state.details_visible_in_list) !== null) {
+            if (desired_state.details_visible_in_list === true) {
+                state_string = state_string + '&dv';
+            }
         }
 
         if (new_window === true) {
@@ -189,10 +256,10 @@ SBK.ApplicationState = SBK.Class.extend({
         self.callbacks.register(callback);
     },
     
-    run_callbacks: function () {
+    run_callbacks: function (changed_parameters) {
         var self = this;
 
-        self.callbacks.run();
+        self.callbacks.run(changed_parameters);
     },
 
     register_set_callback: function (callback) {
