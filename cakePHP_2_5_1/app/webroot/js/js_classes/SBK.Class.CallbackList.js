@@ -15,11 +15,11 @@ SBK.CallbackList = SBK.Class.extend({
         self.callbacks.push(callback);
     },
     
-    run: function () {
+    run: function (changed_parameters) {
         var self = this, index;
         
         for (index = 0; index < self.callbacks.length; index = index + 1) {
-            self.callbacks[index]();
+            self.callbacks[index](changed_parameters);
         }
     }
 });
