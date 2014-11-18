@@ -210,10 +210,3 @@ div.song-page .multi-column .line {
 .chord .separator {
 	margin-left: 0.2em;
 }
-
-.chord-editor-input {
-	width: 90px; 
-	height: 30px;
-	border: 2px solid silver;
-	background-color: #f3ffff;
-}

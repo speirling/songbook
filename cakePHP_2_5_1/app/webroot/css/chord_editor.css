@@ -1,3 +1,16 @@
+.chord-editor {
+	border: 1px solid gray;
+	width: 342px;
+	margin: 5px;
+	background-color: gray;
+	border: 5px solid gray;
+}
+
+.chord-editor .container-modifiers .button {
+	margin: 1px;
+	width: 40px;
+}
+
 .button-note {
 	width: 16px;
 	margin: 0;
@@ -35,4 +48,53 @@
 .button-note-g,
 .button-note-a {
     margin-left: -8px;
+}
+
+.container-notes {
+	position: relative;
+    padding-left: 55px;
+    padding-right: 55px;
+    width: 230px;
+}
+.container-notes .selected {
+	background-color: #339933;
+	color: white;
+}
+
+.container-notes .button-note-type {
+    position: absolute;
+    left: 0;
+    line-height: 1em;
+    height: 1em;
+    margin: 0;
+    width: 30px;
+}
+.container-notes .button-note-type-key {
+    top: 0;
+}
+.container-notes .button-note-type-bass {
+    bottom: 0;
+}
+
+.container-notes .button-submit {
+    position: absolute;
+    right: 0;
+    line-height: 1em;
+    height: 1em;
+    margin: 0;
+    width: 30px;
+}
+.container-notes .button-submit-backspace {
+    top: 0;
+}
+.container-notes .button-submit-close {
+    bottom: 0;
+}
+
+.chord-editor-input {
+    width: 338px; 
+    height: 30px;
+    border: 0px solid silver;
+    background-color: #f3ffff;
+    text-align: center;
 }
