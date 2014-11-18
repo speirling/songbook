@@ -6,13 +6,12 @@
 	#playlist-display {
 	    padding: 0 !important;
 	}
-    body, 
-    #container,
-    .playlist li.song {
-        font-size: 12px;
-        background-color: white;
-        width: 250px;
-    }
+	body, 
+	#container,
+	.playlist li.song {
+	    background-color: white;
+	    width: 400px;
+	}
 	
 	
 }

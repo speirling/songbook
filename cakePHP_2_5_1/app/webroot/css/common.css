@@ -9,52 +9,6 @@ body,
 	bottom: 0;
 }
 
-/* Large desktops and laptops */
-@media (orientation:landscape) {
-	body,
-	#container {
-	    font-size: 12px;
-	}
-}
-
-/* Portrait high res tablet */
-@media (orientation:portrait) and (min-width: 992px) {
-    body,
-    #container {
-        font-size: 42px;
-        background-color: #ffeeee;
-    }
-}
-
-/* Portrait tablets and small desktops */
-@media (orientation:portrait) and (min-width: 768px) and (max-width: 991px) {
-    body,
-    #container {
-        font-size: 36px;
-        background-color: #eeffee;
-    }
-
-}
-
-/* Landscape phones and portrait tablets */
-@media (orientation:portrait) and (max-width: 767px) {
-    body,
-    #container {
-        font-size: 12px;
-        background-color: #eeeeff;
-    }
-
-}
-
-/* Landscape phones and smaller */
-@media (orientation:landscape) and (max-width: 480px) {
-    body,
-    #container {
-        font-size: 12px;
-        background-color: #eeeeee;
-    }
-
-}
 
 a {
 	cursor: pointer;
