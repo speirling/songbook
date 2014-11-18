@@ -226,14 +226,14 @@ SBK.StaticFunctions = {
         
         result = {};
         if(chord_string !== '') {
-            result.note = chord.substring(0, 1);
-            second_char = chord.substring(1, 1);
+            result.note = chord_string.substring(0, 1);
+            second_char = chord_string.substring(1, 1);
             modifier_start = 1;
             if (second_char === '#' || second_char == 'b') {
                 result.note = result.note + second_char;
                 modifier_start = 2;
             }
-            result.modifier = chord.substring(modifier_start);
+            result.modifier = chord_string.substring(modifier_start);
     
             slash_position = result.modifier.indexOf('/');
             if (slash_position > -1) {
