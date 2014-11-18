@@ -17,15 +17,16 @@ SBK.ChordEditor = SBK.Class.extend({
         self.button_containermodifiers = jQuery('<div class="container container-modifiers"></div>').appendTo(self.container);
         self.button_containernotes = jQuery('<div class="container container-notes"></div>').appendTo(self.container);
         self.buttons = {};
-        self.buttons.close = jQuery('<div class="button button-closebackspace"><span>Close<span></div>').appendTo(self.container).click(function () { self.close(); });
-        self.buttons.backspace = jQuery('<div class="button button-closebackspace"><span>Back<span></div>').appendTo(self.container).click(function () { self.register_backspace(); });
-
-        self.buttons.key_note = jQuery('<div class="button button-modifier button-modifier-minor"><span>key</span></div>').appendTo(self.button_containernotes).click(function () { 
+        self.buttons.key_note = jQuery('<div class="button button-note-type button-note-type-key selected"><span>key</span></div>').appendTo(self.button_containernotes).click(function () { 
             self.bass_note_requested = false;
+            self.buttons.key_note.addClass('selected');
+            self.buttons.bass_note.removeClass('selected');
         });
         
-        self.buttons.bass_note = jQuery('<div class="button button-modifier button-modifier-minor"><span>bass</span></div>').appendTo(self.button_containernotes).click(function () { 
+        self.buttons.bass_note = jQuery('<div class="button button-note-type button-note-type-bass"><span>bass</span></div>').appendTo(self.button_containernotes).click(function () { 
             self.bass_note_requested = true;
+            self.buttons.key_note.removeClass('selected');
+            self.buttons.bass_note.addClass('selected');
         });
         self.buttons.note_c = jQuery('<div class="button button-note button-note-white button-note-c"><span>c</span></div>').appendTo(self.button_containernotes).click(function () { 
             self.handle_note_button('C'); 
@@ -63,6 +64,9 @@ SBK.ChordEditor = SBK.Class.extend({
         self.buttons.note_b = jQuery('<div class="button button-note button-note-white button-note-b"><span>b</span></div>').appendTo(self.button_containernotes).click(function () { 
             self.handle_note_button('B'); 
         });
+
+        self.buttons.close = jQuery('<div class="button button-submit button-submit-close"><span>Set<span></div>').appendTo(self.button_containernotes).click(function () { self.close(); });
+        self.buttons.backspace = jQuery('<div class="button button-submit button-submit-backspace"><span>Back<span></div>').appendTo(self.button_containernotes).click(function () { self.register_backspace(); });
 
         self.buttons.modifier_major = jQuery('<div class="button button-modifier button-modifier-major"><span>(major)</span></div>').appendTo(self.button_containermodifiers).click(function () { 
             self.chord_object.modifier = ''; 
@@ -103,6 +107,10 @@ SBK.ChordEditor = SBK.Class.extend({
         if (typeof(chord_string) === 'undefined') {
             chord_string = ''; 
         } 
+        
+        self.bass_note_requested = false;
+        self.buttons.key_note.addClass('selected');
+        self.buttons.bass_note.removeClass('selected');
 
         self.initial_value = chord_string;
         self.chord_object = SBK.StaticFunctions.parse_chord_string(chord_string);
