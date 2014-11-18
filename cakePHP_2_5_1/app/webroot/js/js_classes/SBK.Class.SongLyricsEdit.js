@@ -9,8 +9,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
 		self.api = app.api;
 		self.chord_editor = new SBK.ChordEditor(self.container, function (chord_string) { 
 		    var text_node;
-		    
-		    console.log(chord_string, self.range);
+
             text_node = document.createTextNode('[' + chord_string + ']');
             self.range.insertNode(text_node);
 		});
@@ -145,6 +144,15 @@ SBK.SongLyricsEdit = SBK.Class.extend({
     enter_add_chords_mode: function () {
         var self = this, caret_position, chord_text = '', key = false, selectionObject, current_value;
 
+        //self.inputs.title.parent().hide();
+        self.inputs.written_by.parent().hide();
+        self.inputs.performed_by.parent().hide();
+        self.inputs.base_key.parent().hide();
+        self.inputs.meta_tags.parent().hide();
+
+        if(self.chord_editor.display_mode === 'static') {
+            self.chord_editor.container.show();
+        }
         self.inputs.content.bind('click', function (event) {
             self.chord_editor.close();
             selectionObject = window.getSelection();
@@ -159,13 +167,15 @@ SBK.SongLyricsEdit = SBK.Class.extend({
                 first_char = current_value.substr(0, 1);
                 console.log(last_char, first_char);
                 if (first_char === '[' && last_char === ']') {
-                    current_value = current_value.substr(1, current_value.length, -1);
+                    current_value = current_value.substr(1, current_value.length - 2);
                 } else {
                     //not a legitimate range
                     current_value = '';
                 }
+                console.log(current_value);
             }
             self.chord_editor.open(event.pageX, event.pageY, current_value);
+            //self.chord_editor.open(null, null, current_value);
         });
         self.buttons.chord_mode.set_text('exit chord mode');
         self.buttons.chord_mode.click(function () {self.exit_add_chords_mode();});
@@ -181,7 +191,16 @@ SBK.SongLyricsEdit = SBK.Class.extend({
 
     exit_add_chords_mode: function () {
         var self = this;
-        
+
+        self.inputs.title.parent().show();
+        self.inputs.written_by.parent().show();
+        self.inputs.performed_by.parent().show();
+        self.inputs.base_key.parent().show();
+        self.inputs.meta_tags.parent().show();
+
+        if(self.chord_editor.display_mode === 'static') {
+            self.chord_editor.container.hide();
+        }
         self.inputs.content.unbind('keypress').unbind('click');
         self.buttons.chord_mode.set_text('Chord mode');
         self.buttons.chord_mode.click(function () {self.enter_add_chords_mode();});

@@ -2,11 +2,12 @@ SBK.ChordEditor = SBK.Class.extend({
 	init: function (parent_container, callback) {
 		var self = this;
 
-		self.container = jQuery('<div class="chord-editor"></div>').appendTo(parent_container.parent()).hide();
+		self.container = jQuery('<div class="chord-editor"></div>').prependTo(parent_container.parent()).hide();
         self.callback = callback;
         self.chord_object = {};
         self.bass_note_requested = false;
         self.initial_value = '';
+        self.display_mode = 'static';
 	},
 
     render: function () {
@@ -18,7 +19,14 @@ SBK.ChordEditor = SBK.Class.extend({
         self.buttons = {};
         self.buttons.close = jQuery('<div class="button button-closebackspace"><span>Close<span></div>').appendTo(self.container).click(function () { self.close(); });
         self.buttons.backspace = jQuery('<div class="button button-closebackspace"><span>Back<span></div>').appendTo(self.container).click(function () { self.register_backspace(); });
+
+        self.buttons.key_note = jQuery('<div class="button button-modifier button-modifier-minor"><span>key</span></div>').appendTo(self.button_containernotes).click(function () { 
+            self.bass_note_requested = false;
+        });
         
+        self.buttons.bass_note = jQuery('<div class="button button-modifier button-modifier-minor"><span>bass</span></div>').appendTo(self.button_containernotes).click(function () { 
+            self.bass_note_requested = true;
+        });
         self.buttons.note_c = jQuery('<div class="button button-note button-note-white button-note-c"><span>c</span></div>').appendTo(self.button_containernotes).click(function () { 
             self.handle_note_button('C'); 
         });
@@ -81,13 +89,6 @@ SBK.ChordEditor = SBK.Class.extend({
             self.display_value();
         });
         
-        self.buttons.key_note = jQuery('<div class="button button-modifier button-modifier-minor"><span>key</span></div>').appendTo(self.button_containermodifiers).click(function () { 
-            self.bass_note_requested = false;
-        });
-        
-        self.buttons.bass_note = jQuery('<div class="button button-modifier button-modifier-minor"><span>bass</span></div>').appendTo(self.button_containermodifiers).click(function () { 
-            self.bass_note_requested = true;
-        });
         
 
         self.input.bind('keypress', function (event) {console.log('key pressed', event.charCode);
@@ -105,8 +106,13 @@ SBK.ChordEditor = SBK.Class.extend({
 
         self.initial_value = chord_string;
         self.chord_object = SBK.StaticFunctions.parse_chord_string(chord_string);
-        
-        self.container.css({"top": y, "left": x, "position": "absolute"}).show();
+        if(self.display_mode === 'floating') {
+            if (typeof(x) !== 'undefined' && typeof(y) !== 'undefined') {
+                if (x !== null && y !== null) {
+                    self.container.css({"top": y, "left": x, "position": "absolute"}).show();
+                }
+            }
+        }
         self.display_value();
         self.bass_note_requested = false;
         self.input.focus();
@@ -114,8 +120,9 @@ SBK.ChordEditor = SBK.Class.extend({
 
     close: function () {
        var self = this;
-
-       self.container.hide();
+       if(self.display_mode === 'floating') {
+           self.container.hide();
+       }
        if (self.get_value() !== self.initial_value) {
            self.callback(self.get_value());
        }
