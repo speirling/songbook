@@ -8,6 +8,7 @@ SBK.ChordEditor = SBK.Class.extend({
         self.bass_note_requested = false;
         self.initial_value = '';
         self.display_mode = 'static';
+        self.range = null;
 	},
 
     render: function () {
@@ -65,7 +66,7 @@ SBK.ChordEditor = SBK.Class.extend({
             self.handle_note_button('B'); 
         });
 
-        self.buttons.close = jQuery('<div class="button button-submit button-submit-close"><span>Set<span></div>').appendTo(self.button_containernotes).click(function () { self.close(); });
+        self.buttons.close = jQuery('<div class="button button-submit button-submit-close"><span>Set<span></div>').appendTo(self.button_containernotes).click(function () { console.log('close button pressed');self.close(); });
         self.buttons.backspace = jQuery('<div class="button button-submit button-submit-backspace"><span>Back<span></div>').appendTo(self.button_containernotes).click(function () { self.register_backspace(); });
 
         self.buttons.modifier_major = jQuery('<div class="button button-modifier button-modifier-major"><span>(major)</span></div>').appendTo(self.button_containermodifiers).click(function () { 
@@ -101,13 +102,35 @@ SBK.ChordEditor = SBK.Class.extend({
         });
     },
 
-    open: function (x, y, chord_string) {
-        var self = this;
+    open: function (selectionObject, x, y) {
+        var self = this, chord_string;
 
-        if (typeof(chord_string) === 'undefined') {
+        if (typeof(selectionObject) === 'undefined') {
             chord_string = ''; 
-        } 
-        
+            self.range = null;
+        } else {
+            self.selection = selectionObject;
+            self.range = selectionObject.getRangeAt(0);
+            if (selectionObject.isCollapsed) {
+                chord_string = '';
+            } else {
+                chord_string = selectionObject.toString().trim();
+                console.log(chord_string, chord_string.length);
+                last_char = chord_string.substr(chord_string.length -1);
+                first_char = chord_string.substr(0, 1);
+                console.log(last_char, first_char);
+                if (first_char === '[' && last_char === ']') {
+                    chord_string = chord_string.substr(1, chord_string.length - 2);
+                } else {
+                    //not a legitimate range
+                    chord_string = '';
+                }
+                console.log(chord_string);
+            }
+
+            self.range.deleteContents();
+            self.range.insertNode(document.createTextNode('[*]'));
+        }
         self.bass_note_requested = false;
         self.buttons.key_note.addClass('selected');
         self.buttons.bass_note.removeClass('selected');
@@ -124,16 +147,18 @@ SBK.ChordEditor = SBK.Class.extend({
         self.display_value();
         self.bass_note_requested = false;
         self.input.focus();
+
     },
 
     close: function () {
        var self = this;
+
        if(self.display_mode === 'floating') {
            self.container.hide();
        }
-       if (self.get_value() !== self.initial_value) {
-           self.callback(self.get_value());
-       }
+       //if (self.get_value() !== self.initial_value) {
+           self.callback(self.get_value(), self.range);
+       //}
     },
 
     display_value: function (chord_string) {
