@@ -9,8 +9,14 @@ SBK.SongLyricsEdit = SBK.Class.extend({
 		self.api = app.api;
 		self.chord_editor = new SBK.ChordEditor(self.container, function (chord_string, range) { 
 		    console.log(chord_string, range);
-            range.deleteContents();
-            range.insertNode(document.createTextNode('[' + chord_string + ']'));
+		    if(range !== null) {
+                range.deleteContents();
+                if(chord_string === '') {
+                    range.insertNode(document.createTextNode(''));
+                } else {
+                    range.insertNode(document.createTextNode('[' + chord_string + ']'));
+                }
+		    }
 		});
 		self.chord_editor.render();
 	},
