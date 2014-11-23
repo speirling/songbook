@@ -66,8 +66,8 @@ SBK.ChordEditor = SBK.Class.extend({
             self.handle_note_button('B'); 
         });
 
-        self.buttons.close = jQuery('<div class="button button-submit button-submit-close"><span>Set<span></div>').appendTo(self.button_containernotes).click(function () { console.log('close button pressed');self.close(); });
-        self.buttons.backspace = jQuery('<div class="button button-submit button-submit-backspace"><span>Back<span></div>').appendTo(self.button_containernotes).click(function () { self.register_backspace(); });
+        self.buttons.close = jQuery('<div class="button button-submit button-submit-close"><span>Set<span></div>').appendTo(self.button_containernotes).click(function () { self.close(); });
+        self.buttons.backspace = jQuery('<div class="button button-submit button-submit-backspace"><span>Back<span></div>').appendTo(self.button_containernotes).click(function () { self.register_backspace(self.get_value()); });
 
         self.buttons.modifier_major = jQuery('<div class="button button-modifier button-modifier-major"><span>(major)</span></div>').appendTo(self.button_containermodifiers).click(function () { 
             self.chord_object.modifier = ''; 
@@ -96,40 +96,82 @@ SBK.ChordEditor = SBK.Class.extend({
         
         
 
-        self.input.bind('keypress', function (event) {console.log('key pressed', event.charCode);
+        self.input.bind('keypress', function (event) {
             self.handle_charCode(event.charCode);
             return false;
         });
     },
 
     open: function (selectionObject, x, y) {
-        var self = this, chord_string;
+        var self = this, chord_string = '', count_backwards = 0, count_forwards = 0, rewind_index = 0;
 
+        //if the chord editor is already active, set its previous range to its previous value.
+        if(self.range !== null) {
+            self.callback(self.get_value(), self.range);
+        }
         if (typeof(selectionObject) === 'undefined') {
             chord_string = ''; 
             self.range = null;
         } else {
+            
             self.selection = selectionObject;
-            self.range = selectionObject.getRangeAt(0);
-            if (selectionObject.isCollapsed) {
-                chord_string = '';
-            } else {
-                chord_string = selectionObject.toString().trim();
-                console.log(chord_string, chord_string.length);
-                last_char = chord_string.substr(chord_string.length -1);
-                first_char = chord_string.substr(0, 1);
-                console.log(last_char, first_char);
-                if (first_char === '[' && last_char === ']') {
-                    chord_string = chord_string.substr(1, chord_string.length - 2);
-                } else {
-                    //not a legitimate range
-                    chord_string = '';
+            self.range = self.selection.getRangeAt(0);
+            //check if the user has clicked or selected within a chord
+            for (count_backwards = 0; count_backwards < 10; count_backwards = count_backwards + 1) {
+                self.selection.modify("extend", "backward", "character");
+                chord_string = self.selection.toString().trim();
+                if (chord_string.substr(0, 1) === '[') {
+                    break;
+                } else if (chord_string.substr(0, 1) === ']') {
+                    //you're incroaching on a previous chord - don't do it!
+                    self.selection.modify("extend", "forward", "character");
+                    break;
+                } 
+            }
+            self.selection.collapseToStart();
+            self.selection.modify("extend", "forward", "character");
+            chord_string = self.selection.toString().trim();
+            if (chord_string.substr(0, 1) === '[') {
+                for (count_forwards = 0; count_forwards < 20; count_forwards = count_forwards + 1) {
+                    self.selection.modify("extend", "forward", "character");
+                    chord_string = self.selection.toString().trim();
+                    if (chord_string.substr(chord_string.length -1) === ']') {
+                        break;
+                    } else if (chord_string.substr(chord_string.length -1) === '[') {
+                        // This shouldn't happen - it means you have a chord inside square brackets. Should you select the outer brackets, or assume that you should insert at a point?
+                        // insert at the clicked point.
+                        break;
+                    } 
                 }
-                console.log(chord_string);
+            }
+            chord_string = self.selection.toString().trim();
+            last_char = chord_string.substr(chord_string.length -1);
+            first_char = chord_string.substr(0, 1);
+                
+            if (first_char === '[' && last_char === ']') {
+                chord_string = chord_string.substr(1, chord_string.length - 2);
+                self.range = window.getSelection().getRangeAt(0);
+            } else {
+                //insert at a single point, so move the selection back to where you started
+                distance_back = count_backwards - count_forwards;
+                if (distance_back < 0) {
+                    distance_forward = distance_back * -1;
+                    for(rewind_index = 0; rewind_index < distance_forward - 1; rewind_index = rewind_index + 1) {
+                        self.selection.modify("extend", "backward", "character");
+                    }
+                    self.selection.collapseToStart();
+                } else {
+                    for(rewind_index = 0; rewind_index < distance_back - 1; rewind_index = rewind_index + 1) {
+                        self.selection.modify("extend", "forward", "character");
+                    }
+                    self.selection.collapseToEnd();
+                }
+                chord_string = '';
             }
 
+
+
             self.range.deleteContents();
-            self.range.insertNode(document.createTextNode('[*]'));
         }
         self.bass_note_requested = false;
         self.buttons.key_note.addClass('selected');
@@ -162,7 +204,7 @@ SBK.ChordEditor = SBK.Class.extend({
     },
 
     display_value: function (chord_string) {
-        var self = this, chord_html = '';
+        var self = this, chord_html = '', v;
 
         if(typeof(chord_string) !== 'undefined') {
             self.chord_object = SBK.StaticFunctions.parse_chord_string(chord_string);
@@ -177,13 +219,17 @@ SBK.ChordEditor = SBK.Class.extend({
             chord_html = chord_html + '<span class="bass_note_divider">/</span>';
             chord_html = chord_html + '<span class="bass_note">' + self.chord_object.bass_note + '</span>';
         }
-        
         self.input.html(chord_html);
+        v = self.get_value();
+        if (v === '') {
+            v = '-';
+        }
+        self.callback(v, self.range);
     },
 
     get_value: function () {
         var self = this;
-        
+
         return self.input.text();
     },
 
@@ -274,6 +320,7 @@ SBK.ChordEditor = SBK.Class.extend({
                 self.chord_object.note = note;
             }
         }
+        self.display_value();
     },
 
     next_part: function (cc) { // determine how keypress should be determined - what part of the chord ar eyou in - not, modifier or bassnote
@@ -337,7 +384,7 @@ SBK.ChordEditor = SBK.Class.extend({
                     return false;
                 }
             }
-            console.log(result);
+
             return result;
 
     }
