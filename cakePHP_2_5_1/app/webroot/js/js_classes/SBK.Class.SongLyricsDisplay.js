@@ -49,9 +49,7 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
             paginated = false;
         }
         song_data = response.data.Song;
-        console.log(song_data);
         self.base_key = song_data.base_key;
-        console.log(self.base_key);
         if (buttons_displayed) {
             button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);
             self.buttons = {
@@ -70,7 +68,7 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         key_container = jQuery('<div class="key"></div>').appendTo(self.header_container);
         target_key_container = jQuery('<div class="target_key"></div>').appendTo(key_container);
         jQuery('<span class="label">key: </span>').appendTo(target_key_container);
-        jQuery('<span class="data"></span>').appendTo(target_key_container);
+        jQuery('<span class="data">' + self.key + '</span>').appendTo(target_key_container);
         self.song_content_container = jQuery('<div class="content"></div>').appendTo(self.container);
         self.song_content_container.html(self.song_content_to_html(song_data.content));
 
