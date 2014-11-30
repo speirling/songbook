@@ -65,8 +65,7 @@ SBK.SongbookApplication = SBK.Class.extend({
                     self._list_all_songs();
                     break;
             }
-        } else if (self.application_state.tab === 'song_lyrics' && typeof(changed_parameters.key) !== 'undefined') {
-            console.log(self.application_state.tab === 'song_lyrics', typeof(changed_parameters.key));
+        } else if (self.application_state.tab === 'song_lyrics' && (typeof(changed_parameters.key) !== 'undefined' || typeof(changed_parameters.capo) !== 'undefined')) {
             self._display_song(self.application_state.id, self.application_state.key, self.application_state.capo);
         }
     },
