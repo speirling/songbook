@@ -186,7 +186,7 @@ SBK.StaticFunctions = {
         return new_note;
     },
     
-    transpose_chord: function (chord, base_key, target_key) {
+    transpose_chord: function (chord, base_key, target_key, capo) {
         var chord_note, second_char, modifier_start, chord_modifier, key_conversion_value, new_chord, bass_key, slash_position, old_bass_key, new_bass_key;
 
         if(base_key === null || base_key === '') {
@@ -194,6 +194,9 @@ SBK.StaticFunctions = {
         }
         if(target_key === null || target_key === '') {
             throw new Exception("SBK.StaticFunctions.transpose_chord() :: no target key passed");
+        }
+        if (typeof(capo) === 'undefined') {
+           capo = 0; 
         }
         chord_note = chord.substring(0, 1);
         second_char = chord.substring(1, 1);
@@ -205,6 +208,7 @@ SBK.StaticFunctions = {
         chord_modifier = chord.substring(modifier_start);
 
         key_conversion_value = SBK.Constants.NOTE_VALUE_ARRAY[target_key] - SBK.Constants.NOTE_VALUE_ARRAY[base_key];
+        key_conversion_value = key_conversion_value - capo;
         new_chord = SBK.StaticFunctions.shift_note(chord_note, key_conversion_value);
 
         bass_key = '';

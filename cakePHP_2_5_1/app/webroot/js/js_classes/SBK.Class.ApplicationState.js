@@ -72,11 +72,9 @@ SBK.ApplicationState = SBK.Class.extend({
     
     update_from_hash: function () {
         var self = this, index, changed_parameters;
-console.log('update_from_hash');
+
         hash = self.get_hash();
-
         hash_array = hash.split('&');
-
         valid_formats = {
             tab: /^\d+$/,
             id: /^\d+$/

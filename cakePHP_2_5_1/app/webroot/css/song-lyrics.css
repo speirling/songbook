@@ -39,7 +39,7 @@ div.song-page .multi-column .line {
 
 .chord.full-width {
 	width: auto;
-	margin-right: 1em;
+	margin-left: 1em;
 }
 .page-header,
 .content {
@@ -106,6 +106,7 @@ div.song-page .multi-column .line {
 	display: block;
 	font-size: 0.6em;
     color: gray;
+    margin-bottom: 0.6em;
 }
 .lyrics-panel  .written_by,
 .page_0 .written_by {
@@ -155,8 +156,10 @@ div.song-page .multi-column .line {
 	color: gray;
 }
 .page-header .key .target_key .label{
+	margin-left: 10px;
 }
 .page-header .key .target_key .data {
+	font-size: 0.8em;
 }
 .page-header .key .capo {
 	font-size: 1.5em;

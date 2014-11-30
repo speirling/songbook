@@ -8,7 +8,11 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
 		self.id = id;
 		self.app = app;
 		self.key = key;
-		self.capo = capo;
+		if(typeof(capo) === 'undefined') {
+		    self.capo = 0;
+		} else {
+		    self.capo = capo;
+		}
 		self.pleasewait = new SBK.PleaseWait(self.container);
 		self.api = app.api;
 		if(typeof(on_close) === 'function') {
@@ -40,7 +44,7 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
     },
     
     render_response: function (response, buttons_displayed, paginated) {
-        var self = this, target_key_container, song_data, key_container;
+        var self = this, target_key_container, song_data, key_container, capo_container;
 
         if (typeof(buttons_displayed) === 'undefined') {
             buttons_displayed = true;
@@ -68,7 +72,38 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         key_container = jQuery('<div class="key"></div>').appendTo(self.header_container);
         target_key_container = jQuery('<div class="target_key"></div>').appendTo(key_container);
         jQuery('<span class="label">key: </span>').appendTo(target_key_container);
-        jQuery('<span class="data">' + self.key + '</span>').appendTo(target_key_container);
+        jQuery('<select class="data">' +
+                '<option value="Ab">Ab</option>' + 
+                '<option value="A">A</option>' +
+                '<option value="A#">A#</option>' +
+                '<option value="Bb">Bb</option>' +
+                '<option value="B">B</option>' +
+                '<option value="C">C</option>' +
+                '<option value="C#">C#</option>' +
+                '<option value="Db">Db</option>' +
+                '<option value="D">D</option>' +
+                '<option value="D#">D#</option>' +
+                '<option value="Eb">Eb</option>' +
+                '<option value="E">E</option>' +
+                '<option value="F">F</option>' +
+                '<option value="F#">F#</option>' +
+                '<option value="Gb">Gb</option>' +
+                '<option value="G">G</option>' +
+                '<option value="G#">G#</option>' +
+                '</select>').val(self.key).change(function (){self.app.application_state.set({key: jQuery(this).val()});}).appendTo(target_key_container);
+        capo_container = jQuery('<div class="target_key"></div>').appendTo(key_container);
+        jQuery('<span class="label">capo: </span>').appendTo(target_key_container);
+        jQuery('<select class="data">' +
+                '<option value="0">0</option>' + 
+                '<option value="1">1</option>' +
+                '<option value="2">2</option>' +
+                '<option value="3">3</option>' +
+                '<option value="4">4</option>' +
+                '<option value="5">5</option>' +
+                '<option value="6">6</option>' +
+                '<option value="7">7</option>' +
+                '<option value="8">8</option>' +
+                '</select>').val(self.capo).change(function (){self.app.application_state.set({capo: jQuery(this).val()});}).appendTo(target_key_container);
         self.song_content_container = jQuery('<div class="content"></div>').appendTo(self.container);
         self.song_content_container.html(self.song_content_to_html(song_data.content));
 
@@ -148,7 +183,7 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         }
 
         if(typeof(song_lyrics_object.base_key) !== 'undefined' && typeof(song_lyrics_object.key) !== 'undefined' && song_lyrics_object.base_key !== '' && song_lyrics_object.key !== '') {
-            chord = SBK.StaticFunctions.transpose_chord(chord, song_lyrics_object.base_key, song_lyrics_object.key);
+            chord = SBK.StaticFunctions.transpose_chord(chord, song_lyrics_object.base_key, song_lyrics_object.key, song_lyrics_object.capo);
         }
 
         return '</span><span class="chord' + fullsize_class + '">' + chord + '</span><span class="text">';
