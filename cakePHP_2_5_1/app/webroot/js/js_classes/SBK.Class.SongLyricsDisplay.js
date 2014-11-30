@@ -54,7 +54,8 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
             button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);
             self.buttons = {
                 edit: new SBK.Button(button_bar, 'edit', 'Edit', function () {self.app.edit_song(self.id);}), 
-                close: new SBK.Button(button_bar, 'close', 'Close', function () {self.close();})
+                close: new SBK.Button(button_bar, 'close', 'Close', function () {self.close();}),
+                zoom: new SBK.Button(button_bar, 'zoom', 'Zoom', function () {self.zoom_content();})
             };
         }
 
@@ -107,6 +108,29 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         html = '<div class="line"><span class="text">' + html;
         
         return html;
+    },
+    
+    zoom_content: function (content_response) {
+        var self = this;
+
+        if (self.container.hasClass('zoom-3')) {
+            self.container.removeClass('zoom-3');
+            self.container.addClass('zoom-4');
+        } else if (self.container.hasClass('zoom-4')) {
+            self.container.removeClass('zoom-4');
+            self.container.addClass('zoom-5');
+        } else if (self.container.hasClass('zoom-5')) {
+            self.container.removeClass('zoom-5');
+            self.container.addClass('zoom-1');
+        } else if (self.container.hasClass('zoom-1')) {
+            self.container.removeClass('zoom-1');
+            self.container.addClass('zoom-2');
+        } else if (self.container.hasClass('zoom-2')) {
+            self.container.removeClass('zoom-2');
+            self.container.addClass('zoom-3');
+        }
+        
+        //return html;
     },
     
     chord_replace_callback: function (match) {

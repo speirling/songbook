@@ -133,7 +133,7 @@ SBK.SongbookApplication = SBK.Class.extend({
     _display_song: function (id, key, capo) {
         var self = this, navigation_panel, previous_button, previous_song, next_button, next_song, lyrics_pane, song_lyrics;
 
-        self.content_container = jQuery('<div class="lyrics-panel"></div>').appendTo(self.container);
+        self.content_container = jQuery('<div class="lyrics-panel zoom-2"></div>').appendTo(self.container);
         
         song_lyrics = new SBK.SongLyricsDisplay(
             self.content_container,

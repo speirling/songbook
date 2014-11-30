@@ -188,7 +188,22 @@ div.song-page .multi-column .line {
     font-size: 0.8em;
 }
 .lyrics-panel {
-	font-size: 1em;
+    font-size: 1em;
+}
+.lyrics-panel.zoom-1 .content {
+    font-size: 0.75em;
+}
+.lyrics-panel.zoom-2 .content {
+    font-size: 1em;
+}
+.lyrics-panel.zoom-3 .content {
+    font-size: 1.3em;
+}
+.lyrics-panel.zoom-4 .content {
+    font-size: 1.6em;
+}
+.lyrics-panel.zoom-5 .content {
+    font-size: 2em;
 }
 .lyrics-panel .line .text {
     display: inline;
