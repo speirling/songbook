@@ -49,7 +49,9 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
             paginated = false;
         }
         song_data = response.data.Song;
+        console.log(song_data);
         self.base_key = song_data.base_key;
+        console.log(self.base_key);
         if (buttons_displayed) {
             button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);
             self.buttons = {
@@ -99,10 +101,10 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         //empty lines - put in a non-breaking space so that they don't collapse?
         html = html.replace(/<div class="line"><span class="text">[\s]*?<\/span><\/div>/g, '<div class="line"><span class="text">&nbsp;</span></div>');
         // chords that are close together - [Am][D] etc ... even [Am]  [D].... should be separated by characters equal in width to the chord
-        //I'll mark these kinds of chords with "!" so that I can set their class in  sbk_chord_replace_callback
-        // "\h" matches a 'horizontal whitespace' character so the expression '/\](\h*?)\[/' should find relevant chords
-        html = html.replace(/\](\h*?)\[/g, '!]$1[');
-        html = html.replace(/\[(.*?)\]/g, self.chord_replace_callback);
+        //I'll mark these kinds of chords with "!" so that I can set their class in  chord_replace_callback()
+        // IN PHP "\h" matches a 'horizontal whitespace' character so the expression '/\](\h*?)\[/' should find relevant chords
+        html = html.replace(/\](\s*?)\[/g, '!]$1[');
+        html = html.replace(/\[(.*?)\]/g, function (match) {return self.chord_replace_callback(self, match);});
         html = html.replace(/#<span class="chord">([^<]*?)\/([^<]*?)<\/span>#/g,'<span class="chord">$1<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">$2</span></span>');
         html = html.replace(/&nbsp;/g, '&#160;'); //&nbsp; doesn't work in XML unless it's specifically declared.
         html = '<div class="line"><span class="text">' + html;
@@ -133,7 +135,7 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         //return html;
     },
     
-    chord_replace_callback: function (match) {
+    chord_replace_callback: function (song_lyrics_object, match) {
         var self = this, chord, fullsize_class = '';
 
         chord = match;
@@ -146,8 +148,9 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
             fullsize_class = " full-width";
             chord = chord.replace('!', '');
         }
-        if(typeof(self.base_key) !== 'undefined' && typeof(self.key) !== 'undefined' && self.base_key !== '' && self.key !== '') {
-            chord = SBK.StaticFunctions.transpose_chord(chord, self.base_key, self._key);
+
+        if(typeof(song_lyrics_object.base_key) !== 'undefined' && typeof(song_lyrics_object.key) !== 'undefined' && song_lyrics_object.base_key !== '' && song_lyrics_object.key !== '') {
+            chord = SBK.StaticFunctions.transpose_chord(chord, song_lyrics_object.base_key, song_lyrics_object.key);
         }
 
         return '</span><span class="chord' + fullsize_class + '">' + chord + '</span><span class="text">';

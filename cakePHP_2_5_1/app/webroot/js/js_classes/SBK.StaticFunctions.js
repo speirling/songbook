@@ -182,14 +182,13 @@ SBK.StaticFunctions = {
         if(lowercase) {
             new_note = SBK.StaticFunctions.note_to_lower(new_note);
         }
-        
+
         return new_note;
     },
     
     transpose_chord: function (chord, base_key, target_key) {
         var chord_note, second_char, modifier_start, chord_modifier, key_conversion_value, new_chord, bass_key, slash_position, old_bass_key, new_bass_key;
-        
-        console.log(chord, base_key, target_key);
+
         if(base_key === null || base_key === '') {
             throw new Exception("SBK.StaticFunctions.transpose_chord() :: no base key passed");
         }
@@ -214,7 +213,7 @@ SBK.StaticFunctions = {
             new_chord_modifier = chord_modifier.substring(0, slash_position);
             old_bass_key = chord_modifier.substring(slash_position + 1);
             new_bass_key = SBK.StaticFunctions.shift_note(old_bass_key, key_conversion_value);
-            bass_key = '/'.new_bass_key;
+            bass_key = '/' + new_bass_key;
         } else {
             new_chord_modifier = chord_modifier;
         }
