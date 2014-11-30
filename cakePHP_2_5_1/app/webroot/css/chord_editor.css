@@ -1,6 +1,6 @@
 .chord-editor {
 	border: 1px solid gray;
-	width: 342px;
+	width: 505px;
 	margin: 5px;
 	background-color: gray;
 	border: 5px solid gray;
@@ -8,13 +8,14 @@
 
 .chord-editor .container-modifiers .button {
 	margin: 1px;
-	width: 40px;
+	/*width: 40px;*/
 }
 
 .button-note {
-	width: 16px;
+	font-size: 10px;
+	width: 30px;
 	margin: 0;
-	height: 50px;
+	height: 16px;
 	background-color: white;
     margin-left: 0px;
     position: relative;
@@ -23,32 +24,32 @@
 
 .button-note span {
 	display: inline-block;
-	line-height: 80px;
-    vertical-align: bottom;
+	/*line-height: 80px;*/
+    /*vertical-align: bottom;*/
 }
 
 .button-note-black {
 	background-color: black;
 	color: white;
-	height: 25px;
+	/*height: 25px;
     margin-left: -16px;
     margin-right: -4px;
-    z-index: 2;
+    z-index: 2;*/
 }
 
 .button-note-black span {
-    display: inline-block;
+    /*display: inline-block;
     line-height: 40px;
-    vertical-align: bottom;
+    vertical-align: bottom;*/
 }
 
-.button-note-b,
+/*.button-note-b,
 .button-note-d,
 .button-note-e,
 .button-note-g,
 .button-note-a {
     margin-left: -8px;
-}
+}*/
 
 .container-notes {
 	position: relative;
@@ -97,4 +98,24 @@
     border: 0px solid silver;
     background-color: #f3ffff;
     text-align: center;
+    display: inline-block;
+}
+.button-submit {
+	margin: 0;
+	margin-left: 3px;
+	vertical-align: top;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+.button-note-bass {
+	 text-transform: lowercase;
+}
+.button-note-bass:before {
+	content: '/';
+}
+.button-note-bass.button-note-white,
+.button-note-bass.button-note-black {
+    background-color: #f0f0f0;
+    color: gray;
 }

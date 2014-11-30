@@ -10,64 +10,106 @@ SBK.ChordEditor = SBK.Class.extend({
         self.display_mode = 'static';
         self.range = null;
 	},
+	
+	key_buttons: function (modifier, container, classname, callback) {
+        var self = this;
+
+        jQuery('<div class="button button-note ' + classname + ' button-note-white button-note-c"><span>C' + modifier +'</span></div>').appendTo(container).click(function () { 
+            callback('C'); 
+        });
+        jQuery('<div class="button button-note ' + classname + ' button-note-black button-note-csharp"><span>C#' + modifier +'</span></div>').appendTo(container).click(function () { 
+            callback('C#');  
+        });
+        jQuery('<div class="button button-note ' + classname + ' button-note-white button-note-d"><span>D' + modifier +'</span></div>').appendTo(container).click(function () { 
+            callback('D'); 
+        });
+        jQuery('<div class="button button-note ' + classname + ' button-note-black button-note-dsharp"><span>D#' + modifier +'</span></div>').appendTo(container).click(function () { 
+            callback('D#'); 
+        });
+        jQuery('<div class="button button-note ' + classname + ' button-note-white button-note-e"><span>E' + modifier +'</span></div>').appendTo(container).click(function () { 
+            callback('E');  
+        });
+        jQuery('<div class="button button-note ' + classname + ' button-note-white button-note-f"><span>F' + modifier +'</span></div>').appendTo(container).click(function () { 
+            callback('F'); 
+        });
+        jQuery('<div class="button button-note ' + classname + ' button-note-black button-note-fsharp"><span>F#' + modifier +'</span></div>').appendTo(container).click(function () { 
+            callback('F#'); 
+        });
+        jQuery('<div class="button button-note ' + classname + ' button-note-white button-note-g"><span>G' + modifier +'</span></div>').appendTo(container).click(function () { 
+            callback('G'); 
+        });
+        jQuery('<div class="button button-note ' + classname + ' button-note-black button-note-gsharp"><span>G#' + modifier +'</span></div>').appendTo(container).click(function () { 
+            callback('G#'); 
+        });
+        jQuery('<div class="button button-note ' + classname + ' button-note-white button-note-a"><span>A' + modifier +'</span></div>').appendTo(container).click(function () { 
+            callback('A'); 
+        });
+        jQuery('<div class="button button-note ' + classname + ' button-note-black button-note-asharp"><span>A#' + modifier +'</span></div>').appendTo(container).click(function () { 
+            callback('A#'); 
+        });
+        jQuery('<div class="button button-note ' + classname + ' button-note-white button-note-b"><span>B' + modifier +'</span></div>').appendTo(container).click(function () { 
+            callback('B'); 
+        });
+
+	},
 
     render: function () {
         var self = this;
 
+        self.buttons = {};
+
         self.input = jQuery('<div contenteditable="true" class="chord-editor-input"></div>').appendTo(self.container);
+        self.buttons.backspace = jQuery('<div class="button button-submit button-submit-backspace"><span>Back<span></div>').appendTo(self.container).click(function () { self.register_backspace(self.get_value()); });
+        self.buttons.close = jQuery('<div class="button button-submit button-submit-close"><span>Set<span></div>').appendTo(self.container).click(function () { self.close(); });
+
         self.button_containermodifiers = jQuery('<div class="container container-modifiers"></div>').appendTo(self.container);
         self.button_containernotes = jQuery('<div class="container container-notes"></div>').appendTo(self.container);
-        self.buttons = {};
-        self.buttons.key_note = jQuery('<div class="button button-note-type button-note-type-key selected"><span>key</span></div>').appendTo(self.button_containernotes).click(function () { 
+        /*self.buttons.key_note = jQuery('<div class="button button-note-type button-note-type-key selected"><span>key</span></div>').appendTo(self.button_containernotes).click(function () { 
             self.bass_note_requested = false;
             self.buttons.key_note.addClass('selected');
             self.buttons.bass_note.removeClass('selected');
         });
-        
         self.buttons.bass_note = jQuery('<div class="button button-note-type button-note-type-bass"><span>bass</span></div>').appendTo(self.button_containernotes).click(function () { 
             self.bass_note_requested = true;
             self.buttons.key_note.removeClass('selected');
             self.buttons.bass_note.addClass('selected');
-        });
-        self.buttons.note_c = jQuery('<div class="button button-note button-note-white button-note-c"><span>c</span></div>').appendTo(self.button_containernotes).click(function () { 
-            self.handle_note_button('C'); 
-        });
-        self.buttons.note_csharp = jQuery('<div class="button button-note button-note-black button-note-csharp"><span>c#</span></div>').appendTo(self.button_containernotes).click(function () { 
-            self.handle_note_button('C#');  
-        });
-        self.buttons.note_d = jQuery('<div class="button button-note button-note-white button-note-d"><span>d</span></div>').appendTo(self.button_containernotes).click(function () { 
-            self.handle_note_button('D'); 
-        });
-        self.buttons.note_dsharp = jQuery('<div class="button button-note button-note-black button-note-dsharp"><span>d#</span></div>').appendTo(self.button_containernotes).click(function () { 
-            self.handle_note_button('D#'); 
-        });
-        self.buttons.note_e = jQuery('<div class="button button-note button-note-white button-note-e"><span>e</span></div>').appendTo(self.button_containernotes).click(function () { 
-            self.handle_note_button('E');  
-        });
-        self.buttons.note_f = jQuery('<div class="button button-note button-note-white button-note-f"><span>f</span></div>').appendTo(self.button_containernotes).click(function () { 
-            self.handle_note_button('F'); 
-        });
-        self.buttons.note_fsharp = jQuery('<div class="button button-note button-note-black button-note-fsharp"><span>f#</span></div>').appendTo(self.button_containernotes).click(function () { 
-            self.handle_note_button('F#'); 
-        });
-        self.buttons.note_g = jQuery('<div class="button button-note button-note-white button-note-g"><span>g</span></div>').appendTo(self.button_containernotes).click(function () { 
-            self.handle_note_button('G'); 
-        });
-        self.buttons.note_gsharp = jQuery('<div class="button button-note button-note-black button-note-gsharp"><span>g#</span></div>').appendTo(self.button_containernotes).click(function () { 
-            self.handle_note_button('G#'); 
-        });
-        self.buttons.note_a = jQuery('<div class="button button-note button-note-white button-note-a"><span>a</span></div>').appendTo(self.button_containernotes).click(function () { 
-            self.handle_note_button('A'); 
-        });
-        self.buttons.note_asharp = jQuery('<div class="button button-note button-note-black button-note-asharp"><span>a#</span></div>').appendTo(self.button_containernotes).click(function () { 
-            self.handle_note_button('A#'); 
-        });
-        self.buttons.note_b = jQuery('<div class="button button-note button-note-white button-note-b"><span>b</span></div>').appendTo(self.button_containernotes).click(function () { 
-            self.handle_note_button('B'); 
+        });*/
+
+        self.button_containernotes_minor7 = jQuery('<div class="container container-notes-minor7"></div>').appendTo(self.container);
+        self.button_containernotes_minor = jQuery('<div class="container container-notes-minor"></div>').appendTo(self.container);
+        self.button_containernotes_dom7 = jQuery('<div class="container container-notes-dom7"></div>').appendTo(self.container);
+        self.button_containernotes_major = jQuery('<div class="container container-notes-major"></div>').appendTo(self.container);
+        self.button_containernotes_bass = jQuery('<div class="container container-notes-bass"></div>').appendTo(self.container);
+
+
+        self.key_buttons('', self.button_containernotes_major, 'button-note-major', function (note_letter) { 
+            self.chord_object.note = note_letter.toUpperCase(); 
+            self.chord_object.modifier = ''; 
+            self.display_value();
         });
 
-        self.buttons.close = jQuery('<div class="button button-submit button-submit-close"><span>Set<span></div>').appendTo(self.button_containernotes).click(function () { self.close(); });
-        self.buttons.backspace = jQuery('<div class="button button-submit button-submit-backspace"><span>Back<span></div>').appendTo(self.button_containernotes).click(function () { self.register_backspace(self.get_value()); });
+        self.key_buttons('m', self.button_containernotes_minor, 'button-note-minor', function (note_letter) { 
+            self.chord_object.note = note_letter.toUpperCase(); 
+            self.chord_object.modifier = 'm'; 
+            self.display_value();
+        });
+
+        self.key_buttons('7', self.button_containernotes_dom7, 'button-note-dom7', function (note_letter) { 
+            self.chord_object.note = note_letter.toUpperCase();  
+            self.chord_object.modifier = '7'; 
+            self.display_value();
+        });
+
+        self.key_buttons('m7', self.button_containernotes_minor7, 'button-note-minor7', function (note_letter) { 
+            self.chord_object.note = note_letter.toUpperCase(); 
+            self.chord_object.modifier = 'm7'; 
+            self.display_value();
+        });
+
+        self.key_buttons('', self.button_containernotes_bass, 'button-note-bass', function (note_letter) { 
+            self.chord_object.bass_note = note_letter.toLowerCase();
+            self.display_value();
+        });
 
         self.buttons.modifier_major = jQuery('<div class="button button-modifier button-modifier-major"><span>(major)</span></div>').appendTo(self.button_containermodifiers).click(function () { 
             self.chord_object.modifier = ''; 
@@ -75,6 +117,14 @@ SBK.ChordEditor = SBK.Class.extend({
         });
         self.buttons.modifier_minor = jQuery('<div class="button button-modifier button-modifier-minor"><span>minor</span></div>').appendTo(self.button_containermodifiers).click(function () { 
             self.chord_object.modifier = 'm';  
+            self.display_value();
+        });
+        self.buttons.modifier_augmented = jQuery('<div class="button button-modifier button-modifier-minor"><span>&nbsp;Sus4&nbsp;</span></div>').appendTo(self.button_containermodifiers).click(function () { 
+            self.chord_object.modifier = 'sus4';  
+            self.display_value();
+        });
+        self.buttons.modifier_augmented = jQuery('<div class="button button-modifier button-modifier-minor"><span>&nbsp;6&nbsp;</span></div>').appendTo(self.button_containermodifiers).click(function () { 
+            self.chord_object.modifier = '6';  
             self.display_value();
         });
         self.buttons.modifier_dominantseventh = jQuery('<div class="button button-modifier button-modifier-seventh"><span>dom 7</span></div>').appendTo(self.button_containermodifiers).click(function () { 
@@ -85,6 +135,14 @@ SBK.ChordEditor = SBK.Class.extend({
             self.chord_object.modifier = 'm7';  
             self.display_value();
         });
+        self.buttons.modifier_augmented = jQuery('<div class="button button-modifier button-modifier-minor"><span>maj7</span></div>').appendTo(self.button_containermodifiers).click(function () { 
+            self.chord_object.modifier = 'maj7';  
+            self.display_value();
+        });
+        self.buttons.modifier_augmented = jQuery('<div class="button button-modifier button-modifier-minor"><span>&nbsp;9&nbsp;</span></div>').appendTo(self.button_containermodifiers).click(function () { 
+            self.chord_object.modifier = '9';  
+            self.display_value();
+        });
         self.buttons.modifier_diminished = jQuery('<div class="button button-modifier button-modifier-minor"><span>- (dim)</span></div>').appendTo(self.button_containermodifiers).click(function () { 
             self.chord_object.modifier = '-';  
             self.display_value();
@@ -93,10 +151,10 @@ SBK.ChordEditor = SBK.Class.extend({
             self.chord_object.modifier = '+';  
             self.display_value();
         });
-        
+
         
 
-        self.input.bind('keypress', function (event) {
+        self.input.bind('keypress', function (event) {console.log(event.charCode);
             self.handle_charCode(event.charCode);
             return false;
         });
@@ -174,8 +232,8 @@ SBK.ChordEditor = SBK.Class.extend({
             self.range.deleteContents();
         }
         self.bass_note_requested = false;
-        self.buttons.key_note.addClass('selected');
-        self.buttons.bass_note.removeClass('selected');
+        /*self.buttons.key_note.addClass('selected');
+        self.buttons.bass_note.removeClass('selected');*/
 
         self.initial_value = chord_string;
         self.chord_object = SBK.StaticFunctions.parse_chord_string(chord_string);
