@@ -145,7 +145,7 @@ SBK.StaticFunctions = {
         upper_note = base_note.toUpperCase();
         
         if(note.length == 2) {
-            upper_note = upper_note + note.substr(note, 1, 1);
+            upper_note = upper_note + note.substr(1, 1);
         }
         return upper_note;
     },
