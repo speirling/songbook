@@ -31,6 +31,7 @@ SBK.SongbookApplication = SBK.Class.extend({
     
     on_application_state_change: function (changed_parameters) {
         var self = this, process_tab = false;
+
         if (JSON.stringify(changed_parameters) === '{}') {
             changed_parameters = {tab: 'playlist_list'}; 
         }
@@ -64,6 +65,9 @@ SBK.SongbookApplication = SBK.Class.extend({
                     self._list_all_songs();
                     break;
             }
+        } else if (self.application_state.tab === 'song_lyrics' && typeof(changed_parameters.key) !== 'undefined') {
+            console.log(self.application_state.tab === 'song_lyrics', typeof(changed_parameters.key));
+            self._display_song(self.application_state.id, self.application_state.key, self.application_state.capo);
         }
     },
 
@@ -133,6 +137,7 @@ SBK.SongbookApplication = SBK.Class.extend({
     _display_song: function (id, key, capo) {
         var self = this, navigation_panel, previous_button, previous_song, next_button, next_song, lyrics_pane, song_lyrics;
 
+        self.container.html('');
         self.content_container = jQuery('<div class="lyrics-panel zoom-2"></div>').appendTo(self.container);
         
         song_lyrics = new SBK.SongLyricsDisplay(
