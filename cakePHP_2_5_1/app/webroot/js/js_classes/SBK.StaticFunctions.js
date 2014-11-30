@@ -100,6 +100,9 @@ SBK.StaticFunctions = {
             '43': 'aug', //+
             '97': 'aug', //a
             '65': 'aug', //A
+            '54': '6', //6
+            '57': '9', //9
+            '52': 'sus4' //4
         };
         if(typeof(codes[char_code]) === 'string') {
             return codes[char_code];
