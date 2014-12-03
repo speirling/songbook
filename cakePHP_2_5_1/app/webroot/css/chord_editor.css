@@ -1,40 +1,50 @@
 .chord-editor {
 	border: 1px solid gray;
-	width: 505px;
+	width: 340px;
 	margin: 5px;
 	background-color: gray;
 	border: 5px solid gray;
+	position: fixed;
+	bottom: 0;
+	left: 0;
 }
 
 .chord-editor .container-modifiers .button {
-	margin: 1px;
+	margin: 0;
 	/*width: 40px;*/
+	padding: 0.4em;
+	font-size: 0.7em;
 }
 
 .button-note {
 	font-size: 10px;
-	width: 30px;
+	width: 17px;
 	margin: 0;
 	height: 16px;
 	background-color: white;
     margin-left: 0px;
     position: relative;
     vertical-align: top;
+    border: 0;
+    border-left: 1px solid black;
+}
+.container .button-note:first-child {
+	border-left: 0;
 }
 
 .button-note span {
 	display: inline-block;
-	/*line-height: 80px;*/
-    /*vertical-align: bottom;*/
 }
 
 .button-note-black {
-	background-color: black;
-	color: white;
-	/*height: 25px;
-    margin-left: -16px;
-    margin-right: -4px;
-    z-index: 2;*/
+    background-color: black;
+    color: white;
+    border-top: 1px solid #333333;
+}
+
+.button-note-white {
+    border-top: 1px solid #eeeeee;
+    color: black;
 }
 
 .button-note-black span {
@@ -42,14 +52,6 @@
     line-height: 40px;
     vertical-align: bottom;*/
 }
-
-/*.button-note-b,
-.button-note-d,
-.button-note-e,
-.button-note-g,
-.button-note-a {
-    margin-left: -8px;
-}*/
 
 .container-notes {
 	position: relative;
@@ -60,6 +62,22 @@
 .container-notes .selected {
 	background-color: #339933;
 	color: white;
+}
+
+.container-notes-minor .note-name,
+.container-notes-minor7 .note-name,
+.container-notes-dom7 .note-name {
+    display: none;
+}
+.container-notes-minor .button-note-white,
+.container-notes-minor7 .button-note-white,
+.container-notes-dom7 .button-note-white {
+    color: #999999;
+}
+.container-notes-minor .button-note-black,
+.container-notes-minor7 .button-note-black,
+.container-notes-dom7 .button-note-black {
+    color: #444444;
 }
 
 .container-notes .button-note-type {
@@ -93,7 +111,7 @@
 }
 
 .chord-editor-input {
-    width: 338px; 
+    width: 250px; 
     height: 30px;
     border: 0px solid silver;
     background-color: #f3ffff;

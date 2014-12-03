@@ -228,3 +228,7 @@ div.song-page .multi-column .line {
 .chord .separator {
 	margin-left: 0.2em;
 }
+
+#lyrics-edit {
+	margin-bottom: 220px;
+}
