@@ -316,7 +316,7 @@ class ApiController extends AppController {
             array_push($all_songs, $this_song["Song"]);
         }
     
-        return json_encode($all_songs);
+        return json_encode($all_songs, JSON_PRETTY_PRINT);
     }   
 
 
@@ -336,7 +336,7 @@ class ApiController extends AppController {
             }
         }
     
-        return json_encode($all_playlists);
+        return json_encode($all_playlists, JSON_PRETTY_PRINT);
     }   
 
 }
