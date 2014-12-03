@@ -60,8 +60,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
         self.buttons = {
             save: new SBK.Button(self.container, 'save', 'Save', function () {self.save_song();}),
             cancel: new SBK.Button(self.container, 'cancel', 'Cancel', function () {self.app.back();}),
-            chord_mode: new SBK.Button(self.container, 'chord-mode', 'Chord mode', function () {self.enter_add_chords_mode();}),
-            lyrics_mode: new SBK.Button(self.container, 'lyrics', 'Lyrics mode')
+            chord_mode: new SBK.Button(self.container, 'chord-mode', 'Chord mode', function () {self.enter_add_chords_mode();})
         };
         self.header_container = jQuery('<div class="song_headings"></div>').appendTo(self.container);
         self.inputs = {
