@@ -134,7 +134,7 @@ SBK.StaticFunctions = {
         if (new_value > 11) {
             new_value = new_value - 12;
         }
-
+console.log(original_value, adjustment, new_value);
         return new_value;
     },
 
@@ -174,7 +174,7 @@ SBK.StaticFunctions = {
         new_note_number = SBK.StaticFunctions.find_note_number(SBK.Constants.NOTE_VALUE_ARRAY[SBK.StaticFunctions.note_to_upper(note)], adjustment);
         if (typeof(use_sharps) === 'undefined') {
             new_note = SBK.Constants.VALUE_NOTE_ARRAY_DEFAULT[new_note_number];
-        } else if(use_sharps === true) {
+        } else if (use_sharps === true) {
             new_note = SBK.Constants.VALUE_NOTE_ARRAY_SHARP[new_note_number];
         } else {
             new_note = SBK.Constants.VALUE_NOTE_ARRAY_FLAT[new_note_number];
@@ -201,7 +201,7 @@ SBK.StaticFunctions = {
         chord_note = chord.substring(0, 1);
         second_char = chord.substring(1, 1);
         modifier_start = 1;
-        if(second_char === '#' || second_char == 'b') {
+        if (second_char === '#' || second_char == 'b') {
             chord_note = chord_note + second_char;
             modifier_start = 2;
         }
@@ -209,6 +209,7 @@ SBK.StaticFunctions = {
 
         key_conversion_value = SBK.Constants.NOTE_VALUE_ARRAY[target_key] - SBK.Constants.NOTE_VALUE_ARRAY[base_key];
         key_conversion_value = key_conversion_value - capo;
+        console.log(chord, base_key, target_key, capo, key_conversion_value);
         new_chord = SBK.StaticFunctions.shift_note(chord_note, key_conversion_value);
 
         bass_key = '';

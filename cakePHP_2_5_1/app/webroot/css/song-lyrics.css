@@ -149,9 +149,10 @@ div.song-page .multi-column .line {
 }
 
 .page-header .key .label {
-	font-style:normal;
+	font-style: normal;
+	padding-left: 1em;
 }
-.page-header .key .target_key {
+.page-header .key .target-key {
 	display: inline;
 	color: gray;
 }
@@ -208,10 +209,19 @@ div.song-page .multi-column .line {
 .lyrics-panel.zoom-5 .content {
     font-size: 2em;
 }
+.lyrics-panel.zoom-6 .content {
+    font-size: 2.3em;
+}
+.lyrics-panel.zoom-7 .content {
+    font-size: 2.6em;
+}
+.lyrics-panel.zoom-8 .content {
+    font-size: 2.9em;
+}
 .lyrics-panel .line .text {
     display: inline;
     vertical-align: bottom;
-} 
+}
 .chord {
 	display: inline-block;
 	position:relative;
@@ -220,6 +230,9 @@ div.song-page .multi-column .line {
 	color: #660000;
 	font-size: 0.8em;
 	font-family: verdana;
+}
+.lyrics-panel.chords-hidden .chord {
+	display: none;
 }
 .chord .bass_note_modifier {
 	color: gray;
@@ -231,4 +244,9 @@ div.song-page .multi-column .line {
 
 #lyrics-edit {
 	margin-bottom: 220px;
+}
+.no-base-key {
+	font-weight: normal;
+	font-style: italic;
+	font-size:0.6em;
 }

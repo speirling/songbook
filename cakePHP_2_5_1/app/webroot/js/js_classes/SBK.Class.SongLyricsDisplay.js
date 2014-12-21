@@ -59,7 +59,9 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
             self.buttons = {
                 edit: new SBK.Button(button_bar, 'edit', 'Edit', function () {self.app.edit_song(self.id);}), 
                 close: new SBK.Button(button_bar, 'close', 'Close', function () {self.close();}),
-                zoom: new SBK.Button(button_bar, 'zoom', 'Zoom', function () {self.zoom_content();})
+                zoom_in: new SBK.Button(button_bar, 'zoom_in', '&nbsp;&nbsp;-&nbsp;&nbsp;', function () {self.zoom_content_in();}),
+                zoom_out: new SBK.Button(button_bar, 'zoom_out', '&nbsp;&nbsp;+&nbsp;&nbsp;', function () {self.zoom_content_out();}),
+                toggle_chords: new SBK.Button(button_bar, 'toggle_chords', 'toggle chords', function () {self.toggle_chords();})
             };
         }
 
@@ -70,40 +72,43 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         jQuery('<div class="written_by"><span class="data">' + song_data.written_by + '</span></div>').appendTo(self.header_container);
         jQuery('<div class="performed_by"><span class="label">performed by: </span><span class="data">' + song_data.performed_by + '</span></div>').appendTo(self.header_container);
         key_container = jQuery('<div class="key"></div>').appendTo(self.header_container);
-        target_key_container = jQuery('<div class="target_key"></div>').appendTo(key_container);
-        jQuery('<span class="label">key: </span>').appendTo(target_key_container);
-        jQuery('<select class="data">' +
-                '<option value="Ab">Ab</option>' + 
-                '<option value="A">A</option>' +
-                '<option value="A#">A#</option>' +
-                '<option value="Bb">Bb</option>' +
-                '<option value="B">B</option>' +
-                '<option value="C">C</option>' +
-                '<option value="C#">C#</option>' +
-                '<option value="Db">Db</option>' +
-                '<option value="D">D</option>' +
-                '<option value="D#">D#</option>' +
-                '<option value="Eb">Eb</option>' +
-                '<option value="E">E</option>' +
-                '<option value="F">F</option>' +
-                '<option value="F#">F#</option>' +
-                '<option value="Gb">Gb</option>' +
-                '<option value="G">G</option>' +
-                '<option value="G#">G#</option>' +
-                '</select>').val(self.key).change(function (){self.app.application_state.set({key: jQuery(this).val()});}).appendTo(target_key_container);
-        capo_container = jQuery('<div class="target_key"></div>').appendTo(key_container);
-        jQuery('<span class="label">capo: </span>').appendTo(target_key_container);
-        jQuery('<select class="data">' +
-                '<option value="0">0</option>' + 
-                '<option value="1">1</option>' +
-                '<option value="2">2</option>' +
-                '<option value="3">3</option>' +
-                '<option value="4">4</option>' +
-                '<option value="5">5</option>' +
-                '<option value="6">6</option>' +
-                '<option value="7">7</option>' +
-                '<option value="8">8</option>' +
-                '</select>').val(self.capo).change(function (){self.app.application_state.set({capo: jQuery(this).val()});}).appendTo(target_key_container);
+        target_key_container = jQuery('<div class="target-key"></div>').appendTo(key_container);
+        if (typeof(self.base_key) === 'undefined' || self.base_key === '') {
+            jQuery('<span class="no-base-key">No base key set</span>').appendTo(target_key_container);
+        } else {
+            jQuery('<span class="label">key: </span>').appendTo(target_key_container);
+            jQuery('<select class="data">' +
+                    '<option value="Ab">Ab</option>' + 
+                    '<option value="A">A</option>' +
+                    '<option value="A#">A#</option>' +
+                    '<option value="Bb">Bb</option>' +
+                    '<option value="B">B</option>' +
+                    '<option value="C">C</option>' +
+                    '<option value="C#">C#</option>' +
+                    '<option value="Db">Db</option>' +
+                    '<option value="D">D</option>' +
+                    '<option value="D#">D#</option>' +
+                    '<option value="Eb">Eb</option>' +
+                    '<option value="E">E</option>' +
+                    '<option value="F">F</option>' +
+                    '<option value="F#">F#</option>' +
+                    '<option value="Gb">Gb</option>' +
+                    '<option value="G">G</option>' +
+                    '<option value="G#">G#</option>' +
+                    '</select>').val(self.key).change(function (){self.app.application_state.set({key: jQuery(this).val()});}).appendTo(target_key_container);
+            jQuery('<span class="label">capo: </span>').appendTo(target_key_container);
+            jQuery('<select class="data">' +
+                    '<option value="0">0</option>' + 
+                    '<option value="1">1</option>' +
+                    '<option value="2">2</option>' +
+                    '<option value="3">3</option>' +
+                    '<option value="4">4</option>' +
+                    '<option value="5">5</option>' +
+                    '<option value="6">6</option>' +
+                    '<option value="7">7</option>' +
+                    '<option value="8">8</option>' +
+                    '</select>').val(self.capo).change(function (){self.app.application_state.set({capo: jQuery(this).val()});}).appendTo(target_key_container);
+        }
         self.song_content_container = jQuery('<div class="content"></div>').appendTo(self.container);
         self.song_content_container.html(self.song_content_to_html(song_data.content));
 
@@ -145,10 +150,43 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         return html;
     },
     
-    zoom_content: function (content_response) {
+    zoom_content_in: function () {
         var self = this;
 
-        if (self.container.hasClass('zoom-3')) {
+        if (self.container.hasClass('zoom-8')) {
+            self.container.removeClass('zoom-8');
+            self.container.addClass('zoom-7');
+        } else if (self.container.hasClass('zoom-7')) {
+            self.container.removeClass('zoom-7');
+            self.container.addClass('zoom-6');
+        } else if (self.container.hasClass('zoom-6')) {
+            self.container.removeClass('zoom-6');
+            self.container.addClass('zoom-5');
+        } else if (self.container.hasClass('zoom-5')) {
+            self.container.removeClass('zoom-5');
+            self.container.addClass('zoom-4');
+        } else if (self.container.hasClass('zoom-4')) {
+            self.container.removeClass('zoom-4');
+            self.container.addClass('zoom-3');
+        } else if (self.container.hasClass('zoom-3')) {
+            self.container.removeClass('zoom-3');
+            self.container.addClass('zoom-2');
+        } else if (self.container.hasClass('zoom-2')) {
+            self.container.removeClass('zoom-2');
+            self.container.addClass('zoom-1');
+        }
+    },
+    
+    zoom_content_out: function () {
+        var self = this;
+
+        if (self.container.hasClass('zoom-1')) {
+            self.container.removeClass('zoom-1');
+            self.container.addClass('zoom-2');
+        } else if (self.container.hasClass('zoom-2')) {
+            self.container.removeClass('zoom-2');
+            self.container.addClass('zoom-3');
+        } else if (self.container.hasClass('zoom-3')) {
             self.container.removeClass('zoom-3');
             self.container.addClass('zoom-4');
         } else if (self.container.hasClass('zoom-4')) {
@@ -156,16 +194,24 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
             self.container.addClass('zoom-5');
         } else if (self.container.hasClass('zoom-5')) {
             self.container.removeClass('zoom-5');
-            self.container.addClass('zoom-1');
-        } else if (self.container.hasClass('zoom-1')) {
-            self.container.removeClass('zoom-1');
-            self.container.addClass('zoom-2');
-        } else if (self.container.hasClass('zoom-2')) {
-            self.container.removeClass('zoom-2');
-            self.container.addClass('zoom-3');
+            self.container.addClass('zoom-6');
+        } else if (self.container.hasClass('zoom-6')) {
+            self.container.removeClass('zoom-6');
+            self.container.addClass('zoom-7');
+        } else if (self.container.hasClass('zoom-7')) {
+            self.container.removeClass('zoom-7');
+            self.container.addClass('zoom-8');
         }
-        
-        //return html;
+    },
+    
+    toggle_chords: function () {
+        var self = this;
+
+        if (self.container.hasClass('chords-hidden')) {
+            self.container.removeClass('chords-hidden');
+        } else {
+            self.container.addClass('chords-hidden');
+        }
     },
     
     chord_replace_callback: function (song_lyrics_object, match) {
