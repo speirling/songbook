@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>SBK Javascript tests</title>
+        <link rel="stylesheet" href="qunit-1.16.0.css">
+        <link rel="stylesheet" type="text/css" href="/songbook-dev/css/common.css" />
+        
+        <!--  jQuery libraries -->
+        <script type="text/javascript" src="/songbook-dev/js/js_dependencies/jquery-1.10.2.js"></script>
+        <script type="text/javascript" src="/songbook-dev/js/js_dependencies/jquery-ui-1.10.4.custom.min.js"></script>
+        <script type="text/javascript" src="/songbook-dev/js/js_dependencies/jsrender.min.js"></script>
+        <script type="text/javascript" src="qunit-1.16.0.js"></script>
+        
+        <!--  SBK library -->
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Namespace.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Constants.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.StaticFunctions.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.CallbackList.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.ApplicationState.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.PleaseWait.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.Button.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.ChordEditor.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.HTTPRequest.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.Api.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongList.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongList.PlayList.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongList.PlayList.Print.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongList.PlayList.Book.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongList.PlayList.Selector.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongList.PlayList.Table.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongList.PlayList.Text.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongList.SongFilterList.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongList.SongFilterList.Lyrics.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongPicker.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.AllPlaylists.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.AllPlaylists.PlaylistPicker.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.PaginatedHTML.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongbookApplication.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongListItemSet.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongListItemSet.Selector.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongListItemSet.Print.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongListItemSong.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongListItemSong.Selector.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongListItemSong.Lyrics.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongListItemSong.Print.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongLyricsDisplay.js"></script>
+	    <script type="text/javascript" src="/songbook-dev/js/js_classes/SBK.Class.SongLyricsEdit.js"></script>
+
+        <!-- Tests -->
+        <script src="tests/Class.js"></script>
+        <script src="tests/SBK.StaticFunctions.js"></script>
+    </head>
+    <body>
+        <div id="qunit"></div>
+        <div id="qunit-fixture"></div>
+    </body>
+</html>
