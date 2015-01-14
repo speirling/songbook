@@ -134,7 +134,7 @@ SBK.StaticFunctions = {
         if (new_value > 11) {
             new_value = new_value - 12;
         }
-console.log(original_value, adjustment, new_value);
+
         return new_value;
     },
 
@@ -199,7 +199,7 @@ console.log(original_value, adjustment, new_value);
            capo = 0; 
         }
         chord_note = chord.substring(0, 1);
-        second_char = chord.substring(1, 1);
+        second_char = chord.substring(1, 2);
         modifier_start = 1;
         if (second_char === '#' || second_char == 'b') {
             chord_note = chord_note + second_char;
@@ -209,8 +209,14 @@ console.log(original_value, adjustment, new_value);
 
         key_conversion_value = SBK.Constants.NOTE_VALUE_ARRAY[target_key] - SBK.Constants.NOTE_VALUE_ARRAY[base_key];
         key_conversion_value = key_conversion_value - capo;
-        console.log(chord, base_key, target_key, capo, key_conversion_value);
         new_chord = SBK.StaticFunctions.shift_note(chord_note, key_conversion_value);
+        if (target_key.substring(1, 2) === '#' || target_key === 'D' || target_key === 'E' || target_key === 'A' || target_key === 'B') {
+            new_chord = SBK.StaticFunctions.shift_note(chord_note, key_conversion_value, true);
+        } else if (target_key.substring(1, 2) === 'b' || base_key === 'F') {
+            new_chord = SBK.StaticFunctions.shift_note(chord_note, key_conversion_value, false);
+        } else {
+            new_chord = SBK.StaticFunctions.shift_note(chord_note, key_conversion_value);
+        }
 
         bass_key = '';
         slash_position = chord_modifier.indexOf('/');
@@ -276,7 +282,6 @@ console.log(original_value, adjustment, new_value);
         var key = false, cc, bass_note = false, bass_note_modifier = false;
         
         cc = keypress_event.charCode;
-        console.log('chord_entry_keypress ', cc, ' - ', keypress_event, chord_text); 
         //allow backspace to work
         if (cc === 0) { //backspace
             chord_text = chord_text.slice(0, -1);
@@ -329,8 +334,7 @@ console.log(original_value, adjustment, new_value);
                 chord_text = chord_text + key;
                 textarea.insertAtCaret(key);
             }
-            console.log(chord_text);
-            return false;
+            false;
         }
     }
 };
