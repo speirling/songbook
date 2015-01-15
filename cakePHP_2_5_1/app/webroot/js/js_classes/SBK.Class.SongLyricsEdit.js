@@ -61,7 +61,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
             cancel: new SBK.Button(self.container, 'cancel', 'Cancel', function () {self.app.back();}),
             chord_mode: new SBK.Button(self.container, 'chord-mode', 'Chord mode', function () {self.enter_add_chords_mode();})
         };
-        self.header_container = jQuery('<div class="song_headings"></div>').appendTo(self.container);
+        self.header_container = jQuery('<div class="song-headings"></div>').appendTo(self.container);
         self.inputs = {
             title: self.make_input(self.header_container, 'title', song_data.title, 'Title'),
             written_by: self.make_input(self.header_container, 'written_by', song_data.written_by, 'Written by'),
@@ -78,7 +78,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
 
         container = jQuery('<span class="' + id + ' input-container"></span>').appendTo(parent_container);
         jQuery('<span class="label">' + label_text + '<span class="separator">: </span></span>').appendTo(container);
-        //input = jQuery('<pre contentEditable="true" class="input-box" id="' + id + '">' + value + '</pre>').appendTo(container);
+        //input = jQuery('<pre contentEditable="true" class="input-box" id="' + id + '">' + value + '</pre>').appendTo(container); //NEEDS .text() in save_song
         input = jQuery('<input type="text" class="input-box" id="' + id + '">' + value + '</input>').appendTo(container);
 
         return input;
@@ -89,7 +89,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
 
         container = jQuery('<span class="' + id + ' input-container"></span>').appendTo(parent_container);
         jQuery('<span class="label">' + label_text + '<span class="separator">: </span></span>').appendTo(container);
-        //input = jQuery('<pre contentEditable="true" class="input-box" id="' + id + '">' + value + '</pre>').appendTo(container);
+        //input = jQuery('<pre contentEditable="true" class="input-box" id="' + id + '">' + value + '</pre>').appendTo(container);  //NEEDS .text() in save_song
         input = jQuery('<textarea class="input-box" id="' + id + '">' + value + '</textarea>').appendTo(container);
         window_container = parent_container.parent().parent();
         console.log(input.offset(), parent_container.offset(), parent_container.width(), parent_container.height(), window_container.offset().top);
@@ -102,19 +102,19 @@ SBK.SongLyricsEdit = SBK.Class.extend({
     save_song: function () {
         var self = this;
 
-        self.inputs.content.html(self.inputs.content.html().replace(/<br\s*[\/]?>/gi, "\n"));
+        //self.inputs.content.html(self.inputs.content.html().replace(/<br\s*[\/]?>/gi, "\n"));
 
         if (self.id === null) {
 
             self.api.api_call(
                 'update_song',
                 {Song: {
-                    title: self.inputs.title.text(),
-                    written_by: self.inputs.written_by.text(),
-                    performed_by: self.inputs.performed_by.text(),
-                    base_key: self.inputs.base_key.text(),
-                    content: self.inputs.content.text(),
-                    meta_tags: self.inputs.meta_tags.text()
+                    title: self.inputs.title.val(),
+                    written_by: self.inputs.written_by.val(),
+                    performed_by: self.inputs.performed_by.val(),
+                    base_key: self.inputs.base_key.val(),
+                    content: self.inputs.content.val(),
+                    meta_tags: self.inputs.meta_tags.val()
                 }},
                 function (response) {
                     if (response.success !== false) { // could be a number
@@ -131,12 +131,12 @@ SBK.SongLyricsEdit = SBK.Class.extend({
                 'update_song',
                 {Song: {
                     id: self.id + '',
-                    title: self.inputs.title.text(),
-                    written_by: self.inputs.written_by.text(),
-                    performed_by: self.inputs.performed_by.text(),
-                    base_key: self.inputs.base_key.text(),
-                    content: self.inputs.content.text(),
-                    meta_tags: self.inputs.meta_tags.text()
+                    title: self.inputs.title.val(),
+                    written_by: self.inputs.written_by.val(),
+                    performed_by: self.inputs.performed_by.val(),
+                    base_key: self.inputs.base_key.val(),
+                    content: self.inputs.content.val(),
+                    meta_tags: self.inputs.meta_tags.val()
                 }},
                 function (response) {
                     if (response.success !== false) { // could be a number

@@ -13,6 +13,12 @@
 	right: 0;
 	margin: 0;
 	border: 1px solid silver;
-	padding: 0.5em;
+	padding: 0.3em;
 	min-height: 1.25em;
+	font-family: Courier New, Courier, Consolas, Monospace;
+}
+
+.song-headings,
+.content textarea {
+    font-size: 0.8em;
 }
