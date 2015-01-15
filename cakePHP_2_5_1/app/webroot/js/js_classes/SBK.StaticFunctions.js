@@ -207,9 +207,8 @@ SBK.StaticFunctions = {
         }
         chord_modifier = chord.substring(modifier_start);
 
-        key_conversion_value = SBK.Constants.NOTE_VALUE_ARRAY[target_key] - SBK.Constants.NOTE_VALUE_ARRAY[base_key];
+        key_conversion_value = SBK.Constants.NOTE_VALUE_ARRAY[target_key.substring(0, 1)] - SBK.Constants.NOTE_VALUE_ARRAY[base_key.substring(0, 1)];
         key_conversion_value = key_conversion_value - capo;
-        new_chord = SBK.StaticFunctions.shift_note(chord_note, key_conversion_value);
         if (target_key.substring(1, 2) === '#' || target_key === 'D' || target_key === 'E' || target_key === 'A' || target_key === 'B') {
             new_chord = SBK.StaticFunctions.shift_note(chord_note, key_conversion_value, true);
         } else if (target_key.substring(1, 2) === 'b' || base_key === 'F') {
