@@ -7,8 +7,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
 		self.app = app;
 		self.pleasewait = new SBK.PleaseWait(self.container);
 		self.api = app.api;
-		self.chord_editor = new SBK.ChordEditor(self.container, function (chord_string, range) { 
-		    console.log(chord_string, range);
+		self.chord_editor = new SBK.ChordEditor(self.container, function (chord_string, range) {
 		    if(range !== null) {
                 range.deleteContents();
                 if(chord_string === '') {
@@ -71,7 +70,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
             meta_tags: self.make_input(self.header_container, 'meta_tags', song_data.meta_tags, 'Meta tags')
         };
         self.song_content_container = jQuery('<div class="content"></div>').appendTo(self.container);
-        self.inputs.content = self.make_input(self.header_container, 'content', song_data.content, 'Content');
+        self.inputs.content = self.make_textarea(self.song_content_container, 'content', song_data.content, 'Content');
     },
     
     make_input: function (parent_container, id, value, label_text) {
@@ -79,17 +78,23 @@ SBK.SongLyricsEdit = SBK.Class.extend({
 
         container = jQuery('<span class="' + id + ' input-container"></span>').appendTo(parent_container);
         jQuery('<span class="label">' + label_text + '<span class="separator">: </span></span>').appendTo(container);
-        input = jQuery('<pre contentEditable="true" class="input-box" id="' + id + '">' + value + '</pre>').appendTo(container);
+        //input = jQuery('<pre contentEditable="true" class="input-box" id="' + id + '">' + value + '</pre>').appendTo(container);
+        input = jQuery('<input type="text" class="input-box" id="' + id + '">' + value + '</input>').appendTo(container);
 
         return input;
     },
     
     make_textarea: function (parent_container, id, value, label_text) {
-        var self = this, container, input;
+        var self = this, container, input, window_container;
 
         container = jQuery('<span class="' + id + ' input-container"></span>').appendTo(parent_container);
         jQuery('<span class="label">' + label_text + '<span class="separator">: </span></span>').appendTo(container);
+        //input = jQuery('<pre contentEditable="true" class="input-box" id="' + id + '">' + value + '</pre>').appendTo(container);
         input = jQuery('<textarea class="input-box" id="' + id + '">' + value + '</textarea>').appendTo(container);
+        window_container = parent_container.parent().parent();
+        console.log(input.offset(), parent_container.offset(), parent_container.width(), parent_container.height(), window_container.offset().top);
+        input.width(parent_container.width() - (input.offset().left + parent_container.offset().left));
+        input.height(window_container.height() - (input.offset().top + window_container.offset().top));
 
         return input;
     },
