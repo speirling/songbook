@@ -79,7 +79,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
         container = jQuery('<span class="' + id + ' input-container"></span>').appendTo(parent_container);
         jQuery('<span class="label">' + label_text + '<span class="separator">: </span></span>').appendTo(container);
         //input = jQuery('<pre contentEditable="true" class="input-box" id="' + id + '">' + value + '</pre>').appendTo(container); //NEEDS .text() in save_song
-        input = jQuery('<input type="text" class="input-box" id="' + id + '">' + value + '</input>').appendTo(container);
+        input = jQuery('<input type="text" class="input-box" id="' + id + '" value="' + value + '" />').appendTo(container);
 
         return input;
     },
