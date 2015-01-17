@@ -2,26 +2,35 @@
 
 $.fn.insertAtCaret = function(text, set_caret_position_before_or_after) { // I was unable to position the caret inside the inserted text, so I decided to positionion it after one half of the text and before the second half
     return this.each(function() {
+        return SBK.StaticFunctions(this, text, set_caret_position_before_or_after);
+    });
+};
+
+
+/* SBK static functions */
+SBK.StaticFunctions = {
+    insert_at_caret: function (container, text, set_caret_position_before_or_after) {
         var offset;
+
         if (typeof(set_caret_position_before_or_after) !== 'undefined' && set_caret_position_before_or_after === 'before') {
             offset = 0;
         } else {
             offset = text.length;
         }
-        if (document.selection && this.tagName == 'TEXTAREA') {  //IE textarea
-            this.focus();
+        if (document.selection && container.tagName == 'TEXTAREA') {  //IE textarea
+            container.focus();
             sel = document.selection.createRange();
             sel.text = text;
-            this.focus();
-        } else if (this.selectionStart || this.selectionStart == '0') { //MOZILLA textarea
-            startPos = this.selectionStart;
-            endPos = this.selectionEnd;
-            scrollTop = this.scrollTop;
-            this.value = this.value.substring(0, startPos) + text + this.value.substring(endPos, this.value.length);
-            this.focus();
-            this.selectionStart = startPos + offset;
-            this.selectionEnd = startPos + offset;
-            this.scrollTop = scrollTop;
+            container.focus();
+        } else if (container.selectionStart || container.selectionStart == '0') { //MOZILLA textarea
+            startPos = container.selectionStart;
+            endPos = container.selectionEnd;
+            scrollTop = container.scrollTop;
+            container.value = container.value.substring(0, startPos) + text + container.value.substring(endPos, container.value.length);
+            container.focus();
+            container.selectionStart = startPos + offset;
+            container.selectionEnd = startPos + offset;
+            container.scrollTop = scrollTop;
         } else {
             //non textarea
             var selectionObject = window.getSelection();
@@ -31,12 +40,7 @@ $.fn.insertAtCaret = function(text, set_caret_position_before_or_after) { // I w
             range.setStart(text_node, offset);
             range.setEnd(text_node, offset);
         }
-    });
-};
-
-
-/* SBK static functions */
-SBK.StaticFunctions = {
+    },
 
     charCode_to_key_text: function (char_code) {
         var codes = {
