@@ -7,16 +7,16 @@ SBK.SongLyricsEdit = SBK.Class.extend({
 		self.app = app;
 		self.pleasewait = new SBK.PleaseWait(self.container);
 		self.api = app.api;
-		self.chord_editor = new SBK.ChordEditor(self.container, function (chord_string, range) {
-		    if(range !== null) {
+        self.chord_editor = new SBK.ChordEditor(self.container, function (chord_string, range) {
+            if(range !== null) {
                 range.deleteContents();
-                if(chord_string === '') {
-                    range.insertNode(document.createTextNode(''));
-                } else {
-                    range.insertNode(document.createTextNode('[' + chord_string + ']'));
+                if(chord_string !== '') {
+                    chord_string = '[' + chord_string + ']';
                 }
-		    }
-		});
+                range.insertNode(document.createTextNode(chord_string));
+                //SBK.StaticFunctions.insert_at_caret(self.inputs.content[0], chord_string);  //for textarea
+            }
+        });
 		self.chord_editor.render();
 	},
     
@@ -78,8 +78,8 @@ SBK.SongLyricsEdit = SBK.Class.extend({
 
         container = jQuery('<span class="' + id + ' input-container"></span>').appendTo(parent_container);
         jQuery('<span class="label">' + label_text + '<span class="separator">: </span></span>').appendTo(container);
-        //input = jQuery('<pre contentEditable="true" class="input-box" id="' + id + '">' + value + '</pre>').appendTo(container); //NEEDS .text() in save_song
-        input = jQuery('<input type="text" class="input-box" id="' + id + '" value="' + value + '" />').appendTo(container);
+        //input = jQuery('<pre contentEditable="true" class="input-box" id="' + id + '">' + value + '</pre>').appendTo(container); //NEEDS self.inputs.content.text() in save_song
+        input = jQuery('<input type="text" class="input-box" id="' + id + '" value="' + value + '" />').appendTo(container);  // NEEDS self.inputs.content.val() in save_song()
 
         return input;
     },
@@ -89,12 +89,11 @@ SBK.SongLyricsEdit = SBK.Class.extend({
 
         container = jQuery('<span class="' + id + ' input-container"></span>').appendTo(parent_container);
         jQuery('<span class="label">' + label_text + '<span class="separator">: </span></span>').appendTo(container);
-        //input = jQuery('<pre contentEditable="true" class="input-box" id="' + id + '">' + value + '</pre>').appendTo(container);  //NEEDS .text() in save_song
-        input = jQuery('<textarea class="input-box" id="' + id + '">' + value + '</textarea>').appendTo(container);
+        input = jQuery('<pre contentEditable="true" class="input-box" id="' + id + '">' + value + '</pre>').appendTo(container);  //NEEDS self.inputs.content.text() in save_song
+        /*input = jQuery('<textarea class="input-box" id="' + id + '">' + value + '</textarea>').appendTo(container); // NEEDS self.inputs.content.val() in save_song()
         window_container = parent_container.parent().parent();
-        console.log(input.offset(), parent_container.offset(), parent_container.width(), parent_container.height(), window_container.offset().top);
         input.width(parent_container.width() - (input.offset().left + parent_container.offset().left));
-        input.height(window_container.height() - (input.offset().top + window_container.offset().top));
+        input.height(window_container.height() - (input.offset().top + window_container.offset().top));*/
 
         return input;
     },
@@ -102,7 +101,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
     save_song: function () {
         var self = this;
 
-        //self.inputs.content.html(self.inputs.content.html().replace(/<br\s*[\/]?>/gi, "\n"));
+        self.inputs.content.html(self.inputs.content.html().replace(/<br\s*[\/]?>/gi, "\n"));
 
         if (self.id === null) {
 
@@ -113,7 +112,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
                     written_by: self.inputs.written_by.val(),
                     performed_by: self.inputs.performed_by.val(),
                     base_key: self.inputs.base_key.val(),
-                    content: self.inputs.content.val(),
+                    content: self.inputs.content.text(),
                     meta_tags: self.inputs.meta_tags.val()
                 }},
                 function (response) {
@@ -135,7 +134,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
                     written_by: self.inputs.written_by.val(),
                     performed_by: self.inputs.performed_by.val(),
                     base_key: self.inputs.base_key.val(),
-                    content: self.inputs.content.val(),
+                    content: self.inputs.content.text(),
                     meta_tags: self.inputs.meta_tags.val()
                 }},
                 function (response) {
