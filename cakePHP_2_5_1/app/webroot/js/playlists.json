@@ -13158,7 +13158,7 @@
         ]
     },
     {
-        "title": "Neil Young",
+        "title": "2 Albums - Harvest and Goldrush",
         "act": "Harvest",
         "name": "Neil_Young",
         "filename": "Neil_Young",
@@ -13166,13 +13166,206 @@
             "duration": "",
             "text": ""
         },
-        "sets": {
-            "label": "First Set",
-            "introduction": {
-                "duration": "",
-                "text": ""
+        "sets": [
+            {
+                "label": "Harvest",
+                "introduction": {
+                    "duration": "",
+                    "text": ""
+                },
+                "songs": [
+                    {
+                        "id": "821",
+                        "key": "",
+                        "singer": "",
+                        "capo": "",
+                        "duration": "",
+                        "title": "A Man Needs A Maid",
+                        "introduction": {
+                            "duration": "",
+                            "text": ""
+                        }
+                    },
+                    {
+                        "id": "822",
+                        "key": "",
+                        "singer": "",
+                        "capo": "",
+                        "duration": "",
+                        "title": "There's a World",
+                        "introduction": {
+                            "duration": "",
+                            "text": ""
+                        }
+                    },
+                    {
+                        "id": "835",
+                        "key": "",
+                        "singer": "",
+                        "capo": "",
+                        "duration": "",
+                        "title": "Harvest",
+                        "introduction": {
+                            "duration": "",
+                            "text": ""
+                        }
+                    },
+                    {
+                        "id": "836",
+                        "key": "",
+                        "singer": "",
+                        "capo": "",
+                        "duration": "",
+                        "title": "Are You Ready For The Country",
+                        "introduction": {
+                            "duration": "",
+                            "text": ""
+                        }
+                    },
+                    {
+                        "id": "837",
+                        "key": "",
+                        "singer": "",
+                        "capo": "",
+                        "duration": "",
+                        "title": "Old Man",
+                        "introduction": {
+                            "duration": "",
+                            "text": ""
+                        }
+                    },
+                    {
+                        "id": "839",
+                        "key": "",
+                        "singer": "",
+                        "capo": "",
+                        "duration": "",
+                        "title": "Alabama",
+                        "introduction": {
+                            "duration": "",
+                            "text": ""
+                        }
+                    },
+                    {
+                        "id": "840",
+                        "key": "",
+                        "singer": "",
+                        "capo": "",
+                        "duration": "",
+                        "title": "Words (Between The Lines Of Age)",
+                        "introduction": {
+                            "duration": "",
+                            "text": ""
+                        }
+                    }
+                ]
+            },
+            {
+                "label": "After The Goldrush",
+                "introduction": {
+                    "duration": "",
+                    "text": ""
+                },
+                "songs": [
+                    {
+                        "id": "838",
+                        "key": "",
+                        "singer": "",
+                        "capo": "",
+                        "duration": "",
+                        "title": "After The Goldrush",
+                        "introduction": {
+                            "duration": "",
+                            "text": ""
+                        }
+                    },
+                    {
+                        "id": "841",
+                        "key": "",
+                        "singer": "",
+                        "capo": "",
+                        "duration": "",
+                        "title": "Only Love Can Break Your Heart",
+                        "introduction": {
+                            "duration": "",
+                            "text": ""
+                        }
+                    },
+                    {
+                        "id": "842",
+                        "key": "",
+                        "singer": "",
+                        "capo": "",
+                        "duration": "",
+                        "title": "Southern Man",
+                        "introduction": {
+                            "duration": "",
+                            "text": ""
+                        }
+                    },
+                    {
+                        "id": "843",
+                        "key": "",
+                        "singer": "",
+                        "capo": "",
+                        "duration": "",
+                        "title": "Till The Morning Comes",
+                        "introduction": {
+                            "duration": "",
+                            "text": ""
+                        }
+                    },
+                    {
+                        "id": "844",
+                        "key": "",
+                        "singer": "",
+                        "capo": "",
+                        "duration": "",
+                        "title": "Oh Lonesome Me",
+                        "introduction": {
+                            "duration": "",
+                            "text": ""
+                        }
+                    },
+                    {
+                        "id": "845",
+                        "key": "",
+                        "singer": "",
+                        "capo": "",
+                        "duration": "",
+                        "title": "Don't Let It Bring You Down",
+                        "introduction": {
+                            "duration": "",
+                            "text": ""
+                        }
+                    },
+                    {
+                        "id": "848",
+                        "key": "",
+                        "singer": "",
+                        "capo": "",
+                        "duration": "",
+                        "title": "I Believe In You",
+                        "introduction": {
+                            "duration": "",
+                            "text": ""
+                        }
+                    },
+                    {
+                        "id": "849",
+                        "key": "",
+                        "singer": "",
+                        "capo": "",
+                        "duration": "",
+                        "title": "Cripple Creek Ferry",
+                        "introduction": {
+                            "duration": "",
+                            "text": ""
+                        }
+                    }
+                ]
             }
-        }
+        ]
     },
     {
         "title": "Maximilians Restaurant",
