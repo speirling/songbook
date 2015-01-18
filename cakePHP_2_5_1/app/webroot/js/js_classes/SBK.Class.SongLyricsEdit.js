@@ -69,7 +69,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
             base_key: self.make_input(self.header_container, 'base_key', song_data.base_key, 'Base key'),
             meta_tags: self.make_input(self.header_container, 'meta_tags', song_data.meta_tags, 'Meta tags')
         };
-        self.song_content_container = jQuery('<div class="content"></div>').appendTo(self.container);
+        self.song_content_container = jQuery('<div class="song-content"></div>').appendTo(self.container);
         self.inputs.content = self.make_textarea(self.song_content_container, 'content', song_data.content, 'Content');
     },
     

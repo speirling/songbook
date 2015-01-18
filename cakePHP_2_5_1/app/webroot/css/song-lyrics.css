@@ -42,9 +42,12 @@ div.song-page .multi-column .line {
 	margin-left: 1em;
 }
 .page-header,
+.song-content {
+    padding-left: 1em;
+}
+.page-header,
 .content {
-	background-color: white;
-	padding-left: 1em;
+    background-color: white;
 }
 .page-header {
 	position: relative;
