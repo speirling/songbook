@@ -20,11 +20,17 @@ SBK.ChordEditor = SBK.Class.extend({
         jQuery('<div class="button button-note ' + classname + ' button-note-black button-note-csharp"><span><span class="note-name">C#</span>' + modifier +'</span></div>').appendTo(container).click(function () { 
             callback('C#');  
         });
+        jQuery('<div class="button button-note ' + classname + ' button-note-black button-note-csharp"><span><span class="note-name">Db</span>' + modifier +'</span></div>').appendTo(container).click(function () { 
+            callback('Db');  
+        });
         jQuery('<div class="button button-note ' + classname + ' button-note-white button-note-d"><span><span class="note-name">D</span>' + modifier +'</span></div>').appendTo(container).click(function () { 
             callback('D'); 
         });
         jQuery('<div class="button button-note ' + classname + ' button-note-black button-note-dsharp"><span><span class="note-name">D#</span>' + modifier +'</span></div>').appendTo(container).click(function () { 
             callback('D#'); 
+        });
+        jQuery('<div class="button button-note ' + classname + ' button-note-black button-note-eflat"><span><span class="note-name">Eb</span>' + modifier +'</span></div>').appendTo(container).click(function () { 
+            callback('Eb'); 
         });
         jQuery('<div class="button button-note ' + classname + ' button-note-white button-note-e"><span><span class="note-name">E</span>' + modifier +'</span></div>').appendTo(container).click(function () { 
             callback('E');  
@@ -35,17 +41,26 @@ SBK.ChordEditor = SBK.Class.extend({
         jQuery('<div class="button button-note ' + classname + ' button-note-black button-note-fsharp"><span><span class="note-name">F#</span>' + modifier +'</span></div>').appendTo(container).click(function () { 
             callback('F#'); 
         });
+        jQuery('<div class="button button-note ' + classname + ' button-note-black button-note-gflat"><span><span class="note-name">Gb</span>' + modifier +'</span></div>').appendTo(container).click(function () { 
+            callback('Gb'); 
+        });
         jQuery('<div class="button button-note ' + classname + ' button-note-white button-note-g"><span><span class="note-name">G</span>' + modifier +'</span></div>').appendTo(container).click(function () { 
             callback('G'); 
         });
         jQuery('<div class="button button-note ' + classname + ' button-note-black button-note-gsharp"><span><span class="note-name">G#</span>' + modifier +'</span></div>').appendTo(container).click(function () { 
             callback('G#'); 
         });
+        jQuery('<div class="button button-note ' + classname + ' button-note-black button-note-aflat"><span><span class="note-name">Ab</span>' + modifier +'</span></div>').appendTo(container).click(function () { 
+            callback('Ab'); 
+        });
         jQuery('<div class="button button-note ' + classname + ' button-note-white button-note-a"><span><span class="note-name">A</span>' + modifier +'</span></div>').appendTo(container).click(function () { 
             callback('A'); 
         });
         jQuery('<div class="button button-note ' + classname + ' button-note-black button-note-asharp"><span><span class="note-name">A#</span>' + modifier +'</span></div>').appendTo(container).click(function () { 
             callback('A#'); 
+        });
+        jQuery('<div class="button button-note ' + classname + ' button-note-black button-note-aflat"><span><span class="note-name">Bb</span>' + modifier +'</span></div>').appendTo(container).click(function () { 
+            callback('Bb'); 
         });
         jQuery('<div class="button button-note ' + classname + ' button-note-white button-note-b"><span><span class="note-name">B</span>' + modifier +'</span></div>').appendTo(container).click(function () { 
             callback('B'); 
@@ -83,25 +98,25 @@ SBK.ChordEditor = SBK.Class.extend({
 
 
         self.key_buttons('', self.button_containernotes_major, 'button-note-major', function (note_letter) { 
-            self.chord_object.note = note_letter.toUpperCase(); 
+            self.chord_object.note = note_letter.substr(0,1).toUpperCase() + note_letter.substr(1).toLowerCase();
             self.chord_object.modifier = ''; 
             self.display_value();
         });
 
         self.key_buttons('m', self.button_containernotes_minor, 'button-note-minor', function (note_letter) { 
-            self.chord_object.note = note_letter.toUpperCase(); 
+            self.chord_object.note = note_letter.substr(0,1).toUpperCase() + note_letter.substr(1).toLowerCase();
             self.chord_object.modifier = 'm'; 
             self.display_value();
         });
 
         self.key_buttons('7', self.button_containernotes_dom7, 'button-note-dom7', function (note_letter) { 
-            self.chord_object.note = note_letter.toUpperCase();  
+            self.chord_object.note = note_letter.substr(0,1).toUpperCase() + note_letter.substr(1).toLowerCase(); 
             self.chord_object.modifier = '7'; 
             self.display_value();
         });
 
         self.key_buttons('m7', self.button_containernotes_minor7, 'button-note-minor7', function (note_letter) { 
-            self.chord_object.note = note_letter.toUpperCase(); 
+            self.chord_object.note = note_letter.substr(0,1).toUpperCase() + note_letter.substr(1).toLowerCase();
             self.chord_object.modifier = 'm7'; 
             self.display_value();
         });
