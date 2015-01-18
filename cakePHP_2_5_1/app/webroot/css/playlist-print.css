@@ -1,16 +1,46 @@
-.playlist.print li.song {
-	background-color: transparent;
-}
+@media print {
+	#container {
+	    width: 650px;
+	}
+    .button {
+        display: none;
+    }
 
-.playlist ul {
-    padding: 0;
-}
-.playlist ul .title.set {
-    margin: 10px;
-    font-weight:  bold;
-    font-size: 14px;
-}
 
-.playlist li.set {
-    list-style-type: none;
+	.playlist.print li.song {
+	    background-color: transparent;
+	}
+	
+	.playlist ul {
+	    padding: 0;
+	}
+	.playlist ul .title.set {
+	    margin: 10px;
+	    font-weight:  bold;
+	    font-size: 14px;
+	}
+	
+	.playlist li.set {
+	    list-style-type: none;
+	}
+	
+	.page-header {
+	    column-span: all;
+	}
+	.lyrics-panel>.content { 
+	     column-count: 2;
+	     column-gap: 2em;
+	     column-rule: thin solid black;
+	     column-fill: auto;
+	     
+	     -moz-column-count: 2;
+	     -moz-column-gap: 2em;
+	     -moz-column-rule: thin solid black;
+         -moz-column-fill: auto;
+	     
+	     -webkit-column-count: 2;
+	     -webkit-column-gap: 2em;
+	     -webkit-column-rule: 2px solid silver;
+         -webkit-column-fill: auto;
+	 }
 }
