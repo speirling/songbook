@@ -19,6 +19,7 @@
 }
 
 .song-headings,
-.content textarea {
+.content textarea,
+.content pre {
     font-size: 0.8em;
 }
