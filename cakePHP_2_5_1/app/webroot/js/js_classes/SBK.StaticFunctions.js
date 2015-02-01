@@ -9,38 +9,50 @@ $.fn.insertAtCaret = function(text, set_caret_position_before_or_after) { // I w
 
 /* SBK static functions */
 SBK.StaticFunctions = {
-    insert_at_caret: function (container, text, set_caret_position_before_or_after) {
-        var offset;
+        insert_at_caret: function (container, text, set_caret_position_before_or_after) {
+            var offset;
 
-        if (typeof(set_caret_position_before_or_after) !== 'undefined' && set_caret_position_before_or_after === 'before') {
-            offset = 0;
-        } else {
-            offset = text.length;
-        }
-        if (document.selection && container.tagName == 'TEXTAREA') {  //IE textarea
-            container.focus();
-            sel = document.selection.createRange();
-            sel.text = text;
-            container.focus();
-        } else if (container.selectionStart || container.selectionStart == '0') { //MOZILLA textarea
-            startPos = container.selectionStart;
-            endPos = container.selectionEnd;
-            scrollTop = container.scrollTop;
-            container.value = container.value.substring(0, startPos) + text + container.value.substring(endPos, container.value.length);
-            container.focus();
-            container.selectionStart = startPos + offset;
-            container.selectionEnd = startPos + offset;
-            container.scrollTop = scrollTop;
-        } else {
-            //non textarea
-            var selectionObject = window.getSelection();
-            var range = selectionObject.getRangeAt(0);
-            text_node = document.createTextNode(text);
-            range.insertNode(text_node);
-            range.setStart(text_node, offset);
-            range.setEnd(text_node, offset);
-        }
-    },
+            if (typeof(set_caret_position_before_or_after) !== 'undefined' && set_caret_position_before_or_after === 'before') {
+                offset = 0;
+            } else {
+                offset = text.length;
+            }
+            if (document.selection && container.tagName == 'TEXTAREA') {  //IE textarea
+                container.focus();
+                sel = document.selection.createRange();
+                sel.text = text;
+                container.focus();
+            } else if (container.selectionStart || container.selectionStart == '0') { //MOZILLA textarea
+                startPos = container.selectionStart;
+                endPos = container.selectionEnd;
+                scrollTop = container.scrollTop;
+                container.value = container.value.substring(0, startPos) + text + container.value.substring(endPos, container.value.length);
+                container.focus();
+                container.selectionStart = startPos + offset;
+                container.selectionEnd = startPos + offset;
+                container.scrollTop = scrollTop;
+            } else {
+                //non textarea
+                var selectionObject = window.getSelection();
+                var range = selectionObject.getRangeAt(0);
+                text_node = document.createTextNode(text);
+                range.insertNode(text_node);
+                range.setStart(text_node, offset);
+                range.setEnd(text_node, offset);
+            }
+        },
+
+        replace_textbox_selection: function (range, replace_text) {
+            old_content = range.container.value;
+            new_content = old_content.slice(0, range.start) + replace_text + old_content.slice(range.end - old_content.length);
+
+            range.container.value = new_content;
+            //Now that the old selection is deleted, set selection to the start...
+            range.end = range.start + replace_text.length;
+            range.container.setSelectionRange(range.start, replace_text.length);
+            
+            return range;
+        },
 
     charCode_to_key_text: function (char_code) {
         var codes = {
