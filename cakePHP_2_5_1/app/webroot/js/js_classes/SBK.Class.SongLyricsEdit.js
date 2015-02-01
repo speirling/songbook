@@ -8,13 +8,14 @@ SBK.SongLyricsEdit = SBK.Class.extend({
 		self.pleasewait = new SBK.PleaseWait(self.container);
 		self.api = app.api;
         self.chord_editor = new SBK.ChordEditor(self.container, function (chord_string, range) {
-            if(range !== null) {
+            if(chord_string !== '') {
+                chord_string = '[' + chord_string + ']';
+            }
+            if(typeof(range.container) === 'undefined') {
                 range.deleteContents();
-                if(chord_string !== '') {
-                    chord_string = '[' + chord_string + ']';
-                }
                 range.insertNode(document.createTextNode(chord_string));
-                //SBK.StaticFunctions.insert_at_caret(self.inputs.content[0], chord_string);  //for textarea
+            } else {
+                SBK.StaticFunctions.replace_textbox_selection(range, chord_string);  //for textarea
             }
         });
 		self.chord_editor.render();
@@ -89,11 +90,11 @@ SBK.SongLyricsEdit = SBK.Class.extend({
 
         container = jQuery('<span class="' + id + ' input-container"></span>').appendTo(parent_container);
         jQuery('<span class="label">' + label_text + '<span class="separator">: </span></span>').appendTo(container);
-        input = jQuery('<pre contentEditable="true" class="input-box" id="' + id + '">' + value + '</pre>').appendTo(container);  //NEEDS self.inputs.content.text() in save_song
-        /*input = jQuery('<textarea class="input-box" id="' + id + '">' + value + '</textarea>').appendTo(container); // NEEDS self.inputs.content.val() in save_song()
+        //input = jQuery('<pre contentEditable="true" class="input-box" id="' + id + '">' + value + '</pre>').appendTo(container);  //NEEDS self.inputs.content.text() in save_song
+        input = jQuery('<textarea class="input-box" id="' + id + '">' + value + '</textarea>').appendTo(container); // NEEDS self.inputs.content.val() in save_song()
         window_container = parent_container.parent().parent();
         input.width(parent_container.width() - (input.offset().left + parent_container.offset().left));
-        input.height(window_container.height() - (input.offset().top + window_container.offset().top));*/
+        input.height(window_container.height() - (input.offset().top + window_container.offset().top));
 
         return input;
     },
@@ -112,7 +113,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
                     written_by: self.inputs.written_by.val(),
                     performed_by: self.inputs.performed_by.val(),
                     base_key: self.inputs.base_key.val(),
-                    content: self.inputs.content.text(),
+                    content: self.inputs.content.val(),
                     meta_tags: self.inputs.meta_tags.val()
                 }},
                 function (response) {
@@ -134,7 +135,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
                     written_by: self.inputs.written_by.val(),
                     performed_by: self.inputs.performed_by.val(),
                     base_key: self.inputs.base_key.val(),
-                    content: self.inputs.content.text(),
+                    content: self.inputs.content.val(),
                     meta_tags: self.inputs.meta_tags.val()
                 }},
                 function (response) {
@@ -162,7 +163,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
             self.chord_editor.container.show();
         }
         self.inputs.content.bind('click', function (event) {
-            self.chord_editor.open(window.getSelection(), event.pageX, event.pageY);
+            self.chord_editor.open(self.inputs.content, event.pageX, event.pageY);
         });
         self.buttons.chord_mode.set_text('exit chord mode');
         self.buttons.chord_mode.click(function () {self.exit_add_chords_mode();});

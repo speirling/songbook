@@ -175,7 +175,17 @@ SBK.ChordEditor = SBK.Class.extend({
         });
     },
 
-    open: function (selectionObject, x, y) {
+    open: function (container, x, y) {
+        var self = this;
+
+        if (container[0].tagName.toLowerCase() === 'textarea') {
+            self.open_textarea(container, x, y);
+        } else {
+            self.open_editable_div (window.getSelection(), x, y);
+        }
+    },
+    
+    open_editable_div: function (selectionObject, x, y) {
         var self = this, chord_string = '', count_backwards = 0, count_forwards = 0, rewind_index = 0;
 
         //if the chord editor is already active, set its previous range to its previous value.
@@ -263,6 +273,73 @@ SBK.ChordEditor = SBK.Class.extend({
         self.bass_note_requested = false;
         self.input.focus();
 
+    },
+
+    open_textarea: function (tbx, x, y) {
+        var self = this, chord_string = '', count_backwards = 0, count_forwards = 0, rewind_index = 0, old_content, new_content, original_start, original_end;
+
+        //if the chord editor is called on a textbox, selectionObject doesn't work, range has to be defined in characters within the textbox
+        self.range = {container: tbx[0], start: tbx[0].selectionStart, end: tbx[0].selectionEnd};
+
+        original_start = self.range.start;
+        original_end = self.range.end;
+        //check if the user has clicked or selected within a chord
+        for (count_backwards = 0; count_backwards < 10; count_backwards = count_backwards + 1) {
+            self.range.container.selectionStart = self.range.container.selectionStart - 1;
+            chord_string = self.range.container.value.substring(self.range.container.selectionStart, self.range.container.selectionEnd).trim();
+            if (chord_string.substr(0, 1) === '[') {
+                break;
+            } else if (chord_string.substr(0, 1) === ']') {
+                //you're incroaching on a previous chord - don't do it!
+                self.range.container.selectionStart = self.range.container.selectionStart + 1;
+                break;
+            } 
+        }
+        if (chord_string.substr(0, 1) === '[') { //if you've found the start of a chord before the insertion click without finding a chord end, then you're probably inside a chord
+            for (count_forwards = 0; count_forwards < 20; count_forwards = count_forwards + 1) {
+                self.range.container.selectionEnd = self.range.container.selectionEnd + 1;
+                chord_string = self.range.container.value.substring(self.range.container.selectionStart, self.range.container.selectionEnd).trim();
+                if (chord_string.substr(chord_string.length -1) === ']') {
+                    break;
+                } else if (chord_string.substr(chord_string.length -1) === '[') {
+                    // This shouldn't happen - it means you have a chord inside square brackets. Should you select the outer brackets, or assume that you should insert at a point?
+                    // insert at the clicked point.
+                    break;
+                } 
+            }
+        }
+        //if you've clicked within a chord the the current chord string will start with [ and end with ]
+        chord_string = self.range.container.value.substring(self.range.container.selectionStart, self.range.container.selectionEnd).trim();
+        last_char = chord_string.substr(chord_string.length -1);
+        first_char = chord_string.substr(0, 1);
+            
+        if (first_char === '[' && last_char === ']') {
+            chord_string = chord_string.substr(1, chord_string.length - 2);
+            self.range.start = self.range.container.selectionStart;
+            self.range.end = self.range.container.selectionEnd;
+            self.range = SBK.StaticFunctions.replace_textbox_selection(self.range, chord_string);
+            
+        } else {
+            //insert at a single point, so move the selection back to where you started
+            self.range.container.selectionStart = original_start;
+            self.range.container.selectionEnd = original_start;
+            chord_string = '';
+        } 
+
+        self.bass_note_requested = false;
+
+        self.initial_value = chord_string;
+        self.chord_object = SBK.StaticFunctions.parse_chord_string(chord_string);
+        if(self.display_mode === 'floating') {
+            if (typeof(x) !== 'undefined' && typeof(y) !== 'undefined') {
+                if (x !== null && y !== null) {
+                    self.container.css({"top": y, "left": x, "position": "absolute"}).show();
+                }
+            }
+        }
+        self.display_value();
+        self.bass_note_requested = false;
+        self.input.focus();
     },
 
     close: function () {

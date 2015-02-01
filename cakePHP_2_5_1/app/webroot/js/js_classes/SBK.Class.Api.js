@@ -80,22 +80,22 @@ SBK.Api = SBK.Class.extend({
     get_available_songs: function (data, success, failure)  {
         var self = this;
 
-        success({data: {songs: self.allsongs_list_data}}, '', {status: 1});
-        //return self.http_request.api_call('get_available_songs', data, success, failure);
+        //success({data: {songs: self.allsongs_list_data}}, '', {status: 1});
+        return self.http_request.api_call('get_available_songs', data, success, failure);
     },
     
     get_all_playlists: function (data, success, failure)  {
         var self = this, index, playlists;
 
-        success({data: {playlists: self.playlist_list_data}}, '', {status: 1});
-        //return self.http_request.api_call('get_all_playlists', data, success, failure);
+        //success({data: {playlists: self.playlist_list_data}}, '', {status: 1});
+        return self.http_request.api_call('get_all_playlists', data, success, failure);
     },
     
     get_song: function (data, success, failure) {
         var self = this, index;
 
-        success ({data: {Song: self.songs_indexed_by_id[data.id]}}, '', {status: 1});
-        //return self.http_request.api_call('get_song', data, success, failure);
+        //success ({data: {Song: self.songs_indexed_by_id[data.id]}}, '', {status: 1});
+        return self.http_request.api_call('get_song', data, success, failure);
     },
 
     
