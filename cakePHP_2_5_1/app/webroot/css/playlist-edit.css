@@ -6,20 +6,23 @@
 	#playlist-display {
 	    padding: 0 !important;
 	}
-	body, 
-	#container,
-	.playlist li.song {
-	    background-color: white;
-	    width: 400px;
-	}
-	
-	
+    body, 
+    #container,
+    .playlist li.song {
+        background-color: white;
+        width: 400px;
+    }
+    .playlist li.song {
+        font-size: 0.5em;
+    }	
 }
+
 @media screen {
 	
 
 	.playlist li.song {
 	    background-color: #f0f0c0;
+	    font-size: 0.5em;
 	}
 }
 
@@ -98,7 +101,11 @@ input.set-title {
 	color: #daa;
 }
 
-
+.playlist > ul {
+	padding-left: 0;
+	margin-left: 0;
+	list-style: none;
+}
 li.set ul {
 	padding: 0;
 	padding-left: 1em;
@@ -146,7 +153,7 @@ li.set ul {
 
 .playlist .title-bar {
     position: relative;
-    font-size: 1em;
+    font-size: 2em;
     height: 100%;
     width: 100%;
 }
@@ -354,7 +361,7 @@ a#add-new-set:hover {
 }
 
 ol.songlist {
-	padding-left: 2em;
+	padding-left: 1.5em;
 }
 .id {
 	margin-left: 1em;

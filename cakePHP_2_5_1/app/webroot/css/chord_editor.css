@@ -1,7 +1,7 @@
 .chord-editor {
 	border: 1px solid gray;
-	width: 443px;
-	margin: 5px;
+	width: 375px;
+	margin: 0;
 	background-color: gray;
 	border: 5px solid gray;
 	position: fixed;
@@ -18,9 +18,10 @@
 
 .button-note {
 	font-size: 10px;
-	width: 15px;
+	width: 21px;
 	margin: 0;
-	height: 16px;
+	padding:0;
+	height: 20px;
 	background-color: white;
     margin-left: 0px;
     position: relative;
