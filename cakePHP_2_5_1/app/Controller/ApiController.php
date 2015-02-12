@@ -145,15 +145,39 @@ class ApiController extends AppController {
     public function export_all_songs() {
         $this->RequestHandler->renderAs($this, 'json');
         $this->set ( 'success', file_put_contents('../webroot/js/songs.json', $this->songs_create_json_file() ));
-
+    
         $this->set ( '_serialize', array ('success' ) );
     }
-
+    
     public function export_all_playlists() {
         $this->RequestHandler->renderAs($this, 'json');
         $this->set ( 'success', file_put_contents('../webroot/js/playlists.json', $this->playlists_create_json_file() ));
-
+    
         $this->set ( '_serialize', array ('success' ) );
+    }
+
+    public function all_songs_json() {
+        $this->RequestHandler->renderAs($this, 'json');
+        $this->set ( 'data', $this->all_songs_create_array());
+        $this->set ( '_serialize', 'data');
+    }
+
+    public function all_playlists_json() {
+        $this->RequestHandler->renderAs($this, 'json');
+        $this->set ( 'data', $this->all_playlists_create_array());
+        $this->set ( '_serialize', 'data');
+    }
+
+    public function appCache() {
+        //header("Content-type: text/cache-manifest");
+        $this->RequestHandler->renderAs($this, 'json');
+        foreach(Configure::read('Songbook.css_library') as $filename) {
+            echo $filename;
+        }
+        foreach(Configure::read('Songbook.js_library') as $filename) {
+            echo $filename;
+        }
+                
     }
     
     
@@ -309,6 +333,20 @@ class ApiController extends AppController {
 
 
     protected function songs_create_json_file() {
+        $all_songs = $this->all_songs_create_array();
+    
+        return json_encode($all_songs, JSON_PRETTY_PRINT);
+    }   
+
+
+    protected function playlists_create_json_file() {
+        $all_playlists = $this->all_playlists_create_array;
+    
+        return json_encode($all_playlists, JSON_PRETTY_PRINT);
+    }   
+
+
+    protected function all_songs_create_array() {
     
         $db_data = $this->Song->find('all');
         $all_songs = Array();
@@ -316,11 +354,11 @@ class ApiController extends AppController {
             array_push($all_songs, $this_song["Song"]);
         }
     
-        return json_encode($all_songs, JSON_PRETTY_PRINT);
+        return $all_songs;
     }   
 
 
-    protected function playlists_create_json_file() {
+    protected function all_playlists_create_array() {
     
         $all_playlists = array();
         $directoryList = scandir ( Configure::read('Songbook.playlist_directory') );
@@ -336,7 +374,7 @@ class ApiController extends AppController {
             }
         }
     
-        return json_encode($all_playlists, JSON_PRETTY_PRINT);
+        return $all_playlists;
     }   
 
 }
