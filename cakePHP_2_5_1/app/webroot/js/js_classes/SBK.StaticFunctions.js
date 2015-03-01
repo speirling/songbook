@@ -44,12 +44,16 @@ SBK.StaticFunctions = {
 
         replace_textbox_selection: function (range, replace_text) {
             old_content = range.container.value;
+            old_scroll_top = jQuery(range.container).scrollTop();
             new_content = old_content.slice(0, range.start) + replace_text + old_content.slice(range.end - old_content.length);
 
             range.container.value = new_content;
             //Now that the old selection is deleted, set selection to the start...
             range.end = range.start + replace_text.length;
             range.container.setSelectionRange(range.start, replace_text.length);
+            window.setTimeout(function () {
+                jQuery(range.container).scrollTop(old_scroll_top);
+            }, 1);
             
             return range;
         },
