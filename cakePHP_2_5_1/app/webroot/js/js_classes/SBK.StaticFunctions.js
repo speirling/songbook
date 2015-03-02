@@ -209,34 +209,40 @@ SBK.StaticFunctions = {
     transpose_chord: function (chord, base_key, target_key, capo) {
         var chord_note, second_char, modifier_start, chord_modifier, key_conversion_value, new_chord, bass_key, slash_position, old_bass_key, new_bass_key;
 
+        if(chord === '-') { //this means you've a typo in your lyrics... a blank chord left in!
+            return '-';
+        }
         if(base_key === null || base_key === '') {
             throw new Exception("SBK.StaticFunctions.transpose_chord() :: no base key passed");
         }
         if(target_key === null || target_key === '') {
             throw new Exception("SBK.StaticFunctions.transpose_chord() :: no target key passed");
         }
-        if (typeof(capo) === 'undefined') {
-           capo = 0; 
-        }
-        chord_note = chord.substring(0, 1);
-        second_char = chord.substring(1, 2);
-        modifier_start = 1;
-        if (second_char === '#' || second_char == 'b') {
-            chord_note = chord_note + second_char;
-            modifier_start = 2;
-        }
-        chord_modifier = chord.substring(modifier_start);
-
         key_conversion_value = SBK.Constants.NOTE_VALUE_ARRAY[target_key.substring(0, 1)] - SBK.Constants.NOTE_VALUE_ARRAY[base_key.substring(0, 1)];
         key_conversion_value = key_conversion_value - capo;
-        if (target_key.substring(1, 2) === '#' || target_key === 'D' || target_key === 'E' || target_key === 'A' || target_key === 'B') {
-            new_chord = SBK.StaticFunctions.shift_note(chord_note, key_conversion_value, true);
-        } else if (target_key.substring(1, 2) === 'b' || base_key === 'F') {
-            new_chord = SBK.StaticFunctions.shift_note(chord_note, key_conversion_value, false);
-        } else {
-            new_chord = SBK.StaticFunctions.shift_note(chord_note, key_conversion_value);
+        if (typeof(capo) === 'undefined') {
+           capo = 0;
         }
-
+        if(chord.substring(0, 1) === '/') { // "Born to run" has standalone bass notes... [/a] [/g#] [/g] etc.
+            new_chord = '';
+            chord_modifier = chord;
+        } else {
+            chord_note = chord.substring(0, 1);
+            second_char = chord.substring(1, 2);
+            modifier_start = 1;
+            if (second_char === '#' || second_char == 'b') {
+                chord_note = chord_note + second_char;
+                modifier_start = 2;
+            }
+            chord_modifier = chord.substring(modifier_start);
+            if (target_key.substring(1, 2) === '#' || target_key === 'D' || target_key === 'E' || target_key === 'A' || target_key === 'B') {
+                new_chord = SBK.StaticFunctions.shift_note(chord_note, key_conversion_value, true);
+            } else if (target_key.substring(1, 2) === 'b' || base_key === 'F') {
+                new_chord = SBK.StaticFunctions.shift_note(chord_note, key_conversion_value, false);
+            } else {
+                new_chord = SBK.StaticFunctions.shift_note(chord_note, key_conversion_value);
+            }
+        }
         bass_key = '';
         slash_position = chord_modifier.indexOf('/');
         if (slash_position > -1) {
