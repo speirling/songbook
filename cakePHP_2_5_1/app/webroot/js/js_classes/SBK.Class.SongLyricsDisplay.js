@@ -78,6 +78,7 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         } else {
             jQuery('<span class="label">key: </span>').appendTo(target_key_container);
             jQuery('<select class="data">' +
+                    '<option value=""></option>' + 
                     '<option value="Ab">Ab</option>' + 
                     '<option value="A">A</option>' +
                     '<option value="A#">A#</option>' +
