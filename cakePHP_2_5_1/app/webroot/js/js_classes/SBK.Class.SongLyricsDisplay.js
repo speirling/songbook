@@ -76,6 +76,12 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         if (typeof(self.base_key) === 'undefined' || self.base_key === '') {
             jQuery('<span class="no-base-key">No base key set</span>').appendTo(target_key_container);
         } else {
+            if (typeof(self.key) === 'undefined' || self.key === '') {
+                nominal_key = self.base_key;
+            } else {
+                nominal_key = self.key;
+            }
+            nominal_key = nominal_key.replace('m', '');
             jQuery('<span class="label">key: </span>').appendTo(target_key_container);
             jQuery('<select class="data">' +
                     '<option value=""></option>' + 
@@ -96,7 +102,7 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
                     '<option value="Gb">Gb</option>' +
                     '<option value="G">G</option>' +
                     '<option value="G#">G#</option>' +
-                    '</select>').val(self.key).change(function (){self.app.application_state.set({key: jQuery(this).val()});}).appendTo(target_key_container);
+                    '</select>').val(nominal_key).change(function (){self.app.application_state.set({key: jQuery(this).val()});}).appendTo(target_key_container);
             jQuery('<span class="label">capo: </span>').appendTo(target_key_container);
             jQuery('<select class="data">' +
                     '<option value="0">0</option>' + 
