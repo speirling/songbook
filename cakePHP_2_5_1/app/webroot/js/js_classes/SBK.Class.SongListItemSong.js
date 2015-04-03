@@ -21,10 +21,12 @@ SBK.SongListItemSong = SBK.Class.extend({
         self.details_bar = jQuery('<div class="details-bar"></div>').appendTo(self.container);
         self.button_bar = jQuery('<div class="button-bar"></div>').appendTo(self.container);
 
-        jQuery('<td class="title">' + SBK.StaticFunctions.value_or_blank(self.data.title) + '</td>').appendTo(title_bar);
         if (SBK.StaticFunctions.value_or_blank(self.data.key) !== '') {
             jQuery(' <td class="key">' + SBK.StaticFunctions.value_or_blank(self.data.key) + '</td>').appendTo(title_bar);
+        } else {
+            jQuery(' <td class="key blank">' + SBK.StaticFunctions.value_or_blank(self.data.key) + '</td>').appendTo(title_bar);
         }
+        jQuery('<td class="title">' + SBK.StaticFunctions.value_or_blank(self.data.title) + '</td>').appendTo(title_bar);
         lyrics_button_container = jQuery('<td class="lyrics-button-container"></td>').appendTo(title_bar);
         self.inputs = {
             singer: jQuery('<input type="text" class="singer" size="5" placeholder="singer" value="' + SBK.StaticFunctions.value_or_blank(self.data.singer) + '" />').appendTo(self.details_bar),
