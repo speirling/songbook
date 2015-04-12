@@ -25,7 +25,7 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 	<?php echo $this->Html->charset(); ?>
 	<meta name="viewport" content="width=device-width, height=device-height,  initial-scale=1.0, user-scalable=no;user-scalable=0;"/>
 	<title>
-		<?php echo $cakeDescription ?>:
+		EP Songbook:
 		<?php echo $title_for_layout; ?>
 	</title>
 	<?php
