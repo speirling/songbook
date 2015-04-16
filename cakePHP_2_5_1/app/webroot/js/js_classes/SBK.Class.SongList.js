@@ -152,7 +152,7 @@ SBK.SongList = SBK.Class.extend({
 
 	redraw: function (server_data) {
 		var self = this;
-console.log('songlist redraw');
+
 		//self.playlist_html = self.to_html(self.data_json);
 		self.display_content();
 	},

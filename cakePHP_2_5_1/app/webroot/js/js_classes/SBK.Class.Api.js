@@ -6,10 +6,13 @@ SBK.Api = SBK.Class.extend({
 
         self.http_request = new SBK.HTTPRequest();
         self.app = app;
-        self.playlist_list_data = self.format_all_playlist_list(app.all_playlists);
-        self.playlists_indexed_by_name = self.get_playlists_indexed_by_name(app.all_playlists);
-        self.allsongs_list_data = self.format_all_songs_list(app.all_songs);
-        self.songs_indexed_by_id = self.get_songs_indexed_by_id(app.all_songs);
+
+        if (self.app.application_state.offline) {
+            self.playlist_list_data = self.format_all_playlist_list(app.all_playlists);
+            self.playlists_indexed_by_name = self.get_playlists_indexed_by_name(app.all_playlists);
+            self.allsongs_list_data = self.format_all_songs_list(app.all_songs);
+            self.songs_indexed_by_id = self.get_songs_indexed_by_id(app.all_songs);
+        }
     },
 
     format_all_playlist_list: function (source_data) {
@@ -74,28 +77,41 @@ SBK.Api = SBK.Class.extend({
     get_playlist: function (data, success, failure)  {
         var self = this;
 
-        success({data: self.playlists_indexed_by_name[data.playlist_name]});
+        if (self.app.application_state.offline) {
+            success({data: self.playlists_indexed_by_name[data.playlist_name]});
+        } else {
+            return self.http_request.api_call('get_playlist', data, success, failure);
+        }
     },
     
     get_available_songs: function (data, success, failure)  {
         var self = this;
 
-        success({data: {songs: self.allsongs_list_data}}, '', {status: 1});
-        //return self.http_request.api_call('get_available_songs', data, success, failure);
+        if (self.app.application_state.offline) {
+            success({data: {songs: self.allsongs_list_data}}, '', {status: 1});
+        } else {
+            return self.http_request.api_call('get_available_songs', data, success, failure);
+        }
     },
     
     get_all_playlists: function (data, success, failure)  {
         var self = this, index, playlists;
 
-        success({data: {playlists: self.playlist_list_data}}, '', {status: 1});
-        //return self.http_request.api_call('get_all_playlists', data, success, failure);
+        if (self.app.application_state.offline) {
+            success({data: {playlists: self.playlist_list_data}}, '', {status: 1});
+        } else {
+            return self.http_request.api_call('get_all_playlists', data, success, failure);
+        }
     },
     
     get_song: function (data, success, failure) {
         var self = this, index;
 
-        success ({data: {Song: self.songs_indexed_by_id[data.id]}}, '', {status: 1});
-        //return self.http_request.api_call('get_song', data, success, failure);
+        if (self.app.application_state.offline) {
+            success ({data: {Song: self.songs_indexed_by_id[data.id]}}, '', {status: 1});
+        } else {
+            return self.http_request.api_call('get_song', data, success, failure);
+        }
     },
 
     

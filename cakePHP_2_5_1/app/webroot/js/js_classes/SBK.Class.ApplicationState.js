@@ -72,7 +72,7 @@ SBK.ApplicationState = SBK.Class.extend({
     },
     
     update_from_hash: function () {
-        var self = this, index, changed_parameters;
+        var self = this, hash, hash_array, valid_formats, index, changed_parameters;
 
         hash = self.get_hash();
         hash_array = hash.split('&');
