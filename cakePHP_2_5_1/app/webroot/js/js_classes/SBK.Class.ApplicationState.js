@@ -35,6 +35,7 @@ SBK.ApplicationState = SBK.Class.extend({
         self.introductions_visible_in_list = false;
         self.buttons_visible_in_list = false;
         self.details_visible_in_list = false;
+        self.offline = false;
     },
     
     start_handling_hashchange: function () {
@@ -133,10 +134,27 @@ SBK.ApplicationState = SBK.Class.extend({
             case 'dv':
                 self.details_visible_in_list = true;
                 break;
+
+            case 'offline':
+                self.offline = true;
+                break;
             }
         }
 
-        property_names = ['tab', 'id', 'playlist_filename', 'key', 'capo', 'set_index', 'song_index', 'introductions_visible_in_list', 'buttons_visible_in_list', 'details_visible_in_list'];
+        property_names = [
+            'tab', 
+            'id', 
+            'playlist_filename', 
+            'key', 
+            'capo', 
+            'set_index', 
+            'song_index', 
+            'introductions_visible_in_list', 
+            'buttons_visible_in_list', 
+            'details_visible_in_list',
+            'offline'
+        ];
+
         for (index = 0; index < property_names.length; index = index + 1) {
             if (typeof(self[property_names[index]]) === 'undefined' || self[property_names[index]] === changed_parameters[property_names[index]]) {
                 delete changed_parameters[property_names[index]];
@@ -159,7 +177,8 @@ SBK.ApplicationState = SBK.Class.extend({
             song_index: self.song_index,
             introductions_visible_in_list: self.introductions_visible_in_list,
             buttons_visible_in_list: self.buttons_visible_in_list,
-            details_visible_in_list: self.details_visible_in_list
+            details_visible_in_list: self.details_visible_in_list,
+            offline: self.offline
         };
     },
 
@@ -224,6 +243,13 @@ SBK.ApplicationState = SBK.Class.extend({
         if (SBK.StaticFunctions.undefined_to_null(desired_state.details_visible_in_list) !== null) {
             if (desired_state.details_visible_in_list === true) {
                 state_string = state_string + '&dv';
+            }
+        }
+
+        // offline
+        if (SBK.StaticFunctions.undefined_to_null(desired_state.offline) !== null) {
+            if (desired_state.offline === true) {
+                state_string = state_string + '&offline';
             }
         }
 
