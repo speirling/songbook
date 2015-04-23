@@ -11,22 +11,28 @@ SBK.SongbookApplication = SBK.Class.extend({
 	
 	render: function (callback) {
 		var self = this;
-		
-		self.container.html('');
-		jQuery.getJSON('playlists/data.json', function (data){
-            self.all_playlists = data;
-            jQuery.getJSON('songs/data.json', function (data){
-                self.all_songs = data;
 
-                self.api = new SBK.Api(self);
-                // Set the initial application state
-                self.application_state = new SBK.ApplicationState();
-                self.application_state.register_callback(function (changed_parameters) {
-                    self.on_application_state_change(changed_parameters);
-                });
-                self.application_state.startup(self);
-            });
+        // Set the initial application state
+        self.application_state = new SBK.ApplicationState();
+        self.application_state.update_from_hash();
+        self.application_state.register_callback(function (changed_parameters) {
+            self.on_application_state_change(changed_parameters);
         });
+
+        self.container.html('');
+		if (self.application_state.offline) {
+    		jQuery.getJSON('playlists/data.json', function (data){
+                self.all_playlists = data;
+                jQuery.getJSON('songs/data.json', function (data){
+                    self.all_songs = data;
+                    self.api = new SBK.Api(self);
+                    self.application_state.startup(self);
+                });
+            });
+		} else {
+	        self.api = new SBK.Api(self);
+	        self.application_state.startup(self);
+		}
 	},
     
     on_application_state_change: function (changed_parameters) {
