@@ -114,18 +114,27 @@ SBK.PlayList = SBK.SongList.extend({
     },
     
     filter_playlist_songs: function (filter_value) {
-        var self = this, current_song, current_set, show_this_li, song_title;
+        var self = this, current_song, current_set, show_this_li, song_title, show_this_set;
 
-        jQuery('li ol li', self.playlist_ul).each(function () {
-            current_song = jQuery(this);
-            song_title = jQuery('.title', current_song).html();
-            show_this_li = song_title.toLowerCase().indexOf(filter_value.toLowerCase()) !== -1;
-            current_song.toggle(show_this_li);
-        });
         jQuery('li', self.playlist_ul).each(function () {
-            if(jQuery('ol', this).length > 0) {
+            if (jQuery('ol', this).length > 0) {
                 current_set = jQuery(this);
-                if(jQuery('li.song:visible', current_set).length === 0 ) {
+                show_this_set = false;
+
+                jQuery('li', current_set).each(function () {
+                    current_song = jQuery(this);
+                    song_title = jQuery('.title', current_song).html();
+                    show_this_li = song_title.toLowerCase().indexOf(filter_value.toLowerCase()) !== -1;
+                    if (show_this_li) {
+                        current_song.show();
+                        show_this_set = true;
+                    } else {
+                        current_song.hide();
+                    }
+                });
+                if (show_this_set) {
+                    current_set.show();
+                } else {
                     current_set.hide();
                 }
             }
