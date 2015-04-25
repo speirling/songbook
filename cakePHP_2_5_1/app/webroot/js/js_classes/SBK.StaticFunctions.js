@@ -218,7 +218,7 @@ SBK.StaticFunctions = {
         if(target_key === null || target_key === '') {
             throw new Exception("SBK.StaticFunctions.transpose_chord() :: no target key passed");
         }
-        key_conversion_value = SBK.Constants.NOTE_VALUE_ARRAY[target_key.substring(0, 1)] - SBK.Constants.NOTE_VALUE_ARRAY[base_key.substring(0, 1)];
+        key_conversion_value = SBK.Constants.NOTE_VALUE_ARRAY[target_key] - SBK.Constants.NOTE_VALUE_ARRAY[base_key];
         key_conversion_value = key_conversion_value - capo;
         if (typeof(capo) === 'undefined') {
            capo = 0;
