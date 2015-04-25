@@ -13,7 +13,7 @@ jQuery(document).ready(function () {
         deepEqual(SBK.StaticFunctions.transpose_chord('F#m', 'D', 'F', 0), 'Am');
         deepEqual(SBK.StaticFunctions.transpose_chord('G', 'D', 'F', 0), 'Bb', 'target key F');
         deepEqual(SBK.StaticFunctions.transpose_chord('G', 'A', 'C', 0), 'Bb', 'target key C');
-        deepEqual(SBK.StaticFunctions.transpose_chord('G', 'F#', 'A', 0), 'A#', 'target key A');
+        deepEqual(SBK.StaticFunctions.transpose_chord('G', 'F#', 'A', 0), 'A#', 'chord = G, base_key = F#, target_key=  A, Capo = 0');
         deepEqual(SBK.StaticFunctions.transpose_chord('G#', 'D', 'F', 0), 'B');
         deepEqual(SBK.StaticFunctions.transpose_chord('Ab', 'D', 'F', 0), 'B', 'target key F');
         deepEqual(SBK.StaticFunctions.transpose_chord('Ab', 'A', 'C', 0), 'B', 'target key C');
