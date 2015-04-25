@@ -1,16 +1,16 @@
 SBK.SongbookApplication = SBK.Class.extend({
-	init: function (container) {
-		var self = this;
+    init: function (container) {
+        var self = this;
 
-		self.container = container;       
+        self.container = container;       
         self.song = null;
         self.set = null;
         self.playlist = null;
         self.pleasewait = new SBK.PleaseWait(self.container);
-	},
-	
-	render: function (callback) {
-		var self = this;
+    },
+    
+    render: function (callback) {
+        var self = this;
 
         // Set the initial application state
         self.application_state = new SBK.ApplicationState();
@@ -20,8 +20,8 @@ SBK.SongbookApplication = SBK.Class.extend({
         });
 
         self.container.html('');
-		if (self.application_state.offline) {
-    		jQuery.getJSON('playlists/data.json', function (data){
+        if (self.application_state.offline) {
+            jQuery.getJSON('playlists/data.json', function (data){
                 self.all_playlists = data;
                 jQuery.getJSON('songs/data.json', function (data){
                     self.all_songs = data;
@@ -29,11 +29,11 @@ SBK.SongbookApplication = SBK.Class.extend({
                     self.application_state.startup(self);
                 });
             });
-		} else {
-	        self.api = new SBK.Api(self);
-	        self.application_state.startup(self);
-		}
-	},
+        } else {
+            self.api = new SBK.Api(self);
+            self.application_state.startup(self);
+        }
+    },
     
     on_application_state_change: function (changed_parameters) {
         var self = this, process_tab = false;
