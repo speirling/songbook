@@ -1,8 +1,8 @@
 SBK.ChordEditor = SBK.Class.extend({
-	init: function (parent_container, callback) {
+	init: function (lyrics_container, callback) {
 		var self = this;
 
-		self.container = jQuery('<div class="chord-editor"></div>').prependTo(parent_container.parent()).hide();
+		self.container = jQuery('<div class="chord-editor"></div>').prependTo(lyrics_container.parent()).hide();
         self.callback = callback;
         self.chord_object = {};
         self.bass_note_requested = false;
