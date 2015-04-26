@@ -345,7 +345,7 @@ SBK.ChordEditor = SBK.Class.extend({
     close: function () {
        var self = this;
 
-       if(self.display_mode === 'floating') {
+       if (self.display_mode === 'floating') {
            self.container.hide();
        }
        //if (self.get_value() !== self.initial_value) {
@@ -353,12 +353,11 @@ SBK.ChordEditor = SBK.Class.extend({
        //}
     },
 
-    display_value: function (chord_string) {
+    display_value: function () {
         var self = this, chord_html = '', v;
 
-        if(typeof(chord_string) !== 'undefined') {
-            self.chord_object = SBK.StaticFunctions.parse_chord_string(chord_string);
-        }
+        console.log(self.chord_object);
+
         if (typeof(self.chord_object.note) !== 'undefined') {
             chord_html = chord_html + '<span class="note">' + self.chord_object.note + '</span>';
         }
