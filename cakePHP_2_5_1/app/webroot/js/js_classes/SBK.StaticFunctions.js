@@ -263,7 +263,11 @@ SBK.StaticFunctions = {
         var second_char, modifier_start, slash_position;
         
         result = {};
-        if(chord_string !== '') {
+        if (chord_string === '') {
+            return result;
+        } else if (chord_string === '-') {
+            return result;
+        } else {
             result.note = chord_string.substring(0, 1);
             second_char = chord_string.substring(1, 1);
             modifier_start = 1;
@@ -278,9 +282,9 @@ SBK.StaticFunctions = {
                 result.bass_note = result.modifier.substring(slash_position + 1);
                 result.modifier = result.modifier.substring(0, slash_position);
             }
-        }
 
-        return result;
+            return result;
+        }
     },
     
     undefined_to_null: function (value) {
