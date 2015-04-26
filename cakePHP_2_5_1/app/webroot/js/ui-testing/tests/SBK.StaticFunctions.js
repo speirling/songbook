@@ -2,7 +2,7 @@
 
 jQuery(document).ready(function () {
     module('SBK.StaticFunctions');
-    
+
     test('transpose_chord', 14, function () {
 
         deepEqual(SBK.StaticFunctions.transpose_chord('D', 'D', 'F', 0), 'F');
@@ -19,5 +19,14 @@ jQuery(document).ready(function () {
         deepEqual(SBK.StaticFunctions.transpose_chord('Ab', 'A', 'C', 0), 'B', 'target key C');
         deepEqual(SBK.StaticFunctions.transpose_chord('Ab', 'F#', 'A', 0), 'B', 'target key A');
         deepEqual(SBK.StaticFunctions.transpose_chord('A', 'D', 'F', 0), 'C');
+    });
+
+    test('parse_chord_string', 5, function () {
+
+        deepEqual(SBK.StaticFunctions.parse_chord_string('D'), {modifier: '', note: 'D'});
+        deepEqual(SBK.StaticFunctions.parse_chord_string(''), {});
+        deepEqual(SBK.StaticFunctions.parse_chord_string('-'), {});
+        deepEqual(SBK.StaticFunctions.parse_chord_string('G#'), {modifier: '#', note: 'G'});
+        deepEqual(SBK.StaticFunctions.parse_chord_string('Ebm'), {modifier: 'bm', note: 'E'});
     });
 });
