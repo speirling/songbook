@@ -1,7 +1,60 @@
 @media print {
-	#container {
-	    width: 650px;
-	}
+
+    #playlist-display .playlist { 
+         column-width: 350px;
+         -moz-column-width: 350px;
+         -webkit-column-width: 350px;
+    }
+    
+    .button,
+    .navigation-panel {
+        display: none !important;
+    }
+    #playlist-display {
+        padding: 0 !important;
+    }
+    body, 
+    #container,
+    .playlist li.song {
+        background-color: white;
+    }
+    body, 
+    #container {
+        width: 100%;
+    }
+    .playlist li.song {
+        font-size: 1.2em;
+        width: 400px;
+    } 
+    .playlist li.song table {
+        border-collapse: collapse;
+    }   
+    .details-bar {
+    }   
+    .details-bar .id, 
+    .details-bar .duration, 
+    .details-bar .capo,   
+    .details-bar .key {
+        display: none;
+    }
+    .playlist .title-bar .title {
+        padding-left: 5px;
+    }
+    .playlist .title-bar .key {
+        background-color: #aaaaaa;
+        color: white !important;
+        border: 0 !important;
+    }
+    .playlist .title-bar .key.blank {
+        background-color: transparent;
+    }
+    span.set-title input.set-title {
+        color: #aaaaaa;
+    }
+    span.set-title label {
+        display: none;
+    }
+
     .button {
         display: none;
     }
