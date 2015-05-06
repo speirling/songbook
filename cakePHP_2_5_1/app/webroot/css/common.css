@@ -92,9 +92,11 @@ input:-moz-placeholder {
 .button-bar {
 	display: inline;
     line-height: 2em;
-    white-space: normal;
+    white-space: nowrap;
     vertical-align: middle;
     z-index: 10;
+    overflow-x: auto;
+    max-width: 90%;
 }
 .button-bar.flyout {
     display: inline-block;
@@ -109,6 +111,10 @@ input:-moz-placeholder {
     height: 3.75em;
     width: 3.75em;
     overflow: hidden;
+}
+.button-bar.flyout .button {
+	margin-bottom: 4px;
+	margin-top: 12px;
 }
 .button-bar.flyout :first-child {
 	margin-left: 5em;

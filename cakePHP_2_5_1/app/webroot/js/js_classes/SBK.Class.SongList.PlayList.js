@@ -158,6 +158,19 @@ SBK.PlayList = SBK.SongList.extend({
 		return self.set_names; //defined in SBK.Class.SongList.js  filter_songlist_json_before_display()
 	},
 
+	button_bar_toggle: function (bar_object) {
+		var self = this;
+
+	    jQuery(bar_object).toggleClass('closed');
+	    self.set_playlist_container_top();  //so that the navigation bar is always at the top of the screen
+	},
+
+	set_playlist_container_top: function () {
+		var self = this;
+
+	    self.playlist_container.css('top', self.navigation_panel.height());
+	},
+
 	display_content: function () {
 		var self = this, button_bar, set_index, internal_navigation_bar, label, filter_to;
 	
@@ -165,10 +178,7 @@ SBK.PlayList = SBK.SongList.extend({
 		self.navigation_panel = jQuery('<div class="navigation-panel"></div>').appendTo(self.container);
 
 		button_bar = jQuery('<div class="button-bar flyout closed"></div>').appendTo(self.navigation_panel);
-		button_bar.click(function () {
-		    jQuery(this).toggleClass('closed');
-		    self.container.css('padding-top', self.navigation_panel.height());  //so that the navigation bar is always at the top of the screen
-		});
+		button_bar.click(function () {self.button_bar_toggle(this);});
 
         //buttons
 		self.buttons = {
@@ -205,9 +215,8 @@ SBK.PlayList = SBK.SongList.extend({
         } else {
             self.hide_details();
         }
-        
-        
-        internal_navigation_bar = jQuery('<div class="navigation-bar button-bar"></div>').appendTo(self.navigation_panel);
+
+        internal_navigation_bar = jQuery('<div class="internal-navigation navigation-bar button-bar flyout closed"></div>').appendTo(self.navigation_panel);
      
         if (typeof(self.data_json.sets) !== 'undefined' && self.data_json.sets.length > 0) {
             for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
@@ -223,8 +232,9 @@ SBK.PlayList = SBK.SongList.extend({
         } else {
             jQuery('<span class="set-link"></span>').appendTo(internal_navigation_bar);
         }
+        internal_navigation_bar.click(function () {self.button_bar_toggle(this);});
 
-        self.filter = jQuery('<div class="picker-filter"></div>').appendTo(internal_navigation_bar);
+        self.filter = jQuery('<div class="picker-filter"></div>').appendTo(self.navigation_panel);
         filter_border = jQuery('<div class="picker-filter-border"></div>').appendTo(self.filter);
         filter_wrapper = jQuery('<div class="picker-filter-wrapper"></div>').appendTo(filter_border);
         self.filter_input = jQuery('<input type="text" placeholder="type to filter"/>').appendTo(filter_wrapper);
@@ -256,6 +266,7 @@ SBK.PlayList = SBK.SongList.extend({
                 self.container.css('padding-bottom', required_padding_bottom);
             }
         }
+        self.set_playlist_container_top(); 
 	},
 
     on_sortable_change: function (event, ui) {
