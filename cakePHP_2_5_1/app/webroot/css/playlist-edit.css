@@ -164,6 +164,7 @@ li.set ul {
 .playlist .title-bar td {
 	vertical-align: middle;
 	height: 100%;
+	cursor: default;
 }
 .playlist .lyrics-button-container {
 	width: 3em;
