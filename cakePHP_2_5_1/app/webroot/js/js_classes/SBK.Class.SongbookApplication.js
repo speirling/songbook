@@ -71,8 +71,33 @@ SBK.SongbookApplication = SBK.Class.extend({
                     self._list_all_songs();
                     break;
             }
-        } else if (self.application_state.tab === 'song_lyrics' && (typeof(changed_parameters.key) !== 'undefined' || typeof(changed_parameters.capo) !== 'undefined')) {
-            self._display_song(self.application_state.id, self.application_state.key, self.application_state.capo);
+        } else {// if it's not the tab that's changed
+            if (self.application_state.tab === 'song_lyrics') {
+                if (typeof(changed_parameters.key) !== 'undefined' || typeof(changed_parameters.capo) !== 'undefined') {
+                    self._display_song(self.application_state.id, self.application_state.key, self.application_state.capo);
+                }
+            } else  if (self.application_state.tab === 'edit_playlist') {
+                /*parameter_names_playlist = [
+                    'introductions_visible_in_list', 
+                    'buttons_visible_in_list', 
+                    'details_visible_in_list'
+                ];*/
+                if (typeof(changed_parameters.introductions_visible_in_list) !== 'undefined' && changed_parameters.introductions_visible_in_list === true) {
+                    self.playlist.show_introductions();
+                } else {
+                    self.playlist.hide_introductions();
+                }
+                if (typeof(changed_parameters.details_visible_in_list) !== 'undefined' && changed_parameters.details_visible_in_list === true) {
+                    self.playlist.show_details();
+                } else {
+                    self.playlist.hide_details();
+                }
+                if (typeof(changed_parameters.buttons_visible_in_list) !== 'undefined' && changed_parameters.buttons_visible_in_list === true) {
+                    self.playlist.show_edit_buttons();
+                } else {
+                    self.playlist.hide_edit_buttons();
+                }
+            }
         }
     },
 

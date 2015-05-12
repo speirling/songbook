@@ -72,7 +72,7 @@ SBK.ApplicationState = SBK.Class.extend({
     },
     
     update_from_hash: function () {
-        var self = this, hash, hash_array, valid_formats, index, changed_parameters;
+        var self = this, hash, hash_array, valid_formats, index, previous_parameters, changed_parameters = {};
 
         hash = self.get_hash();
         hash_array = hash.split('&');
@@ -82,14 +82,14 @@ SBK.ApplicationState = SBK.Class.extend({
         };
 
         //changes to buttons and details attributes should not trigger a reload
-        changed_parameters = self.get_current_state();
+        previous_parameters = self.get_current_state();
         // Before extracting data from the hash, reset all current settings so that if for example p is not present then the playlist filename gets set to null to create a new playlist.
         self.initialise_state();
         for (index = 0; index < hash_array.length; index = index + 1) {
             split = hash_array[index].split('=');
             parameter = split[0];
             value = split[1];
- 
+
             switch (parameter) {
             case 't':
                 if (valid_formats.tab.test(value)) {
@@ -156,8 +156,10 @@ SBK.ApplicationState = SBK.Class.extend({
         ];
 
         for (index = 0; index < property_names.length; index = index + 1) {
-            if (typeof(self[property_names[index]]) === 'undefined' || self[property_names[index]] === changed_parameters[property_names[index]]) {
-                delete changed_parameters[property_names[index]];
+            if (typeof(self[property_names[index]]) === 'undefined' || self[property_names[index]] === previous_parameters[property_names[index]]) {
+                delete previous_parameters[property_names[index]];
+            } else {
+                changed_parameters[property_names[index]] = self[property_names[index]];
             }
         }
         
@@ -227,14 +229,14 @@ SBK.ApplicationState = SBK.Class.extend({
 
         // introductions_visible_in_list
         if (SBK.StaticFunctions.undefined_to_null(desired_state.introductions_visible_in_list) !== null) {
-            if(desired_state.introductions_visible_in_list === true) {
+            if (desired_state.introductions_visible_in_list === true) {
                 state_string = state_string + '&iv';
             }
         }
 
         // buttons_visible_in_list
         if (SBK.StaticFunctions.undefined_to_null(desired_state.buttons_visible_in_list) !== null) {
-            if(desired_state.buttons_visible_in_list === true) {
+            if (desired_state.buttons_visible_in_list === true) {
                 state_string = state_string + '&bv';
             }
         }
@@ -282,7 +284,7 @@ SBK.ApplicationState = SBK.Class.extend({
     
     run_callbacks: function (changed_parameters) {
         var self = this;
-
+console.log(self.callbacks);
         self.callbacks.run(changed_parameters);
     },
 

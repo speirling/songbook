@@ -279,10 +279,10 @@ SBK.PlayList = SBK.SongList.extend({
         var self = this;
 
         if(self.buttons.intro.hasClass('open')) {
-            self.hide_introductions();
+            self.app.application_state.set({introductions_visible_in_list: false});
             self.buttons.intro.removeClass('open');
         } else {
-            self.show_introductions();
+            self.app.application_state.set({introductions_visible_in_list: true});
             self.buttons.intro.addClass('open');
         }
     },
@@ -291,10 +291,11 @@ SBK.PlayList = SBK.SongList.extend({
         var self = this;
 
         if(self.buttons.details.hasClass('open')) {
-            self.hide_details();
+            self.app.application_state.set({details_visible_in_list: false});
             self.buttons.details.removeClass('open');
         } else {
-            self.show_details();
+
+            self.app.application_state.set({details_visible_in_list: true});
             self.buttons.details.addClass('open');
         }
     },
@@ -303,11 +304,11 @@ SBK.PlayList = SBK.SongList.extend({
         var self = this;
 
         if(self.buttons.edit_buttons.hasClass('open')) {
-            self.hide_edit_buttons();
+            self.app.application_state.set({buttons_visible_in_list: false});
             self.buttons.edit_buttons.removeClass('open');
             self.edit_buttons_visible = false;
         } else {
-            self.show_edit_buttons();
+            self.app.application_state.set({buttons_visible_in_list: true});
             self.buttons.edit_buttons.addClass('open');
             self.edit_buttons_visible = true;
         }
@@ -341,7 +342,6 @@ SBK.PlayList = SBK.SongList.extend({
         for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
             self.set_objects[set_index].show_details();
         }
-        self.app.application_state.set({details_visible_in_list: true});
     },
 
     hide_details: function() {
@@ -352,7 +352,6 @@ SBK.PlayList = SBK.SongList.extend({
                 self.set_objects[set_index].hide_details();
             }
         }
-        self.app.application_state.set({details_visible_in_list: false});
     },
 
     show_edit_buttons: function() {
@@ -361,7 +360,6 @@ SBK.PlayList = SBK.SongList.extend({
         for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
             self.set_objects[set_index].show_edit_buttons();
         }
-        self.app.application_state.set({buttons_visible_in_list: true});
     },
 
     hide_edit_buttons: function() {
@@ -372,7 +370,6 @@ SBK.PlayList = SBK.SongList.extend({
                 self.set_objects[set_index].hide_edit_buttons();
             }
         }
-        self.app.application_state.set({buttons_visible_in_list: false});
     },
 
 	add_set: function() {
