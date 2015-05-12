@@ -104,7 +104,7 @@ SBK.PlayList = SBK.SongList.extend({
                 }
                 self.set_objects[set_index] = new SBK.SongListItemSet(self.playlist_ul, self, set_index, data_json.sets[set_index]);
                 self.set_objects[set_index].render();
-                self.make_draggable(self.playlist_ul, 'span.set-title', '.playlist > ul');
+                self.make_draggable(self.playlist_ul, 'span.set-title label', '.playlist > ul');
             }
         } else {
             console.log('no sets');
@@ -123,17 +123,17 @@ SBK.PlayList = SBK.SongList.extend({
             selected_li = clicked_handle.closest('li');
             local_list = clicked_handle.closest('ul, ol');
 
-            if (e.ctrlKey || e.metaKey) {
+            /*if (e.ctrlKey || e.metaKey) {
                 selected_li.toggleClass("selected");
                 jQuery('ol', local_list).each(function() {
                     if (!jQuery.contains(this, selected_li[0])) {
                         jQuery('li', this).removeClass('selected');
                     }
                 });
-            } else {
+            } else {*/
                 jQuery('li', local_list).removeClass('selected');
                 selected_li.addClass("selected");
-            }
+            /*}*/
         });
 
         container.sortable({
@@ -141,9 +141,11 @@ SBK.PlayList = SBK.SongList.extend({
             delay: 150, //Needed to prevent accidental drag when trying to select
             revert: 0,
             cursor: 'move',
+ /*  multiselect stops the sets from sorting separately from songs. With these commented out, only a single song can be selected, but it works the way you'd expect. 
             helper: function (e, item) {
                 var elements, helper;
-
+console.log(e, item);
+                //item.closest('ul, ol').addClass('being_dragged');
                 //Basically, if you grab an unhighlighted item to drag, it will deselect (unhighlight) everything else
                 if (!item.hasClass('selected')) {
                     item.addClass('selected').siblings().removeClass('selected');
@@ -165,20 +167,25 @@ SBK.PlayList = SBK.SongList.extend({
                 //Create the helper
                 helper =  jQuery('<li/>');
                 return helper.append(elements);
-            },
+            },*/
+            start: function (e, ui) {
+                 ui.item.closest('ul, ol').addClass('being_dragged');
+             },
             stop: function (e, ui) {
-                var elements;
-
-                //Now we access those items that we stored in `item`s data!
-                elements = ui.item.data('multidrag');
-
-                //`elements` now contains the originally selected items from the source list (the dragged items)!!
-
-                //Finally I insert the selected items after the `item`, then remove the `item`, since
-                //  item is a duplicate of one of the selected items.
-                ui.item.after(elements).remove();
-                self.on_sortable_change();
-            }
+                /* var elements;
+    
+                 //Now we access those items that we stored in `item`s data!
+                 elements = ui.item.data('multidrag');
+    
+                 //`elements` now contains the originally selected items from the source list (the dragged items)!!
+    
+                 //Finally I insert the selected items after the `item`, then remove the `item`, since
+                 //  item is a duplicate of one of the selected items.
+                 ui.item.after(elements).remove();
+                 //container.sortable('destroy');*/
+                 ui.item.closest('ul, ol').removeClass('being_dragged');
+                 self.on_sortable_change();
+             }
         });
     },
 
@@ -340,7 +347,7 @@ SBK.PlayList = SBK.SongList.extend({
 
     on_sortable_change: function (event, ui) {
         var self = this;
-console.log(self);
+
         self.data_json = self.get_data();
     },
 

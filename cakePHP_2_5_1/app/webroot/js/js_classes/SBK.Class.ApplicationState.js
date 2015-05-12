@@ -284,7 +284,7 @@ SBK.ApplicationState = SBK.Class.extend({
     
     run_callbacks: function (changed_parameters) {
         var self = this;
-console.log(self.callbacks);
+
         self.callbacks.run(changed_parameters);
     },
 

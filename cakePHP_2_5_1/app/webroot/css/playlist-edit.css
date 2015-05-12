@@ -378,3 +378,11 @@ ol.songlist {
 	font-size: 0.8em;
 	color: silver;
 }
+
+ul.ui-sortable.being_dragged li.set.ui-sortable-helper  ol.songlist {
+	display: none;
+}
+li.set.ui-sortable-helper {
+	height: 50px !important;
+	width: 200px !important;
+}
