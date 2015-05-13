@@ -13,12 +13,26 @@
 	     -webkit-column-rule: 1px solid silver;
 	     -webkit-column-width: 290px;
 	}
+	.button-bar.flyout, .button-bar.flyout.closed {
+	    display: inline-block;
+	    background-image: none;
+        width: auto;
+	}
+	.button-bar.flyout *:first-child {
+	    margin-left: 0;
+	}
+	
+	.internal-navigation.navigation-bar.button-bar.flyout  {
+	   display: none;
+	}
 }
 
 
 .playlist li.song {
-    background-color: #f0f0c0;
+    background-color: white;
     font-size: 0.8em;
+    border: 1px solid silver;
+    margin: -1px;
 }
 
 
@@ -36,7 +50,7 @@
     position: absolute;
     bottom: 0;
     left: 0;
-    top: 120px;
+    top: 210px;
     width: 95%;
 }
 input {
@@ -65,7 +79,7 @@ span.playlist-act ,
 span.set-title {
 	display: inline-block;
 	white-space: nowrap;
-	margin-top: 0.3em;
+	margin-bottom: 0.3em;
 	margin-right: 3em;
 }
 span.playlist-title label,
@@ -74,6 +88,17 @@ span.playlist-act label {
 	width: 4.5em;
 	text-align: right;
 	font-size: 0.7em;
+}
+span.set-title label {
+    display: inline-block;
+	cursor: grab;
+	width: 0.8em;
+	height: 1em;
+	background-color: #daa;
+}
+
+span.set-title label span {
+	display: none;
 }
 input.playlist-title {
     margin-right: 1em;
@@ -173,7 +198,7 @@ li.set ul {
 	margin-left: 1em;
 	font-size: 0.8em;
 	color: gray;
-	border-right: 1px solid gray;
+	border-right: 1px solid silver;
 	width: 2em;
 	text-align: center;
 }
@@ -207,6 +232,15 @@ li.set ul {
 .available-songs ul {
     padding: 0;
 }
+.available-songs li {
+    margin: 0;
+    padding: 0;
+    border:0;
+    background-color: white;
+    list-style: none;
+    font-size: 1em;
+    cursor: pointer;
+}
 .available-songs .playlist li {
     margin: 0;
     padding: 0;
@@ -216,7 +250,9 @@ li.set ul {
     font-size: 1em;
     cursor: pointer;
 }
-
+.available-songs .playlist li .checkbox {
+	margin-left: 0;
+}
 
 .duration {
 	width: 2em;
@@ -350,9 +386,6 @@ a#add-new-set:hover {
 	font-size: 1em;
 }
 
-.internal-navigation.navigation-bar  {
-
-}
 .navigation-bar {
 
 }

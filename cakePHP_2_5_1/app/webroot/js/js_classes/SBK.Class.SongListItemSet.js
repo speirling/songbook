@@ -16,7 +16,7 @@ SBK.SongListItemSet = SBK.Class.extend({
 
         self.container = jQuery('<li class="set" id="set_' + self.index + '"></li>').appendTo(self.parent_container);
         self.button_bar = jQuery('<div class="button-bar"></div>').appendTo(self.container);
-        title_input_holder = jQuery('<span class="set-title"><label>Set: </label></span>').appendTo(self.container);
+        title_input_holder = jQuery('<span class="set-title"><label><span>Set: </span></label></span>').appendTo(self.container);
         self.inputs = {
            title: jQuery('<input type="text" class="set-title" placeholder="set title" value="' + self.playlist.value_or_blank(self.data.label) + '" />').appendTo(title_input_holder)
         };
