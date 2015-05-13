@@ -1,4 +1,7 @@
 
+.button.show-buttons {
+	display: none;
+}
 @media screen and (min-width: 500px) {
 	#playlist-display .playlist { 
 	     column-gap: 2em;
@@ -24,6 +27,18 @@
 	
 	.internal-navigation.navigation-bar.button-bar.flyout  {
 	   display: none;
+	}
+	.button.show-buttons {
+	    display: block;
+	    width: 32px;
+	    height: 5px;
+	    padding:0;
+	    background-color: gray;
+	    border: 0;
+	    
+	}
+	.button.show-buttons span {
+	    display: none;
 	}
 }
 
