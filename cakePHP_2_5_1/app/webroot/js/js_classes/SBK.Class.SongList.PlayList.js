@@ -348,7 +348,7 @@ console.log(e, item);
     on_sortable_change: function (event, ui) {
         var self = this;
 
-        self.data_json = self.get_data();
+        self.update();
     },
 
     toggle_introductions: function() {
@@ -465,7 +465,9 @@ console.log(e, item);
     get_data: function () {
         var self = this, set_index, data;
 
-        data = {
+        /*
+         * Why did I do it this way???
+        data = { 
             title: self.inputs.title.val(),
             act: self.inputs.act.val(),
             introduction: {
@@ -479,7 +481,10 @@ console.log(e, item);
             data.sets[set_index] = self.set_objects[set_index].get_data();
         }
         
-        return data;
+        return data;*/
+        
+        self.update();
+        return self.data_json;
     },
     
     display_song: function (song_list_item) {
