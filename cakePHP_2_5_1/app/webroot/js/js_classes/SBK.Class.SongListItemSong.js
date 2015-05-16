@@ -37,6 +37,7 @@ SBK.SongListItemSong = SBK.Class.extend({
         jQuery('<span class="id">(' + SBK.StaticFunctions.value_or_blank(self.data.id) + ')</span>').appendTo(self.details_bar);
         self.buttons = {
             lyrics: new SBK.Button(lyrics_button_container, 'lyrics', 'lyics', function () {self.playlist.display_song({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});}),
+            toggle_buttons: new SBK.Button(lyrics_button_container, 'toggle-buttons', '<span>&dArr;<span>', function () {self.toggle_buttons_and_details();}),
             remove: new SBK.Button(self.button_bar, 'remove', 'remove', function () {self.playlist.remove_song({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});}),
             move_up: new SBK.Button(self.button_bar, 'move move-up', 'up', function () {self.playlist.move_song_up_one({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});}), 
             move_down: new SBK.Button(self.button_bar, 'move move-down', 'down', function () {self.playlist.move_song_down_one({id: self.data.id, key: self.data.key, capo: self.data.capo, index: self.index, set_index: self.set.index});}), 
@@ -76,6 +77,20 @@ SBK.SongListItemSong = SBK.Class.extend({
         }
 
         return data;
+    },
+
+    toggle_buttons_and_details: function() {
+        var self = this;
+
+        if (self.details_bar.hasClass('open')) {
+            self.hide_details();
+            self.hide_buttons();
+            self.details_bar.removeClass('open');
+        } else {
+            self.show_details();
+            self.show_buttons();
+            self.details_bar.addClass('open');
+        }
     },
 
     hide_introductions: function() {

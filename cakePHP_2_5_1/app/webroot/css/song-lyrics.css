@@ -242,6 +242,9 @@ div.song-page .multi-column .line {
 #lyrics-edit {
 	margin-bottom: 220px;
 }
+#lyrics-edit input {
+	width: 90%;
+}
 .no-base-key {
 	font-weight: normal;
 	font-style: italic;

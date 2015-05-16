@@ -16,13 +16,14 @@ SBK.SongListItemSet = SBK.Class.extend({
 
         self.container = jQuery('<li class="set" id="set_' + self.index + '"></li>').appendTo(self.parent_container);
         self.button_bar = jQuery('<div class="button-bar"></div>').appendTo(self.container);
-        title_input_holder = jQuery('<span class="set-title"><label>Set: </label></span>').appendTo(self.container);
+        title_input_holder = jQuery('<span class="set-title"><label><span>Set: </span></label></span>').appendTo(self.container);
         self.inputs = {
            title: jQuery('<input type="text" class="set-title" placeholder="set title" value="' + self.playlist.value_or_blank(self.data.label) + '" />').appendTo(title_input_holder)
         };
         jQuery('<span class="duration"></span>').appendTo(self.container);
         
         self.buttons = {
+            toggle_buttons: new SBK.Button(title_input_holder, 'toggle-buttons', '<span>&dArr;<span>', function () {self.toggle_buttons();}),
             remove: new SBK.Button(self.button_bar, 'remove', 'remove this set', function () {self.playlist.remove_set({set_index: self.index});}),
             add_song: new SBK.Button(self.button_bar, 'add', 'add songs to this set', function () {self.playlist.display_song_picker(self.index);})
         };
@@ -47,75 +48,7 @@ SBK.SongListItemSet = SBK.Class.extend({
                 self.song_objects[song_index].render();
             }
         }
-        self.make_draggable(set_ol);
-    },
-    
-    make_draggable: function (set_ol) {
-        var self = this;
-
-        // This procedure was taken from Aaron Blenkush on http://stackoverflow.com/questions/3774755/jquery-sortable-select-and-drag-multiple-list-items
-        set_ol.on('click', 'td.title, td.key', function (e) {
-            var clicked_td = jQuery(this), song_li, playlist_ul;
-
-            song_li = clicked_td.closest('li');
-            playlist_ul = clicked_td.closest('ul');
-
-            if (e.ctrlKey || e.metaKey) {
-                song_li.toggleClass("selected");
-                jQuery('ol', playlist_ul).each(function() {
-                    if (!jQuery.contains(this, song_li[0])) {
-                        jQuery('li', this).removeClass('selected');
-                    }
-                });
-            } else {
-                jQuery('li', playlist_ul).removeClass('selected');
-                song_li.addClass("selected");
-            }
-        });
-
-        set_ol.sortable({
-            connectWith: 'ol.songlist',
-            delay: 150, //Needed to prevent accidental drag when trying to select
-            revert: 0,
-            cursor: 'move',
-            helper: function (e, item) {
-                var elements, helper;
-
-                //Basically, if you grab an unhighlighted item to drag, it will deselect (unhighlight) everything else
-                if (!item.hasClass('selected')) {
-                    item.addClass('selected').siblings().removeClass('selected');
-                }
-
-                //////////////////////////////////////////////////////////////////////
-                //HERE'S HOW TO PASS THE SELECTED ITEMS TO THE `stop()` FUNCTION:
-
-                //Clone the selected items into an array
-                elements = item.parent().children('.selected').clone();
-
-                //Add a property to `item` called 'multidrag` that contains the
-                //  selected items, then remove the selected items from the source list
-                item.data('multidrag', elements).siblings('.selected').remove();
-
-                //Now the selected items exist in memory, attached to the `item`,
-                //  so we can access them later when we get to the `stop()` callback
-
-                //Create the helper
-                helper =  jQuery('<li/>');
-                return helper.append(elements);
-            },
-            stop: function (e, ui) {
-                var elements;
-
-                //Now we access those items that we stored in `item`s data!
-                elements = ui.item.data('multidrag');
-
-                //`elements` now contains the originally selected items from the source list (the dragged items)!!
-
-                //Finally I insert the selected items after the `item`, then remove the `item`, since
-                //  item is a duplicate of one of the selected items.
-                ui.item.after(elements).remove();
-            }
-        });
+        self.playlist.make_draggable(set_ol, 'td.title, td.key', 'ol.songlist');
     },
 
     get_data: function () {
@@ -196,6 +129,18 @@ SBK.SongListItemSet = SBK.Class.extend({
         var self = this;
 
         return self.data.songs[self.data.songs.length - 1];
+    },
+
+    toggle_buttons: function() {
+        var self = this;
+
+        if (self.button_bar.hasClass('open')) {
+            self.button_bar.hide();
+            self.button_bar.removeClass('open');
+        } else {
+            self.button_bar.show();
+            self.button_bar.addClass('open');
+        }
     },
 
     hide_introductions: function() {

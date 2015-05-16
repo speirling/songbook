@@ -1,9 +1,16 @@
 @media print {
-
+	body {
+		font-size: 10px;
+	}
+	
     #playlist-display .playlist { 
-         column-width: 350px;
-         -moz-column-width: 350px;
-         -webkit-column-width: 350px;
+         column-width: 190px;
+         -moz-column-width: 190px;
+         -webkit-column-width: 190px;
+          
+         column-count: 5;
+         -moz-column-count: 5;
+         -webkit-column-count: 5;
     }
     
     .button,
@@ -23,12 +30,17 @@
         width: 100%;
     }
     .playlist li.song {
+        width: 90%;
         font-size: 1.2em;
-        width: 400px;
+        border: 1px silver solid;
+        margin: 0;
     } 
     .playlist li.song table {
         border-collapse: collapse;
-    }   
+    }
+    td.lyrics-button-container {
+        display: none;
+    }
     .details-bar {
     }   
     .details-bar .id, 
@@ -40,11 +52,11 @@
     .playlist .title-bar .title {
         padding-left: 5px;
     }
-    .playlist .title-bar .key {
+    /*.playlist .title-bar .key {
         background-color: #aaaaaa;
         color: white !important;
         border: 0 !important;
-    }
+    }*/
     .playlist .title-bar .key.blank {
         background-color: transparent;
     }
@@ -95,5 +107,27 @@
 	     -webkit-column-gap: 2em;
 	     -webkit-column-rule: 2px solid silver;
          -webkit-column-fill: auto;
+	 }
+	 input.set-title {
+	  padding-left: 0;
+	 }
+
+     #playlist-display {
+         position: absolute;
+         top: 0;
+         left: 0;
+     }
+     #playlist-display .playlist {
+         position: relative;
+         bottom: 0;
+         left: 0;
+         top: 0 !important; /* top is set by javascript to allow for navigation bar */
+         width: 100%;
+     }
+	 ol.songlist {
+	     padding: 0
+	 }
+	 ol.songlist > li:before {
+	     content: none;
 	 }
 }

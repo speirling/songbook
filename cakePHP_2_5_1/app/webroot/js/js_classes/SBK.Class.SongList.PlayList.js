@@ -104,7 +104,7 @@ SBK.PlayList = SBK.SongList.extend({
                 }
                 self.set_objects[set_index] = new SBK.SongListItemSet(self.playlist_ul, self, set_index, data_json.sets[set_index]);
                 self.set_objects[set_index].render();
-                
+                self.make_draggable(self.playlist_ul, 'span.set-title label', '.playlist > ul');
             }
         } else {
             console.log('no sets');
@@ -113,6 +113,82 @@ SBK.PlayList = SBK.SongList.extend({
         return self.playlist_container;
     },
     
+    make_draggable: function (container, click_selector, connect_selector, sortable_change_callback) {
+        var self = this;
+
+        // This procedure was taken from Aaron Blenkush on http://stackoverflow.com/questions/3774755/jquery-sortable-select-and-drag-multiple-list-items
+        container.on('click', click_selector, function (e) {
+            var clicked_handle = jQuery(this), selected_li, local_list; //local_list may or may not be the same as container 
+
+            selected_li = clicked_handle.closest('li');
+            local_list = clicked_handle.closest('ul, ol');
+
+            /*if (e.ctrlKey || e.metaKey) {
+                selected_li.toggleClass("selected");
+                jQuery('ol', local_list).each(function() {
+                    if (!jQuery.contains(this, selected_li[0])) {
+                        jQuery('li', this).removeClass('selected');
+                    }
+                });
+            } else {*/
+                jQuery('li', local_list).removeClass('selected');
+                selected_li.addClass("selected");
+            /*}*/
+        });
+
+        container.sortable({
+            connectWith: connect_selector,
+            delay: 150, //Needed to prevent accidental drag when trying to select
+            revert: 0,
+            cursor: 'move',
+ /*  multiselect stops the sets from sorting separately from songs. With these commented out, only a single song can be selected, but it works the way you'd expect. 
+            helper: function (e, item) {
+                var elements, helper;
+console.log(e, item);
+                //item.closest('ul, ol').addClass('being_dragged');
+                //Basically, if you grab an unhighlighted item to drag, it will deselect (unhighlight) everything else
+                if (!item.hasClass('selected')) {
+                    item.addClass('selected').siblings().removeClass('selected');
+                }
+
+                //////////////////////////////////////////////////////////////////////
+                //HERE'S HOW TO PASS THE SELECTED ITEMS TO THE `stop()` FUNCTION:
+
+                //Clone the selected items into an array
+                elements = item.parent().children('.selected').clone();
+
+                //Add a property to `item` called 'multidrag` that contains the
+                //  selected items, then remove the selected items from the source list
+                item.data('multidrag', elements).siblings('.selected').remove();
+
+                //Now the selected items exist in memory, attached to the `item`,
+                //  so we can access them later when we get to the `stop()` callback
+
+                //Create the helper
+                helper =  jQuery('<li/>');
+                return helper.append(elements);
+            },*/
+            start: function (e, ui) {
+                 ui.item.closest('ul, ol').addClass('being_dragged');
+             },
+            stop: function (e, ui) {
+                /* var elements;
+    
+                 //Now we access those items that we stored in `item`s data!
+                 elements = ui.item.data('multidrag');
+    
+                 //`elements` now contains the originally selected items from the source list (the dragged items)!!
+    
+                 //Finally I insert the selected items after the `item`, then remove the `item`, since
+                 //  item is a duplicate of one of the selected items.
+                 ui.item.after(elements).remove();
+                 //container.sortable('destroy');*/
+                 ui.item.closest('ul, ol').removeClass('being_dragged');
+                 self.on_sortable_change();
+             }
+        });
+    },
+
     filter_playlist_songs: function (filter_value) {
         var self = this, current_song, current_set, show_this_li, song_title, show_this_set;
 
@@ -270,19 +346,19 @@ SBK.PlayList = SBK.SongList.extend({
 	},
 
     on_sortable_change: function (event, ui) {
-        var self = this, song_li_item;
+        var self = this;
 
-        self.data_json = self.get_data();
+        self.update();
     },
 
     toggle_introductions: function() {
         var self = this;
 
         if(self.buttons.intro.hasClass('open')) {
-            self.hide_introductions();
+            self.app.application_state.set({introductions_visible_in_list: false});
             self.buttons.intro.removeClass('open');
         } else {
-            self.show_introductions();
+            self.app.application_state.set({introductions_visible_in_list: true});
             self.buttons.intro.addClass('open');
         }
     },
@@ -291,10 +367,11 @@ SBK.PlayList = SBK.SongList.extend({
         var self = this;
 
         if(self.buttons.details.hasClass('open')) {
-            self.hide_details();
+            self.app.application_state.set({details_visible_in_list: false});
             self.buttons.details.removeClass('open');
         } else {
-            self.show_details();
+
+            self.app.application_state.set({details_visible_in_list: true});
             self.buttons.details.addClass('open');
         }
     },
@@ -303,11 +380,11 @@ SBK.PlayList = SBK.SongList.extend({
         var self = this;
 
         if(self.buttons.edit_buttons.hasClass('open')) {
-            self.hide_edit_buttons();
+            self.app.application_state.set({buttons_visible_in_list: false});
             self.buttons.edit_buttons.removeClass('open');
             self.edit_buttons_visible = false;
         } else {
-            self.show_edit_buttons();
+            self.app.application_state.set({buttons_visible_in_list: true});
             self.buttons.edit_buttons.addClass('open');
             self.edit_buttons_visible = true;
         }
@@ -341,7 +418,6 @@ SBK.PlayList = SBK.SongList.extend({
         for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
             self.set_objects[set_index].show_details();
         }
-        self.app.application_state.set({details_visible_in_list: true});
     },
 
     hide_details: function() {
@@ -352,7 +428,6 @@ SBK.PlayList = SBK.SongList.extend({
                 self.set_objects[set_index].hide_details();
             }
         }
-        self.app.application_state.set({details_visible_in_list: false});
     },
 
     show_edit_buttons: function() {
@@ -361,7 +436,6 @@ SBK.PlayList = SBK.SongList.extend({
         for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
             self.set_objects[set_index].show_edit_buttons();
         }
-        self.app.application_state.set({buttons_visible_in_list: true});
     },
 
     hide_edit_buttons: function() {
@@ -372,7 +446,6 @@ SBK.PlayList = SBK.SongList.extend({
                 self.set_objects[set_index].hide_edit_buttons();
             }
         }
-        self.app.application_state.set({buttons_visible_in_list: false});
     },
 
 	add_set: function() {
@@ -392,7 +465,9 @@ SBK.PlayList = SBK.SongList.extend({
     get_data: function () {
         var self = this, set_index, data;
 
-        data = {
+        /*
+         * Why did I do it this way???
+        data = { 
             title: self.inputs.title.val(),
             act: self.inputs.act.val(),
             introduction: {
@@ -406,7 +481,10 @@ SBK.PlayList = SBK.SongList.extend({
             data.sets[set_index] = self.set_objects[set_index].get_data();
         }
         
-        return data;
+        return data;*/
+        
+        self.update();
+        return self.data_json;
     },
     
     display_song: function (song_list_item) {

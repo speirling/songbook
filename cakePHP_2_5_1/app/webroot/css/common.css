@@ -210,3 +210,49 @@ top: 1em;left:0;}*/
 .selected .checkbox {
     background-color: black;
 }
+ol.songlist > li,
+ol.songlist > li table,
+ol.songlist > li table tr,
+ol.songlist > li table tr td {
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+/* replace list numbers so that you can style them - from http://www.456bereastreet.com/archive/201105/styling_ordered_list_numbers/ */
+ol.songlist {
+    counter-reset:li; /* Initiate a counter */
+    margin-left:0; /* Remove the default left margin */
+    padding-left:0; /* Remove the default left padding */
+}
+
+ol.songlist > li {
+    position:relative; /* Create a positioning context */
+    margin:0 0 6px 2em; /* Give each list item a left margin to make room for the numbers */
+    padding:4px 8px; /* Add some spacing around the content */
+    list-style:none; /* Disable the normal item numbering */
+    border-top:2px solid #666;
+    background:#f6f6f6;
+}
+
+ol.songlist > li:before {
+    content:counter(li); /* Use the counter as content */
+    counter-increment:li; /* Increment the counter by 1 */
+    /* Position and style the number */
+    position:absolute;
+    top: 10px;
+    left: -2em;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 2em;
+    /* Some space between the number and the content in browsers that support
+       generated content but not positioning it (Camino 2 is one example) */
+    margin-right: 8px;
+    padding: 4px;
+    border-top: none;
+    color:#ccc;
+    background: transparent;
+    font-weight: bold;
+    text-align:center;
+}
+
