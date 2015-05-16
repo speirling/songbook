@@ -23,6 +23,7 @@ SBK.SongListItemSet = SBK.Class.extend({
         jQuery('<span class="duration"></span>').appendTo(self.container);
         
         self.buttons = {
+            toggle_buttons: new SBK.Button(title_input_holder, 'toggle-buttons', '<span>&dArr;<span>', function () {self.toggle_buttons();}),
             remove: new SBK.Button(self.button_bar, 'remove', 'remove this set', function () {self.playlist.remove_set({set_index: self.index});}),
             add_song: new SBK.Button(self.button_bar, 'add', 'add songs to this set', function () {self.playlist.display_song_picker(self.index);})
         };
@@ -128,6 +129,18 @@ SBK.SongListItemSet = SBK.Class.extend({
         var self = this;
 
         return self.data.songs[self.data.songs.length - 1];
+    },
+
+    toggle_buttons: function() {
+        var self = this;
+
+        if (self.button_bar.hasClass('open')) {
+            self.button_bar.hide();
+            self.button_bar.removeClass('open');
+        } else {
+            self.button_bar.show();
+            self.button_bar.addClass('open');
+        }
     },
 
     hide_introductions: function() {

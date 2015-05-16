@@ -1,5 +1,5 @@
 
-.button.show-buttons {
+li.set .button.toggle-buttons {
 	display: none;
 }
 @media screen and (min-width: 500px) {
@@ -28,17 +28,31 @@
 	.internal-navigation.navigation-bar.button-bar.flyout  {
 	   display: none;
 	}
-	.button.show-buttons {
-	    display: block;
-	    width: 32px;
-	    height: 5px;
-	    padding:0;
-	    background-color: gray;
-	    border: 0;
-	    
-	}
-	.button.show-buttons span {
+    li.set .button.toggle-buttons {
+        display: inline-block;
+        width: 32px;
+        height: 20px;
+        padding:0;
+        background-color: #daa;
+        border: 0;
+        color: white;
+    }
+    li.song .button.toggle-buttons {
+        display: block;
+        width: 31px;
+        height: 5px;
+        padding:0;
+        background-color: gray;
+        border: 0;
+        
+    }
+    
+	li.song .button.toggle-buttons span {
 	    display: none;
+	}
+	
+	.playlist li.song {
+	    padding: 0;
 	}
 }
 
@@ -57,9 +71,7 @@
 	bottom: 0;
 	left: 0;
 	right: 0;
-	overflow: auto;*/
-	
-	
+	overflow: auto;*/	
 }
 #playlist-display .playlist {
     position: absolute;
@@ -178,11 +190,13 @@ li.set ul {
 .playlist li {
 	margin: 1px;
 	padding: 0.2em;
-}
-.displayPlaylist .playlist li {
-	padding: 0.2em;
 	list-style-type: none;
 }
+
+.displayPlaylist .playlist li {
+    padding: 0.2em;
+}
+
 .playlist li.song.selected {
     background-color: #f0ffc0;
 }
