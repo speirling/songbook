@@ -18,10 +18,9 @@ SBK.ApplicationState = SBK.Class.extend({
         self.tab_id[2] = 'song_lyrics';
         self.tab_id[3] = 'edit_song';
         self.tab_id[4] = 'playlist_book';
-        self.tab_id[5] = 'playlist_print';
-        self.tab_id[6] = 'list_all_songs';
-        self.tab_id[7] = 'add_new_song';
-        self.tab_id[8] = 'playlist_alphabetical';
+        self.tab_id[5] = 'list_all_songs';
+        self.tab_id[6] = 'add_new_song';
+        self.tab_id[7] = 'playlist_alphabetical';
     },
     
     initialise_state: function () {

@@ -262,7 +262,6 @@ console.log(e, item);
                 self.app.pleasewait.show();
                 self.save_playlist();
             }),
-            print: new SBK.Button(button_bar, 'print', 'Print', function () {self.app.playlist_print(self.playlist_name)}),
             sort: new SBK.Button(button_bar, 'show-alphabetical', 'Sort', function () {self.app.display_playlist_alphabetical();})
         }
     },
