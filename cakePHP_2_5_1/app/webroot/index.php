@@ -122,6 +122,7 @@ Configure::write(
                     'js_classes/SBK.Class.Api.js',
                     'js_classes/SBK.Class.SongList.js',
                     'js_classes/SBK.Class.SongList.PlayList.js',
+                    'js_classes/SBK.Class.SongList.PlayList.Alphabetical.js',
                     'js_classes/SBK.Class.SongList.PlayList.Print.js',
                     'js_classes/SBK.Class.SongList.PlayList.Book.js',
                     'js_classes/SBK.Class.SongList.PlayList.Selector.js',

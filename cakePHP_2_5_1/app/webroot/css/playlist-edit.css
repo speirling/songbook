@@ -56,6 +56,15 @@ li.set .button.toggle-buttons {
 	}
 }
 
+    #playlist-display .playlist.sorted-alphabetically table {
+        table-layout:fixed;
+    }
+
+    #playlist-display .playlist.sorted-alphabetically .singer {
+        width: 1.5em;
+        font-size: 0.8em;
+        overflow: hidden;
+    }
 
 .playlist li.song {
     background-color: white;
