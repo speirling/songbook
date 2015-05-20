@@ -247,17 +247,10 @@ console.log(e, item);
 	    self.playlist_container.css('top', self.navigation_panel.height());
 	},
 
-	display_content: function () {
-		var self = this, button_bar, set_index, internal_navigation_bar, label, filter_to;
-	
-		self.container.html('').css('padding-top', 0); //so that the navigation bar is always at the top of the screen
-		self.navigation_panel = jQuery('<div class="navigation-panel"></div>').appendTo(self.container);
+	insert_buttons: function (button_bar) {
+        var self = this;
 
-		button_bar = jQuery('<div class="button-bar flyout closed"></div>').appendTo(self.navigation_panel);
-		button_bar.click(function () {self.button_bar_toggle(this);});
-
-        //buttons
-		self.buttons = {
+        return {
             close: new SBK.Button(button_bar, 'close', '&laquo; Playlists', function () {self.app.display_playlist_list();}),
             all_songs: new SBK.Button(button_bar, 'all-songs', '&laquo; All songs', function () {self.app.list_all_songs();}),
             details: new SBK.Button(button_bar, 'toggle-details', 'Details', function () {self.toggle_details();}),
@@ -269,8 +262,22 @@ console.log(e, item);
                 self.app.pleasewait.show();
                 self.save_playlist();
             }),
-            print: new SBK.Button(button_bar, 'print', 'Print', function () {self.app.playlist_print(self.playlist_name)})
-		};
+            print: new SBK.Button(button_bar, 'print', 'Print', function () {self.app.playlist_print(self.playlist_name)}),
+            sort: new SBK.Button(button_bar, 'show-alphabetical', 'Sort', function () {self.app.display_playlist_alphabetical();})
+        }
+    },
+
+	display_content: function () {
+		var self = this, button_bar, set_index, internal_navigation_bar, label, filter_to;
+
+		self.container.html('').css('padding-top', 0); //so that the navigation bar is always at the top of the screen
+		self.navigation_panel = jQuery('<div class="navigation-panel"></div>').appendTo(self.container);
+
+		button_bar = jQuery('<div class="button-bar flyout closed"></div>').appendTo(self.navigation_panel);
+		button_bar.click(function () {self.button_bar_toggle(this);});
+
+        //buttons
+		self.buttons = self.insert_buttons(button_bar);
 
         // Main playlist content
         self.container.append(self.to_html(self.data_json));
@@ -738,7 +745,6 @@ console.log(e, item);
     move_song_to: function (song_details, destination_set_index, destination_index_within_set) {
         var self = this, starting_index, insert_details;
 
-        console.log('move_song_to', song_details, destination_set_index, destination_index_within_set);
         starting_index = song_details.index;
         insert_details = self.data_json.sets[song_details.set_index].songs[starting_index];
         self.data_json.sets[song_details.set_index].songs.splice(starting_index, 1);

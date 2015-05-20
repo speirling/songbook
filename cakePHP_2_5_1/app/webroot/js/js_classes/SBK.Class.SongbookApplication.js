@@ -46,12 +46,15 @@ SBK.SongbookApplication = SBK.Class.extend({
             delete self.content_container;
             self.tab = self.application_state.tab;
             switch (self.tab) {
-                case 'playlist_list':
-                    self._display_playlist_list();
-                    break;
-                case 'edit_playlist':
-                    self._display_playlist(self.application_state.playlist_filename);
-                    break;
+            case 'playlist_list':
+                self._display_playlist_list();
+                break;
+            case 'edit_playlist':
+                self._display_playlist(self.application_state.playlist_filename);
+                break;
+            case 'playlist_alphabetical':
+                self._display_playlist_alphabetical(self.application_state.playlist_filename);
+                break;
                 case 'playlist_print':
                     self._playlist_print();
                     break;
@@ -136,6 +139,19 @@ SBK.SongbookApplication = SBK.Class.extend({
             capo: null
         }, false);
         
+    },
+
+    display_playlist_alphabetical: function (playlist_filename) {
+        var self = this;
+
+        self.application_state.set({
+            tab: 'playlist_alphabetical',
+            playlist_filename: playlist_filename,
+            id: null,
+            key: null,
+            capo: null
+        }, false);
+
     },
 
     playlist_print: function (playlist_filename) {
@@ -256,6 +272,14 @@ SBK.SongbookApplication = SBK.Class.extend({
 
         self.content_container = jQuery('<div id="playlist-display"></div>').appendTo(self.container);
         self.playlist = new SBK.PlayList(playlist_filename, self.content_container, null, self);
+        self.playlist.render();
+    },
+
+    _display_playlist_alphabetical: function (playlist_filename) {
+        var self = this;
+
+        self.content_container = jQuery('<div id="playlist-display"></div>').appendTo(self.container);
+        self.playlist = new SBK.PlayList.Alphabetical(playlist_filename, self.content_container, null, self);
         self.playlist.render();
     },
 
