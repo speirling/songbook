@@ -55,9 +55,6 @@ SBK.SongbookApplication = SBK.Class.extend({
             case 'playlist_alphabetical':
                 self._display_playlist_alphabetical(self.application_state.playlist_filename);
                 break;
-                case 'playlist_print':
-                    self._playlist_print();
-                    break;
                 case 'playlist_book':
                     self._playlist_book();
                     break;
@@ -152,19 +149,6 @@ SBK.SongbookApplication = SBK.Class.extend({
             capo: null
         }, false);
 
-    },
-
-    playlist_print: function (playlist_filename) {
-        var self = this;
-
-        self.application_state.set({
-            tab: 'playlist_print',
-            playlist_filename: playlist_filename,
-            id: null,
-            key: null,
-            capo: null
-        }, false);
-        
     },
 
     playlist_book: function (playlist_filename) {
@@ -280,14 +264,6 @@ SBK.SongbookApplication = SBK.Class.extend({
 
         self.content_container = jQuery('<div id="playlist-display"></div>').appendTo(self.container);
         self.playlist = new SBK.PlayList.Alphabetical(playlist_filename, self.content_container, null, self);
-        self.playlist.render();
-    },
-
-    _playlist_print: function (playlist_filename) {
-        var self = this;
-
-        self.content_container = jQuery('<div id="playlist-print"></div>').appendTo(self.container);
-        self.playlist = new SBK.PlayListPrint(playlist_filename, self.content_container, null, self);
         self.playlist.render();
     },
 
