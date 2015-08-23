@@ -112,6 +112,7 @@ Configure::write(
                     'js_classes/SBK.Namespace.js',
                     'js_classes/SBK.Constants.js',
                     'js_classes/SBK.StaticFunctions.js',
+                    'js_classes/SBK.StaticFunctions.LyricChordHTML.js',
                     'js_classes/SBK.Class.js',
                     'js_classes/SBK.Class.CallbackList.js',
                     'js_classes/SBK.Class.ApplicationState.js',
