@@ -154,7 +154,8 @@ Configure::write(
                     'playlist-print.css',
                     'song-edit.css',
                     'song-lyrics.css',
-                    'chord_editor.css'
+                    'chord_editor.css',
+                    'baked_ui.css'
                 )
               )
 );

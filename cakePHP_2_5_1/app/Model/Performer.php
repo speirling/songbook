@@ -1,11 +1,11 @@
 <?php
 App::uses('AppModel', 'Model');
 /**
- * Song Model
+ * Performer Model
  *
  * @property SongInstance $SongInstance
  */
-class Song extends AppModel {
+class Performer extends AppModel {
 
 /**
  * Validation rules
@@ -13,7 +13,7 @@ class Song extends AppModel {
  * @var array
  */
 	public $validate = array(
-		'title' => array(
+		'name' => array(
 			'notEmpty' => array(
 				'rule' => array('notEmpty'),
 				//'message' => 'Your custom message here',
@@ -23,7 +23,7 @@ class Song extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'base_key' => array(
+		'nickname' => array(
 			'notEmpty' => array(
 				'rule' => array('notEmpty'),
 				//'message' => 'Your custom message here',
@@ -45,7 +45,7 @@ class Song extends AppModel {
 	public $hasMany = array(
 		'SongInstance' => array(
 			'className' => 'SongInstance',
-			'foreignKey' => 'song_id',
+			'foreignKey' => 'performer_id',
 			'dependent' => false,
 			'conditions' => '',
 			'fields' => '',

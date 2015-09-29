@@ -1,11 +1,12 @@
 <?php
 App::uses('AppModel', 'Model');
 /**
- * Song Model
+ * SongInstance Model
  *
- * @property SongInstance $SongInstance
+ * @property Song $Song
+ * @property Performer $Performer
  */
-class Song extends AppModel {
+class SongInstance extends AppModel {
 
 /**
  * Validation rules
@@ -13,9 +14,9 @@ class Song extends AppModel {
  * @var array
  */
 	public $validate = array(
-		'title' => array(
-			'notEmpty' => array(
-				'rule' => array('notEmpty'),
+		'song_id' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -23,7 +24,17 @@ class Song extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'base_key' => array(
+		'performer_id' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
+		'key' => array(
 			'notEmpty' => array(
 				'rule' => array('notEmpty'),
 				//'message' => 'Your custom message here',
@@ -38,24 +49,24 @@ class Song extends AppModel {
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
 /**
- * hasMany associations
+ * belongsTo associations
  *
  * @var array
  */
-	public $hasMany = array(
-		'SongInstance' => array(
-			'className' => 'SongInstance',
+	public $belongsTo = array(
+		'Song' => array(
+			'className' => 'Song',
 			'foreignKey' => 'song_id',
-			'dependent' => false,
 			'conditions' => '',
 			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
+			'order' => ''
+		),
+		'Performer' => array(
+			'className' => 'Performer',
+			'foreignKey' => 'performer_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
 		)
 	);
-
 }

@@ -1,0 +1,69 @@
+.songs.index table {
+	width: 80em;
+}
+.songs.index td {
+	vertical-align: top;
+	font-size: 0.8em;
+	border-bottom: 1px silver solid;
+}
+.songs.index td.content {
+	display: block;
+	max-width: 30em;
+	height: 3em;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+.songs.index .id {
+	width: 1em;
+}
+.songs.index .title {
+	width: 10em;
+}
+.songs.index .performed_by {
+    width: 10em;
+}
+.songs.index .written_by {
+    width: 10em;
+}
+.songs.index .base_key {
+    width: 10em;
+}
+.songs.index .original_filename {
+	display: none;
+}
+.songs.index .meta_tags {
+    width: 10em;
+}
+.songs.index .actions {
+    width: 6em;
+}
+
+.paging {
+	font-size: 0.8em;
+	border-top: 1px solid silver;
+}
+.paging span {
+	display: inline-block;
+	width: 1em;
+	text-align: center;
+}
+.paging span.prev {
+	width: 5em;
+}
+.paging span.next {
+    width: 5em;
+}
+p {
+	font-size: 0.7em;
+	color: gray;
+}
+.actions {
+	border: 1px solid gray;
+	font-size: 0.8em;
+	padding: 1em;
+}
+th.actions,
+td.actions {
+	border: 0;
+	padding: 0;	
+}
