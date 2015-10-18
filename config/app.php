@@ -207,7 +207,7 @@ return [
         'default' => [
             'className' => 'Cake\Database\Connection',
             'driver' => 'Cake\Database\Driver\Mysql',
-            'persistent' => false,
+            'persistent' => false ,
             'host' => 'localhost',
             /**
              * CakePHP will use the default DB port based on the driver selected
@@ -215,12 +215,12 @@ return [
              * the following line and set the port accordingly
              */
             //'port' => 'nonstandard_port_number',
-            'username' => 'my_app',
-            'password' => 'secret',
-            'database' => 'my_app',
+            'username' => 'root',
+            'password' => 'chancery',
+            'database' => 'music_admin',
             'encoding' => 'utf8',
             'timezone' => 'UTC',
-            'cacheMetadata' => true,
+            'cacheMetadata' => true ,
             'log' => false,
 
             /**
