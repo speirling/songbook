@@ -1,4 +1,9 @@
 <?php
+namespace App\Controller;
+
+use Cake\Core\Configure;
+use Cake\Network\Exception\NotFoundException;
+use Cake\View\Exception\MissingTemplateException;
 
 class ApiController extends AppController {
     public $components = array ( 
@@ -8,13 +13,13 @@ class ApiController extends AppController {
     ); 
     public $uses = array('Song');
 
-    public function get_playlist() {
+    public function getPlaylist() {
         $this->RequestHandler->renderAs($this, 'json');
         if (array_key_exists ( 'playlist_name', $this->request->data )) {
             $filename = Configure::read('Songbook.playlist_directory') . DS . $this->request->data ['playlist_name'] . '.playlist';
             if (file_exists ( $filename )) {
                 $thisPlaylistContent = simplexml_load_file ( $filename );
-                $result = json_decode($this->convert_simpleXML_playlist_to_json_string ( $thisPlaylistContent ));
+                $result = json_decode($this->convertSimpleXMLPlaylistToJsonString ( $thisPlaylistContent ));
                 
                 $this->set ( 'success', true );
                 $this->set ( 'data', $result );
@@ -32,12 +37,12 @@ class ApiController extends AppController {
         ) );
     }
 
-    public function update_playlist() {
+    public function updatePlaylist() {
         $this->RequestHandler->renderAs($this, 'json');
 
         if (array_key_exists ( 'playlist_name', $this->request->data )) {
             if (array_key_exists ( 'playlist_data', $this->request->data )) {
-                if ($this->update_playlist_file ( $this->request->data ['playlist_name'], $this->request->data ['playlist_data'] ) == true) {
+                if ($this->updatePlaylistFile ( $this->request->data ['playlist_name'], $this->request->data ['playlist_data'] ) == true) {
                     $this->set ( 'success', true );
                     $this->set ( 'data', "update playlist file [".$this->request->data ['playlist_name']."] was successful" );
                 } else {
@@ -52,14 +57,14 @@ class ApiController extends AppController {
             $this->set ( 'success', false );
             $this->set ( 'data', "no playlist name specified" );
         }
-        $this->export_all_playlists();
+        $this->exportAllPlaylists();
         $this->set ( '_serialize', array (
                         'success',
                         'data' 
         ) );
     }
 
-    public function get_available_songs() {
+    public function getAvailableSongs() {
         $this->RequestHandler->renderAs($this, 'json');
         $conditions =  array();
         if (array_key_exists ( 'search_string', $this->request->data )) {
@@ -81,7 +86,7 @@ class ApiController extends AppController {
         $this->set ( '_serialize', array ( 'success', 'data' ) );
     }
 
-    public function get_all_playlists() { // accessed by https://fps:9134/songbook-cake/api/all_playlists.json
+    public function getAllPlaylists() { // accessed by https://fps:9134/songbook-cake/api/all_playlists.json
         $this->RequestHandler->renderAs($this, 'json');
         $all_playlists = array();
         $directoryList = scandir ( Configure::read('Songbook.playlist_directory') );
@@ -104,7 +109,7 @@ class ApiController extends AppController {
         $this->set ( '_serialize', array ( 'success', 'data' ) );
     }
 
-    public function get_song() {
+    public function getSong() {
         $this->RequestHandler->renderAs($this, 'json');
         $conditions =  array();
         $id = $this->request->data['id'];
@@ -121,7 +126,7 @@ class ApiController extends AppController {
         $this->set ( '_serialize', array ( 'success', 'data' ) );
     }
 
-    public function update_song() {
+    public function updateSong() {
         $this->RequestHandler->renderAs($this, 'json');
 
         if ($this->request->is('post')) {
@@ -138,33 +143,33 @@ class ApiController extends AppController {
                 $this->set ( 'data', $this->Song->validationErrors );
             }
         }
-        $this->export_all_songs();
+        $this->exportAllSongs();
         $this->set ( '_serialize', array ( 'success', 'data' ) );
     }
 
-    public function export_all_songs() {
+    public function exportAllSongs() {
         $this->RequestHandler->renderAs($this, 'json');
-        $this->set ( 'success', file_put_contents('../webroot/js/songs.json', $this->songs_create_json_file() ));
+        $this->set ( 'success', file_put_contents('../webroot/js/songs.json', $this->songsCreateJsonFile() ));
     
         $this->set ( '_serialize', array ('success' ) );
     }
     
-    public function export_all_playlists() {
+    public function exportAllPlaylists() {
         $this->RequestHandler->renderAs($this, 'json');
-        $this->set ( 'success', file_put_contents('../webroot/js/playlists.json', $this->playlists_create_json_file() ));
+        $this->set ( 'success', file_put_contents('../webroot/js/playlists.json', $this->playlistsCreateJsonFile() ));
     
         $this->set ( '_serialize', array ('success' ) );
     }
 
-    public function all_songs_json() {
+    public function allSongsJson() {
         $this->RequestHandler->renderAs($this, 'json');
-        $this->set ( 'data', $this->all_songs_create_array());
+        $this->set ( 'data', $this->allSongsCreateArray());
         $this->set ( '_serialize', 'data');
     }
 
-    public function all_playlists_json() {
+    public function allPlaylistsJson() {
         $this->RequestHandler->renderAs($this, 'json');
-        $this->set ( 'data', $this->all_playlists_create_array());
+        $this->set ( 'data', $this->allPlaylistsCreateArray());
         $this->set ( '_serialize', 'data');
     }
 
@@ -185,8 +190,8 @@ class ApiController extends AppController {
     /* ---------------------------------------------------------------------------------------------------------- */
     
 
-    protected function convert_simpleXML_playlist_to_json_string($playlist_simplexml) {
-        $text_as_attributes = $this->playlist_text_to_attributes ( $playlist_simplexml );
+    protected function convertSimpleXMLPlaylistToJsonString($playlist_simplexml) {
+        $text_as_attributes = $this->playlistTextToAttributes ( $playlist_simplexml );
 //print_r($text_as_attributes);
         $json_string = json_encode ( $text_as_attributes );
         $json_string = str_replace ( '"song"', '"songs"', $json_string );
@@ -195,7 +200,7 @@ class ApiController extends AppController {
         return $json_string;
     }
 
-    protected function playlist_text_to_attributes($playlist_simplexml) {
+    protected function playlistTextToAttributes($playlist_simplexml) {
         if (sizeof ( $playlist_simplexml->introduction ) > 0) {
             $playlist_simplexml->introduction [0]->addAttribute ( 'text', $playlist_simplexml->introduction [0] );
         }
@@ -210,14 +215,14 @@ class ApiController extends AppController {
                     $this_song->introduction [0]->addAttribute ( 'text', $this_song->introduction [0] );
                 }
                 $this_song->introduction [0] = '';
-                $this_song ['title'] = $this->get_song_title ( $this_song ['id'] );
+                $this_song ['title'] = $this->getSongTitle ( $this_song ['id'] );
                 $this_song ['id'] = $this_song ['id'];
             }
         }
         return $playlist_simplexml;
     }
 
-    protected function get_song_title($song_id) {
+    protected function getSongTitle($song_id) {
         $song = $this->Song->find('first', array(
             'conditions' => array('Song.id' => $song_id)
         ));
@@ -229,9 +234,9 @@ class ApiController extends AppController {
         }
     }
 
-    protected function update_playlist_file($filename, $data_array) {
+    protected function updatePlaylistFile($filename, $data_array) {
 
-        $playlist_XML = $this->convert_parsedjson_to_playlistXML ( $data_array );
+        $playlist_XML = $this->convertParsedjsonToPlaylistXML ( $data_array );
 
         $destination = Configure::read('Songbook.playlist_directory') . '/' . $filename . '.playlist';
 
@@ -246,7 +251,7 @@ class ApiController extends AppController {
         }
     }
     
-    protected function convert_parsedjson_to_playlistXML($data_array) {
+    protected function convertParsedjsonToPlaylistXML($data_array) {
         $playlistContent = new SimpleXMLElement('<?xml version="1.0" standalone="yes"?><songlist></songlist>');
         $playlistContent->addAttribute('title', $data_array["title"]);
         $playlistContent->addAttribute('act', $data_array["act"]);
@@ -277,7 +282,7 @@ class ApiController extends AppController {
                     $this_id = str_replace('id_', '', $this_id); // not required, 'id_' has been removed... but this should still work
                     if(is_numeric($this_id)) {
                         if(array_key_exists("duration", $thisSong)) {
-                            $set_duration = $set_duration + $this->duration_string_to_seconds((string) $thisSong["duration"]);
+                            $set_duration = $set_duration + $this->durationStringToSeconds((string) $thisSong["duration"]);
                         }
         
                         $XMLsong = $XMLset->addChild('song', '');
@@ -315,7 +320,7 @@ class ApiController extends AppController {
         return $playlistContent;
     }
     
-    protected function duration_string_to_seconds($individual_duration_string) {
+    protected function durationStringToSeconds($individual_duration_string) {
         if($individual_duration_string !== '') {
             //assumes duration is mm:ss - so less than a minute would be 00:ss
             $time_bits = preg_split('/:/', $individual_duration_string);
@@ -332,21 +337,21 @@ class ApiController extends AppController {
     }
 
 
-    protected function songs_create_json_file() {
-        $all_songs = $this->all_songs_create_array();
+    protected function songsCreateJsonFile() {
+        $all_songs = $this->allSongsCreateArray();
     
         return json_encode($all_songs, JSON_PRETTY_PRINT);
     }   
 
 
-    protected function playlists_create_json_file() {
-        $all_playlists = $this->all_playlists_create_array;
+    protected function playlistsCreateJsonFile() {
+        $all_playlists = $this->allPlaylistsCreateArray;
     
         return json_encode($all_playlists, JSON_PRETTY_PRINT);
     }   
 
 
-    protected function all_songs_create_array() {
+    protected function allSongsCreateArray() {
     
         $db_data = $this->Song->find('all');
         $all_songs = Array();
@@ -358,7 +363,7 @@ class ApiController extends AppController {
     }   
 
 
-    protected function all_playlists_create_array() {
+    protected function allPlaylistsCreateArray() {
     
         $all_playlists = array();
         $directoryList = scandir ( Configure::read('Songbook.playlist_directory') );
@@ -369,7 +374,7 @@ class ApiController extends AppController {
                     $thisPlaylistContent = simplexml_load_file ( Configure::read('Songbook.playlist_directory') . '/' . $path_parts ['filename'] . '.playlist' );
                     $thisPlaylistContent["name"] = $path_parts ['filename'];
                     $thisPlaylistContent["filename"] = $path_parts ['filename'];
-                    $all_playlists[] = json_decode($this->convert_simpleXML_playlist_to_json_string ( $thisPlaylistContent ));
+                    $all_playlists[] = json_decode($this->convertSimpleXMLPlaylistToJsonString ( $thisPlaylistContent ));
                 }
             }
         }
