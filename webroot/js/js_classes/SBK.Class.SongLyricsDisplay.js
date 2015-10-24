@@ -52,7 +52,7 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         if (typeof(paginated) === 'undefined') {
             paginated = false;
         }
-        song_data = response.data.Song;
+        song_data = response.data;
         self.base_key = song_data.base_key;
         if (buttons_displayed) {
             button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);

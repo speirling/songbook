@@ -6,15 +6,16 @@ use Cake\Network\Exception\NotFoundException;
 use Cake\View\Exception\MissingTemplateException;
 
 class ApiController extends AppController {
-    public $components = array ( 
-        'RequestHandler'   // so that json handler can be used - if a .json extension is used by the requested view 
-                           //(or if the relevant method contains $this->RequestHandler->renderAs($this, 'json');) 
-                           //you won't need a .ctp
-    ); 
-    public $uses = array('Song');
+
+    public function initialize() {
+        parent::initialize();
+        $this->loadComponent('RequestHandler');
+        $this->loadModel('Songs');
+    }
 
     public function getPlaylist() {
         $this->RequestHandler->renderAs($this, 'json');
+
         if (array_key_exists ( 'playlist_name', $this->request->data )) {
             $filename = Configure::read('Songbook.playlist_directory') . DS . $this->request->data ['playlist_name'] . '.playlist';
             if (file_exists ( $filename )) {
@@ -64,20 +65,21 @@ class ApiController extends AppController {
         ) );
     }
 
-    public function getAvailableSongs() {
+    public function getAvailableSongs()  {
         $this->RequestHandler->renderAs($this, 'json');
+
         $conditions =  array();
         if (array_key_exists ( 'search_string', $this->request->data )) {
             $search_string = $this->request->data ['search_string'];
             if ($search_string !== '') {
                 $conditions = array('OR' => array(
-                    'Song.title LIKE' => '%'.$search_string.'%',
-                    'Song.content LIKE' => '%'.$search_string.'%'
+                    'Songs.title LIKE' => '%'.$search_string.'%',
+                    'Songs.content LIKE' => '%'.$search_string.'%'
                 ));
             }
         }
-        $all_songs = $this->Song->find('list', array(
-            'fields' => array('Song.id', 'Song.title'),
+        $all_songs = $this->Songs->find('list', array(
+            'fields' => array('Songs.id', 'Songs.title'),
             'conditions' => $conditions
         ));
 
@@ -88,6 +90,7 @@ class ApiController extends AppController {
 
     public function getAllPlaylists() { // accessed by https://fps:9134/songbook-cake/api/all_playlists.json
         $this->RequestHandler->renderAs($this, 'json');
+
         $all_playlists = array();
         $directoryList = scandir ( Configure::read('Songbook.playlist_directory') );
         foreach ( $directoryList as $filename ) {
@@ -111,12 +114,16 @@ class ApiController extends AppController {
 
     public function getSong() {
         $this->RequestHandler->renderAs($this, 'json');
+
         $conditions =  array();
         $id = $this->request->data['id'];
         $this->log($id);
-        if($song = $this->Song->find('first', array(
-            'conditions' => array('Song.id' => $id)
-        ))) {
+        $query = $this->Songs->find('all', array(
+            'conditions' => array('Songs.id' => $id)
+        ));
+        $song = $query->first();
+                
+        if($song) {
             $this->set ( 'success', true );
             $this->set ( 'data', $song );
         } else {
@@ -131,16 +138,16 @@ class ApiController extends AppController {
 
         if ($this->request->is('post')) {
             // If the form data can be validated and saved...
-            if ($this->Song->save($this->request->data)) {
+            if ($this->Songs->save($this->request->data)) {
                 $this->set ( 'success', true );
                 if (array_key_exists('id', $this->request->data)) {
                     $this->set ( 'data', '' );
                 } else {
-                    $this->set ( 'data', array( 'id' => $this->Song->getLastInsertID()));
+                    $this->set ( 'data', array( 'id' => $this->Songs->getLastInsertID()));
                 }
             } else {
                 $this->set ( 'success', true );
-                $this->set ( 'data', $this->Song->validationErrors );
+                $this->set ( 'data', $this->Songs->validationErrors );
             }
         }
         $this->exportAllSongs();
@@ -149,6 +156,7 @@ class ApiController extends AppController {
 
     public function exportAllSongs() {
         $this->RequestHandler->renderAs($this, 'json');
+
         $this->set ( 'success', file_put_contents('../webroot/js/songs.json', $this->songsCreateJsonFile() ));
     
         $this->set ( '_serialize', array ('success' ) );
@@ -156,6 +164,7 @@ class ApiController extends AppController {
     
     public function exportAllPlaylists() {
         $this->RequestHandler->renderAs($this, 'json');
+
         $this->set ( 'success', file_put_contents('../webroot/js/playlists.json', $this->playlistsCreateJsonFile() ));
     
         $this->set ( '_serialize', array ('success' ) );
@@ -163,11 +172,13 @@ class ApiController extends AppController {
 
     public function allSongsJson() {
         $this->RequestHandler->renderAs($this, 'json');
+
         $this->set ( 'data', $this->allSongsCreateArray());
         $this->set ( '_serialize', 'data');
     }
 
     public function allPlaylistsJson() {
+ 
         $this->RequestHandler->renderAs($this, 'json');
         $this->set ( 'data', $this->allPlaylistsCreateArray());
         $this->set ( '_serialize', 'data');
@@ -176,6 +187,7 @@ class ApiController extends AppController {
     public function appCache() {
         //header("Content-type: text/cache-manifest");
         $this->RequestHandler->renderAs($this, 'json');
+ 
         foreach(Configure::read('Songbook.css_library') as $filename) {
             echo $filename;
         }
@@ -223,15 +235,13 @@ class ApiController extends AppController {
     }
 
     protected function getSongTitle($song_id) {
-        $song = $this->Song->find('first', array(
-            'conditions' => array('Song.id' => $song_id)
+        
+        $query = $this->Songs->find('all', array(
+            'conditions' => array('Songs.id' => $song_id)
         ));
+        $song = $query->first();
 
-        if(array_key_exists('Song', $song)) {
-            return $song['Song']['title'];
-        } else {
-            return null;
-        }
+        return $song['title'];
     }
 
     protected function updatePlaylistFile($filename, $data_array) {
@@ -353,7 +363,7 @@ class ApiController extends AppController {
 
     protected function allSongsCreateArray() {
     
-        $db_data = $this->Song->find('all');
+        $db_data = $this->Songs->find('all');
         $all_songs = Array();
         foreach($db_data as $this_song) {
             array_push($all_songs, $this_song["Song"]);
