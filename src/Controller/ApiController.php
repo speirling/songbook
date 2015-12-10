@@ -123,7 +123,7 @@ class ApiController extends AppController {
         ));
         if($song = $query->first()) {
             $this->set ( 'success', true );
-            $this->set ( 'data', array("Song" => $song) );
+            $this->set ( 'data', $song);
         } else {
             $this->set ( 'success', false );
             $this->set ( 'data', "id=".$id." does not match any songs" );
