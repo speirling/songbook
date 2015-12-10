@@ -72,7 +72,9 @@ li.set .button.toggle-buttons {
     border: 1px solid silver;
     margin: -1px;
 }
-
+.playlist li.song .button-bar {
+	display: inline-block; 
+}
 
 #playlist-display {
 	/*position: absolute;
@@ -97,6 +99,7 @@ input {
 }
 input.set-title {
 	width: auto;
+    display: inline-block; /* to override cakephp3 */
 }
 input[type=checkbox] {
 
