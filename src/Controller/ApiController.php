@@ -79,7 +79,7 @@ class ApiController extends AppController {
             }
         }
         $all_songs = $this->Songs->find('list', array(
-            'fields' => array('Songs.id', 'Songs.title'),
+            'fields' => array('id', 'title'),
             'conditions' => $conditions
         ));
 
@@ -119,13 +119,11 @@ class ApiController extends AppController {
         $id = $this->request->data['id'];
         $this->log($id);
         $query = $this->Songs->find('all', array(
-            'conditions' => array('Songs.id' => $id)
+            'conditions' => array('id' => $id)
         ));
-        $song = $query->first();
-                
-        if($song) {
+        if($song = $query->first()) {
             $this->set ( 'success', true );
-            $this->set ( 'data', $song );
+            $this->set ( 'data', array("Song" => $song) );
         } else {
             $this->set ( 'success', false );
             $this->set ( 'data', "id=".$id." does not match any songs" );
@@ -138,9 +136,17 @@ class ApiController extends AppController {
 
         if ($this->request->is('post')) {
             // If the form data can be validated and saved...
-            if ($this->Songs->save($this->request->data)) {
+        	if (array_key_exists('id', $this->request->data['Song'])) {
+        		// editing an existing record
+        		$song = $this->Songs->get($this->request->data['Song']['id']);
+        		$this->Songs->patchEntity($song, $this->request->data['Song']);
+        	} else {
+        		// creating a new record
+        		$song = $this->Songs->newEntity($this->request->data['Song']);
+        	}
+            if ($this->Songs->save($song)) {
                 $this->set ( 'success', true );
-                if (array_key_exists('id', $this->request->data)) {
+                if (array_key_exists('id', $this->request->data['Song'])) {
                     $this->set ( 'data', '' );
                 } else {
                     $this->set ( 'data', array( 'id' => $this->Songs->getLastInsertID()));
@@ -150,7 +156,7 @@ class ApiController extends AppController {
                 $this->set ( 'data', $this->Songs->validationErrors );
             }
         }
-        $this->exportAllSongs();
+        //$this->exportAllSongs(); //just creates .json file - not needed anymore???
         $this->set ( '_serialize', array ( 'success', 'data' ) );
     }
 
