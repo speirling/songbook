@@ -136,25 +136,37 @@ class ApiController extends AppController {
 
         if ($this->request->is('post')) {
             // If the form data can be validated and saved...
+            //print_r($this->request->data['Song']);
         	if (array_key_exists('id', $this->request->data['Song'])) {
         		// editing an existing record
         		$song = $this->Songs->get($this->request->data['Song']['id']);
-        		$this->Songs->patchEntity($song, $this->request->data['Song']);
+        		$song = $this->Songs->patchEntity($song, $this->request->data['Song']);
+        		if ($song->errors()) {
+        			$this->set ( 'success', false );
+        			$this->set ( 'data', $song->errors() );
+        		} else {
+	        		if ($this->Songs->save($song)) {
+	        			$this->set ( 'success', true );
+	        		} else {
+	        			$this->set ( 'success', true );
+        			$this->set ( 'data', 'unknown' );
+	        		}
+        		}
         	} else {
         		// creating a new record
         		$song = $this->Songs->newEntity($this->request->data['Song']);
+        		if ($song->errors()) {
+        			$this->set ( 'success', false );
+        			$this->set ( 'data', $song->errors() );
+        		} else {
+	        		if ($this->Songs->save($song)) {
+	        			$this->set ( 'success', true );
+	        		} else {
+	        			$this->set ( 'success', true );
+        				$this->set ( 'data', $song->id );
+	        		}
+        		}
         	}
-            if ($this->Songs->save($song)) {
-                $this->set ( 'success', true );
-                if (array_key_exists('id', $this->request->data['Song'])) {
-                    $this->set ( 'data', '' );
-                } else {
-                    $this->set ( 'data', array( 'id' => $this->Songs->getLastInsertID()));
-                }
-            } else {
-                $this->set ( 'success', true );
-                $this->set ( 'data', $this->Songs->validationErrors );
-            }
         }
         //$this->exportAllSongs(); //just creates .json file - not needed anymore???
         $this->set ( '_serialize', array ( 'success', 'data' ) );
