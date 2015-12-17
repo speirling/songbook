@@ -59,7 +59,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
     render_response: function (response) {
         var self = this, target_key_container;
 
-        song_data = response.data.Song;
+        song_data = response.data;
 
         self.buttons = {
             save: new SBK.Button(self.container, 'save', 'Save', function () {self.save_song();}),
