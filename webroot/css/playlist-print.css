@@ -1,6 +1,6 @@
 @media print {
 	body {
-		font-size: 10px;
+		/*font-size: 10px;*/
 	}
 	
     #playlist-display .playlist { 

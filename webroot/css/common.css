@@ -22,7 +22,8 @@ a:hover {
 }
 .label  {
 	margin-right: 0.5em;
-    color:gray;
+    color: white;
+    text-align: left;
     font-style: italic;
 	font-size: 0.9em;
 }
