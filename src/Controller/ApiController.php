@@ -280,7 +280,7 @@ class ApiController extends AppController {
     }
     
     protected function convertParsedjsonToPlaylistXML($data_array) {
-        $playlistContent = new SimpleXMLElement('<?xml version="1.0" standalone="yes"?><songlist></songlist>');
+        $playlistContent = new \SimpleXMLElement('<?xml version="1.0" standalone="yes"?><songlist></songlist>');
         $playlistContent->addAttribute('title', $data_array["title"]);
         $playlistContent->addAttribute('act', $data_array["act"]);
     
