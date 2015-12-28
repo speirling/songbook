@@ -42,8 +42,9 @@
     .playlist li.song {
         width: 90%;
         font-size: 1.2em;
-        border: 1px silver solid;
+        border: 0px silver solid;
         margin: 0;
+        padding: 0;
     } 
     .playlist li.song table {
         border-collapse: collapse;
@@ -139,5 +140,8 @@
 	 }
 	 ol.songlist > li:before {
 	     content: none;
+	 }
+	 .playlist .title-bar .key {
+	     border: 0;
 	 }
 }

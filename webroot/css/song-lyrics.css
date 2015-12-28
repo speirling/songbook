@@ -40,7 +40,7 @@ div.song-page .multi-column .line {
     padding: 0em;
 }
 .page-header,
-.content {
+.lyrics-content {
     background-color: white;
 }
 .page-header {
@@ -61,25 +61,14 @@ div.song-page .multi-column .line {
 	color:#004080;
     margin: 0;
 }
-.performed_by,
-.written_by {
-	/* display:none; this hides inputs in the song lyrics edit page */
-}
-.performed_by .label,
-.written_by .label {
-}
+
 .songnumber {
 	color: #4080c0;
-	position: absolute;
-	right: 1em;
-	top: 1em;
+	float: right;
 }
 .songnumber .data {
 	font-weight:bold;
 	font-size:0.8em;
-}
-.songnumber .label {
-	font-size:0.6em;
 }
 
 .pagenumber {
@@ -98,24 +87,14 @@ div.song-page .multi-column .line {
 	white-space: nowrap;
 	padding-top: 0;
 }
-.lyrics-panel  .performed_by,
-.page_0 .performed_by {
-	display: block;
-	font-size: 0.6em;
-    color: gray;
-    margin-bottom: 0.6em;
+.lyrics-panel  .performed-by,
+.page_0 .performed-by {
+	display: inline-block;
 }
-.lyrics-panel  .written_by,
-.page_0 .written_by {
-	display: block;
-	font-size:0.8em;
-    color: gray;
+.performed-by {
+	color: gray;
 }
-.lyrics-panel .performed_by .label,
-.page_0 .performed_by .label,
-.lyrics-panel .written_by .label,
-.page_0 .written_by .label {
-}
+
 .lyrics-panel .songnumber .data,
 .page_0 .songnumber .data {
 	font-weight:bold;
@@ -127,43 +106,52 @@ div.song-page .multi-column .line {
 }
 
 .page-header .key {
-    font-size: 0.8em;
     width: auto;
     background-color: #f3f3f3;
     padding-left: 0.5em;
     padding-right: 0.5em;
-    font-weight: bold;
-    display: none;
 }
 
 .lyrics-panel .page-header .key,
-.page_0 .page-header .key {
+.lyrics-panel .page-header .written-by,
+.lyrics-panel .page-header .performed-by,
+.lyrics-panel .page-header .songnumber {
     display: inline-block;
 }
 
-.page-header .key .label {
+.page-header .key .label,
+.page-header .songnumber .label,
+.page-header .performed-by .label {
 	font-style: normal;
-	padding-left: 1em;
+	background-color: transparent;
+	color: black;
+	padding-left: 0;
+	margin: 0;
 }
-.page-header .key .target-key {
-	display: inline;
-	color: gray;
+.page-header .key .data {
+    margin-bottom: 0;
+    padding: 0.1em;
+    height: 1.7em;
 }
-.page-header .key .target_key .label{
-	margin-left: 10px;
-}
-.page-header .key .target_key .data {
+.page-header .performed-by .label,
+.page-header .key .target-key .label,
+.page-header .key .target-key select,
+.page-header .key .capo .label,
+.page-header .key .capo select {
 	font-size: 0.8em;
 }
+.page-header .key .target-key .data {
+    width: 4em;
+}
+.page-header .key .capo .data {
+    width: 3em;
+}
 .page-header .key .capo {
-	font-size: 1.5em;
-	display: inline;
 	margin-right: 0.7em;
 	margin-left: 0.7em;
 }
 .page-header .key .capo .label {
 	margin-right: 0.2em;
-	color: black;
 }
 .page-header .key .capo .data {
 }
@@ -187,28 +175,28 @@ div.song-page .multi-column .line {
 .lyrics-panel {
     font-size: 1em;
 }
-.lyrics-panel.zoom-1 .content {
+.lyrics-panel.zoom-1 .lyrics-content {
     font-size: 0.75em;
 }
-.lyrics-panel.zoom-2 .content {
+.lyrics-panel.zoom-2 .lyrics-content {
     font-size: 1em;
 }
-.lyrics-panel.zoom-3 .content {
+.lyrics-panel.zoom-3 .lyrics-content {
     font-size: 1.3em;
 }
-.lyrics-panel.zoom-4 .content {
+.lyrics-panel.zoom-4 .lyrics-content {
     font-size: 1.6em;
 }
-.lyrics-panel.zoom-5 .content {
+.lyrics-panel.zoom-5 .lyrics-content {
     font-size: 2em;
 }
-.lyrics-panel.zoom-6 .content {
+.lyrics-panel.zoom-6 .lyrics-content {
     font-size: 2.3em;
 }
-.lyrics-panel.zoom-7 .content {
+.lyrics-panel.zoom-7 .lyrics-content {
     font-size: 2.6em;
 }
-.lyrics-panel.zoom-8 .content {
+.lyrics-panel.zoom-8 .lyrics-content {
     font-size: 2.9em;
 }
 .lyrics-panel .line .text {

@@ -272,7 +272,7 @@ console.log(e, item);
 		self.container.html('').css('padding-top', 0); //so that the navigation bar is always at the top of the screen
 		self.navigation_panel = jQuery('<div class="navigation-panel"></div>').appendTo(self.container);
 
-		button_bar = jQuery('<div class="button-bar flyout closed"></div>').appendTo(self.navigation_panel);
+		button_bar = jQuery('<div class="sb-button-bar flyout closed"></div>').appendTo(self.navigation_panel);
 		button_bar.click(function () {self.button_bar_toggle(this);});
 
         //buttons
@@ -298,7 +298,7 @@ console.log(e, item);
             self.hide_details();
         }
 
-        internal_navigation_bar = jQuery('<div class="internal-navigation navigation-bar button-bar flyout closed"></div>').appendTo(self.navigation_panel);
+        internal_navigation_bar = jQuery('<div class="internal-navigation navigation-bar sb-button-bar flyout closed"></div>').appendTo(self.navigation_panel);
      
         if (typeof(self.data_json.sets) !== 'undefined' && self.data_json.sets.length > 0) {
             for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
@@ -498,7 +498,7 @@ console.log(e, item);
 /*
         self.container.html('').css('padding-top', 0);
 
-        navigation_panel = jQuery('<span class="button-bar"></span>').appendTo(self.container);
+        navigation_panel = jQuery('<span class="sb-button-bar"></span>').appendTo(self.container);
 
         previous_song = self.get_previous_song(song_list_item.index, song_list_item.set_index);
         if (previous_song === null) {
@@ -540,7 +540,7 @@ console.log(e, item);
         self.update();
 
         self.container.html('').css('padding-top', 0);  //so that the navigation bar is always at the top of the screen
-        navigation_panel = jQuery('<span class="button-bar"></span>').appendTo(self.container); // button-bar so that it gets inline styling....
+        navigation_panel = jQuery('<span class="sb-button-bar"></span>').appendTo(self.container); // sb-button-bar so that it gets inline styling....
         new SBK.Button(navigation_panel, 'cancel', 'cancel', function () {self.redraw();});
         
         picker_panel = jQuery('<span class="picker-panel"></span>').appendTo(self.container);
@@ -716,7 +716,7 @@ console.log(e, item);
 
         self.update();
         self.container.html('').css('padding-top', 0);  //so that the navigation bar is always at the top of the screen
-        navigation_panel = jQuery('<span class="button-bar"></span>').appendTo(self.container);
+        navigation_panel = jQuery('<span class="sb-button-bar"></span>').appendTo(self.container);
 
         //close button
         new SBK.Button(navigation_panel, 'close', 'close', function () {self.redraw();});

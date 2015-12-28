@@ -16,16 +16,16 @@ li.set .button.toggle-buttons {
 	     -webkit-column-rule: 1px solid silver;
 	     -webkit-column-width: 290px;
 	}
-	.button-bar.flyout, .button-bar.flyout.closed {
+	.sb-button-bar.flyout, .sb-button-bar.flyout.closed {
 	    display: inline-block;
 	    background-image: none;
         width: auto;
 	}
-	.button-bar.flyout *:first-child {
+	.sb-button-bar.flyout *:first-child {
 	    margin-left: 0;
 	}
 	
-	.internal-navigation.navigation-bar.button-bar.flyout  {
+	.internal-navigation.navigation-bar.sb-button-bar.flyout  {
 	   display: none;
 	}
     li.set .button.toggle-buttons {
@@ -72,7 +72,7 @@ li.set .button.toggle-buttons {
     border: 1px solid silver;
     margin: -1px;
 }
-.playlist li.song .button-bar {
+.playlist li.song .sb-button-bar {
 	display: inline-block; 
 }
 
@@ -213,14 +213,33 @@ li.set ul {
     background-color: #f0ffc0;
 }
 
-.playlist .key,
-.playlist .capo {
+.playlist li.song table {
+    border-collapse: collapse;
+    margin: 0; /* override for CakePHP3 base.css */
+}
+.playlist li.song table td.key {
+	width: 3em;
+}
+
+.playlist input.key,
+.playlist input.capo,
+.playlist input.duration,
+.playlist input.singer {
 	background-color: transparent;
 	border: 0;
 	text-align: center;
 	margin-right: 3px;
+	display: inline-block;
+	width: 3em;
+    font-weight: bold;
+}
+.playlist input.duration {
+	width: 4em;
 }
 
+.playlist input.singer {
+    width: 5em;
+}
 .playlist .title-bar {
     position: relative;
     height: 100%;
@@ -237,10 +256,7 @@ li.set ul {
 }
 .playlist .title-bar .key {
 	margin-left: 1em;
-	font-size: 0.8em;
-	color: gray;
 	border-right: 1px solid silver;
-	width: 2em;
 	text-align: center;
 }
 .playlist .title-bar .button {
@@ -295,25 +311,6 @@ li.set ul {
 	margin-left: 0;
 }
 
-.duration {
-	width: 2em;
-}
-.key {
-	width: 2em;
-	font-weight: bold;
-}
-.capo {
-	width: 2em;
-	font-weight: bold;
-	text-align: left;
-}
-.singer {
- 	width: 5em;
-	background-color: transparent;
-	border: 0;
-	color: gray;
-	margin-right: 3px;
-}
 .title {
 }
 .key:focus, 

@@ -67,12 +67,13 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
 
         self.header_container = jQuery('<div class="page-header"></div>').appendTo(self.container);
         jQuery('<h2 id="song_' + song_data.id + '" class="title">' + song_data.title + '</h2>').appendTo(self.header_container);
-        jQuery('<span class="songnumber"><span class="label">Song no. </span><span class="data">' + song_data.id + '</span></span>').appendTo(self.header_container);
         jQuery('<span class="pagenumber"><span class="label">page</span><span id="page_number" class="data">' + '</span><span class="label">of</span><span id="number_of_pages" class="data">' + '</span></span>').appendTo(self.header_container).hide();
-        jQuery('<div class="written_by"><span class="data">' + song_data.written_by + '</span></div>').appendTo(self.header_container);
-        jQuery('<div class="performed_by"><span class="label">performed by: </span><span class="data">' + song_data.performed_by + '</span></div>').appendTo(self.header_container);
+        jQuery('<span class="songnumber"><span class="label">Song no. </span><span class="data">' + song_data.id + '</span></span>').appendTo(self.header_container);
         key_container = jQuery('<div class="key"></div>').appendTo(self.header_container);
-        target_key_container = jQuery('<div class="target-key"></div>').appendTo(key_container);
+        jQuery('<div class="written-by"><span class="data">' + song_data.written_by + '</span></div>').appendTo(self.header_container);
+        jQuery('<div class="performed-by"><span class="label">performed by: </span><span class="data">' + song_data.performed_by + '</span></div>').appendTo(self.header_container);
+        
+        target_key_container = jQuery('<span class="target-key"></span>').appendTo(key_container);
         if (typeof(self.base_key) === 'undefined' || self.base_key === '') {
             jQuery('<span class="no-base-key">No base key set</span>').appendTo(target_key_container);
         } else {
@@ -82,6 +83,7 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
                 nominal_key = self.key;
             }
             nominal_key = nominal_key.replace('m', '');
+            capo_container = jQuery('<span class="capo"></span>').appendTo(key_container);
             jQuery('<span class="label">key: </span>').appendTo(target_key_container);
             jQuery('<select class="data">' +
                     '<option value=""></option>' + 
@@ -103,7 +105,7 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
                     '<option value="G">G</option>' +
                     '<option value="G#">G#</option>' +
                     '</select>').val(nominal_key).change(function (){self.app.application_state.set({key: jQuery(this).val()});}).appendTo(target_key_container);
-            jQuery('<span class="label">capo: </span>').appendTo(target_key_container);
+            jQuery('<span class="label">capo: </span>').appendTo(capo_container);
             jQuery('<select class="data">' +
                     '<option value="0">0</option>' + 
                     '<option value="1">1</option>' +
@@ -114,9 +116,9 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
                     '<option value="6">6</option>' +
                     '<option value="7">7</option>' +
                     '<option value="8">8</option>' +
-                    '</select>').val(self.capo).change(function (){self.app.application_state.set({capo: jQuery(this).val()});}).appendTo(target_key_container);
+                    '</select>').val(self.capo).change(function (){self.app.application_state.set({capo: jQuery(this).val()});}).appendTo(capo_container);
         }
-        self.song_content_container = jQuery('<div class="content"></div>').appendTo(self.container);
+        self.song_content_container = jQuery('<div class="lyrics-content"></div>').appendTo(self.container);
         self.song_content_container.html(self.song_content_to_html(song_data.content));
 
         if (paginated) {
