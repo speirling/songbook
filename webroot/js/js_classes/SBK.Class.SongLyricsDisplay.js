@@ -71,7 +71,9 @@ SBK.SongLyricsDisplay = SBK.Class.extend({
         jQuery('<span class="songnumber"><span class="label">Song no. </span><span class="data">' + song_data.id + '</span></span>').appendTo(self.header_container);
         key_container = jQuery('<div class="key"></div>').appendTo(self.header_container);
         jQuery('<div class="written-by"><span class="data">' + song_data.written_by + '</span></div>').appendTo(self.header_container);
-        jQuery('<div class="performed-by"><span class="label">performed by: </span><span class="data">' + song_data.performed_by + '</span></div>').appendTo(self.header_container);
+        if(song_data.performed_by) {
+        	jQuery('<div class="performed-by"><span class="label">performed by: </span><span class="data">' + song_data.performed_by + '</span></div>').appendTo(self.header_container);
+        }
         
         target_key_container = jQuery('<span class="target-key"></span>').appendTo(key_container);
         if (typeof(self.base_key) === 'undefined' || self.base_key === '') {

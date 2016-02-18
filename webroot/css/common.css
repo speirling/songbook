@@ -154,7 +154,7 @@ top: 1em;left:0;}*/
 #all-songs-list .picker-filter {
     height: 5em;
 }
-#playlist-display .picker-filter {
+#playlist-edit .picker-filter {
     height: 4em;
 }
 .picker-filter .picker-filter-border {

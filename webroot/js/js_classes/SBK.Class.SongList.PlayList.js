@@ -42,56 +42,12 @@ SBK.PlayList = SBK.SongList.extend({
 		}
 	},
 
-	save_playlist: function () {
-		var self = this;
-
-		self.update();
-
-		if (self.playlist_name === '') {
-			if(self.data_json.title === '') {
-				alert('please enter a title for the playlist');
-				return;
-			} else {
-				self.playlist_name = self.data_json.title.replace(/ /g, '_');
-				self.fetch_parameters.playlist_name = self.playlist_name;
-			}
-		}
-		if (self.playlist_name === '') {
-			alert('please enter a Playlist Name');
-			return;
-		} else {
-			self.app.pleasewait.show();
-			self.api.api_call(
-			    'update_playlist',
-			    {
-			        playlist_name: self.playlist_name,
-			        playlist_data: self.get_data()
-			    },
-			    function () {
-					self.render();
-				    self.app.pleasewait.hide();
-				    self.app.display_playlist(self.playlist_name);
-	    		}
-			);
-		}
-	},
-
     to_html: function (data_json) {
         var self = this, set_index, ul, input_container_title, input_container_act, internal_navigation_bar, filter_to;
 
-        self.playlist_container = jQuery('<div class="playlist"></div>');
+        self.playlist_container = jQuery('<div class="playlist list"></div>');
         input_container_title = jQuery('<span class="playlist-title"><label>Playlist: </label></span>').appendTo(self.playlist_container);
         input_container_act = jQuery('<span class="playlist-act"><label>Act: </label></span>').appendTo(self.playlist_container);
-        self.inputs = {
-            title: jQuery('<input type="text" class="playlist-title" size="20" placeholder="playlist title" value="' + self.value_or_blank(data_json.title) + '" />').appendTo(input_container_title),
-            act: jQuery('<input type="text" class="act" size="20" placeholder="act" value="' + self.value_or_blank(data_json.act) + '" />').appendTo(input_container_act)
-        };
-        self.introduction_container = jQuery('<span class="introduction songlist" style="display: none"></span>').appendTo(self.playlist_container);
-        self.inputs.introduction = {
-            text: jQuery('<textarea class="introduction_text" placeholder="Introduction text">' + self.value_or_blank(data_json.introduction.text) + '</textarea>').appendTo(self.introduction_container),
-            duration: jQuery('<input type="text" class="introduction_duration" placeholder="Introduction duration" value="' + self.value_or_blank(data_json.introduction.duration) + '" />').appendTo(self.introduction_container)
-        };
-        
         self.playlist_ul = jQuery('<ul></ul>').appendTo(self.playlist_container);
 
         if (typeof(data_json.sets) !== 'undefined') { //could happen when a playlist is first defined
@@ -104,89 +60,12 @@ SBK.PlayList = SBK.SongList.extend({
                 }
                 self.set_objects[set_index] = new SBK.SongListItemSet(self.playlist_ul, self, set_index, data_json.sets[set_index]);
                 self.set_objects[set_index].render();
-                self.make_draggable(self.playlist_ul, 'span.set-title label', '.playlist > ul');
             }
         } else {
             console.log('no sets');
         }
 
         return self.playlist_container;
-    },
-    
-    make_draggable: function (container, click_selector, connect_selector, sortable_change_callback) {
-        var self = this;
-
-        // This procedure was taken from Aaron Blenkush on http://stackoverflow.com/questions/3774755/jquery-sortable-select-and-drag-multiple-list-items
-        container.on('click', click_selector, function (e) {
-            var clicked_handle = jQuery(this), selected_li, local_list; //local_list may or may not be the same as container 
-
-            selected_li = clicked_handle.closest('li');
-            local_list = clicked_handle.closest('ul, ol');
-
-            /*if (e.ctrlKey || e.metaKey) {
-                selected_li.toggleClass("selected");
-                jQuery('ol', local_list).each(function() {
-                    if (!jQuery.contains(this, selected_li[0])) {
-                        jQuery('li', this).removeClass('selected');
-                    }
-                });
-            } else {*/
-                jQuery('li', local_list).removeClass('selected');
-                selected_li.addClass("selected");
-            /*}*/
-        });
-
-        container.sortable({
-            connectWith: connect_selector,
-            delay: 150, //Needed to prevent accidental drag when trying to select
-            revert: 0,
-            cursor: 'move',
- /*  multiselect stops the sets from sorting separately from songs. With these commented out, only a single song can be selected, but it works the way you'd expect. 
-            helper: function (e, item) {
-                var elements, helper;
-console.log(e, item);
-                //item.closest('ul, ol').addClass('being_dragged');
-                //Basically, if you grab an unhighlighted item to drag, it will deselect (unhighlight) everything else
-                if (!item.hasClass('selected')) {
-                    item.addClass('selected').siblings().removeClass('selected');
-                }
-
-                //////////////////////////////////////////////////////////////////////
-                //HERE'S HOW TO PASS THE SELECTED ITEMS TO THE `stop()` FUNCTION:
-
-                //Clone the selected items into an array
-                elements = item.parent().children('.selected').clone();
-
-                //Add a property to `item` called 'multidrag` that contains the
-                //  selected items, then remove the selected items from the source list
-                item.data('multidrag', elements).siblings('.selected').remove();
-
-                //Now the selected items exist in memory, attached to the `item`,
-                //  so we can access them later when we get to the `stop()` callback
-
-                //Create the helper
-                helper =  jQuery('<li/>');
-                return helper.append(elements);
-            },*/
-            start: function (e, ui) {
-                 ui.item.closest('ul, ol').addClass('being_dragged');
-             },
-            stop: function (e, ui) {
-                /* var elements;
-    
-                 //Now we access those items that we stored in `item`s data!
-                 elements = ui.item.data('multidrag');
-    
-                 //`elements` now contains the originally selected items from the source list (the dragged items)!!
-    
-                 //Finally I insert the selected items after the `item`, then remove the `item`, since
-                 //  item is a duplicate of one of the selected items.
-                 ui.item.after(elements).remove();
-                 //container.sortable('destroy');*/
-                 ui.item.closest('ul, ol').removeClass('being_dragged');
-                 self.on_sortable_change();
-             }
-        });
     },
 
     filter_playlist_songs: function (filter_value) {
@@ -258,6 +137,10 @@ console.log(e, item);
             new_set: new SBK.Button(button_bar, 'add_new_set', 'Add set', function () {self.add_set();}),
             book: new SBK.Button(button_bar, 'book', 'Book', function () {self.app.playlist_book(self.playlist_name);}),
             intro: new SBK.Button(button_bar, 'toggle-intro', 'Intros', function () {self.toggle_introductions();}),
+            edit: new SBK.Button(button_bar, 'edit', 'Edit', function () {
+            	self.app.application_state.set({
+                    tab: 'edit_playlist'
+                }, false);}),
             save: new SBK.Button(button_bar, 'save', 'Save', function() {
                 self.app.pleasewait.show();
                 self.save_playlist();
@@ -282,20 +165,10 @@ console.log(e, item);
         self.container.append(self.to_html(self.data_json));
 
         //initially... hide intros, details and (if required) edit buttons
-        if (self.app.application_state.introductions_visible_in_list) {
-            self.show_introductions();
-        } else {
-            self.hide_introductions();
-        }
         if (self.app.application_state.buttons_visible_in_list) {
             self.show_edit_buttons();
         } else {
             self.hide_edit_buttons();
-        }
-        if (self.app.application_state.details_visible_in_list) {
-            self.show_details();
-        } else {
-            self.hide_details();
         }
 
         internal_navigation_bar = jQuery('<div class="internal-navigation navigation-bar sb-button-bar flyout closed"></div>').appendTo(self.navigation_panel);

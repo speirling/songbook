@@ -3,19 +3,26 @@ li.set .button.toggle-buttons {
 	display: none;
 }
 @media screen and (min-width: 500px) {
-	#playlist-display .playlist { 
-	     column-gap: 2em;
-	     column-rule: 1px solid silver;
-	     column-width: 290px;
-	
-	     -moz-column-gap: 2em;
-	     -moz-column-rule: 1px solid silver;
-	     -moz-column-width: 290px;
-	
-	     -webkit-column-gap: 2em;
-	     -webkit-column-rule: 1px solid silver;
-	     -webkit-column-width: 290px;
-	}
+    #playlist-edit .playlist,
+    #playlist-display .playlist { 
+         column-gap: 2em;
+         column-rule: 0.1em solid silver;
+         column-width: 210px;
+    
+         -moz-column-gap: 2em;
+         -moz-column-rule: 0.1em solid silver;
+         -moz-column-width: 210px;
+    
+         -webkit-column-gap: 2em;
+         -webkit-column-rule: 1px solid silver;
+         -webkit-column-width: 210px;
+    }
+    #playlist-edit .playlist.edit,
+    #playlist-display .playlist.edit {
+         column-width: 25em;
+         -moz-column-width: 25em;
+         -webkit-column-width: 25em;
+    }
 	.sb-button-bar.flyout, .sb-button-bar.flyout.closed {
 	    display: inline-block;
 	    background-image: none;
@@ -56,11 +63,13 @@ li.set .button.toggle-buttons {
 	}
 }
 
-    #playlist-display .playlist.sorted-alphabetically table {
+    #playlist-display .playlist.sorted-alphabetically table,
+    #playlist-edit .playlist.sorted-alphabetically table {
         table-layout:fixed;
     }
 
-    #playlist-display .playlist.sorted-alphabetically .singer {
+    #playlist-display .playlist.sorted-alphabetically .singer,
+    #playlist-edit .playlist.sorted-alphabetically .singer {
         width: 1.5em;
         font-size: 0.8em;
         overflow: hidden;
@@ -69,8 +78,8 @@ li.set .button.toggle-buttons {
 .playlist li.song {
     background-color: white;
     font-size: 0.8em;
-    border: 1px solid silver;
-    margin: -1px;
+    border: 0.1em solid silver;
+    margin: -0.1em;
 }
 .playlist li.song .sb-button-bar {
 	display: inline-block; 
@@ -84,11 +93,12 @@ li.set .button.toggle-buttons {
 	right: 0;
 	overflow: auto;*/	
 }
-#playlist-display .playlist {
+#playlist-display .playlist,
+#playlist-edit .playlist {
     position: absolute;
     bottom: 0;
     left: 0;
-    top: 210px;
+    top: 50px;
     width: 95%;
 }
 input {
@@ -255,9 +265,15 @@ li.set ul {
 	width: 3em;
 }
 .playlist .title-bar .key {
-	margin-left: 1em;
-	border-right: 1px solid silver;
-	text-align: center;
+    margin-left: 1em;
+    border-right: 1px solid silver;
+    text-align: center;
+}
+.playlist.list .title-bar .key {
+    display: inline-block;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    width: 20px;
 }
 .playlist .title-bar .button {
     float: right;
@@ -312,6 +328,11 @@ li.set ul {
 }
 
 .title {
+}
+.list .title {
+	display: inline-block;
+	width: 80%;
+	/*text-indent: -20px;*/
 }
 .key:focus, 
 .singer:focus, 

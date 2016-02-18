@@ -14,13 +14,14 @@ SBK.ApplicationState = SBK.Class.extend({
         
         self.tab_id = [];
         self.tab_id[0] = 'playlist_list';
-        self.tab_id[1] = 'edit_playlist';
+        self.tab_id[1] = 'display_playlist';
         self.tab_id[2] = 'song_lyrics';
         self.tab_id[3] = 'edit_song';
         self.tab_id[4] = 'playlist_book';
         self.tab_id[5] = 'list_all_songs';
         self.tab_id[6] = 'add_new_song';
         self.tab_id[7] = 'playlist_alphabetical';
+        self.tab_id[8] = 'edit_playlist';
     },
     
     initialise_state: function () {
@@ -94,6 +95,7 @@ SBK.ApplicationState = SBK.Class.extend({
             case 't':
                 if (valid_formats.tab.test(value)) {
                     self.tab = self.tab_id[parseInt(value, 10)];
+                    console.log(self.tab);
                 }
                 break;
 

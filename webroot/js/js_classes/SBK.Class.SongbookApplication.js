@@ -46,30 +46,33 @@ SBK.SongbookApplication = SBK.Class.extend({
             delete self.content_container;
             self.tab = self.application_state.tab;
             switch (self.tab) {
-            case 'playlist_list':
-                self._display_playlist_list();
-                break;
-            case 'edit_playlist':
-                self._display_playlist(self.application_state.playlist_filename);
-                break;
-            case 'playlist_alphabetical':
-                self._display_playlist_alphabetical(self.application_state.playlist_filename);
-                break;
-                case 'playlist_book':
-                    self._playlist_book();
-                    break;
-                case 'song_lyrics':
-                    self._display_song(self.application_state.id, self.application_state.key, self.application_state.capo);
-                    break;
-                case 'edit_song':
-                    self._edit_song(self.application_state.id);
-                    break;
-                case 'add_new_song':
-                    self._edit_song();
-                    break;
-                case 'list_all_songs':
-                    self._list_all_songs();
-                    break;
+	            case 'playlist_list':
+	                self._display_playlist_list();
+	                break;
+	            case 'display_playlist':
+	                self._display_playlist(self.application_state.playlist_filename);
+	                break;
+	            case 'edit_playlist':
+	                self._edit_playlist(self.application_state.playlist_filename);
+	                break;
+	            case 'playlist_alphabetical':
+	                self._display_playlist_alphabetical(self.application_state.playlist_filename);
+	                break;
+	            case 'playlist_book':
+	                self._playlist_book(self.application_state.playlist_filename);
+	                break;
+	            case 'song_lyrics':
+	                self._display_song(self.application_state.id, self.application_state.key, self.application_state.capo);
+	                break;
+	            case 'edit_song':
+	                self._edit_song(self.application_state.id);
+	                break;
+	            case 'add_new_song':
+	                self._edit_song();
+	                break;
+	            case 'list_all_songs':
+	                self._list_all_songs();
+	                break;
             }
         } else {// if it's not the tab that's changed
             if (self.application_state.tab === 'song_lyrics') {
@@ -129,7 +132,7 @@ SBK.SongbookApplication = SBK.Class.extend({
         var self = this;
 
         self.application_state.set({
-            tab: 'edit_playlist',
+            tab: 'display_playlist',
             playlist_filename: playlist_filename,
             id: null,
             key: null,
@@ -259,6 +262,14 @@ SBK.SongbookApplication = SBK.Class.extend({
         self.playlist.render();
     },
 
+    _edit_playlist: function (playlist_filename) {
+        var self = this;
+
+        self.content_container = jQuery('<div id="playlist-edit"></div>').appendTo(self.container);
+        self.playlist = new SBK.PlayList.Edit(playlist_filename, self.content_container, null, self);
+        self.playlist.render();
+    },
+
     _display_playlist_alphabetical: function (playlist_filename) {
         var self = this;
 
@@ -271,7 +282,7 @@ SBK.SongbookApplication = SBK.Class.extend({
         var self = this;
 
         self.content_container = jQuery('<div id="playlist-book"></div>').appendTo(self.container);
-        self.playlist = new SBK.PlayListBook(playlist_filename, self.content_container, null, self);
+        self.playlist = new SBK.PlayList.Book(playlist_filename, self.content_container, null, self);
         self.playlist.render();
     },
 
