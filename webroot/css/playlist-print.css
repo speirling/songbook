@@ -1,147 +1,44 @@
-@media print {
-	body {
-		/*font-size: 10px;*/
-	}
-	
-    #playlist-display .playlist { 
-         column-width: 190px;
-         -moz-column-width: 190px;
-         -webkit-column-width: 190px;
-          
-         column-count: 5;
-         -moz-column-count: 5;
-         -webkit-column-count: 5;
-    }
+@page {
+    size: landscape;
+    margin: 0em;
+    border:1px solid red;
+    @top-left-corner { content: " "; border: solid green; }
+    @top-right-corner { content: url(foo.png); border: solid green; }
+    @bottom-right-corner { content: counter(page); border: solid green; }
+    @bottom-left-corner { content: normal; border: solid green; }
+}
+body, 
+#container {
+    width: 100%;
+    background-color: white;
+}
+#playlist-book .print-page {
+    border: 1px solid gray;
+    height: 1050px;
+    width: 700px;
+    padding-left: 2em;
+    padding-right: 2em;
+    padding-top: 4em;
+    page-break-after: always;
+}
+#playlist-book .playlist-title label,
+#playlist-book .playlist-act label {
+    display: none;
+}
 
-    #playlist-display .playlist.sorted-alphabetically {
-         column-width: auto;
-         -moz-column-width: auto;
-         -webkit-column-width: auto;
-
-         column-count: 4;
-         -moz-column-count: 4;
-         -webkit-column-count: 4;
-    }
-    
-    .button,
-    .navigation-panel {
-        display: none !important;
-    }
-    #playlist-display {
-        padding: 0 !important;
-    }
-    body, 
-    #container,
-    .playlist li.song {
-        background-color: white;
-    }
-    body, 
-    #container {
-        width: 100%;
-    }
-    .playlist li.song {
-        width: 90%;
-        font-size: 1.2em;
-        border: 0px silver solid;
-        margin: 0;
-        padding: 0;
-    } 
-    .playlist li.song table {
-        border-collapse: collapse;
-    }
-    td.lyrics-button-container {
-        display: none;
-    }
-    .details-bar {
-    }   
-    .details-bar .id, 
-    .details-bar .duration, 
-    .details-bar .capo,   
-    .details-bar .key {
-        display: none;
-    }
-    .playlist .title-bar .title {
-        padding-left: 5px;
-    }
-    /*.playlist .title-bar .key {
-        background-color: #aaaaaa;
-        color: white !important;
-        border: 0 !important;
-    }*/
-    .playlist .title-bar .key.blank {
-        background-color: transparent;
-    }
-    span.set-title input.set-title {
-        color: #aaaaaa;
-    }
-    span.set-title label {
-        display: none;
-    }
-
-    .button {
-        display: none;
-    }
-
-
-	.playlist.print li.song {
-	    background-color: transparent;
+#playlist-book .line {
+    min-height: 2.5em;
+}
+@media print {	
+	.button,
+	.navigation-panel,
+	td.lyrics-button-container,
+	.details-bar .id, 
+	.details-bar .duration, 
+	.details-bar .capo,   
+	.details-bar .key,
+	span.set-title label {
+	    display: none;
+	    /* display: none !important; */
 	}
-	
-	.playlist ul {
-	    padding: 0;
-	}
-	.playlist ul .title.set {
-	    margin: 10px;
-	    font-weight:  bold;
-	    font-size: 14px;
-	}
-	
-	.playlist li.set {
-	    list-style-type: none;
-	}
-	
-	.page-header {
-	    column-span: all;
-	}
-	.lyrics-panel>.content { 
-	     column-count: 2;
-	     column-gap: 2em;
-	     column-rule: thin solid black;
-	     column-fill: auto;
-	     
-	     -moz-column-count: 2;
-	     -moz-column-gap: 2em;
-	     -moz-column-rule: thin solid black;
-         -moz-column-fill: auto;
-	     
-	     -webkit-column-count: 2;
-	     -webkit-column-gap: 2em;
-	     -webkit-column-rule: 2px solid silver;
-         -webkit-column-fill: auto;
-	 }
-	 input.set-title {
-	  padding-left: 0;
-	 }
-
-     #playlist-display {
-         position: absolute;
-         top: 0;
-         left: 0;
-     }
-     #playlist-display .playlist {
-         position: relative;
-         bottom: 0;
-         left: 0;
-         top: 0 !important; /* top is set by javascript to allow for navigation bar */
-         width: 100%;
-     }
-	 ol.songlist {
-	     padding: 0
-	 }
-	 ol.songlist > li:before {
-	     content: none;
-	 }
-	 .playlist .title-bar .key {
-	     border: 0;
-	 }
 }

@@ -2,23 +2,30 @@
 li.set .button.toggle-buttons {
 	display: none;
 }
-@media screen and (min-width: 500px) {
+/*@media screen and (min-width: 500px) {*/
     #playlist-edit .playlist,
-    #playlist-display .playlist { 
-         column-gap: 2em;
+    #playlist-display .playlist,
+    #playlist-book .playlist { 
+         column-gap: 20px;
          column-rule: 0.1em solid silver;
          column-width: 210px;
+         column-fill: auto;
     
-         -moz-column-gap: 2em;
+         -moz-column-gap: 20px;
          -moz-column-rule: 0.1em solid silver;
          -moz-column-width: 210px;
+         -moz-column-fill: auto;
     
-         -webkit-column-gap: 2em;
+         -webkit-column-gap: 20px;
          -webkit-column-rule: 1px solid silver;
          -webkit-column-width: 210px;
+         -webkit-column-fill: auto;
+	     
+	     page-break-after: always;
     }
     #playlist-edit .playlist.edit,
-    #playlist-display .playlist.edit {
+    #playlist-display .playlist.edit,
+    #playlist-book .playlist.edit {
          column-width: 25em;
          -moz-column-width: 25em;
          -webkit-column-width: 25em;
@@ -61,15 +68,17 @@ li.set .button.toggle-buttons {
 	.playlist li.song {
 	    padding: 0;
 	}
-}
+/*}*/
 
     #playlist-display .playlist.sorted-alphabetically table,
-    #playlist-edit .playlist.sorted-alphabetically table {
+    #playlist-edit .playlist.sorted-alphabetically table,
+    #playlist-book .playlist.sorted-alphabetically table {
         table-layout:fixed;
     }
 
     #playlist-display .playlist.sorted-alphabetically .singer,
-    #playlist-edit .playlist.sorted-alphabetically .singer {
+    #playlist-edit .playlist.sorted-alphabetically .singer,
+    #playlist-book .playlist.sorted-alphabetically .singer {
         width: 1.5em;
         font-size: 0.8em;
         overflow: hidden;
@@ -85,43 +94,28 @@ li.set .button.toggle-buttons {
 	display: inline-block; 
 }
 
-#playlist-display {
-	/*position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	overflow: auto;*/	
-}
-#playlist-display .playlist,
+/*#playlist-display .playlist,
 #playlist-edit .playlist {
     position: absolute;
     bottom: 0;
     left: 0;
     top: 50px;
     width: 95%;
-}
-input {
+}*/
+.playlist input {
     font-size: 1em;
     padding: 0.5em;
     display: inline-block;
     box-sizing: border-box;
 }
-input.set-title {
+.playlist input.set-title {
 	width: auto;
     display: inline-block; /* to override cakephp3 */
 }
-input[type=checkbox] {
-
-}
-input.playlist-title,
-input.set-title,
-input.act {
+.playlist input.playlist-title,
+.playlist input.set-title,
+.playlist input.act {
 	border: 0px;
-}
-input.playlist-title,
-input.act {
-   
 }
 span.playlist-title,
 span.playlist-act ,
@@ -138,15 +132,9 @@ span.playlist-act label {
 	text-align: right;
 	font-size: 0.7em;
 }
+#playlist-book span.playlist-title label,
+#playlist-book span.playlist-act label,
 span.set-title label {
-    display: inline-block;
-	cursor: grab;
-	width: 0.8em;
-	height: 1em;
-	background-color: #daa;
-}
-
-span.set-title label span {
 	display: none;
 }
 input.playlist-title {
@@ -190,14 +178,6 @@ li.set ul {
 }
 #playlist-holder .set {
 	border-top: 1px solid silver;
-}
-#playlist-holder .playlist,
-.available-songs .playlist {
-/*    position: absolute;
-    bottom: 1em;
-    right: 1em;
-    left: 1em;
-    overflow: auto;*/
 }
 #playlist-holder .playlist {
     top: 3em;
@@ -266,7 +246,6 @@ li.set ul {
 }
 .playlist .title-bar .key {
     margin-left: 1em;
-    border-right: 1px solid silver;
     text-align: center;
 }
 .playlist.list .title-bar .key {
@@ -452,18 +431,21 @@ a#add-new-set:hover {
 	background-color: #9393b3;
 	color: white;
 }
-.navigation-panel {
+/*.navigation-panel {
 	position: fixed; /*  so that the navigation bar is always at the top of the screen */
-	top: 0; 
+	/*top: 0;
 	z-index: 10;
 	background-color: white;
 	width: 97%;
 	white-space: nowrap;
 	overflow-x: auto;
-}
+}*/
 
 ol.songlist {
-	padding-left: 1.5em;
+	padding-left: 0;
+}
+ol.songlist > li:before {
+    content: none;
 }
 .id {
 	margin-left: 1em;
@@ -477,4 +459,35 @@ ul.ui-sortable.being_dragged li.set.ui-sortable-helper  ol.songlist {
 li.set.ui-sortable-helper {
 	height: 50px !important;
 	width: 200px !important;
+}
+
+.playlist li.song {
+    width: 90%;
+    font-size: 0.8em;
+    border: 0px silver solid;
+    margin: 0;
+    padding: 0;
+} 
+.playlist li.song table {
+    border-collapse: collapse;
+}
+
+.playlist .title-bar .title {
+    padding-left: 5px;
+}
+.playlist .title-bar .key.blank {
+    background-color: transparent;
+}
+span.set-title input.set-title {
+    color: #aaaaaa;
+}
+
+.playlist.sorted-alphabetically {
+     column-width: auto;
+     -moz-column-width: auto;
+     -webkit-column-width: auto;
+
+     column-count: 4;
+     -moz-column-count: 4;
+     -webkit-column-count: 4;
 }

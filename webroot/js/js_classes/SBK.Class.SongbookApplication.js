@@ -79,7 +79,7 @@ SBK.SongbookApplication = SBK.Class.extend({
                 if (typeof(changed_parameters.key) !== 'undefined' || typeof(changed_parameters.capo) !== 'undefined') {
                     self._display_song(self.application_state.id, self.application_state.key, self.application_state.capo);
                 }
-            } else  if (self.application_state.tab === 'edit_playlist') {
+            } else  if (self.application_state.tab === 'display_playlist' || self.application_state.tab === 'edit_playlist' ) {
                 /*parameter_names_playlist = [
                     'introductions_visible_in_list', 
                     'buttons_visible_in_list', 
@@ -141,6 +141,19 @@ SBK.SongbookApplication = SBK.Class.extend({
         
     },
 
+    edit_playlist: function (playlist_filename) {
+        var self = this;
+
+        self.application_state.set({
+            tab: 'edit_playlist',
+            playlist_filename: playlist_filename,
+            id: null,
+            key: null,
+            capo: null
+        }, false);
+        
+    },
+
     display_playlist_alphabetical: function (playlist_filename) {
         var self = this;
 
@@ -171,7 +184,7 @@ SBK.SongbookApplication = SBK.Class.extend({
         var self = this, navigation_panel, previous_button, previous_song, next_button, next_song, lyrics_pane, song_lyrics;
 
         self.container.html('');
-        self.content_container = jQuery('<div class="lyrics-panel zoom-2"></div>').appendTo(self.container);
+        self.content_container = jQuery('<div class="lyrics-page zoom-2"></div>').appendTo(self.container);
         
         song_lyrics = new SBK.SongLyricsDisplay(
             self.content_container,
@@ -285,11 +298,11 @@ SBK.SongbookApplication = SBK.Class.extend({
         self.playlist = new SBK.PlayList.Book(playlist_filename, self.content_container, null, self);
         self.playlist.render();
     },
-
+/*
     _display_lyrics: function () {
         var self = this;
 
-        self.content_container = jQuery('<div id="lyrics-display"></div>').appendTo(self.container);
+        self.content_container = jQuery('<div id="lyrics-page"></div>').appendTo(self.container);
         self.song = new SBK.SongLyricsDisplay(
             self.content_container, 
             self.application_state.id,
@@ -299,7 +312,7 @@ SBK.SongbookApplication = SBK.Class.extend({
         );
         self.song.render();
     },
-
+*/
     _edit_song: function (id) {
         var self = this;
 

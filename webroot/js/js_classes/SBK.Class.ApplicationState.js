@@ -95,7 +95,6 @@ SBK.ApplicationState = SBK.Class.extend({
             case 't':
                 if (valid_formats.tab.test(value)) {
                     self.tab = self.tab_id[parseInt(value, 10)];
-                    console.log(self.tab);
                 }
                 break;
 

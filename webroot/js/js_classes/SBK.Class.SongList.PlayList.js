@@ -46,8 +46,8 @@ SBK.PlayList = SBK.SongList.extend({
         var self = this, set_index, ul, input_container_title, input_container_act, internal_navigation_bar, filter_to;
 
         self.playlist_container = jQuery('<div class="playlist list"></div>');
-        input_container_title = jQuery('<span class="playlist-title"><label>Playlist: </label></span>').appendTo(self.playlist_container);
-        input_container_act = jQuery('<span class="playlist-act"><label>Act: </label></span>').appendTo(self.playlist_container);
+        input_container_title = jQuery('<span class="playlist-title"><label>Playlist: </label>' + self.value_or_blank(data_json.title) + '</span>').appendTo(self.playlist_container);
+        input_container_act = jQuery('<span class="playlist-act"><label>Act: </label>' + self.value_or_blank(data_json.act) + '</span>').appendTo(self.playlist_container);
         self.playlist_ul = jQuery('<ul></ul>').appendTo(self.playlist_container);
 
         if (typeof(data_json.sets) !== 'undefined') { //could happen when a playlist is first defined
@@ -152,7 +152,7 @@ SBK.PlayList = SBK.SongList.extend({
 	display_content: function () {
 		var self = this, button_bar, set_index, internal_navigation_bar, label, filter_to;
 
-		self.container.html('').css('padding-top', 0); //so that the navigation bar is always at the top of the screen
+		// self.container.html('').css('padding-top', 0); //so that the navigation bar is always at the top of the screen
 		self.navigation_panel = jQuery('<div class="navigation-panel"></div>').appendTo(self.container);
 
 		button_bar = jQuery('<div class="sb-button-bar flyout closed"></div>').appendTo(self.navigation_panel);
@@ -193,7 +193,7 @@ SBK.PlayList = SBK.SongList.extend({
         filter_border = jQuery('<div class="picker-filter-border"></div>').appendTo(self.filter);
         filter_wrapper = jQuery('<div class="picker-filter-wrapper"></div>').appendTo(filter_border);
         self.filter_input = jQuery('<input type="text" placeholder="type to filter"/>').appendTo(filter_wrapper);
-        self.filter_clear = jQuery('<span class="icon-close"></span>').appendTo(filter_border);
+        self.filter_clear = jQuery('<span class="icon-close"></span>').prependTo(filter_border);
         count_container = jQuery('<span class="number"><label> songs displayed</label></span>').appendTo(self.filter);
         self.number_of_songs = jQuery('<span class="number-of-records"></span>').prependTo(count_container);
 
@@ -214,14 +214,14 @@ SBK.PlayList = SBK.SongList.extend({
 
         self.number_of_songs.html(jQuery('li.song:visible', self.container).length);
         
-        self.container.css('padding-top', self.navigation_panel.height());  //so that the navigation bar is always at the top of the screen
-        if (self.set_objects.length > 0) {
+        // self.container.css('padding-top', self.navigation_panel.height());  //so that the navigation bar is always at the top of the screen
+        /*if (self.set_objects.length > 0) {
             required_padding_bottom = (self.app.container.height() - self.navigation_panel.height()) - self.set_objects[self.set_objects.length - 1].container.height();
             if (required_padding_bottom > 0) {
                 self.container.css('padding-bottom', required_padding_bottom);
             }
-        }
-        self.set_playlist_container_top(); 
+        }*/
+        //self.set_playlist_container_top(); 
 	},
 
     on_sortable_change: function (event, ui) {
@@ -322,7 +322,9 @@ SBK.PlayList = SBK.SongList.extend({
 
         if(typeof(self.set_objects) !== 'undefined') {
             for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
-                self.set_objects[set_index].hide_edit_buttons();
+            	if(typeof(self.set_objects[set_index].hide_edit_buttons) === 'function') {
+                    self.set_objects[set_index].hide_edit_buttons();
+            	}
             }
         }
     },

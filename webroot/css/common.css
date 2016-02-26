@@ -147,41 +147,44 @@ position:absolute;
 top: 1em;left:0;}*/
 
 
-.picker-filter {
+/*.picker-filter {
     position: relative;
     width: 100%;
-}
+}*/
 #all-songs-list .picker-filter {
     height: 5em;
 }
 #playlist-edit .picker-filter {
     height: 4em;
+    display: inline-block;
 }
 .picker-filter .picker-filter-border {
-    position: absolute;
+/*    position: absolute;
     left: 0;
     bottom: 1.5em;
-    right: 0;
+    right: 0;*/
     height: 2.5em;
     background-color: white;
     border: 1px solid gray;
+    width: 20em;
 }
 .picker-filter .picker-filter-wrapper {
-	position: absolute;
+	/*position: absolute;*/
     left: 0;
     top: 0;
     right: 30px;
     line-height: 1.8em;
     vertical-align: middle;
+    display: inline-block;
 }
-.picker-filter input {
+/*.picker-filter input {
 	width: 100%;
 	border-width: 0;
-}
+}*/
 .picker-filter .icon-close {
-    position: absolute;
+   /* position: absolute;
     right: 0.5em;
-    top: 50%;
+    top: 50%;*/
     margin-top: -10px;
     height: 20px;
     width: 20px;
@@ -193,9 +196,9 @@ top: 1em;left:0;}*/
 .picker-filter .number {
 	color: gray;
 	font-size: 0.8em;
-	position: absolute;
+	/*position: absolute;
 	left: 0.5em;
-	bottom: 0;
+	bottom: 0;*/
 }
 
 

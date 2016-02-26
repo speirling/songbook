@@ -70,12 +70,15 @@ Cake\Core\Configure::write(
             'js_classes/SBK.Class.SongListItemSet.Edit.js',
             'js_classes/SBK.Class.SongListItemSet.Selector.js',
             'js_classes/SBK.Class.SongListItemSet.Print.js',
+            'js_classes/SBK.Class.SongListItemSet.Book.js',
             'js_classes/SBK.Class.SongListItemSong.js',
             'js_classes/SBK.Class.SongListItemSong.Edit',
             'js_classes/SBK.Class.SongListItemSong.Selector.js',
             'js_classes/SBK.Class.SongListItemSong.Lyrics.js',
             'js_classes/SBK.Class.SongListItemSong.Print.js',
+            'js_classes/SBK.Class.SongListItemSong.Book.js',
             'js_classes/SBK.Class.SongLyricsDisplay.js',
+            'js_classes/SBK.Class.SongLyricsDisplay.Book.js',
             'js_classes/SBK.Class.SongLyricsEdit.js'
         ),
         'css_library' => array(
