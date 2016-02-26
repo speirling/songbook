@@ -23,12 +23,9 @@ li.set .button.toggle-buttons {
 	     
 	     page-break-after: always;
     }
-    #playlist-edit .playlist.edit,
-    #playlist-display .playlist.edit,
-    #playlist-book .playlist.edit {
-         column-width: 25em;
-         -moz-column-width: 25em;
-         -webkit-column-width: 25em;
+    #playlist-display,
+    #playlist-display .playlist {
+        height: 90%;
     }
 	.sb-button-bar.flyout, .sb-button-bar.flyout.closed {
 	    display: inline-block;

@@ -208,7 +208,27 @@ div.song-page .multi-column .line,
     }
 /*}*/
 
-
+.lyrics-display {
+	height: 100%;
+}
+.lyrics-display .lyrics-panel {
+	height: 80%;
+         column-gap: 20px;
+         column-rule: 0.1em solid silver;
+         column-width: 250px;
+         column-fill: auto;
+    
+         -moz-column-gap: 20px;
+         -moz-column-rule: 0.1em solid silver;
+         -moz-column-width: 250px;
+         -moz-column-fill: auto;
+    
+         -webkit-column-gap: 20px;
+         -webkit-column-rule: 1px solid silver;
+         -webkit-column-width: 250px;
+         -webkit-column-fill: auto;
+	
+}
 .lyrics-panel.zoom-1 .lyrics-content {
     font-size: 0.75em;
 }
