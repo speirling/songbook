@@ -4,8 +4,7 @@ li.set .button.toggle-buttons {
 }
 /*@media screen and (min-width: 500px) {*/
     #playlist-edit .playlist,
-    #playlist-display .playlist,
-    #playlist-book .playlist { 
+    #playlist-display .playlist { 
          column-gap: 20px;
          column-rule: 0.1em solid silver;
          column-width: 210px;

@@ -190,7 +190,7 @@ div.song-page .multi-column .line,
 }
 
 @media print {*/
-
+/*
     .lyrics-panel {
         font-size: 1em;     
         padding-left: 0.5em;     
@@ -198,14 +198,14 @@ div.song-page .multi-column .line,
         
         width: 100%;
         height: 920px;
-    }
+    }/*
     .lyrics-panel.columns-2 {
         column-count: 2;
         -moz-column-count: 2;
         -webkit-column-count: 2;
         -moz-column-fill: auto;
         column-fill: auto;
-    }
+    }*/
 /*}*/
 
 .lyrics-display {
@@ -279,3 +279,14 @@ div.song-page .multi-column .line,
 	font-style: italic;
 	font-size:0.6em;
 }
+
+    table.manual-column {
+        width: 100%;
+        margin: 0;
+        border: 0;
+        border-collapse:separate;
+    }
+    table.manual-column td {
+        vertical-align: top;
+        padding: 0;
+    }
