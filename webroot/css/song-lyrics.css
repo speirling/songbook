@@ -93,7 +93,8 @@ div.song-page .multi-column .line,
 }
 .performed-by,
 .written-by,
-.songnumber {
+.songnumber,
+.base-key {
     margin-left: 0.8em;
     font-size: 0.8em;
 }
@@ -290,3 +291,24 @@ div.song-page .multi-column .line,
         vertical-align: top;
         padding: 0;
     }
+    
+
+.content.songs.view h4 {
+    display: none;
+}
+
+tr.title,
+tr.id,
+tr.original-filename {
+	display: none;
+}
+.songs.view table.vertical-table td,
+.songs.view table.vertical-table th {
+	font-size: 0.8em;
+	padding: 0;
+	text-align: left;
+}
+
+.songs.view table.vertical-table th {
+	width: 8em;
+}

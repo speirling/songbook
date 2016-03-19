@@ -1,3 +1,31 @@
+.songs.index table tr td {
+    font-size: 0.8em;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.songs.index table tr .id {
+}
+.songs.index table tr .title {
+}
+.songs.index table tr .written-by,
+.songs.index table tr .performed-by {
+    font-size: 0.5em;
+    width: 10%;
+}
+.songs.index table tr .actions {
+    width: 20%;
+}
+.songs.index table tr .actions a {
+    display: inline-block;
+    padding: 0.5em;
+    border:1px solid gray;
+}
+.songs.index td:first-child,
+.songs.index th:first-child  {
+    width:  4em;
+}
+
+/*
 .songs.index table {
 	width: 80em;
 }
@@ -67,3 +95,4 @@ td.actions {
 	border: 0;
 	padding: 0;	
 }
+*/
