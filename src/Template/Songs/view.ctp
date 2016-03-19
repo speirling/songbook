@@ -1,4 +1,4 @@
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
+<nav class="large-2 medium-2 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
         <li><?= $this->Html->link(__('Edit Song'), ['action' => 'edit', $song->id]) ?> </li>
@@ -11,30 +11,30 @@
         <li><?= $this->Html->link(__('New Song Tag'), ['controller' => 'SongTags', 'action' => 'add']) ?> </li>
     </ul>
 </nav>
-<div class="songs view large-9 medium-8 columns content">
+<div class="songs view large-10 medium-10 columns content">
     <h3><?= h($song->title) ?></h3>
     <table class="vertical-table">
-        <tr>
+        <tr class="title">
             <th><?= __('Title') ?></th>
             <td><?= h($song->title) ?></td>
         </tr>
-        <tr>
+        <tr class="written-by">
             <th><?= __('Written By') ?></th>
             <td><?= h($song->written_by) ?></td>
         </tr>
-        <tr>
+        <tr class="performed-by">
             <th><?= __('Performed By') ?></th>
             <td><?= h($song->performed_by) ?></td>
         </tr>
-        <tr>
+        <tr class="base-key">
             <th><?= __('Base Key') ?></th>
             <td><?= h($song->base_key) ?></td>
         </tr>
-        <tr>
+        <tr class="original-filename">
             <th><?= __('Original Filename') ?></th>
             <td><?= h($song->original_filename) ?></td>
         </tr>
-        <tr>
+        <tr class="id">
             <th><?= __('Id') ?></th>
             <td><?= $this->Number->format($song->id) ?></td>
         </tr>

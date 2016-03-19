@@ -433,6 +433,12 @@ fieldset {
   margin: 1.125rem 0;
 }
 
+
+#actions-sidebar fieldset {
+  padding: 0;
+  margin: 0;
+}
+
 fieldset legend {
   border-bottom: 2px solid #1798A5;
   width: 100%;
@@ -522,6 +528,7 @@ div.message.hidden {
 
 .content {
   padding: 2rem;
+  padding-top: 0;
 }
 
 /* Use 'one true layout' methods to get equal height columns */
