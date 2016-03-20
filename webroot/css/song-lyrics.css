@@ -93,8 +93,9 @@ div.song-page .multi-column .line,
 }
 .performed-by,
 .written-by,
+.base-key,
 .songnumber,
-.base-key {
+.meta-tags {
     margin-left: 0.8em;
     font-size: 0.8em;
 }

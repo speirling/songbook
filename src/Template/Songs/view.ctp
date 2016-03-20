@@ -38,14 +38,14 @@
             <th><?= __('Id') ?></th>
             <td><?= $this->Number->format($song->id) ?></td>
         </tr>
+        <tr class="meta-tags">
+            <th><?= __('Meta Tags') ?></th>
+            <td><?= h($song->meta_tags) ?></td>
+        </tr>
     </table>
     <div class="row">
         <h4><?= __('Content') ?></h4>
-        <?= $this->Text->autoParagraph(h($song->content)); ?>
-    </div>
-    <div class="row">
-        <h4><?= __('Meta Tags') ?></h4>
-        <?= $this->Text->autoParagraph(h($song->meta_tags)); ?>
+        <?= $song->content; ?>
     </div>
     <div class="related">
         <h4><?= __('Related Song Instances') ?></h4>

@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use App\Controller\StaticFunctionController;
 
 /**
  * Songs Controller
@@ -37,6 +38,7 @@ class SongsController extends AppController
         $song = $this->Songs->get($id, [
             'contain' => ['SongInstances', 'SongTags']
         ]);
+        $song['content'] = StaticFunctionController::convert_song_content_to_HTML($song['content']);
         $this->set('song', $song);
         $this->set('_serialize', ['song']);
     }
