@@ -102,10 +102,18 @@ class StaticFunctionController extends AppController
 	
 	public static function chord_replace_callback($chord, $base_key = null, $target_key = null) {
 		$replaced_chord = $chord[1];
+		$fullsize_class = '';
+		
+        if(strpos($replaced_chord, '!') !== false) {
+            //This is one of those chords followed by whitepace, that needs to be set to greater than 0 space.
+            //I'll use a class for that
+            $fullsize_class = " full-width";
+            $replaced_chord = str_replace('!', '', $replaced_chord);
+        }
 		if(StaticFunctionController::$key_transpose_parameters['transpose']) {
 			$replaced_chord = StaticFunctionController::transpose_chord($replaced_chord, StaticFunctionController::$key_transpose_parameters['base_key'], StaticFunctionController::$key_transpose_parameters['target_key']);
 		}
-		return '</span><span class="chord">'.$replaced_chord.'</span><span class="text">';
+		return '</span><span class="chord' . $fullsize_class . '">'.$replaced_chord.'</span><span class="text">';
 	}
 	
     public static function convert_song_content_to_HTML($content, $base_key = NULL, $display_key = NULL, $capo = NULL) {
@@ -128,8 +136,13 @@ class StaticFunctionController extends AppController
 	
 		$contentHTML = $content;
 		$contentHTML = preg_replace('/&([^#n])/', '&#38;$1', $contentHTML);
+        // chords that are close together - [Am][D] etc ... even [Am]  [D].... should be separated by characters equal in width to the chord (or by margin in css?)
+        //I'll mark these kinds of chords with "!" so that I can set their class in  chord_replace_callback()
+        // In PHP "\h" matches a 'horizontal whitespace' character so the expression '/\](\h*?)\[/' should find relevant chords
+		$contentHTML = preg_replace('/\](\h*?)\[/', '!]$1[', $contentHTML);
 		$contentHTML = str_replace(' ', '&#160;', $contentHTML);
 		$contentHTML = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $contentHTML);
+		//empty lines - put in a non-breaking space so that they don't collapse?
 		$contentHTML = preg_replace('/<div class=\"line\"><span class=\"text\">[\s]*?<\/span><\/div>/', '<div class="line"><span class="text">&nbsp;</span></div>', $contentHTML);
 		$contentHTML = preg_replace_callback('/\[(.*?)\]/', 'self::chord_replace_callback', $contentHTML);
 		$contentHTML = preg_replace('#<span class="chord">([^<]*?)/([^<]*?)</span>#','<span class="chord">$1<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">$2</span></span>', $contentHTML);
