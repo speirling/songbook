@@ -115,7 +115,9 @@ div.song-page .multi-column .line,
 }
 
 .page-header .label,
-.page-header label {
+.page-header label,
+.base-key .label,
+.base-key label {
 	font-style: normal;
 	background-color: transparent;
 	color: black;
@@ -124,7 +126,8 @@ div.song-page .multi-column .line,
 	display: inline-block;
 	padding-right: 0.5em;
 }
-.page-header .key .data {
+.page-header .key .data,
+.base-key .key .data {
     margin-bottom: 0.2em;
     padding: 0.1em;
     height: 1.7em;
@@ -132,25 +135,46 @@ div.song-page .multi-column .line,
 .page-header .label,
 .page-header label,
 .page-header .data {
-	font-size: 0.8em;
+    font-size: 0.8em;
 }
-.page-header .key .target-key .data {
+.base-key .label,
+.base-key label,
+.base-key .data {
+    font-size: 1em;
+}
+.base-key .label,
+.base-key label {
+    color: #1798a5;
+    font-weight: bold;
+}
+.base-key form.key {
+	display: inline-block;
+	Width: 20em;
+	margin-left: 5em;
+}
+.page-header .key .target-key .data,
+.base-key .key .target-key .data {
     width: 4em;
 }
-.page-header .key  .target-key.no-base-key .data {
+.page-header .key  .target-key.no-base-key .data,
+.base-key .key  .target-key.no-base-key .data {
     display: inline-block;
     width: 10em;
     font-size: 1em;
 }
-.page-header .key .capo .data {
+.page-header .key .capo .data,
+.base-key .key .capo .data {
     width: 3em;
 }
-.page-header .key .capo {
+.page-header .key .capo,
+.base-key .key .capo {
 	margin-right: 0.7em;
 	margin-left: 0.7em;
 }
 .page-header .key .capo .label,
-.page-header .key .capo label {
+.page-header .key .capo label,
+.base-key .key .capo .label,
+.base-key .key .capo label {
 	margin-right: 0.2em;
 }
 .page-header .key .capo .data {

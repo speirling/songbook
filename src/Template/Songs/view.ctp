@@ -28,7 +28,46 @@
         </tr>
         <tr class="base-key">
             <th><?= __('Base Key') ?></th>
-            <td><?= h($song->base_key) ?></td>
+            <td><?= h($song->base_key) ?>
+            <form class="key" action="" method="get">
+                <span class="target-key">
+                    <label>key: </label>
+                    <select class="data" onchange="this.form.submit()" name="key">
+                        <option value=""></option>
+                        <?php
+                            if($this->request->query('page') !== '') {
+                                $current_key = $this->request->query('page');
+                            } else {
+                                 $current_key = h($song->base_key);
+                            }
+                            
+                            $keys = Array('Ab', 'A', 'A#', 'Bb', 'C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#');
+                            foreach ($keys as $key) {
+                                echo '<option value="' . $key . '"';
+                                if ($key === $current_key){
+                                    echo ' selected ';
+                                }
+                                echo '>' . $key . '</option>';
+                            }
+                        ?>
+                    </select>
+                </span>
+                <span class="capo">
+                    <label>capo: </label>
+                    <select class="data" onchange="this.form.submit()" name="capo">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    </select>
+                    </span>
+            </form>
+            </td>
         </tr>
         <tr class="original-filename">
             <th><?= __('Original Filename') ?></th>
