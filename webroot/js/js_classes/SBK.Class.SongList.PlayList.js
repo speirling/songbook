@@ -58,6 +58,7 @@ SBK.PlayList = SBK.SongList.extend({
                 if (typeof(data_json.sets[set_index].songs) !== 'undefined') {
                     data_json.sets[set_index].songs = [].concat(data_json.sets[set_index].songs);
                 }
+                console.log(data_json.sets[set_index], set_index);
                 self.set_objects[set_index] = new SBK.SongListItemSet(self.playlist_ul, self, set_index, data_json.sets[set_index]);
                 self.set_objects[set_index].render();
             }
@@ -152,7 +153,7 @@ SBK.PlayList = SBK.SongList.extend({
 	display_content: function () {
 		var self = this, button_bar, set_index, internal_navigation_bar, label, filter_to;
 
-		// self.container.html('').css('padding-top', 0); //so that the navigation bar is always at the top of the screen
+		self.container.html('').css('padding-top', 0); //so that the navigation bar is always at the top of the screen
 		self.navigation_panel = jQuery('<div class="navigation-panel"></div>').appendTo(self.container);
 
 		button_bar = jQuery('<div class="sb-button-bar flyout closed"></div>').appendTo(self.navigation_panel);
@@ -162,6 +163,7 @@ SBK.PlayList = SBK.SongList.extend({
 		self.buttons = self.insert_buttons(button_bar);
 
         // Main playlist content
+		console.log(self.data_json.sets[self.data_json.sets.length - 1]);
         self.container.append(self.to_html(self.data_json));
 
         //initially... hide intros, details and (if required) edit buttons
@@ -271,9 +273,11 @@ SBK.PlayList = SBK.SongList.extend({
 
     hide_introductions: function() {
         var self = this, set_index;
-     
-        self.introduction_container.hide();
-
+        
+	    if(typeof(self.introduction_container) !== "undefined") {
+	        self.introduction_container.hide();
+	    }
+	    
         if(typeof(self.set_objects) !== 'undefined') {
             for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
                 self.set_objects[set_index].hide_introductions();
@@ -283,8 +287,10 @@ SBK.PlayList = SBK.SongList.extend({
 
     show_introductions: function() {
         var self = this, set_index;
-     
-        self.introduction_container.show();
+
+	    if(typeof(self.introduction_container) !== "undefined") {
+	        self.introduction_container.show();
+	    }
 
         for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
             self.set_objects[set_index].show_introductions();
@@ -313,7 +319,9 @@ SBK.PlayList = SBK.SongList.extend({
         var self = this, set_index;
 
         for (set_index = 0; set_index < self.set_objects.length; set_index = set_index + 1) {
-            self.set_objects[set_index].show_edit_buttons();
+        	if(typeof(self.set_objects[set_index].show_edit_buttons) === "function") {
+        		self.set_objects[set_index].show_edit_buttons();
+        	}
         }
     },
 
@@ -336,10 +344,11 @@ SBK.PlayList = SBK.SongList.extend({
 		    self.data_json.sets = [];
 		}
 		self.data_json.sets[self.data_json.sets.length] = {
-			label: (''),
+			label: ('--New Set--'),
 			introduction: {duration: '', text: ''},
 			songs: []
 		};
+		console.log(self.data_json.sets[self.data_json.sets.length - 1]);
 		self.redraw();
 	},
     
