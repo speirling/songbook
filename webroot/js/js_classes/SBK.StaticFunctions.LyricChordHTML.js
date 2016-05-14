@@ -26,6 +26,7 @@ SBK.StaticFunctions.LyricChordHTML = {
         html = html.replace(/\[(.*?)\]/g, function (match) {return SBK.StaticFunctions.LyricChordHTML.chord_replace_callback(transpose_object, match);});
         html = html.replace(/#<span class="chord">([^<]*?)\/([^<]*?)<\/span>#/g,'<span class="chord">$1<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">$2</span></span>');
         //html = html.replace(/&nbsp;/g, '&#160;'); //&nbsp; doesn't work in XML unless it's specifically declared.
+        html = html.replace(/\{score:(.*?)\}/g, '<img src="/songbook/score/$1" />');
         html = '<div class="line"><span class="text">' + html;
         
         return html;

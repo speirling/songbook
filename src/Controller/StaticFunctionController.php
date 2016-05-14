@@ -135,18 +135,27 @@ class StaticFunctionController extends AppController
 		}
 	
 		$contentHTML = $content;
-		$contentHTML = preg_replace('/&([^#n])/', '&#38;$1', $contentHTML);
+		//convert ampersand to xml character entity &#38;
+		$contentHTML = preg_replace('/&([^#n])/', '&#38;$1', $contentHTML);  
         // chords that are close together - [Am][D] etc ... even [Am]  [D].... should be separated by characters equal in width to the chord (or by margin in css?)
         //I'll mark these kinds of chords with "!" so that I can set their class in  chord_replace_callback()
         // In PHP "\h" matches a 'horizontal whitespace' character so the expression '/\](\h*?)\[/' should find relevant chords
 		$contentHTML = preg_replace('/\](\h*?)\[/', '!]$1[', $contentHTML);
+		//replace spaces with non-breaking spaces
 		$contentHTML = str_replace(' ', '&#160;', $contentHTML);
+		//replace end-of-line with the end of a div and the start of a line div
 		$contentHTML = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $contentHTML);
 		//empty lines - put in a non-breaking space so that they don't collapse?
-		$contentHTML = preg_replace('/<div class=\"line\"><span class=\"text\">[\s]*?<\/span><\/div>/', '<div class="line"><span class="text">&nbsp;</span></div>', $contentHTML);
+		$contentHTML = preg_replace('/<div class=\"line\"><span class=\"text\">[\s]*?<\/span><\/div>/', '<div class="line"><span class="text">&#160;</span></div>', $contentHTML);
+		//anything in square brackets is taken to be a chord and should be processed to create chord html
 		$contentHTML = preg_replace_callback('/\[(.*?)\]/', 'self::chord_replace_callback', $contentHTML);
+		//if there's a bass modifier, give it its own html
 		$contentHTML = preg_replace('#<span class="chord">([^<]*?)/([^<]*?)</span>#','<span class="chord">$1<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">$2</span></span>', $contentHTML);
-		$contentHTML = preg_replace('/&nbsp;/', '&#160;', $contentHTML); //&nbsp; doesn't work in XML unless it's specifically declared.
+		//&nbsp; doesn't work in XML unless it's specifically declared..... this was added when the songbook was xml based, but still works here so...
+		$contentHTML = preg_replace('/&nbsp;/', '&#160;', $contentHTML); 
+		//if a 'score' reference is included, insert the image referred to in it. It should be in the webroot/score/ directory
+		$contentHTML = preg_replace('/\{score:(.*?)\}/', '<img src="/songbook/score/$1" />', $contentHTML);
+		//Finally, wrap the song lyric content in a lyrics-panel div
 		$contentHTML = '<div class="lyrics-panel"><div class="line"><span class="text">'.$contentHTML.'</span></div></div>';
 	
 		return $contentHTML;
