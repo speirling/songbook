@@ -263,6 +263,8 @@ SBK.SongbookApplication = SBK.Class.extend({
         //Buttons
         new SBK.Button(button_bar, 'all-songs', 'List all songs', function () {self.list_all_songs();});
         new SBK.Button(button_bar, 'create-new-playlist', 'Create a new playlist', function () {self.display_playlist(null);});
+        new SBK.Button(button_bar, 'add-new-song', 'Add a new Song', function () {window.open('/songbook/songs/add/','_blank');}),
+        new SBK.Button(button_bar, 'all-songs', 'All songs (cake)', function () {window.open('/songbook/songs/','_blank');}),
 
         self.all_playlists = new SBK.AllPlaylists(self.content_container, self).render();
     },
