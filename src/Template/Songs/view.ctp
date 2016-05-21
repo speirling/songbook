@@ -1,4 +1,12 @@
 <nav class="large-2 medium-2 columns" id="actions-sidebar">
+<?= $this->Form->create('search', ['url' => ['action' => '../songs']]) ?>
+<fieldset>
+    <?php
+        echo $this->Form->input('Search');
+    ?>
+</fieldset>
+<?= $this->Form->button(__('Submit')) ?>
+<?= $this->Form->end() ?>
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
         <li><?= $this->Html->link(__('Edit Song'), ['action' => 'edit', $song->id]) ?> </li>
