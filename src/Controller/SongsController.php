@@ -38,8 +38,18 @@ class SongsController extends AppController
         $song = $this->Songs->get($id, [
             'contain' => ['SongInstances', 'SongTags']
         ]);
-        $song['content'] = StaticFunctionController::convert_song_content_to_HTML($song['content']);
+        $key = null;
+        $capo = null;
+        if(array_key_exists('key', $_GET)) {
+        	$key = $_GET['key'];
+        }
+        if(array_key_exists('capo', $_GET)) {
+        	$capo = $_GET['capo'];
+        }
+        $song['content'] = StaticFunctionController::convert_song_content_to_HTML($song['content'], $song['base_key'], $key, $capo);
         $this->set('song', $song);
+        $this->set('current_key', $key);
+        $this->set('capo', $capo);
         $this->set('_serialize', ['song']);
     }
 

@@ -34,15 +34,8 @@
                     <label>key: </label>
                     <select class="data" onchange="this.form.submit()" name="key">
                         <option value=""></option>
-                        <?php
-                            if($this->request->query('page') !== '') {
-                                $current_key = $this->request->query('page');
-                            } else {
-                                 $current_key = h($song->base_key);
-                            }
-                            
-                            $keys = Array('Ab', 'A', 'A#', 'Bb', 'C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#');
-                            foreach ($keys as $key) {
+                        <?php 
+                            foreach (App\Controller\StaticFunctionController::$NOTE_VALUE_ARRAY as $key => $value) {
                                 echo '<option value="' . $key . '"';
                                 if ($key === $current_key){
                                     echo ' selected ';
@@ -55,15 +48,14 @@
                 <span class="capo">
                     <label>capo: </label>
                     <select class="data" onchange="this.form.submit()" name="capo">
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
+                    <?php for($capo_index = 0; $capo_index < 9; $capo_index = $capo_index + 1){
+                        echo '<option value="' . $capo_index . '"';
+                        if($capo_index == $capo) {
+                            echo ' selected';
+                        }
+                        echo '>' . $capo_index . '</option>';
+                    }
+                    ?>
                     </select>
                     </span>
             </form>

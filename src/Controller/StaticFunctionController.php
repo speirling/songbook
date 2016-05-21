@@ -10,7 +10,7 @@ use App\Controller\AppController;
  */
 class StaticFunctionController extends AppController
 {
-	private $NOTE_VALUE_ARRAY = Array(
+	public static $NOTE_VALUE_ARRAY = Array(
 			'C'  => 0,
 			'C#' => 1,
 			'Db' => 1,
@@ -34,7 +34,7 @@ class StaticFunctionController extends AppController
 			'Cb' => 11
 	);
 	
-	private $VALUE_NOTE_ARRAY_DEFAULT = Array(
+	public static $VALUE_NOTE_ARRAY_DEFAULT = Array(
 			0 => 'C',
 			1 => 'C#',
 			2 => 'D',
@@ -49,7 +49,7 @@ class StaticFunctionController extends AppController
 			11=> 'B'
 	);
 	
-	private $VALUE_NOTE_ARRAY_SHARP = Array(
+	public static $VALUE_NOTE_ARRAY_SHARP = Array(
 			0 => 'C',
 			1 => 'C#',
 			2 => 'D',
@@ -64,7 +64,7 @@ class StaticFunctionController extends AppController
 			11=> 'B'
 	);
 	
-	private $VALUE_NOTE_ARRAY_FLAT = Array(
+	public static $VALUE_NOTE_ARRAY_FLAT = Array(
 			0 => 'C',
 			1 => 'Db',
 			2 => 'D',
@@ -100,7 +100,7 @@ class StaticFunctionController extends AppController
 		return str_pad($hours, 2, '0', STR_PAD_LEFT).':'.str_pad($minutes, 2, '0', STR_PAD_LEFT);
 	}
 	
-	public static function chord_replace_callback($chord, $base_key = null, $target_key = null) {
+	public static function chord_replace_callback($chord) {
 		$replaced_chord = $chord[1];
 		$fullsize_class = '';
 		
@@ -111,7 +111,7 @@ class StaticFunctionController extends AppController
             $replaced_chord = str_replace('!', '', $replaced_chord);
         }
 		if(StaticFunctionController::$key_transpose_parameters['transpose']) {
-			$replaced_chord = StaticFunctionController::transpose_chord($replaced_chord, StaticFunctionController::$key_transpose_parameters['base_key'], StaticFunctionController::$key_transpose_parameters['target_key']);
+			$replaced_chord = StaticFunctionController::transpose_chord($replaced_chord, StaticFunctionController::$key_transpose_parameters['base_key'], StaticFunctionController::$key_transpose_parameters['display_key']);
 		}
 		return '</span><span class="chord' . $fullsize_class . '">'.$replaced_chord.'</span><span class="text">';
 	}
@@ -201,29 +201,27 @@ class StaticFunctionController extends AppController
 	}
 	
 	public static function shift_note($note, $adjustment, $use_sharps = null) {
-		global $NOTE_VALUE_ARRAY, $VALUE_NOTE_ARRAY_DEFAULT, $VALUE_NOTE_ARRAY_SHARP, $VALUE_NOTE_ARRAY_FLAT;
 	
 		$lowercase = false;
-		if(sbk_note_to_lower($note) === $note) {
+		if(StaticFunctionController::note_to_lower($note) === $note) {
 			$lowercase = true;
 		}
-		$new_note_number = sbk_find_note_number($NOTE_VALUE_ARRAY[sbk_note_to_upper($note)], $adjustment);
+		$new_note_number = StaticFunctionController::find_note_number(StaticFunctionController::$NOTE_VALUE_ARRAY[StaticFunctionController::note_to_upper($note)], $adjustment);
 		if(is_null($use_sharps)) {
-			$new_note = $VALUE_NOTE_ARRAY_DEFAULT[$new_note_number];
+			$new_note = StaticFunctionController::$VALUE_NOTE_ARRAY_DEFAULT[$new_note_number];
 		} elseif($use_sharps === true) {
-			$new_note = $VALUE_NOTE_ARRAY_SHARP[$new_note_number];
+			$new_note = StaticFunctionController::$VALUE_NOTE_ARRAY_SHARP[$new_note_number];
 		} else {
-			$new_note = $VALUE_NOTE_ARRAY_FLAT[$new_note_number];
+			$new_note = StaticFunctionController::$VALUE_NOTE_ARRAY_FLAT[$new_note_number];
 		}
 		if($lowercase) {
-			$new_note = sbk_note_to_lower($new_note);
+			$new_note = StaticFunctionController::note_to_lower($new_note);
 		}
 		return $new_note;
 	}
 	
 	public static function transpose_chord($chord, $base_key, $target_key, $capo = NULL) {
-		global $NOTE_VALUE_ARRAY, $VALUE_NOTE_ARRAY_DEFAULT, $VALUE_NOTE_ARRAY_SHARP, $VALUE_NOTE_ARRAY_FLAT;
-	debug($chord, $base_key, $target_key, $capo);
+		
 		$chord_note = substr($chord, 0, 1);
 		$second_char = substr($chord, 1, 1);
 		$modifier_start = 1;
@@ -232,16 +230,19 @@ class StaticFunctionController extends AppController
 			$modifier_start = 2;
 		}
 		$chord_modifier = substr($chord, $modifier_start);
-	
-		$key_conversion_value = $NOTE_VALUE_ARRAY[$target_key] - $NOTE_VALUE_ARRAY[$base_key];
-		$new_chord = sbk_shift_note($chord_note, $key_conversion_value);
-	
+
+		$key_conversion_value = StaticFunctionController::$NOTE_VALUE_ARRAY[$target_key] - StaticFunctionController::$NOTE_VALUE_ARRAY[$base_key];
+		if(StaticFunctionController::$key_transpose_parameters['capo']) {
+			$key_conversion_value = $key_conversion_value - StaticFunctionController::$key_transpose_parameters['capo'];
+		}
+		$new_chord = StaticFunctionController::shift_note($chord_note, $key_conversion_value);
+
 		$bass_key = '';
 		$slash_position = strpos($chord_modifier, '/');
 		if($slash_position !== false) {
 			$new_chord_modifier = substr($chord_modifier, 0, $slash_position);
 			$old_bass_key = substr($chord_modifier, $slash_position + 1);
-			$new_bass_key = sbk_shift_note($old_bass_key, $key_conversion_value);
+			$new_bass_key = StaticFunctionController::shift_note($old_bass_key, $key_conversion_value);
 			$bass_key = '/'.$new_bass_key;
 		} else {
 			$new_chord_modifier = $chord_modifier;
