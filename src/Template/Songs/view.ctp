@@ -19,7 +19,7 @@
         <li><?= $this->Html->link(__('New Song Tag'), ['controller' => 'SongTags', 'action' => 'add']) ?> </li>
     </ul>
 </nav>
-<div class="songs view large-10 medium-10 columns content">
+<div class="songs view large-10 medium-10 columns content lyrics-display">
     <h3><?= h($song->title) ?></h3>
     <table class="vertical-table">
         <tr class="title">

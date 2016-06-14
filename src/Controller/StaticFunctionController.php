@@ -202,6 +202,7 @@ class StaticFunctionController extends AppController
 	
 	public static function shift_note($note, $adjustment, $use_sharps = null) {
 	
+		if($note == '') { return ''; }
 		$lowercase = false;
 		if(StaticFunctionController::note_to_lower($note) === $note) {
 			$lowercase = true;
@@ -228,9 +229,11 @@ class StaticFunctionController extends AppController
 		if($second_char === '#' || $second_char == 'b') {
 			$chord_note = $chord_note.$second_char;
 			$modifier_start = 2;
+		} elseif ($chord_note === "/") {
+			$modifier_start = 0;
+			$chord_note = '';
 		}
 		$chord_modifier = substr($chord, $modifier_start);
-
 		$key_conversion_value = StaticFunctionController::$NOTE_VALUE_ARRAY[$target_key] - StaticFunctionController::$NOTE_VALUE_ARRAY[$base_key];
 		if(StaticFunctionController::$key_transpose_parameters['capo']) {
 			$key_conversion_value = $key_conversion_value - StaticFunctionController::$key_transpose_parameters['capo'];

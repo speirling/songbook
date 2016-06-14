@@ -14,7 +14,7 @@ div.song-page table {
 .song-page td.detail {
 	text-align: right;
 }
-div.song-page .multi-column .line,
+div.song-page .multi-.lyrics-panel .line,
 #playlist-book .lyrics-panel .line {
 	font-size: 0.8em;
 }
@@ -40,7 +40,7 @@ div.song-page .multi-column .line,
     padding: 0em;
 }
 .page-header,
-.lyrics-page {
+.lyrics-display {
     background-color: white;
 }
 .page-header {
@@ -202,8 +202,8 @@ div.song-page .multi-column .line,
 	    padding-left: 0.5em;     
 	    padding-right: 0.5em;
 	}
-	.lyrics-panel .lyrics-content {
-	         column-width: 20em;
+	.lyrics-panel .lyrics-panel {
+	         .lyrics-panel-width: 20em;
 	         -moz-column-width: 20em;
 	         -webkit-column-width: 20em;
 	          
@@ -234,9 +234,14 @@ div.song-page .multi-column .line,
     }*/
 /*}*/
 
-.lyrics-display {
-	height: 100%;
+#container .container,
+#container .container .lyrics-display,
+#container .container .row {
+    height: 95%;
+    margin-bottom: 0;
+    padding-bottom: 0;
 }
+
 .lyrics-display .lyrics-panel {
 	height: 80%;
          column-gap: 20px;
@@ -255,31 +260,30 @@ div.song-page .multi-column .line,
          -webkit-column-fill: auto;
 	
 }
-.lyrics-panel.zoom-1 .lyrics-content {
+.lyrics-display.zoom-1 .lyrics-panel {
     font-size: 0.75em;
 }
-.lyrics-panel.zoom-2 .lyrics-content {
+.lyrics-display.zoom-2 .lyrics-panel {
     font-size: 1em;
 }
-.lyrics-panel.zoom-3 .lyrics-content {
+.lyrics-display.zoom-3 .lyrics-panel {
     font-size: 1.3em;
 }
-.lyrics-panel.zoom-4 .lyrics-content {
+.lyrics-display.zoom-4 .lyrics-panel {
     font-size: 1.6em;
 }
-.lyrics-panel.zoom-5 .lyrics-content {
+.lyrics-display.zoom-5 .lyrics-panel {
     font-size: 2em;
 }
-.lyrics-panel.zoom-6 .lyrics-content {
+.lyrics-display.zoom-6 .lyrics-panel {
     font-size: 2.3em;
 }
-.lyrics-panel.zoom-7 .lyrics-content {
+.lyrics-display.zoom-7 .lyrics-panel {
     font-size: 2.6em;
-}
-.lyrics-panel.zoom-8 .lyrics-content {
+}.lyrics-display.zoom-8 .lyrics-panel {
     font-size: 2.9em;
 }
-.lyrics-panel .line .text {
+.lyrics-display .line .text {
     display: inline;
     vertical-align: bottom;
 }
@@ -312,7 +316,7 @@ div.song-page .multi-column .line,
         border: 0;
         border-collapse:separate;
     }
-    table.manual-column td {
+    table.manual-.lyrics-panel td {
         vertical-align: top;
         padding: 0;
     }
