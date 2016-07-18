@@ -7,23 +7,9 @@ SBK.SongLyricsEdit = SBK.Class.extend({
 		self.app = app;
 		self.pleasewait = new SBK.PleaseWait(self.container);
 		self.api = app.api;
-        self.chord_editor = new SBK.ChordEditor(self.container, function (chord_string, range) {
-            self.chord_editor_callback(chord_string, range)
-        });
+        self.chord_editor = new SBK.ChordEditor(self.container);
 		self.chord_editor.render();
 	},
-
-	chord_editor_callback: function (chord_string, range) {
-        if (chord_string !== '') {
-            chord_string = '[' + chord_string + ']';
-        }
-        if (typeof(range.container) === 'undefined') {
-            range.deleteContents();
-            range.insertNode(document.createTextNode(chord_string));
-        } else {
-            SBK.StaticFunctions.replace_textbox_selection(range, chord_string);  //for textarea
-        }
-    },
 
     render: function () {
         var self = this, all_playlists;

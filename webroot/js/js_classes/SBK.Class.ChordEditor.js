@@ -1,15 +1,26 @@
 SBK.ChordEditor = SBK.Class.extend({
-	init: function (lyrics_container, callback) {
+	init: function (lyrics_container) {
 		var self = this;
 
 		self.container = jQuery('<div class="chord-editor"></div>').prependTo(lyrics_container.parent()).hide();
-        self.callback = callback;
         self.chord_object = {};
         self.bass_note_requested = false;
         self.initial_value = '';
         self.display_mode = 'static';
         self.range = null;
 	},
+
+	chord_editor_callback: function (chord_string, range) {
+        if (chord_string !== '') {
+            chord_string = '[' + chord_string + ']';
+        }
+        if (typeof(range.container) === 'undefined') {
+            range.deleteContents();
+            range.insertNode(document.createTextNode(chord_string));
+        } else {
+            SBK.StaticFunctions.replace_textbox_selection(range, chord_string);  //for textarea
+        }
+    },
 	
 	key_buttons: function (modifier, container, classname, callback) {
         var self = this;
@@ -189,8 +200,8 @@ SBK.ChordEditor = SBK.Class.extend({
         var self = this, chord_string = '', count_backwards = 0, count_forwards = 0, rewind_index = 0;
 
         //if the chord editor is already active, set its previous range to its previous value.
-        if(self.range !== null) {
-            self.callback(self.get_value(), self.range);
+        if (self.range !== null) {
+            self.chord_editor_callback(self.get_value(), self.range);
         }
         if (typeof(selectionObject) === 'undefined') {
             chord_string = ''; 
@@ -349,7 +360,7 @@ SBK.ChordEditor = SBK.Class.extend({
            self.container.hide();
        }
        //if (self.get_value() !== self.initial_value) {
-           self.callback(self.get_value(), self.range);
+           self.chord_editor_callback(self.get_value(), self.range);
        //}
     },
 
@@ -373,7 +384,7 @@ SBK.ChordEditor = SBK.Class.extend({
         if (v === '') {
             v = '-';
         }
-        self.callback(v, self.range);
+        self.chord_editor_callback(v, self.range);
     },
 
     get_value: function () {
