@@ -1,4 +1,12 @@
 <nav class="large-2 medium-2 columns" id="actions-sidebar">
+<?= $this->Form->create('search', ['url' => ['action' => '../songs']]) ?>
+<fieldset>
+    <?php
+        echo $this->Form->input('Search');
+    ?>
+</fieldset>
+<?= $this->Form->button(__('Submit')) ?>
+<?= $this->Form->end() ?>
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
         <li><?= $this->Html->link(__('Edit Song'), ['action' => 'edit', $song->id]) ?> </li>
@@ -11,7 +19,7 @@
         <li><?= $this->Html->link(__('New Song Tag'), ['controller' => 'SongTags', 'action' => 'add']) ?> </li>
     </ul>
 </nav>
-<div class="songs view large-10 medium-10 columns content">
+<div class="songs view large-10 medium-10 columns content lyrics-display">
     <h3><?= h($song->title) ?></h3>
     <table class="vertical-table">
         <tr class="title">
@@ -28,7 +36,38 @@
         </tr>
         <tr class="base-key">
             <th><?= __('Base Key') ?></th>
-            <td><?= h($song->base_key) ?></td>
+            <td><?= h($song->base_key) ?>
+            <form class="key" action="" method="get">
+                <span class="target-key">
+                    <label>key: </label>
+                    <select class="data" onchange="this.form.submit()" name="key">
+                        <option value=""></option>
+                        <?php 
+                            foreach (App\Controller\StaticFunctionController::$NOTE_VALUE_ARRAY as $key => $value) {
+                                echo '<option value="' . $key . '"';
+                                if ($key === $current_key){
+                                    echo ' selected ';
+                                }
+                                echo '>' . $key . '</option>';
+                            }
+                        ?>
+                    </select>
+                </span>
+                <span class="capo">
+                    <label>capo: </label>
+                    <select class="data" onchange="this.form.submit()" name="capo">
+                    <?php for($capo_index = 0; $capo_index < 9; $capo_index = $capo_index + 1){
+                        echo '<option value="' . $capo_index . '"';
+                        if($capo_index == $capo) {
+                            echo ' selected';
+                        }
+                        echo '>' . $capo_index . '</option>';
+                    }
+                    ?>
+                    </select>
+                    </span>
+            </form>
+            </td>
         </tr>
         <tr class="original-filename">
             <th><?= __('Original Filename') ?></th>
@@ -38,14 +77,14 @@
             <th><?= __('Id') ?></th>
             <td><?= $this->Number->format($song->id) ?></td>
         </tr>
+        <tr class="meta-tags">
+            <th><?= __('Meta Tags') ?></th>
+            <td><?= h($song->meta_tags) ?></td>
+        </tr>
     </table>
     <div class="row">
         <h4><?= __('Content') ?></h4>
-        <?= $this->Text->autoParagraph(h($song->content)); ?>
-    </div>
-    <div class="row">
-        <h4><?= __('Meta Tags') ?></h4>
-        <?= $this->Text->autoParagraph(h($song->meta_tags)); ?>
+        <?= $song->content; ?>
     </div>
     <div class="related">
         <h4><?= __('Related Song Instances') ?></h4>

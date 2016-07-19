@@ -40,13 +40,7 @@ SBK.SongFilterList = SBK.SongList.extend({
 		button_bar = jQuery('<span class="button-bar"></span>').appendTo(self.container);
         self.buttons = {
                 all_playlists: new SBK.Button(button_bar, 'all-songs', 'List all Playlists', function () {self.app.display_playlist_list();}),
-                add_new_song: new SBK.Button(button_bar, 'add-new-song', 'Add a new Song', function () {self.app.application_state.set({
-                    tab: 'add_new_song',
-                    playlist_filename: null,
-                    id: null,
-                    key: null,
-                    capo: null
-                }, false);}),
+                add_new_song: new SBK.Button(button_bar, 'add-new-song', 'Add a new Song', function () {window.open('/songbook/songs/add/','_blank');}),
                 full_text_search: new SBK.Button(button_bar, 'full-text-search', 'Full-text search', function () {self.search_form.toggle();})
             };
 		self.search_form = jQuery('<form id="allsongsearch"></form>').appendTo(self.container);

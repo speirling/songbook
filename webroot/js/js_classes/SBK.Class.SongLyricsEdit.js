@@ -7,23 +7,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
 		self.app = app;
 		self.pleasewait = new SBK.PleaseWait(self.container);
 		self.api = app.api;
-        self.chord_editor = new SBK.ChordEditor(self.container, function (chord_string, range) {
-            self.chord_editor_callback(chord_string, range)
-        });
-		self.chord_editor.render();
 	},
-
-	chord_editor_callback: function (chord_string, range) {
-        if (chord_string !== '') {
-            chord_string = '[' + chord_string + ']';
-        }
-        if (typeof(range.container) === 'undefined') {
-            range.deleteContents();
-            range.insertNode(document.createTextNode(chord_string));
-        } else {
-            SBK.StaticFunctions.replace_textbox_selection(range, chord_string);  //for textarea
-        }
-    },
 
     render: function () {
         var self = this, all_playlists;
@@ -63,8 +47,7 @@ SBK.SongLyricsEdit = SBK.Class.extend({
 
         self.buttons = {
             save: new SBK.Button(self.container, 'save', 'Save', function () {self.save_song();}),
-            cancel: new SBK.Button(self.container, 'cancel', 'Cancel', function () {self.app.back();}),
-            chord_mode: new SBK.Button(self.container, 'chord-mode', 'Chord mode', function () {self.enter_add_chords_mode();})
+            cancel: new SBK.Button(self.container, 'cancel', 'Cancel', function () {self.app.back();})
         };
         self.header_container = jQuery('<div class="song-headings"></div>').appendTo(self.container);
         self.inputs = {
@@ -76,6 +59,8 @@ SBK.SongLyricsEdit = SBK.Class.extend({
         };
         self.song_content_container = jQuery('<div class="song-content"></div>').appendTo(self.container);
         self.inputs.content = self.make_textarea(self.song_content_container, 'content', song_data.content, 'Content');
+        self.chord_editor = new SBK.ChordEditor(self.inputs.content);
+        self.chord_editor.render();
     },
     
     make_input: function (parent_container, id, value, label_text) {

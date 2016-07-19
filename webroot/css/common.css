@@ -93,7 +93,7 @@ input:-moz-placeholder {
 }
 
 .button-bar {
-	display: inline;
+	display: inline-block;
     line-height: 2em;
     white-space: nowrap;
     vertical-align: middle;
