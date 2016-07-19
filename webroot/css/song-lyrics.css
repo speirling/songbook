@@ -234,10 +234,10 @@ div.song-page .multi-.lyrics-panel .line,
     }*/
 /*}*/
 
-#container .container,
+/*#container .container,*/
 #container .container .lyrics-display,
 #container .container .row {
-    height: 95%;
+    height: 95%; /* This line breaks the CakePHP3 form. Because of class .container inside id container*/
     margin-bottom: 0;
     padding-bottom: 0;
 }
