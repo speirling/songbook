@@ -2,7 +2,10 @@ SBK.ChordEditor = SBK.Class.extend({
 	init: function (lyrics_container) {
 		var self = this;
 
-		self.container = jQuery('<div class="chord-editor"></div>').prependTo(lyrics_container.parent()).hide();
+        self.target = lyrics_container;
+        self.container = jQuery('<div class="chord-editor"></div>').prependTo(self.target.parent()).hide();
+        self.on_off_switch = new SBK.Button(self.target.parent(), 'chord-mode', 'Chord mode', function () {self.enter_add_chords_mode();});
+        self.on_off_switch.position({my: "right top", at: "right top", of: self.target});
         self.chord_object = {};
         self.bass_note_requested = false;
         self.initial_value = '';
@@ -20,6 +23,34 @@ SBK.ChordEditor = SBK.Class.extend({
         } else {
             SBK.StaticFunctions.replace_textbox_selection(range, chord_string);  //for textarea
         }
+    },
+
+    enter_add_chords_mode: function () {
+        var self = this, caret_position, chord_text = '', key = false, selectionObject, current_value;
+
+        if (self.display_mode === 'static') {
+            self.container.show();
+        }
+        self.target.bind('click', function (event) {
+            self.open(self.target, event.pageX, event.pageY);
+        });
+        self.on_off_switch.set_text('exit chord mode');
+        self.on_off_switch.position({my: "right top", at: "right top", of: self.target});
+        self.on_off_switch.click(function () {self.exit_add_chords_mode();});
+        self.on_off_switch.addClass('chord-mode-active');
+    },
+
+    exit_add_chords_mode: function () {
+        var self = this;
+
+        if(self.display_mode === 'static') {
+            self.container.hide();
+        }
+        self.target.unbind('keypress').unbind('click');
+        self.on_off_switch.set_text('Chord mode');
+        self.on_off_switch.position({my: "right top", at: "right top", of: self.target});
+        self.on_off_switch.click(function () {self.enter_add_chords_mode();});
+        self.on_off_switch.removeClass('chord-mode-active');
     },
 	
 	key_buttons: function (modifier, container, classname, callback) {

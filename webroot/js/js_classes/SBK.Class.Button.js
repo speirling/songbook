@@ -8,6 +8,12 @@ SBK.Button = SBK.Class.extend({
         self.addClass(classname);
 	},
     
+    position: function (params) {
+        var self = this;
+        
+        self.container.position(params);
+    },
+    
     set_text: function (text) {
         var self = this;
         
