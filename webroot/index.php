@@ -79,7 +79,8 @@ Cake\Core\Configure::write(
             'js_classes/SBK.Class.SongListItemSong.Book.js',
             'js_classes/SBK.Class.SongLyricsDisplay.js',
             'js_classes/SBK.Class.SongLyricsDisplay.Book.js',
-            'js_classes/SBK.Class.SongLyricsEdit.js'
+            'js_classes/SBK.Class.SongLyricsEdit.js',
+            'index.js'
         ),
         'css_library' => array(
             'common.css',

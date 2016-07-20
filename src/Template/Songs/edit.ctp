@@ -23,7 +23,7 @@
             echo $this->Form->input('written_by');
             echo $this->Form->input('performed_by');
             echo $this->Form->input('base_key');
-            echo $this->Form->input('content');
+            echo $this->Form->input('content', ['class' => 'sbk-lyrics-panel']);
             echo $this->Form->input('original_filename');
             echo $this->Form->input('meta_tags');
         ?>
