@@ -35,9 +35,7 @@ class SongsController extends AppController
      */
     public function view($id = null)
     {
-        $song = $this->Songs->get($id, [
-            'contain' => ['SongInstances', 'SongTags']
-        ]);
+        $song = $this->Songs->get($id);
         $key = null;
         $capo = null;
         if(array_key_exists('key', $_GET)) {
