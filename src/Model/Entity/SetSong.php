@@ -4,14 +4,20 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * Playlist Entity.
+ * SetSong Entity.
  *
  * @property int $id
- * @property string $title
- * @property int $act_id
- * @property \App\Model\Entity\PlaylistSet[] $playlist_sets
+ * @property int $set_id
+ * @property \App\Model\Entity\Set $set
+ * @property int $song_id
+ * @property \App\Model\Entity\Song $song
+ * @property int $order
+ * @property int $performer_id
+ * @property \App\Model\Entity\Performer $performer
+ * @property string $key
+ * @property int $capo
  */
-class Playlist extends Entity
+class SetSong extends Entity
 {
 
     /**

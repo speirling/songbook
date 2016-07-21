@@ -17,6 +17,7 @@ class SetsControllerTest extends IntegrationTestCase
      */
     public $fixtures = [
         'app.sets',
+        'app.performers',
         'app.set_songs'
     ];
 

@@ -20,6 +20,10 @@
             <th><?= __('Id') ?></th>
             <td><?= $this->Number->format($playlist->id) ?></td>
         </tr>
+        <tr>
+            <th><?= __('Act Id') ?></th>
+            <td><?= $this->Number->format($playlist->act_id) ?></td>
+        </tr>
     </table>
     <div class="related">
         <h4><?= __('Related Playlist Sets') ?></h4>

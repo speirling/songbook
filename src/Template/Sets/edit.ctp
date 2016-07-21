@@ -8,6 +8,8 @@
             )
         ?></li>
         <li><?= $this->Html->link(__('List Sets'), ['action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('List Performers'), ['controller' => 'Performers', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('New Performer'), ['controller' => 'Performers', 'action' => 'add']) ?></li>
         <li><?= $this->Html->link(__('List Set Songs'), ['controller' => 'SetSongs', 'action' => 'index']) ?></li>
         <li><?= $this->Html->link(__('New Set Song'), ['controller' => 'SetSongs', 'action' => 'add']) ?></li>
     </ul>
@@ -18,6 +20,8 @@
         <legend><?= __('Edit Set') ?></legend>
         <?php
             echo $this->Form->input('title');
+            echo $this->Form->input('performer_id', ['options' => $performers]);
+            echo $this->Form->input('Comment');
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>

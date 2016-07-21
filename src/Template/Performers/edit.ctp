@@ -8,8 +8,6 @@
             )
         ?></li>
         <li><?= $this->Html->link(__('List Performers'), ['action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('List Song Instances'), ['controller' => 'SongInstances', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Song Instance'), ['controller' => 'SongInstances', 'action' => 'add']) ?></li>
     </ul>
 </nav>
 <div class="performers form large-9 medium-8 columns content">

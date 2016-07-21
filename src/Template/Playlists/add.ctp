@@ -12,6 +12,7 @@
         <legend><?= __('Add Playlist') ?></legend>
         <?php
             echo $this->Form->input('title');
+            echo $this->Form->input('act_id');
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>

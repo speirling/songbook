@@ -1,19 +1,19 @@
 <?php
 namespace App\Model\Table;
 
-use App\Model\Entity\Playlist;
+use App\Model\Entity\Set;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Playlists Model
+ * Sets Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Acts
- * @property \Cake\ORM\Association\HasMany $PlaylistSets
+ * @property \Cake\ORM\Association\BelongsTo $Performers
+ * @property \Cake\ORM\Association\HasMany $SetSongs
  */
-class PlaylistsTable extends Table
+class SetsTable extends Table
 {
 
     /**
@@ -26,16 +26,16 @@ class PlaylistsTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('playlists');
+        $this->table('sets');
         $this->displayField('title');
         $this->primaryKey('id');
 
-        $this->belongsTo('Acts', [
-            'foreignKey' => 'act_id',
+        $this->belongsTo('Performers', [
+            'foreignKey' => 'performer_id',
             'joinType' => 'INNER'
         ]);
-        $this->hasMany('PlaylistSets', [
-            'foreignKey' => 'playlist_id'
+        $this->hasMany('SetSongs', [
+            'foreignKey' => 'set_id'
         ]);
     }
 
@@ -55,6 +55,10 @@ class PlaylistsTable extends Table
             ->requirePresence('title', 'create')
             ->notEmpty('title');
 
+        $validator
+            ->requirePresence('Comment', 'create')
+            ->allowEmpty('Comment');
+
         return $validator;
     }
 
@@ -67,7 +71,7 @@ class PlaylistsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['act_id'], 'Acts'));
+        $rules->add($rules->existsIn(['performer_id'], 'Performers'));
         return $rules;
     }
 }
