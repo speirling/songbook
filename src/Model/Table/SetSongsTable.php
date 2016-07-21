@@ -60,16 +60,16 @@ class SetSongsTable extends Table
         $validator
             ->add('order', 'valid', ['rule' => 'numeric'])
             ->requirePresence('order', 'create')
-            ->notEmpty('order');
+            ->allowEmpty('order');
 
         $validator
             ->requirePresence('key', 'create')
-            ->notEmpty('key');
+            ->allowEmpty('key');
 
         $validator
             ->add('capo', 'valid', ['rule' => 'numeric'])
             ->requirePresence('capo', 'create')
-            ->notEmpty('capo');
+            ->allowEmpty('capo');
 
         return $validator;
     }

@@ -58,9 +58,9 @@ class SetSongsController extends AppController
                 $this->Flash->error(__('The set song could not be saved. Please, try again.'));
             }
         }
-        $sets = $this->SetSongs->Sets->find('list', ['limit' => 200]);
-        $songs = $this->SetSongs->Songs->find('list', ['limit' => 200]);
-        $performers = $this->SetSongs->Performers->find('list', ['limit' => 200]);
+        $sets = $this->SetSongs->Sets->find('list');
+        $songs = $this->SetSongs->Songs->find('list');
+        $performers = $this->SetSongs->Performers->find('list');
         $this->set(compact('setSong', 'sets', 'songs', 'performers'));
         $this->set('_serialize', ['setSong']);
     }
@@ -86,9 +86,9 @@ class SetSongsController extends AppController
                 $this->Flash->error(__('The set song could not be saved. Please, try again.'));
             }
         }
-        $sets = $this->SetSongs->Sets->find('list', ['limit' => 200]);
-        $songs = $this->SetSongs->Songs->find('list', ['limit' => 200]);
-        $performers = $this->SetSongs->Performers->find('list', ['limit' => 200]);
+        $sets = $this->SetSongs->Sets->find('list');
+        $songs = $this->SetSongs->Songs->find('list');
+        $performers = $this->SetSongs->Performers->find('list');
         $this->set(compact('setSong', 'sets', 'songs', 'performers'));
         $this->set('_serialize', ['setSong']);
     }
