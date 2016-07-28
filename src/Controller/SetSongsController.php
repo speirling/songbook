@@ -59,7 +59,12 @@ class SetSongsController extends AppController
             }
         }
         $sets = $this->SetSongs->Sets->find('list');
-        $songs = $this->SetSongs->Songs->find('list');
+        $songs = $this->SetSongs->Songs->find('list', [
+		    'keyField' => 'id',
+		    'valueField' => function ($e) {
+                return $e['title']."  (".$e['performed_by'].")";
+		    }
+		]);
         $performers = $this->SetSongs->Performers->find('list');
         $this->set(compact('setSong', 'sets', 'songs', 'performers'));
         $this->set('_serialize', ['setSong']);
@@ -87,7 +92,12 @@ class SetSongsController extends AppController
             }
         }
         $sets = $this->SetSongs->Sets->find('list');
-        $songs = $this->SetSongs->Songs->find('list');
+        $songs = $this->SetSongs->Songs->find('list', [
+		    'keyField' => 'id',
+		    'valueField' => function ($e) {
+                return $e['title']."  (".$e['performed_by'].")";
+		    }
+		]);
         $performers = $this->SetSongs->Performers->find('list');
         $this->set(compact('setSong', 'sets', 'songs', 'performers'));
         $this->set('_serialize', ['setSong']);

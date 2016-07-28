@@ -58,8 +58,14 @@ class PlaylistSetsController extends AppController
                 $this->Flash->error(__('The playlist set could not be saved. Please, try again.'));
             }
         }
-        $sets = $this->PlaylistSets->Sets->find('list', ['limit' => 200]);
-        $playlists = $this->PlaylistSets->Playlists->find('list', ['limit' => 200]);
+        $sets = $this->PlaylistSets->Sets->find('list');
+        $playlists = $this->PlaylistSets->Playlists->find('list', [
+		    'keyField' => 'id',
+		    'valueField' => function ($e) {
+                return $e['title']."  (".$e['performer_id'].")";
+		    }
+		])->contain(['Performers']);
+        debug($playlists);die();
         $this->set(compact('playlistSet', 'sets', 'playlists'));
         $this->set('_serialize', ['playlistSet']);
     }
@@ -85,8 +91,13 @@ class PlaylistSetsController extends AppController
                 $this->Flash->error(__('The playlist set could not be saved. Please, try again.'));
             }
         }
-        $sets = $this->PlaylistSets->Sets->find('list', ['limit' => 200]);
-        $playlists = $this->PlaylistSets->Playlists->find('list', ['limit' => 200]);
+        $sets = $this->PlaylistSets->Sets->find('list');
+        $playlists = $this->PlaylistSets->Playlists->find('list', [
+		    'keyField' => 'id',
+		    'valueField' => function ($e) {
+                return $e['title']."  (".$e['performer_id'].")";
+		    }
+		]);
         $this->set(compact('playlistSet', 'sets', 'playlists'));
         $this->set('_serialize', ['playlistSet']);
     }

@@ -36,6 +36,9 @@ class PerformersTable extends Table
         $this->hasMany('Sets', [
             'foreignKey' => 'performer_id'
         ]);
+        $this->hasMany('Playlists', [
+            'foreignKey' => 'performer_id'
+        ]);
     }
 
     /**
