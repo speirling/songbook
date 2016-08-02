@@ -33,9 +33,9 @@
                 <td><?= h($playlist->title) ?></td>
                 <td><?php
                 if ($playlist->performer['nickname'] !== '') {
-                    echo h($playlist->performer['nickname']);
+                    echo $this->Html->link($playlist->performer->nickname, ['controller' => 'Performers', 'action' => 'view', $playlist->performer->id]);
                  } else {
-                    echo h($playlist->performer['name']);
+                    echo $this->Html->link($playlist->performer->name, ['controller' => 'Performers', 'action' => 'view', $playlist->performer->id]);
                  }
                  ?></td>
                 <td class="actions">

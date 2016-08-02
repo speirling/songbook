@@ -95,13 +95,18 @@ class PlaylistSetsController extends AppController
                 $this->Flash->error(__('The playlist set could not be saved. Please, try again.'));
             }
         }
-        $sets = $this->PlaylistSets->Sets->find('list');
+        $sets = $this->PlaylistSets->Sets->find('list', [
+		    'keyField' => 'id',
+		    'valueField' => function ($e) {
+                return $e['title']."  (".$e['performer']['name'].")";
+		    }
+		])->contain(['Performers']);
         $playlists = $this->PlaylistSets->Playlists->find('list', [
 		    'keyField' => 'id',
 		    'valueField' => function ($e) {
-                return $e['title']."  (".$e['performer_id'].")";
+                return $e['title']."  (".$e['performer']['name'].")";
 		    }
-		]);
+		])->contain(['Performers']);
         $this->set(compact('playlistSet', 'sets', 'playlists'));
         $this->set('_serialize', ['playlistSet']);
     }

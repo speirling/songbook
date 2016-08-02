@@ -18,8 +18,8 @@
     <fieldset>
         <legend><?= __('Add Playlist Set') ?></legend>
         <?php
-            echo $this->Form->input('set_id', ['options' => $sets]);
-            echo $this->Form->input('playlist_id', ['options' => $playlists]);
+            echo $this->Form->input('set_id', ['empty' => 'Please select ...', 'options' => $sets]);
+            echo $this->Form->input('playlist_id', ['empty' => 'Please select ...', 'options' => $playlists]);
             echo $this->Form->input('order');
         ?>
     </fieldset>
