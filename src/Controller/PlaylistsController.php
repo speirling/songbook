@@ -17,8 +17,9 @@ class PlaylistsController extends AppController
      * @return void
      */
     public function index()
-    {
-        $this->set('playlists', $this->paginate($this->Playlists));
+    {   
+        $playlists = $this->Playlists->find()->contain('Performers');
+        $this->set('playlists', $this->paginate($playlists));
         $this->set('_serialize', ['playlists']);
     }
 
@@ -57,6 +58,7 @@ class PlaylistsController extends AppController
         }
         $this->set(compact('playlist'));
         $this->set('_serialize', ['playlist']);
+        $this->set('performers', $this->Playlists->Performers->find('list'));
     }
 
     /**
@@ -82,6 +84,7 @@ class PlaylistsController extends AppController
         }
         $this->set(compact('playlist'));
         $this->set('_serialize', ['playlist']);
+        $this->set('performers', $this->Playlists->Performers->find('list'));
     }
 
     /**

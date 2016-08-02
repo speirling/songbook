@@ -31,7 +31,13 @@
             <tr>
                 <td><?= $this->Number->format($playlist->id) ?></td>
                 <td><?= h($playlist->title) ?></td>
-                <td><?= $this->Number->format($playlist->performer_id) ?></td>
+                <td><?php
+                if ($playlist->performer['nickname'] !== '') {
+                    echo h($playlist->performer['nickname']);
+                 } else {
+                    echo h($playlist->performer['name']);
+                 }
+                 ?></td>
                 <td class="actions">
                     <?= $this->Html->link(__('View'), ['action' => 'view', $playlist->id]) ?>
                     <?= $this->Html->link(__('Edit'), ['action' => 'edit', $playlist->id]) ?>
