@@ -17,10 +17,10 @@
     <fieldset>
         <legend><?= __('Add Set Song') ?></legend>
         <?php
-            echo $this->Form->input('set_id', ['options' => $sets]);
-            echo $this->Form->input('song_id', ['options' => $songs]);
+            echo $this->Form->input('set_id', ['empty' => 'Please select ...', 'options' => $sets]);
+            echo $this->Form->input('song_id', ['empty' => 'Please select ...', 'options' => $songs]);
             echo $this->Form->input('order');
-            echo $this->Form->input('performer_id', ['options' => $performers]);
+            echo $this->Form->input('performer_id', ['empty' => 'Please select ...', 'options' => $performers]);
             echo $this->Form->input('key');
             echo $this->Form->input('capo');
         ?>
