@@ -31,4 +31,18 @@
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>
     <?= $this->Form->end() ?>
+    <table cellpadding="0" cellspacing="0" class="set-songs">
+        <?php foreach ($set->set_songs as $setSongs): ?>
+        <tr>
+            <td class="set-song-id"><?= h($setSongs->id) ?></td>
+            <td class="song-id"><?= h($setSongs->song->id) ?></td>
+            <td class="set-song-title"><?= h($setSongs->song->title) . ' <span class="performed-by">(' .  $setSongs->song->performed_by . ')</span>'; ?></td>
+            <td class="actions">
+                <?= $this->Form->postLink(__('remove from set'), ['controller' => 'SetSongs', 'action' => 'delete', $setSongs->id], ['confirm' => __('Are you sure you want to remove Set-Song relationship # {0}?', $setSongs->id)]) ?>
+
+            </td>
+        </tr>
+        <?php endforeach; ?>
+    </table>
+</div>
 </div>

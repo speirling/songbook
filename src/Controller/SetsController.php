@@ -73,7 +73,7 @@ class SetsController extends AppController
     public function edit($id = null)
     {
         $set = $this->Sets->get($id, [
-            'contain' => []
+            'contain' => ['SetSongs' => ['Songs']]
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $set = $this->Sets->patchEntity($set, $this->request->data);
