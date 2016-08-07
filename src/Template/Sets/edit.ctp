@@ -45,4 +45,22 @@
         <?php endforeach; ?>
     </table>
 </div>
+<div class="setSongs form large-9 medium-8 columns content">
+<?php debug($setSong); ?>
+<?php debug($this->Form->create($setSong)); ?>
+    <?= $this->Form->create($setSong) ?>
+    <fieldset>
+        <legend><?= __('Add Set Song') ?></legend>
+        <?php
+            echo $this->Form->hidden('set_id', ['value' => $set->id]);
+            echo $this->Form->input('song_id', ['empty' => 'Please select ...', 'options' => $songs]);
+            echo $this->Form->hidden('order', ['value' => sizeof($set->set_songs)]);
+            echo $this->Form->input('performer_id', ['empty' => 'Please select ...', 'options' => $performers]);
+            echo $this->Form->input('key');
+            echo $this->Form->input('capo');
+        ?>
+    </fieldset>
+    <?= $this->Form->button(__('Submit')) ?>
+    <?= $this->Form->end() ?>
+</div>
 </div>

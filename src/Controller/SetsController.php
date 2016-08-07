@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use App\Model\Entity\SetSong; //for the Set edit view
 
 /**
  * Sets Controller
@@ -85,8 +86,22 @@ class SetsController extends AppController
             }
         }
         $performers = $this->Sets->Performers->find('list', ['limit' => 200]);
-        $this->set(compact('set', 'performers'));
+
+        
+        
+        $setSong = new SetSong();
+        $songs = $this->Sets->SetSongs->Songs->find('list', [
+        		'keyField' => 'id',
+        		'valueField' => function ($e) {
+        		return $e['title']."  (".$e['performed_by'].")";
+        		}
+        	]
+        );
+        
+        $this->set(compact('set', 'performers', 'setSong', 'songs'));
         $this->set('_serialize', ['set']);
+        
+        
     }
 
     /**
