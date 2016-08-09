@@ -32,13 +32,13 @@
         </tr>
     </table>
     <div class="related">
-        <h4><?= __('Related Playlist Sets') ?></h4>
+        <h4><?= __('Sets') ?></h4>
         <?php if (!empty($playlist->playlist_sets)): ?>
         <table cellpadding="0" cellspacing="0">
             <tr>
                 <th><?= __('Id') ?></th>
-                <th><?= __('Set Id') ?></th>
-                <th><?= __('Playlist Id') ?></th>
+                <th><?= __('Set Title (Act)') ?></th>
+                <?php /*<th><?= __('Playlist Id') ?></th> */ ?>
                 <th><?= __('Order') ?></th>
                 <th class="actions"><?= __('Actions') ?></th>
             </tr>
@@ -47,19 +47,38 @@
                 <td><?= h($playlistSets->id) ?></td>
                 <td><?= h($playlistSets->set->title)?><?php 
                     if($playlistSets->set->performer->nickname !== '') {
-                        echo '('.h($playlistSets->set->performer->nickname).')';
+                        echo ' ('.h($playlistSets->set->performer->nickname).')';
                     } else {
-                        echo '('.h($playlistSets->set->performer->name).')';
+                        echo ' ('.h($playlistSets->set->performer->name).')';
                     } ?></td>
                 <?php /*<td><?= h($playlistSets->playlist_id) ?></td> */ ?>
                 <td><?= h($playlistSets->order) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link(__('View'), ['controller' => 'PlaylistSets', 'action' => 'view', $playlistSets->id]) ?>
+                    [<?= $this->Html->link(__('Edit'), ['controller' => 'PlaylistSets', 'action' => 'edit', $playlistSets->id]) ?>]
 
-                    <?= $this->Html->link(__('Edit'), ['controller' => 'PlaylistSets', 'action' => 'edit', $playlistSets->id]) ?>
+                    [<?= $this->Form->postLink(__('Remove this set from the Playlist'), ['controller' => 'PlaylistSets', 'action' => 'delete', $playlistSets->id], ['confirm' => __('Are you sure you want to delete # {0}?', $playlistSets->id)]) ?>]
 
-                    <?= $this->Form->postLink(__('Delete'), ['controller' => 'PlaylistSets', 'action' => 'delete', $playlistSets->id], ['confirm' => __('Are you sure you want to delete # {0}?', $playlistSets->id)]) ?>
-
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <table cellpadding="0" cellspacing="0" class="set-songs">
+                        <tr>
+                            <th><?= __('Order') ?></th>
+                            <th><?= __('title') ?></th>
+                            <th class="actions"><?= __('Actions') ?></th>
+                        </tr>
+                        <?php foreach ($playlistSets->set->set_songs as $setSongs): ?>
+                        <tr>
+                            <td class="set-song-sort-order"><?= h($setSongs->order) ?></td>
+                            <td class="set-song-title"><?= h($setSongs->song->title) . ' <span class="performed-by">(' .  $setSongs->song->performed_by . ')</span>'; ?></td>
+                            <td class="actions">
+                                [<?= $this->Form->postLink(__('remove from set'), ['controller' => 'SetSongs', 'action' => 'delete', $setSongs->id], ['confirm' => __('Are you sure you want to remove Set-Song relationship # {0}?', $setSongs->id)]) ?>]
+                
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </table>
                 </td>
             </tr>
             <?php endforeach; ?>

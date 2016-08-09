@@ -25,74 +25,17 @@
     width:  4em;
 }
 
-/*
-.songs.index table {
-	width: 80em;
+.playlists .set-songs {
+    margin-left: 5%;
+    width:90%;
+    background-color: #f9f9e0;
 }
-.songs.index td {
-	vertical-align: top;
-	font-size: 0.8em;
-	border-bottom: 1px silver solid;
-}
-.songs.index td.content {
-	display: block;
-	max-width: 30em;
-	height: 3em;
-	text-overflow: ellipsis;
-	overflow: hidden;
-}
-.songs.index .id {
-	width: 1em;
-}
-.songs.index .title {
-	width: 10em;
-}
-.songs.index .performed_by {
-    width: 10em;
-}
-.songs.index .written_by {
-    width: 10em;
-}
-.songs.index .base_key {
-    width: 10em;
-}
-.songs.index .original_filename {
-	display: none;
-}
-.songs.index .meta_tags {
-    width: 10em;
-}
-.songs.index .actions {
-    width: 6em;
-}
-
-.paging {
-	font-size: 0.8em;
-	border-top: 1px solid silver;
-}
-.paging span {
-	display: inline-block;
-	width: 1em;
-	text-align: center;
-}
-.paging span.prev {
-	width: 5em;
-}
-.paging span.next {
-    width: 5em;
-}
-p {
-	font-size: 0.7em;
+.playlists .set-songs th {
 	color: gray;
+	border-bottom: 2px solid gray;
 }
-.actions {
-	border: 1px solid gray;
-	font-size: 0.8em;
-	padding: 1em;
+.playlists .set-song-sort-order {
+	width: 3em;
 }
-th.actions,
-td.actions {
-	border: 0;
-	padding: 0;	
+.playlists .set-song-title {
 }
-*/

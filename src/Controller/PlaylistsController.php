@@ -33,7 +33,7 @@ class PlaylistsController extends AppController
     public function view($id = null)
     {
         $playlist = $this->Playlists->get($id, [
-            'contain' => ['PlaylistSets' => ['Sets'=> ['Performers']]]
+            'contain' => ['PlaylistSets' => ['Sets'=> ['Performers', 'SetSongs'=>['Songs']]]]
         ]);
         $this->set('playlist', $playlist); 
         $this->set('_serialize', ['playlist']);

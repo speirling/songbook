@@ -30,16 +30,15 @@
             <?php foreach ($playlists as $playlist): ?>
             <tr>
                 <td><?= $this->Number->format($playlist->id) ?></td>
-                <td><?= h($playlist->title) ?></td>
+                <td><?= $this->Html->link(__($playlist->title), ['action' => 'view', $playlist->id]) ?></td>
                 <td><?php
                 if ($playlist->performer['nickname'] !== '') {
-                    echo $this->Html->link($playlist->performer->nickname, ['controller' => 'Performers', 'action' => 'view', $playlist->performer->id]);
+                    echo h($playlist->performer->nickname);
                  } else {
-                    echo $this->Html->link($playlist->performer->name, ['controller' => 'Performers', 'action' => 'view', $playlist->performer->id]);
+                    echo h($playlist->performer->name);
                  }
                  ?></td>
                 <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $playlist->id]) ?>
                     <?= $this->Html->link(__('Edit'), ['action' => 'edit', $playlist->id]) ?>
                     <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $playlist->id], ['confirm' => __('Are you sure you want to delete # {0}?', $playlist->id)]) ?>
                 </td>
