@@ -45,8 +45,13 @@
             <?php foreach ($playlist->playlist_sets as $playlistSets): ?>
             <tr>
                 <td><?= h($playlistSets->id) ?></td>
-                <td><?= h($playlistSets->set_id) ?></td>
-                <td><?= h($playlistSets->playlist_id) ?></td>
+                <td><?= h($playlistSets->set->title)?><?php 
+                    if($playlistSets->set->performer->nickname !== '') {
+                        echo '('.h($playlistSets->set->performer->nickname).')';
+                    } else {
+                        echo '('.h($playlistSets->set->performer->name).')';
+                    } ?></td>
+                <?php /*<td><?= h($playlistSets->playlist_id) ?></td> */ ?>
                 <td><?= h($playlistSets->order) ?></td>
                 <td class="actions">
                     <?= $this->Html->link(__('View'), ['controller' => 'PlaylistSets', 'action' => 'view', $playlistSets->id]) ?>

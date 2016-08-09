@@ -46,9 +46,7 @@
     </table>
 </div>
 <div class="setSongs form large-9 medium-8 columns content">
-<?php debug($setSong); ?>
-<?php debug($this->Form->create($setSong)); ?>
-    <?= $this->Form->create($setSong) ?>
+    <?= $this->Form->create($setSong, ['url' => ['controller' => 'SetSongs', 'action' => 'add']]) ?>
     <fieldset>
         <legend><?= __('Add Set Song') ?></legend>
         <?php
