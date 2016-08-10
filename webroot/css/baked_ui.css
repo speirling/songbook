@@ -1,3 +1,6 @@
+.float-right {
+	float: right;
+}
 .songs.index table tr td {
     font-size: 0.8em;
     overflow: hidden;
@@ -25,9 +28,13 @@
     width:  4em;
 }
 
-.playlists .set-songs {
+.playlists .sets,
+.playlists .sets .set-songs {
     margin-left: 5%;
     width:90%;
+    table-layout: auto;
+}
+.playlists .sets .set-songs {
     background-color: #f9f9e0;
 }
 .playlists .set-songs th {
