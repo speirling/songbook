@@ -53,7 +53,7 @@
                 <?php /*<td><?= h($playlistSets->playlist_id) ?></td> */ ?>
                 <td><?= h($playlistSets->order) ?></td>
                 <td class="actions">
-                    <span class="button"><?= $this->Html->link(__('Edit'), ['controller' => 'Sets', 'action' => 'edit', $playlistSets->set->id]) ?></span>
+                    <span class="button"><?= $this->Html->link(__('Edit'), ['controller' => 'Sets', 'action' => 'editret', $playlistSets->set->id, 'playlists', 'edit', $playlist->id]) ?></span>
                     <span class="button"><?= $this->Form->postLink(__('Remove this set from the Playlist'), ['controller' => 'PlaylistSets', 'action' => 'delete', $playlistSets->id], ['confirm' => __('Are you sure you want to delete # {0}?', $playlistSets->id)]) ?></span>
                 </td>
             </tr>

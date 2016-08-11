@@ -68,10 +68,11 @@ class SetsController extends AppController
      * Edit method
      *
      * @param string|null $id Set id.
+     * @param array $redirect_array - defines the page that will open after the action.
      * @return void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit($id = null, $redirect_array = ['action' => 'index'])
     {
         $set = $this->Sets->get($id, [
             'contain' => ['SetSongs' => ['Songs']]
@@ -80,15 +81,13 @@ class SetsController extends AppController
             $set = $this->Sets->patchEntity($set, $this->request->data);
             if ($this->Sets->save($set)) {
                 $this->Flash->success(__('The set has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect($redirect_array);
             } else {
                 $this->Flash->error(__('The set could not be saved. Please, try again.'));
             }
         }
         $performers = $this->Sets->Performers->find('list', ['limit' => 200]);
 
-        
-        
         $setSong = new SetSong();
         $songs = $this->Sets->SetSongs->Songs->find('list', [
         		'keyField' => 'id',
@@ -102,6 +101,21 @@ class SetsController extends AppController
         $this->set('_serialize', ['set']);
         
         
+    }
+
+    /**
+     * Version of the Edit method that sets a different redirect
+     *
+     * @param string|null $id Set id.
+     * @param string|null $id Controller to return to.
+     * @param string|null $id View of the return controller.
+     * @param string|null $id id of the return controller.
+     * @return void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function editret($id = null, $ret_controller, $ret_action, $ret_id)
+    {
+        $this->edit($id, ['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
     }
 
     /**
