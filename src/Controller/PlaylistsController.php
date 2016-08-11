@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-
+use App\Model\Entity\SetSong;
 /**
  * Playlists Controller
  *
@@ -82,7 +82,15 @@ class PlaylistsController extends AppController
                 $this->Flash->error(__('The playlist could not be saved. Please, try again.'));
             }
         }
-        $this->set(compact('playlist'));
+        $setSong = new SetSong();
+        $songs = $this->Playlists->PlaylistSets->Sets->SetSongs->Songs->find('list', [
+        		'keyField' => 'id',
+        		'valueField' => function ($e) {
+        		return $e['title']."  (".$e['performed_by'].")";
+        		}
+        	]
+        );
+        $this->set(compact('playlist', 'setSong', 'songs'));
         $this->set('_serialize', ['playlist']);
         $this->set('performers', $this->Playlists->Performers->find('list'));
     }

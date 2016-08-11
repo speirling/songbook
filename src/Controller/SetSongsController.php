@@ -46,14 +46,14 @@ class SetSongsController extends AppController
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function add($redirect_array = ['action' => 'index'])
     {
         $setSong = $this->SetSongs->newEntity();
         if ($this->request->is('post')) {
             $setSong = $this->SetSongs->patchEntity($setSong, $this->request->data);
             if ($this->SetSongs->save($setSong)) {
                 $this->Flash->success(__('The set song has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect($redirect_array);
             } else {
                 $this->Flash->error(__('The set song could not be saved. Please, try again.'));
             }
@@ -68,6 +68,16 @@ class SetSongsController extends AppController
         $performers = $this->SetSongs->Performers->find('list');
         $this->set(compact('setSong', 'sets', 'songs', 'performers'));
         $this->set('_serialize', ['setSong']);
+    }
+
+    /**
+     * Version of Add method that sets a different redirect
+     *
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    public function addret($ret_controller, $ret_action, $ret_id)
+    {
+    	$this->add(['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
     }
 
     /**

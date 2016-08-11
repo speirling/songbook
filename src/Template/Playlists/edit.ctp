@@ -71,6 +71,23 @@
                         </tr>
                         <?php endforeach; ?>
                     </table>
+                    
+                    <div class="setSongs add-song form large-9 medium-8 columns content">
+                        <?= $this->Form->create($setSong, ['url' => ['controller' => 'SetSongs', 'action' => 'addret', 'playlists', 'edit', $playlist->id]]) ?>
+                        <fieldset>
+                            <legend><?= __('Add Set Song') ?></legend>
+                            <?php
+                                echo $this->Form->hidden('set_id', ['value' => $playlistSets->set->id]);
+                                echo $this->Form->input('song_id', ['empty' => 'Please select ...', 'options' => $songs]);
+                                echo $this->Form->hidden('order', ['value' => sizeof($playlistSets->set->set_songs)]);
+                                echo $this->Form->input('performer_id', ['empty' => 'Please select ...', 'options' => $performers]);
+                                echo $this->Form->input('key');
+                                echo $this->Form->input('capo');
+                            ?>
+                        </fieldset>
+                        <?= $this->Form->button(__('Submit')) ?>
+                        <?= $this->Form->end() ?>
+                    </div>
                 </td>
             </tr>
             <?php endforeach; ?>
