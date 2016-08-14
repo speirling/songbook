@@ -120,7 +120,7 @@ class SetSongsController extends AppController
      * @return void Redirects to index.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete($id = null, $redirect_array = ['action' => 'index'])
     {
         $this->request->allowMethod(['post', 'delete']);
         $setSong = $this->SetSongs->get($id);
@@ -129,6 +129,16 @@ class SetSongsController extends AppController
         } else {
             $this->Flash->error(__('The set song could not be deleted. Please, try again.'));
         }
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect($redirect_array);
+    }
+
+    /**
+     * Version of Delete method that sets a different redirect
+     *
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    public function deleteret($ret_controller, $ret_action, $ret_id)
+    {
+    	$this->delete(['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
     }
 }
