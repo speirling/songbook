@@ -79,7 +79,7 @@ class SongsController extends AppController
      * @return void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit($id = null, $redirect_array = ['action' => 'index'])
     {
         $song = $this->Songs->get($id, [
             'contain' => []
@@ -88,7 +88,7 @@ class SongsController extends AppController
             $song = $this->Songs->patchEntity($song, $this->request->data);
             if ($this->Songs->save($song)) {
                 $this->Flash->success(__('The song has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect($redirect_array);
             } else {
                 $this->Flash->error(__('The song could not be saved. Please, try again.'));
             }
@@ -97,6 +97,21 @@ class SongsController extends AppController
         $this->set('_serialize', ['song']);
     }
 
+    /**
+     * Version of the Edit method that sets a different redirect
+     *
+     * @param string|null $id Set id.
+     * @param string|null $id Controller to return to.
+     * @param string|null $id View of the return controller.
+     * @param string|null $id id of the return controller.
+     * @return void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function editret($id = null, $ret_controller, $ret_action, $ret_id)
+    {
+    	$this->edit($id, ['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
+    }
+    
     /**
      * Delete method
      *

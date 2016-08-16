@@ -52,8 +52,19 @@
                    
                         <?php foreach ($playlistSets->set->set_songs as $setSongs): ?>
                         <tr>
-                            <td class="set-song-sort-order"><?= h($setSongs->order) ?></td>
-                            <td class="set-song-title"><?= h($setSongs->song->title) . ' <span class="performed-by">(' .  $setSongs->song->performed_by . ')</span>'; ?></td>
+                            <td class="set-song-key"><?= h($setSongs->key) ?></td>
+                            <td class="set-song-capo">(<?= h($setSongs->capo) ?>)</td>
+                            <td class="set-song-title"><?= h($setSongs->song->title) ?><span class="performed-by">(<?= h($setSongs->song->performed_by) ?>)</span></td>
+                            <td class="actions">
+                                <span class="button"><?= 
+                                    $this->Html->link(__(
+                                        'View'
+                                    ), [
+                                        'controller' => 'Songs', 
+                                        'action' => 'view', 
+                                        $setSongs->song->id
+                                    ]) ?></span>             
+                            </td>
                         </tr>
                         <?php endforeach; ?>
                     </table>

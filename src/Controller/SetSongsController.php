@@ -87,7 +87,7 @@ class SetSongsController extends AppController
      * @return void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit($id = null, $redirect_array = ['action' => 'index'])
     {
         $setSong = $this->SetSongs->get($id, [
             'contain' => []
@@ -96,7 +96,7 @@ class SetSongsController extends AppController
             $setSong = $this->SetSongs->patchEntity($setSong, $this->request->data);
             if ($this->SetSongs->save($setSong)) {
                 $this->Flash->success(__('The set song has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect($redirect_array);
             } else {
                 $this->Flash->error(__('The set song could not be saved. Please, try again.'));
             }
@@ -111,6 +111,21 @@ class SetSongsController extends AppController
         $performers = $this->SetSongs->Performers->find('list');
         $this->set(compact('setSong', 'sets', 'songs', 'performers'));
         $this->set('_serialize', ['setSong']);
+    }
+
+    /**
+     * Version of the Edit method that sets a different redirect
+     *
+     * @param string|null $id Set id.
+     * @param string|null $id Controller to return to.
+     * @param string|null $id View of the return controller.
+     * @param string|null $id id of the return controller.
+     * @return void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function editret($id = null, $ret_controller, $ret_action, $ret_id)
+    {
+    	$this->edit($id, ['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
     }
 
     /**

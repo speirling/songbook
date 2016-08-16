@@ -30,8 +30,9 @@
 
 .playlists .sets,
 .playlists .sets .set-songs {
-    margin-left: 5%;
-    width:90%;
+    /*margin-left: 5%;
+    width:95%;*/
+    right: 0;
     table-layout: auto;
 }
 .playlists .sets .set-songs {
@@ -45,4 +46,71 @@
 	width: 3em;
 }
 .playlists .set-song-title {
+}
+
+
+
+
+/* playlist edit form with sets and songs */
+
+.playlists.form fieldset,
+.playlists.form .playlist-title,
+.playlists.form .playlist-edit-submit,
+.playlists.form .playlist-performer-id,
+.playlists.form .set-add-song-song-id,
+.playlists.form .set-add-song-performer-id,
+.playlists.form .set-add-song-key,
+.playlists.form .set-add-song-capo,
+.playlists.form .set-add-song-label {
+    display: inline-block;
+    vertical-align: top;
+}
+.playlists.form fieldset,
+.playlists.form  .playlist-edit-submit  {
+    vertical-align: top;
+}
+.playlists.form .playlist-title,
+.playlists.form .playlist-performer-id,
+.playlists.form .set-add-song-song-id,
+.playlists.form .set-add-song-performer-id  {
+    width: 20em;
+}
+.playlists.form .related {
+	border-top: 2px solid gray;
+}
+.playlists.form .set-add-song-key  {
+    width: 4em;
+}
+
+.playlists.form .set-add-song-capo  {
+    width: 5em;
+}
+.playlists.form .setSongs {
+    padding-right: 0;
+   /* width: 120%;*/
+}
+
+.playlists.form .setSongs fieldset{
+    width: auto;
+    margin-top: 0;
+    padding-top: 0;
+}
+.playlists.form .setSongs legend {
+    width: auto;
+}
+.playlists.form .add-song legend,
+.playlists.form .add-song fieldset,
+.playlists.form .add-song form,
+.playlists.form .add-song .playlist-edit-set-song-add-submit {
+    display: inline-block;
+    vertical-align: top;
+}
+.playlists.form .add-song form {
+    width: 100%;
+}
+.playlists.form .add-song .playlist-edit-set-song-add-submit button {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
 }
