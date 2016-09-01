@@ -87,8 +87,23 @@
                             <td class="set-song-key"><?= h($setSongs->key) ?></td>
                             <td class="set-song-capo">(<?= h($setSongs->capo) ?>)</td>
                             <td class="set-song-title"><?= h($setSongs->song->title) ?><span class="performed-by">(<?= h($setSongs->song->performed_by) ?>)</span></td>
+                            <td>
+                            
+                            <?= $this->Form->create($setSong, ['url' => ['controller' => 'SetSongs', 'action' => 'editret', $setSongs->id, 'playlists', 'edit', $playlist->id]]) ?>
+                                <fieldset>
+                                    <?= $this->Form->hidden('set_id', ['value' => $playlistSets->set->id]) ?>
+                                    <?= $this->Form->hidden('song_id', ['value' => $setSongs->song->id]) ?>
+                                    <span class="playlist-song-order"><?= $this->Form->input('order', ['label'=> false, 'placeholder' => 'Sort',  'value'=>$setSongs->order]) ?></span>
+                                    <span class="playlist-performer-id"><?= $this->Form->select('performer_id', $performers, ['label'=> false,  'value'=>$setSongs->performer_id]) ?></span>
+                                    <span class="playlist-key"><?= $this->Form->input('key', ['label'=> false, 'value'=>h($setSongs->key)]) ?></span>
+                                    <span class="playlist-capo"><?= $this->Form->input('capo', ['label'=> false, 'value'=>h($setSongs->capo)]) ?></span>
+                                    <span class="button"><?= $this->Form->button(__('Update')) ?></span>
+                                </fieldset>
+                            <?= $this->Form->end() ?>
+                            
+                            </td>
                             <td class="actions">
-                                <span class="button"><?= 
+                                <!-- span class="button"><?= 
                                     $this->Html->link(__(
                                         'Edit Set-Song'
                                     ), [
@@ -96,7 +111,7 @@
                                         'action' => 'editret', 
                                         $setSongs->id, 
                                         'playlists', 'edit', $playlist->id
-                                    ]) ?></span>     
+                                    ]) ?></span -->     
                                 <span class="button"><?= 
                                     $this->Html->link(__(
                                         'View'
@@ -118,7 +133,7 @@
                                             'Are you sure you want to remove Set-Song relationship # {0}?', 
                                             $setSongs->id
                                         )
-                                    ]) ?></span>                
+                                    ]) ?></span>
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -127,12 +142,12 @@
                     <div class="add-song form">
                         <?= $this->Form->create($setSong, ['url' => ['controller' => 'SetSongs', 'action' => 'addret', 'playlists', 'edit', $playlist->id]]) ?>
                         <fieldset>
-                            <span class="set-add-song-label"><?= __('Add a song:') ?></span>
+                            <span class=""><?= __('Add a song:') ?></span>
                             <?php
-                                echo '<span class="set-add-song-song-id">'.$this->Form->input('song_id', ['label'=> '', 'empty' => 'Song Title ...', 'options' => $songs]).'</span>';
-                                echo '<span class="set-add-song-performer-id">'.$this->Form->input('performer_id', ['label'=> '', 'empty' => 'Performer ...', 'options' => $performers]).'</span>';
-                                echo '<span class="set-add-song-key">'.$this->Form->input('key', ['label'=> '', 'placeholder' => 'Key']).'</span>';
-                                echo '<span class="set-add-song-capo">'.$this->Form->input('capo', ['label'=> '', 'placeholder' => 'Capo', 'min' => 0, 'max' => 14]).'</span>';
+                                echo '<span class="playlist-song-id">'.$this->Form->input('song_id', ['label'=> '', 'empty' => 'Song Title ...', 'options' => $songs]).'</span>';
+                                echo '<span class="playlist-performer-id">'.$this->Form->input('performer_id', ['label'=> '', 'empty' => 'Performer ...', 'options' => $performers]).'</span>';
+                                echo '<span class="playlist-key">'.$this->Form->input('key', ['label'=> false, 'placeholder' => 'Key']).'</span>';
+                                echo '<span class="playlist-capo">'.$this->Form->input('capo', ['label'=> false, 'placeholder' => 'Capo', 'min' => 0, 'max' => 14]).'</span>';
                                 echo $this->Form->hidden('set_id', ['value' => $playlistSets->set->id]);
                                 echo $this->Form->hidden('order', ['value' => sizeof($playlistSets->set->set_songs)]);
                             ?>
