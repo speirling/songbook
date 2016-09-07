@@ -19,7 +19,7 @@
         <li><?= $this->Html->link(__('New Performer'), ['controller' => 'Performers', 'action' => 'add']) ?></li>
     </ul>
 </nav>
-<div class="playlists form large-9 medium-8 columns content">
+<div class="playlists playlist-edit-form form large-9 medium-8 columns content">
     <span class="button float-right"><?= 
         $this->Html->link(__(
             'View Playlist'
@@ -59,13 +59,6 @@
                 <td><?= h($playlistSets->order) ?></td>
                 <td class="actions">
                     <span class="button"><?= 
-                        $this->Html->link(__('Edit'), [
-                            'controller' => 'Sets', 
-                            'action' => 'editret', 
-                            $playlistSets->set->id, 
-                            'playlists', 'edit', $playlist->id
-                        ]) ?></span>
-                    <span class="button"><?= 
                         $this->Form->postLink(__('X'), [
                             'controller' => 'PlaylistSets', 
                             'action' => 'deleteret', 
@@ -87,13 +80,13 @@
                             <td class="set-song-key"><?= h($setSongs->key) ?></td>
                             <td class="set-song-capo">(<?= h($setSongs->capo) ?>)</td>
                             <td class="set-song-title"><?= h($setSongs->song->title) ?><span class="performed-by">(<?= h($setSongs->song->performed_by) ?>)</span></td>
-                            <td>
+                            <td class="set-song-details">
                             
                             <?= $this->Form->create($setSong, ['url' => ['controller' => 'SetSongs', 'action' => 'editret', $setSongs->id, 'playlists', 'edit', $playlist->id]]) ?>
                                 <fieldset>
                                     <?= $this->Form->hidden('set_id', ['value' => $playlistSets->set->id]) ?>
                                     <?= $this->Form->hidden('song_id', ['value' => $setSongs->song->id]) ?>
-                                    <span class="playlist-song-order"><?= $this->Form->input('order', ['label'=> false, 'placeholder' => 'Sort',  'value'=>$setSongs->order]) ?></span>
+                                    <span class="playlist-song-order" style="display: none;")><?= $setSongs->order ?><?= $this->Form->hidden('order', ['value'=>$setSongs->order]) ?></span>
                                     <span class="playlist-performer-id"><?= $this->Form->select('performer_id', $performers, ['label'=> false,  'value'=>$setSongs->performer_id]) ?></span>
                                     <span class="playlist-key"><?= $this->Form->input('key', ['label'=> false, 'value'=>h($setSongs->key)]) ?></span>
                                     <span class="playlist-capo"><?= $this->Form->input('capo', ['label'=> false, 'value'=>h($setSongs->capo)]) ?></span>
@@ -111,7 +104,10 @@
                                         'action' => 'editret', 
                                         $setSongs->id, 
                                         'playlists', 'edit', $playlist->id
-                                    ]) ?></span -->     
+                                    ]) ?></span -->   
+                                    
+                    <span class="button move-up">&uparrow;</span>
+                    <span class="button move-down">&downarrow;</span>  
                                 <span class="button"><?= 
                                     $this->Html->link(__(
                                         'View'

@@ -33,7 +33,7 @@ class PlaylistsController extends AppController
     public function view($id = null)
     {
         $playlist = $this->Playlists->get($id, [
-            'contain' => ['Performers', 'PlaylistSets' => ['Sets'=> ['Performers', 'SetSongs'=>['Songs']]]]
+            'contain' => ['Performers', 'PlaylistSets' => ['Sets'=> ['Performers', 'SetSongs'=>['Songs', 'sort' => ['SetSongs.order' => 'ASC']]]]]
         ]);
         $this->set('playlist', $playlist); 
         $this->set('_serialize', ['playlist']);
@@ -71,7 +71,7 @@ class PlaylistsController extends AppController
     public function edit($id = null)
     {
         $playlist = $this->Playlists->get($id, [
-            'contain' => ['PlaylistSets' => ['Sets'=> ['Performers', 'SetSongs'=>['Songs']]]]
+            'contain' => ['Performers', 'PlaylistSets' => ['Sets'=> ['Performers', 'SetSongs'=>['Songs', 'sort' => ['SetSongs.order' => 'ASC']]]]]
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $playlist = $this->Playlists->patchEntity($playlist, $this->request->data);

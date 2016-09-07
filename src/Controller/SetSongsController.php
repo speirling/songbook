@@ -95,6 +95,8 @@ class SetSongsController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $setSong = $this->SetSongs->patchEntity($setSong, $this->request->data);
             if ($this->SetSongs->save($setSong)) {
+		        // In case the sort order has been changed using javascript - giving fractional ranking values
+		        $this->rerank($setSong['set_id']);
                 $this->Flash->success(__('The set song has been saved.'));
                 return $this->redirect($redirect_array);
             } else {
@@ -155,5 +157,21 @@ class SetSongsController extends AppController
     public function deleteret($ret_controller, $ret_action, $ret_id)
     {
     	$this->delete(['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
+    }
+    
+    /**
+     * Function to go through the table for a specific set and revise the values in the sortOrder column into integers
+     */
+    private function rerank($set_id) {
+    	$set = $this->SetSongs->find('all', [
+    		'conditions' => ['SetSongs.set_id =' => $set_id],
+    		'order' => ['SetSongs.order' => 'ASC']
+    	]);
+    	$current_order = 0;
+    	foreach($set as $setSong) {
+    		$current_order = $current_order + 1;
+    		$setSong->order = $current_order;
+    		$this->SetSongs->save($setSong);
+    	}
     }
 }
