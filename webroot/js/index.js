@@ -13,16 +13,22 @@ jQuery(document).ready(function() {
    
 	SBK.playlist_sort = {
 			move_set_song: function (direction, button) {
-		        var current_row, target, order_0, order_1, new_sort_order;
+		        var current_row, current_form, previous_row, row_before_previous_row, next_row, row_after_next_row, target, order_0, order_1, new_sort_order;
 		       
 		       current_row = button.closest('tr');
+		       current_form = current_row.prev();
+               previous_row = current_row.prev().prev();
+               row_before_previous_row = previous_row.prev().prev();
+               next_row = current_row.next().next();
+               row_after_next_row = next_row.next().next();
 		       if(direction === 'up') {
-		          target = [current_row.prev().prev(), current_row.prev()];
+		          target = [row_before_previous_row, previous_row];
 		       } else if(direction === 'down') {
-		    	   target = [current_row.next(), current_row.next().next()];
+		    	   target = [next_row, row_after_next_row];
 		       } else {
 		           return;
 		       }
+
 		       if(isNaN(jQuery('.playlist-song-order input', target[0]).val())) {
 		    	   order_0 = 0;
 		       } else {
@@ -35,7 +41,8 @@ jQuery(document).ready(function() {
 		       }
 		       new_sort_order = order_0 + (order_1 - order_0)/2;
 		       jQuery('.playlist-song-order input', current_row).val(new_sort_order);
-		       jQuery('.set-song-details form', current_row).submit();
+		       console.log(new_sort_order)
+		       //current_form.submit();
 		    }
 	}; 
 

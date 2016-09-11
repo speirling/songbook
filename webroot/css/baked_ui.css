@@ -71,21 +71,27 @@
     vertical-align: top;
 }
 .playlists.form .playlist-title,
-.playlists.form .playlist-performer-id,
-.playlists.form .playlist-song-id,
-.playlists.form .playlist-performer-id  {
+.playlists.form .playlist-song-id  {
     width: 20em;
+}
+.playlists.form .playlist-performer-id  {
+    width: 5em;
 }
 .playlists.form .related {
 	border-top: 2px solid gray;
 }
 .playlists.form .playlist-key  {
-    width: 4em;
+    width: 2em;
 }
 
 .playlists.form .playlist-capo,
 .playlists.form .playlist-song-order  {
-    width: 5em;
+    width: 3.5em;
+}
+.playlists.form .playlist-key input[type="text"],
+.playlists.form .playlist-capo input[type="number"] {
+	padding: 0.3em;
+	height: 2em;
 }
 .playlists.form .setSongs {
     padding-right: 0;
@@ -110,17 +116,12 @@
 .playlists.form .add-song form {
     width: 100%;
 }
-.playlists.form .add-song .playlist-edit-set-song-add-submit button {
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
+.playlists.form .button {
+    margin: 0;
+    height: 2.5em;
 }
-.set-songs td {
-    vertical-align: middle;
-}
-.playlists.form .set-songs td form,
-.playlists.form .set-songs td fieldset {
+.playlists.form form,
+.playlists.form fieldset {
     padding: 0;
     margin: 0;
 }
@@ -128,8 +129,18 @@
 .playlists.form .set-songs input {
 	margin: 0;
 }
+.set-songs table {
+    margin-bottom: 0;
+}
+.set-songs td {
+    vertical-align: middle;
+    padding-top: 0;
+    padding-bottom: 0;
+}
 /* cake submit button inside button span */
-.button button {
+.button button,
+.button a {
+	display: block;
 	margin: 0;
 	padding: 0;
 	border:0;
@@ -137,6 +148,7 @@
 	color: inherit;
 	font-size: inherit;
 	text-transform: none;
+	vertical-align: middle;
 }
 .button button:hover {
     background-color: transparent;
