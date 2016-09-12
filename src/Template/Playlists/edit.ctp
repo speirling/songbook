@@ -91,7 +91,7 @@
                                 <span class="playlist-performer-id"><?= $this->Form->select('performer_id', $performers, ['label'=> false,  'value'=>$setSongs->performer_id]) ?></span>
                             </td>
                             <td class="actions">
-                                <span class="button"><button><?= $this->Form->button(__('Update')) ?></span>
+                                <span class="button"><?= $this->Form->button(__('Update')) ?></span>
                                 <!-- span class="button"><?= 
                                     $this->Html->link(__(
                                         'Edit Set-Song'
@@ -100,17 +100,17 @@
                                         'action' => 'editret', 
                                         $setSongs->id, 
                                         'playlists', 'edit', $playlist->id
-                                    ]) ?></button></span -->   
+                                    ]) ?></span -->   
                                     
-                                <span class="button"><button><?= 
+                                <span class="button"><?= 
                                     $this->Html->link(__(
                                         'View'
                                     ), [
                                         'controller' => 'Songs', 
                                         'action' => 'view', 
                                         $setSongs->song->id
-                                    ]) ?></button></span>     
-                                <span class="button"><button><?= 
+                                    ]) ?></span>     
+                                <span class="button"><?= 
                                     $this->Form->postLink(__(
                                         'X'
                                     ), [
@@ -123,7 +123,7 @@
                                             'Are you sure you want to remove Set-Song relationship # {0}?', 
                                             $setSongs->id
                                         )
-                                    ]) ?></button></span>
+                                    ]) ?></span>
                                     <span class="button move-up"><button>&uparrow;</button></span>
                                     <span class="button move-down"><button>&downarrow;</button></span>  
                             </td>

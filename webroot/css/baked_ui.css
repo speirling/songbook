@@ -93,12 +93,13 @@
 	padding: 0.3em;
 	height: 2em;
 }
-.playlists.form .setSongs {
+.playlists.form .set-songs {
     padding-right: 0;
+    margin-bottom: 0;
    /* width: 120%;*/
 }
 
-.playlists.form .setSongs fieldset{
+.playlists.form .set-songs fieldset {
     width: auto;
     margin-top: 0;
     padding-top: 0;
@@ -116,8 +117,10 @@
 .playlists.form .add-song form {
     width: 100%;
 }
-.playlists.form .button {
+.playlists.form .button,
+.set-songs .button {
     margin: 0;
+    margin-bottom: -2px;
     height: 2.5em;
 }
 .playlists.form form,
@@ -148,7 +151,9 @@
 	color: inherit;
 	font-size: inherit;
 	text-transform: none;
-	vertical-align: middle;
+	vertical-align: top;
+	line-height: normal; /* to match button */
+	float: right; /* to match button */
 }
 .button button:hover {
     background-color: transparent;
