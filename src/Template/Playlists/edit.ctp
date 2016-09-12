@@ -73,21 +73,22 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="5">
-                    <table cellpadding="0" cellspacing="0" class="set-songs setSongs">
+                <td colspan="5" class="set-songs-container">
+                    <table cellpadding="0" cellspacing="0" class="set-songs setSongs sortable">
                         <?php foreach ($playlistSets->set->set_songs as $setSongs): ?>
-                        <?= $this->Form->create($setSong, ['url' => ['controller' => 'SetSongs', 'action' => 'editret', $setSongs->id, 'playlists', 'edit', $playlist->id]]) ?>
-                        <fieldset>
-                        <?= $this->Form->hidden('set_id', ['value' => $playlistSets->set->id]) ?>
-                        <?= $this->Form->hidden('song_id', ['value' => $setSongs->song->id]) ?>
-                        <span class="playlist-song-order" style="display: none;")><?= $setSongs->order ?><?= $this->Form->hidden('order', ['value'=>$setSongs->order]) ?></span>
+                        
                         <tr>
                             <td class="set-song-key set-song-capo">
+                                <?= $this->Form->create($setSong, ['url' => ['controller' => 'SetSongs', 'action' => 'editret', $setSongs->id, 'playlists', 'edit', $playlist->id]]) ?>
+                                <fieldset>
+                                <?= $this->Form->hidden('set_id', ['value' => $playlistSets->set->id]) ?>
+                                <?= $this->Form->hidden('song_id', ['value' => $setSongs->song->id]) ?>
                                 <span class="playlist-key"><?= $this->Form->input('key', ['label'=> false, 'value'=>h($setSongs->key)]) ?></span>
                                 <span class="playlist-capo"><?= $this->Form->input('capo', ['label'=> false, 'value'=>h($setSongs->capo)]) ?></span>
                             </td>
                             <td class="set-song-title"><?= h($setSongs->song->title) ?><span class="performed-by">(<?= h($setSongs->song->performed_by) ?>)</span></td>
                             <td class="set-song-details">
+                                <span class="playlist-song-order" style="display: none;")><?= $setSongs->order ?><?= $this->Form->hidden('order', ['value'=>$setSongs->order]) ?></span>
                                 <span class="playlist-performer-id"><?= $this->Form->select('performer_id', $performers, ['label'=> false,  'value'=>$setSongs->performer_id]) ?></span>
                             </td>
                             <td class="actions">
@@ -100,16 +101,17 @@
                                         'action' => 'editret', 
                                         $setSongs->id, 
                                         'playlists', 'edit', $playlist->id
-                                    ]) ?></span -->   
-                                    
-                                <span class="button"><?= 
+                                    ]) ?>
+                                </span -->
+                                <!-- span class="button"><?= 
                                     $this->Html->link(__(
                                         'View'
                                     ), [
                                         'controller' => 'Songs', 
                                         'action' => 'view', 
                                         $setSongs->song->id
-                                    ]) ?></span>     
+                                    ]) ?>
+                                </span -->     
                                 <span class="button"><?= 
                                     $this->Form->postLink(__(
                                         'X'
@@ -123,13 +125,14 @@
                                             'Are you sure you want to remove Set-Song relationship # {0}?', 
                                             $setSongs->id
                                         )
-                                    ]) ?></span>
-                                    <span class="button move-up"><button>&uparrow;</button></span>
-                                    <span class="button move-down"><button>&downarrow;</button></span>  
+                                    ]) ?>
+                                </span>
+                                <!-- span class="button move-up"><button>&uparrow;</button></span>
+                                <span class="button move-down"><button>&downarrow;</button></span -->  
+                                </fieldset>
+                                <?= $this->Form->end() ?>
                             </td>
                         </tr>
-                        </fieldset>
-                        <?= $this->Form->end() ?>
                         <?php endforeach; ?>
                     </table>
                     
