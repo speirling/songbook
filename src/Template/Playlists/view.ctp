@@ -52,8 +52,7 @@
                    
                         <?php foreach ($playlistSets->set->set_songs as $setSongs): ?>
                         <tr>
-                            <td class="set-song-key"><?= h($setSongs->key) ?></td>
-                            <td class="set-song-capo">(<?= h($setSongs->capo) ?>)</td>
+                            <td class="set-song-key set-song-capo"><?= h($setSongs->key) ?> (<?= h($setSongs->capo) ?>)</td>
                             <td class="set-song-title"><?= h($setSongs->song->title) ?><span class="performed-by">(<?= h($setSongs->song->performed_by) ?>)</span></td>
                             <td class="actions">
                                 <span class="button"><?= 
@@ -63,7 +62,9 @@
                                         'controller' => 'Songs', 
                                         'action' => 'view', 
                                         $setSongs->song->id
-                                    ]) ?></span>             
+                                    ]) ?></span>  
+                                <span class="button move-up"><button>&uparrow;</button></span>
+                                <span class="button move-down"><button>&downarrow;</button></span>           
                             </td>
                         </tr>
                         <?php endforeach; ?>

@@ -67,8 +67,10 @@
     vertical-align: top;
 }
 .playlists.form fieldset,
-.playlists.form  .playlist-edit-submit  {
+.playlists.form  .playlist-edit-submit.button  {
     vertical-align: top;
+    margin-top: 1.8em;
+    font-size:  0.84em;
 }
 .playlists.form .playlist-title,
 .playlists.form .playlist-song-id  {
@@ -80,18 +82,36 @@
 .playlists.form .related {
 	border-top: 2px solid gray;
 }
-.playlists.form .playlist-key  {
+.playlists.form .set-song-key span {
+   display: inline-block;
+   line-height: 2em;
+   vertical-align: middle;
+}
+.playlists.form .set-song-capo .input  {
+    display: inline-block;
+    vertical-align: middle;
+    text-aling: center;
+}
+.playlists.form input  {
+    padding: 0.3em;
+    height: 2em;
+}
+.playlists.form .set-song-capo input  {
+    text-align: center;
+}
+.playlists.form .set-song-capo .capo input  {
+    border: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+.playlists.form .set-song-key .key .input  {
     width: 2.5em;
 }
-
-.playlists.form .playlist-capo,
-.playlists.form .playlist-song-order  {
-    width: 3.5em;
+.playlists.form .set-song-capo .capo .input  {
+    width: 1em;
 }
-.playlists.form .playlist-key input[type="text"],
-.playlists.form .playlist-capo input[type="number"] {
-	padding: 0.3em;
-	height: 2em;
+.playlists.form .song-order  {
+    width: 3.5em;
 }
 .playlists.form .set-songs {
     padding-right: 0;
@@ -177,4 +197,16 @@ table.sortable .handle {
 	background-position: center;
 	background-size: 80%;
 	
+}
+
+/* Playlist view */
+.playlists.view .set-songs tr.ui-selected {
+	background-color: #ffaa66;
+}
+.playlists.view .set-songs td.actions {
+    display: none;
+}
+.playlists.view .set-songs tr.ui-selected td.actions {
+    display: table-cell;
+    width: 8em;
 }

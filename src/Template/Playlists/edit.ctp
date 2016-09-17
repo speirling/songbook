@@ -33,22 +33,15 @@
         <legend><?= __('Edit Playlist') ?></legend>
         <span class="playlist-title"><?= $this->Form->input('title', ['div'=>'playlist-title']) ?></span>
         <span class="playlist-performer-id"><?= $this->Form->input('performer_id') ?></span>
+        <span class="playlist-edit-submit button"><?= $this->Form->button(__('Update')) ?></span>
     </fieldset>
-    <span class="playlist-edit-submit button"><?= $this->Form->button(__('Submit')) ?></span>
     <?= $this->Form->end() ?>
     <div class="related">
         <?php if (!empty($playlist->playlist_sets)): ?>
         <table cellpadding="0" cellspacing="0" class="sets">
-            <tr>
-                <th><?= __('Id') ?></th>
-                <th><?= __('Set Title (Act)') ?></th>
-                <?php /*<th><?= __('Playlist Id') ?></th> */ ?>
-                <th><?= __('Order') ?></th>
-                <th class="actions"><?= __('Actions') ?></th>
-            </tr>
             <?php foreach ($playlist->playlist_sets as $playlistSets): ?>
             <tr>
-                <td><?= h($playlistSets->id) ?></td>
+                <td>Set #<?= h($playlistSets->id) ?></td>
                 <td><?= h($playlistSets->set->title)?><?php 
                     if($playlistSets->set->performer->nickname !== '') {
                         echo ' ('.h($playlistSets->set->performer->nickname).')';
@@ -83,13 +76,13 @@
                                 <fieldset>
                                 <?= $this->Form->hidden('set_id', ['value' => $playlistSets->set->id]) ?>
                                 <?= $this->Form->hidden('song_id', ['value' => $setSongs->song->id]) ?>
-                                <span class="playlist-key"><?= $this->Form->input('key', ['label'=> false, 'value'=>h($setSongs->key)]) ?></span>
-                                <span class="playlist-capo"><?= $this->Form->input('capo', ['label'=> false, 'value'=>h($setSongs->capo)]) ?></span>
+                                <span class="key"><?= $this->Form->input('key', ['label'=> false, 'value'=>h($setSongs->key)]) ?></span>
+                                <span class="capo"><span>(</span><?= $this->Form->input('capo', ['label'=> false, 'value'=>h($setSongs->capo), 'type'=> 'text']) ?><span>)</span></span>
                             </td>
                             <td class="set-song-title"><?= h($setSongs->song->title) ?><span class="performed-by">(<?= h($setSongs->song->performed_by) ?>)</span></td>
                             <td class="set-song-details">
-                                <span class="playlist-song-order" style="display: none;")><?= $setSongs->order ?><?= $this->Form->hidden('order', ['value'=>$setSongs->order]) ?></span>
-                                <span class="playlist-performer-id"><?= $this->Form->select('performer_id', $performers, ['label'=> false,  'value'=>$setSongs->performer_id]) ?></span>
+                                <span class="song-order" style="display: none;")><?= $setSongs->order ?><?= $this->Form->hidden('order', ['value'=>$setSongs->order]) ?></span>
+                                <span class="performer-id"><?= $this->Form->select('performer_id', $performers, ['label'=> false,  'value'=>$setSongs->performer_id]) ?></span>
                             </td>
                             <td class="actions">
                                 <span class="button"><?= $this->Form->button(__('Update')) ?></span>
