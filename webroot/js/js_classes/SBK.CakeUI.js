@@ -49,15 +49,25 @@
 		
 		clicked_row: function(event) {
 			event.stopPropagation();
-			SBK.CakeUI.select.mark_row(event.target.closest('tr'));
+			//alert('row clicked');
+			//alert(SBK.CakeUI.select.mark_row);
+			//alert(event.target);
+			//alert(event.target.closest('tr'));
+			//.closest doesn't work on ipad 1
+			// it looks like tr is clicked, so use parent?
+			//row = event.target.closest('tr');
+			row = jQuery(event.target).parent();
+			//alert(row);
+			SBK.CakeUI.select.mark_row(row);
+			//alert('row marked');
 		},
 
 		mark_row: function(row) {
-			console.log(row);
+			//alert('marking');
+			//alert(row);
 	        jQuery(row).siblings().removeClass("ui-selected");
-	        jQuery(row).addClass("ui-selected");
-			console.log(row, jQuery(row));
-		},
+	        jQuery(row).addClass("ui-selected");		
+	    },
 		
 		adjacent_row: function (direction, button) {
 		        var current_row, new_selection;
@@ -73,7 +83,6 @@
 		       if(typeof(new_selection) === 'undefined') {
 		    	   return;
 		       }
-		       console.log(button, new_selection);
 		       SBK.CakeUI.select.mark_row(new_selection);
 		}
 	}

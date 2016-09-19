@@ -17,14 +17,14 @@ jQuery(document).ready(function() {
 		}
 	});
 	
-	jQuery('.playlists.view .set-songs tbody tr').click(SBK.CakeUI.select.clicked_row);
+	jQuery('.playlists.view .set-songs tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
 
 
-    jQuery('.playlist-edit-form .sets .setSongs .move-up').click(function(){
+    jQuery('.playlist-edit-form .sets .setSongs .move-up').on('click touch', function(){
         SBK.CakeUI.playlist_sort.move_set_song('up', jQuery(this));
      });
      
-     jQuery('.playlist-edit-form .sets .setSongs .move-down').click(function(){
+     jQuery('.playlist-edit-form .sets .setSongs .move-down').on('click touch', function(){
         SBK.CakeUI.playlist_sort.move_set_song('down', jQuery(this));
      });
      jQuery('.playlist-edit-form .sets .setSongs tr:last  .move-down').hide();
@@ -32,12 +32,12 @@ jQuery(document).ready(function() {
      
 
 
-     jQuery('.playlists.view .set-songs .move-up').click(function(event){
+     jQuery('.playlists.view .set-songs .move-up').on('click touch', function(event){
 		event.stopPropagation();
          SBK.CakeUI.select.adjacent_row('up', jQuery(this));
       });
       
-      jQuery('.playlists.view .set-songs .move-down').click(function(event){
+      jQuery('.playlists.view .set-songs .move-down').on('click touch', function(event){
 		event.stopPropagation();
          SBK.CakeUI.select.adjacent_row('down', jQuery(this));
       });

@@ -1,29 +1,12 @@
-<nav class="large-2 medium-2 columns" id="actions-sidebar">
-<?= $this->Form->create('search', ['url' => ['action' => '../songs']]) ?>
-<fieldset>
-    <?php
-        echo $this->Form->input('Search songs');
-    ?>
-</fieldset>
-<?= $this->Form->button(__('Submit')) ?>
-<?= $this->Form->end() ?>
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('Edit Song'), ['action' => 'edit', $song->id]) ?> </li>
-        <li><?= $this->Form->postLink(__('Delete Song'), ['action' => 'delete', $song->id], ['confirm' => __('Are you sure you want to delete # {0}?', $song->id)]) ?> </li>
-        <li><?= $this->Html->link(__('List Songs'), ['controller' => 'Songs', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Song'), ['controller' => 'Songs', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Playlists'), ['controller' => 'Playlists', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Playlist'), ['controller' => 'Playlists', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Sets'), ['controller' => 'Sets', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Set'), ['controller' => 'Sets', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Set Songs'), ['controller' => 'SetSongs', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Set Song'), ['controller' => 'SetSongs', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Performers'), ['controller' => 'Performers', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Performer'), ['controller' => 'Performers', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="songs view large-10 medium-10 columns content lyrics-display">
+<?php /* Template/Songs/view.php */ ?>
+
+<div class="songs view content lyrics-display">
+    <span class="button float-right"><?= $this->Html->link(__('List Playlists'), ['controller' => 'Playlists', 'action' => 'index']) ?></span>
+    <span class="search-form float-right"><?= $this->Form->create('search songs', ['url' => ['controller' => 'Songs', 'action' => 'index']]) ?>
+        <fieldset><?= $this->Form->input('Search', ['label' => false]) ?></fieldset>
+        <span class="button"><?= $this->Form->button(__('Search for Songs')) ?></span>
+        <?= $this->Form->end() ?>
+    </span>
     <h3><?= h($song->title) ?></h3>
     <table class="vertical-table">
         <tr class="title">
@@ -86,10 +69,7 @@
             <td><?= h($song->meta_tags) ?></td>
         </tr>
     </table>
-    <div class="row">
-        <h4><?= __('Content') ?></h4>
-        <?= $song->content; ?>
-    </div>
+    <?= $song->content; ?>
     <div class="related">
         <h4><?= __('Related Song Instances') ?></h4>
         <?php if (!empty($song->song_instances)): ?>

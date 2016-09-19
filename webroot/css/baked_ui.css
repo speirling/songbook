@@ -92,7 +92,8 @@
     vertical-align: middle;
     text-aling: center;
 }
-.playlists.form input  {
+.playlists.form input,
+.search-form input  {
     padding: 0.3em;
     height: 2em;
 }
@@ -201,7 +202,17 @@ table.sortable .handle {
 
 /* Playlist view */
 .playlists.view .set-songs tr.ui-selected {
-	background-color: #ffaa66;
+    background-color: #ffaa66;
+}
+.playlists.view .set-songs tr.ui-selected td.actions {
+   font-size: 1.5em;
+}
+.playlists.view .set-songs tr.ui-selected td.actions {
+   font-size: 2em;
+}
+.playlists.view .set-songs td.set-song-key {
+    width: 3em;
+    padding-right: 0;
 }
 .playlists.view .set-songs td.actions {
     display: none;
@@ -209,4 +220,48 @@ table.sortable .handle {
 .playlists.view .set-songs tr.ui-selected td.actions {
     display: table-cell;
     width: 8em;
+}
+.playlists.view .actions {
+    text-align: right;
+}
+.playlists.view .actions .button {
+    text-align: center;
+    vertical-align: middle;
+    margin-top: 0.1em;
+    margin-bottom: 0.1em;
+}
+.playlists.view .actions .arrow {
+    width: 2.5em;
+}
+
+/* Embedded song search form */
+.search-form {
+	display: block;
+}
+.search-form fieldset {
+	display: inline-block;
+	padding: 0;
+	margin: 0;
+	vertical-align: top;
+}
+
+.search-form input {
+	margin: 0.49em;
+	height: 2.2em;
+}
+
+/* song lyrics */
+
+#container .container .songs.view .lyrics-panel {
+	  -webkit-column-count: 2;
+     -moz-column-count: 2;
+          column-count: 2;
+  -webkit-column-width: auto;
+     -moz-column-width: auto;
+          column-width: auto;
+   /*-moz-column-fill: auto;
+    /*-moz-column-gap: 20px;*/
+    -moz-column-rule: 0.1em solid silver;
+   width: 100%;
+   height: auto;
 }

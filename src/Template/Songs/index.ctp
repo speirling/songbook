@@ -1,3 +1,5 @@
+<?php /* Template/Songs/index.php */ ?>
+
 <nav class="large-2 medium-2 columns" id="actions-sidebar">
 <?= $this->Form->create('search songs') ?>
 <fieldset>
