@@ -152,4 +152,32 @@
         </table>
     <?php endif; ?>
     </div>
+    <div class="playlistSets form large-10 medium-9 columns content">
+        <?= $this->Form->create($playlistSet, ['url' => ['controller' => 'PlaylistSets', 'action' => 'addret', 'playlists', 'edit', $playlist->id]]) ?>
+        
+        <fieldset>
+            <legend><?= __('Add Existing Set') ?></legend>
+            <?php
+                echo $this->Form->input('set_id', ['empty' => 'Please select ...', 'options' => $sets, 'label' => false]);
+                echo $this->Form->hidden('order', ['value' => sizeof($playlist->playlist_sets) + 1]);
+                echo $this->Form->hidden('playlist_id', ['value' => $playlist->id]);
+            ?>
+        </fieldset>
+        <?= $this->Form->button(__('Submit')) ?>
+        <?= $this->Form->end() ?>
+    </div>
+    
+    <div class="sets form large-10 medium-9 columns content">
+        <?= $this->Form->create($set, ['url' => ['controller' => 'Sets', 'action' => 'addret', 'playlists', 'edit', $playlist->id]]) ?>
+        <fieldset>
+            <legend><?= __('Create a New Set') ?></legend>
+            <?php
+                echo $this->Form->input('title');
+                echo $this->Form->input('performer_id', ['options' => $performers, 'value' => $playlist->performer_id]);
+                echo $this->Form->input('Comment');
+            ?>
+        </fieldset>
+        <?= $this->Form->button(__('Submit')) ?>
+        <?= $this->Form->end() ?>
+    </div>
 </div>

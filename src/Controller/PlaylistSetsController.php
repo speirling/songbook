@@ -46,14 +46,14 @@ class PlaylistSetsController extends AppController
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function add($redirect_array = ['action' => 'index'])
     {
         $playlistSet = $this->PlaylistSets->newEntity();
         if ($this->request->is('post')) {
             $playlistSet = $this->PlaylistSets->patchEntity($playlistSet, $this->request->data);
             if ($this->PlaylistSets->save($playlistSet)) {
                 $this->Flash->success(__('The playlist set has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect($redirect_array);
             } else {
                 $this->Flash->error(__('The playlist set could not be saved. Please, try again.'));
             }
@@ -73,6 +73,17 @@ class PlaylistSetsController extends AppController
         $this->set(compact('playlistSet', 'sets', 'playlists'));
         $this->set('_serialize', ['playlistSet']);
     }
+
+    /**
+     * Version of Add method that sets a different redirect
+     *
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    public function addret($ret_controller, $ret_action, $ret_id)
+    {
+    	$this->add(['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
+    }
+    
 
     /**
      * Edit method

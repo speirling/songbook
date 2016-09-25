@@ -3,6 +3,8 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use App\Model\Entity\SetSong;
+use App\Model\Entity\PlaylistSet;
+use App\Model\Entity\Set;
 /**
  * Playlists Controller
  *
@@ -86,15 +88,25 @@ class PlaylistsController extends AppController
         $songs = $this->Playlists->PlaylistSets->Sets->SetSongs->Songs->find('list', [
         		'keyField' => 'id',
         		'valueField' => function ($e) {
-        		return $e['title']."  (".$e['performed_by'].")";
+        			return $e['title']."  (".$e['performed_by'].")";
         		}
         	]
         );
-        $this->set(compact('playlist', 'setSong', 'songs'));
+        $playlistSet = new PlaylistSet();
+        $set = new Set();
+        $this->set(compact('playlist', 'setSong', 'songs', 'playlistSet', 'set'));
         $this->set('_serialize', ['playlist']);
         $this->set('performers', $this->Playlists->Performers->find('list', [
             		'keyField' => 'id',
             		'valueField' => 'nickname'
+                ]
+            )
+        );
+        $this->set('sets', $this->Playlists->PlaylistSets->sets->find('list', [
+            		'keyField' => 'id',
+            		'valueField' =>  function ($e) {
+	        			return $e['title']."  (performer ".$e['performer_id'].")";
+	        		}
                 ]
             )
         );
