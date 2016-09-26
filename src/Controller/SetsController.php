@@ -47,14 +47,34 @@ class SetsController extends AppController
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function add($redirect_array = ['action' => 'index'])
+    {
+    	$id = $this->add_base();
+    	if($id) {
+    		return $this->redirect($redirect_array);
+    	}
+    }
+    
+    /**
+     * Add-base method
+     * To be used by Add method - which does as expeced, 
+     * Add-ret, which runs the Add method but then redirects to a different page
+     * and
+     * Add-formward - which is like add-ret except it forwards 
+     * the newly-added id to add-ret on another model, along with 
+     * the original return destination.  
+     *
+     *
+     * @return id of saved record on success, nothing on failure (raises an error).
+     */
+    public function add_base()
     {
         $set = $this->Sets->newEntity();
         if ($this->request->is('post')) {
             $set = $this->Sets->patchEntity($set, $this->request->data);
-            if ($this->Sets->save($set)) {
+            if ($result = $this->Sets->save($set)) {
                 $this->Flash->success(__('The set has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $result->id;
             } else {
                 $this->Flash->error(__('The set could not be saved. Please, try again.'));
             }
@@ -62,6 +82,44 @@ class SetsController extends AppController
         $performers = $this->Sets->Performers->find('list', ['limit' => 200]);
         $this->set(compact('set', 'performers'));
         $this->set('_serialize', ['set']);
+    }
+
+    /**
+     * Version of Add method that sets a different redirect
+     *
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    public function addret($ret_controller, $ret_action, $ret_id)
+    {
+    	$this->add(['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
+    }
+
+    /**
+     * Version of Add method that sets a different redirect
+     *
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    public function addforward($forward_controller, $ret_controller, $ret_action, $ret_id)
+    {
+    	//$this->add(['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
+
+    	$set_id = $this->add_base();
+    	//$set_id=230;
+    	$playlist_id = $ret_id;
+    	if($set_id) {
+    	//debug($this->request->data); die();
+    		return $this->redirect([
+    			'controller' => $forward_controller, 
+    			'action' => 'add_ret', 
+    			$ret_controller, 
+    			$ret_action, 
+    			$ret_id, 
+    			$set_id, 
+    			$playlist_id
+    		]);
+    	} else {
+    		$this->Flash->error(__('No set ID - The set was not properly added.'));
+    	}
     }
 
     /**

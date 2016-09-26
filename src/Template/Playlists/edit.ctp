@@ -168,7 +168,7 @@
     </div>
     
     <div class="sets form large-10 medium-9 columns content">
-        <?= $this->Form->create($set, ['url' => ['controller' => 'Sets', 'action' => 'addret', 'playlists', 'edit', $playlist->id]]) ?>
+        <?= $this->Form->create($set, ['url' => ['controller' => 'Sets', 'action' => 'addforward', 'playlistSets', 'playlists', 'edit', $playlist->id]]) ?>
         <fieldset>
             <legend><?= __('Create a New Set') ?></legend>
             <?php

@@ -48,15 +48,8 @@ class PlaylistSetsController extends AppController
      */
     public function add($redirect_array = ['action' => 'index'])
     {
-        $playlistSet = $this->PlaylistSets->newEntity();
         if ($this->request->is('post')) {
-            $playlistSet = $this->PlaylistSets->patchEntity($playlistSet, $this->request->data);
-            if ($this->PlaylistSets->save($playlistSet)) {
-                $this->Flash->success(__('The playlist set has been saved.'));
-                return $this->redirect($redirect_array);
-            } else {
-                $this->Flash->error(__('The playlist set could not be saved. Please, try again.'));
-            }
+            return addsave($this->request->data, $redirect_array);
         }
         $sets = $this->PlaylistSets->Sets->find('list', [
 		    'keyField' => 'id',
@@ -75,13 +68,35 @@ class PlaylistSetsController extends AppController
     }
 
     /**
+     * Add method
+     *
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    private function addsave($data, $redirect_array)
+    {
+        $playlistSet = $this->PlaylistSets->newEntity();
+    	$playlistSet = $this->PlaylistSets->patchEntity($playlistSet, $data);
+    	if ($this->PlaylistSets->save($playlistSet)) {
+    		$this->Flash->success(__('The playlist set has been saved.'));
+    		return $this->redirect($redirect_array);
+    	} else {
+    		$this->Flash->error(__('The playlist set could not be saved. Please, try again.'));
+    	}
+    }
+    /**
      * Version of Add method that sets a different redirect
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
-    public function addret($ret_controller, $ret_action, $ret_id)
+    public function addret($ret_controller, $ret_action, $ret_id, $set_id = null, $playlist_id = null)
     {
-    	$this->add(['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
+    	$data = [
+    		'set_id' => $set_id,
+    		'playlist_id' => $playlist_id,
+    		'order' => 10000
+    	];
+    	$redirect_array = ['controller' => $ret_controller, 'action' => $ret_action, $ret_id];
+    	$this->addsave($data, $redirect_array);
     }
     
 
