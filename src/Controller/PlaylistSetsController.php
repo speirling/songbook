@@ -68,7 +68,8 @@ class PlaylistSetsController extends AppController
     }
 
     /**
-     * Add method
+     * The Save section of the Add method
+     * Separated out so that it can be used for non-post data
      *
      * @return void Redirects on successful add, renders view otherwise.
      */

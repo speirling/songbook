@@ -58,6 +58,7 @@
 .playlists.form .playlist-edit-submit,
 .playlists.form .playlist-performer-id,
 .playlists.form .playlist-song-id,
+.playlists.form .playlist-new-song-title,
 .playlists.form .playlist-performer-id,
 .playlists.form .playlist-key,
 .playlists.form .playlist-capo,
@@ -66,14 +67,14 @@
     display: inline-block;
     vertical-align: top;
 }
-.playlists.form fieldset,
-.playlists.form  .playlist-edit-submit.button  {
+.playlists.form fieldset  {
     vertical-align: top;
     margin-top: 1.8em;
     font-size:  0.84em;
 }
 .playlists.form .playlist-title,
-.playlists.form .playlist-song-id  {
+.playlists.form .playlist-song-id,
+.playlists.form .playlist-new-song-title  {
     width: 20em;
 }
 .playlists.form .playlist-performer-id  {
@@ -132,6 +133,13 @@
 .playlists.form .add-song fieldset,
 .playlists.form .add-song form,
 .playlists.form .add-song .playlist-edit-set-song-add-submit {
+    display: inline-block;
+    vertical-align: top;
+}
+.playlists.form .add-new-song legend,
+.playlists.form .add-new-song fieldset,
+.playlists.form .add-new-song form,
+.playlists.form .add-new-song .playlist-edit-set-song-add-submit {
     display: inline-block;
     vertical-align: top;
 }

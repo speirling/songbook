@@ -48,15 +48,8 @@ class SetSongsController extends AppController
      */
     public function add($redirect_array = ['action' => 'index'])
     {
-        $setSong = $this->SetSongs->newEntity();
         if ($this->request->is('post')) {
-            $setSong = $this->SetSongs->patchEntity($setSong, $this->request->data);
-            if ($this->SetSongs->save($setSong)) {
-                $this->Flash->success(__('The set song has been saved.'));
-                return $this->redirect($redirect_array);
-            } else {
-                $this->Flash->error(__('The set song could not be saved. Please, try again.'));
-            }
+        	return addsave($this->request->data, $redirect_array);
         }
         $sets = $this->SetSongs->Sets->find('list');
         $songs = $this->SetSongs->Songs->find('list', [
@@ -71,13 +64,43 @@ class SetSongsController extends AppController
     }
 
     /**
+     * The Save section of the Add method
+     * Separated out so that it can be used for non-post data
+     *
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    private function addsave($data, $redirect_array)
+    {
+        $setSong = $this->SetSongs->newEntity();
+    	$setSong = $this->SetSongs->patchEntity($setSong, $data);
+        if ($this->SetSongs->save($setSong)) {
+            $this->Flash->success(__('The set song has been saved.'));
+            return $this->redirect($redirect_array);
+        } else {
+            $this->Flash->error(__('The set song could not be saved. Please, try again.'));
+        }
+    }
+
+    /**
      * Version of Add method that sets a different redirect
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
-    public function addret($ret_controller, $ret_action, $ret_id)
+    public function addret($ret_controller, $ret_action, $ret_id, $song_id = null, $set_id = null, $performer_id = null, $key = null)
     {
-    	$this->add(['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
+    	if ($this->request->is('post')) {
+    		$data = $this->request->data;
+    	} else {
+    		$data = [
+    			'song_id' => $song_id,
+    			'set_id' => $set_id,
+    			'performer_id' => $performer_id,
+    			'key' => $key,
+    			'order' => 10000
+    		];
+    	}
+    	$redirect_array = ['controller' => $ret_controller, 'action' => $ret_action, $ret_id];
+    	$this->addsave($data, $redirect_array);
     }
 
     /**

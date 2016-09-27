@@ -57,10 +57,10 @@ class SetsController extends AppController
     
     /**
      * Add-base method
-     * To be used by Add method - which does as expeced, 
+     * To be used by Add method - which does as expected, 
      * Add-ret, which runs the Add method but then redirects to a different page
      * and
-     * Add-formward - which is like add-ret except it forwards 
+     * Add-forward - which is like add-ret except it forwards 
      * the newly-added id to add-ret on another model, along with 
      * the original return destination.  
      *
@@ -85,7 +85,7 @@ class SetsController extends AppController
     }
 
     /**
-     * Version of Add method that sets a different redirect
+     * Version of Add method that redirects back to a previous page
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
@@ -101,13 +101,9 @@ class SetsController extends AppController
      */
     public function addforward($forward_controller, $ret_controller, $ret_action, $ret_id)
     {
-    	//$this->add(['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
-
     	$set_id = $this->add_base();
-    	//$set_id=230;
     	$playlist_id = $ret_id;
     	if($set_id) {
-    	//debug($this->request->data); die();
     		return $this->redirect([
     			'controller' => $forward_controller, 
     			'action' => 'add_ret', 

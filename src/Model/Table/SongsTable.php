@@ -61,8 +61,7 @@ class SongsTable extends Table
             ->allowEmpty('performed_by');
 
         $validator
-            ->requirePresence('base_key', 'create')
-            ->notEmpty('base_key');
+            ->allowEmpty('base_key');
 
         $validator
             ->allowEmpty('content');
