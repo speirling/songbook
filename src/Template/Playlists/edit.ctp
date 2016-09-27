@@ -140,19 +140,21 @@
                                 echo '<span class="playlist-key">'.$this->Form->input('key', ['label'=> false, 'placeholder' => 'Key']).'</span>';
                                 echo '<span class="playlist-capo">'.$this->Form->input('capo', ['label'=> false, 'placeholder' => 'Capo', 'min' => 0, 'max' => 14]).'</span>';
                                 echo $this->Form->hidden('set_id', ['value' => $playlistSets->set->id]);
-                                echo $this->Form->hidden('order', ['value' => sizeof($playlistSets->set->set_songs)]);
+                                echo $this->Form->hidden('order', ['value' => sizeof($playlistSets->set->set_songs) + 1]);
                             ?>
                         </fieldset>                            
                         <span class="playlist-edit-set-song-add-submit button"><?= $this->Form->button(__('Add existing song')) ?></span>
                         <?= $this->Form->end() ?>
                     </div>
                     <div class="add-new-song form">
-                        <?= $this->Form->create($song, ['url' => ['controller' => 'Songs', 'action' => 'addforward', 'SetSongs', 'playlists', 'edit', $playlist->id, $playlistSets->set->id]]) ?>
+                        <?= $this->Form->create($song, ['url' => ['controller' => 'SetSongs', 'action' => 'add_and_link_song', 'playlists', 'edit', $playlist->id]]) ?>
                         <fieldset>
                             <?php
                                 echo '<span class="playlist-new-song-title">'.$this->Form->input('title', ['label'=> false, 'empty' => 'Enter new Song Title ...']).'</span>';
                                 echo '<span class="playlist-performer-id">'.$this->Form->input('performer_id', ['label'=> '', 'empty' => 'Performer ...', 'options' => $performers]).'</span>';
                                 echo '<span class="playlist-key">'.$this->Form->input('key', ['label'=> false, 'placeholder' => 'Key']).'</span>';
+                                echo $this->Form->hidden('set_id', ['value' => $playlistSets->set->id]);
+                                echo $this->Form->hidden('order', ['value' => sizeof($playlistSets->set->set_songs) + 1]);
                             ?>
                         </fieldset>
                         <span class="playlist-edit-set-song-add-submit button"><?= $this->Form->button(__('Create and add new Song')) ?></span>

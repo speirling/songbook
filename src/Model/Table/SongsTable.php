@@ -30,6 +30,10 @@ class SongsTable extends Table
         $this->displayField('title');
         $this->primaryKey('id');
 
+        $this->hasMany('SetSongs', [
+            'foreignKey' => 'song_id'
+        ]);
+
         $this->hasMany('SongInstances', [
             'foreignKey' => 'song_id'
         ]);

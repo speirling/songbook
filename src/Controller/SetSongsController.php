@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * SetSongs Controller
@@ -48,8 +49,15 @@ class SetSongsController extends AppController
      */
     public function add($redirect_array = ['action' => 'index'])
     {
+	    $setSong = $this->SetSongs->newEntity();
         if ($this->request->is('post')) {
-        	return addsave($this->request->data, $redirect_array);
+	    	$setSong = $this->SetSongs->patchEntity($setSong, $this->request->data);
+	        if ($this->SetSongs->save($setSong)) {
+	            $this->Flash->success(__('The set song has been saved.'));
+	            return $this->redirect($redirect_array);
+	        } else {
+	            $this->Flash->error(__('The set song could not be saved. Please, try again.'));
+	        }
         }
         $sets = $this->SetSongs->Sets->find('list');
         $songs = $this->SetSongs->Songs->find('list', [
@@ -64,43 +72,49 @@ class SetSongsController extends AppController
     }
 
     /**
-     * The Save section of the Add method
-     * Separated out so that it can be used for non-post data
-     *
-     * @return void Redirects on successful add, renders view otherwise.
-     */
-    private function addsave($data, $redirect_array)
-    {
-        $setSong = $this->SetSongs->newEntity();
-    	$setSong = $this->SetSongs->patchEntity($setSong, $data);
-        if ($this->SetSongs->save($setSong)) {
-            $this->Flash->success(__('The set song has been saved.'));
-            return $this->redirect($redirect_array);
-        } else {
-            $this->Flash->error(__('The set song could not be saved. Please, try again.'));
-        }
-    }
-
-    /**
      * Version of Add method that sets a different redirect
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
-    public function addret($ret_controller, $ret_action, $ret_id, $song_id = null, $set_id = null, $performer_id = null, $key = null)
+    public function addret($ret_controller, $ret_action, $ret_id)
     {
-    	if ($this->request->is('post')) {
-    		$data = $this->request->data;
-    	} else {
-    		$data = [
-    			'song_id' => $song_id,
-    			'set_id' => $set_id,
-    			'performer_id' => $performer_id,
-    			'key' => $key,
-    			'order' => 10000
-    		];
-    	}
+    	$this->add(['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
+    }
+    
+    /**
+     * Creates a new song entry and a set-song to link it to a specified set.
+     * The return to the playlist
+     * 
+     * @param string $ret_controller
+     * @param string $ret_action
+     * @param integer $ret_id
+     */
+    public function addAndLinkSong($ret_controller, $ret_action, $ret_id)
+    {
     	$redirect_array = ['controller' => $ret_controller, 'action' => $ret_action, $ret_id];
-    	$this->addsave($data, $redirect_array);
+    	
+    	if ($this->request->is('post')) {
+    		$data = [
+    			'set_id' => $this->request->data['set_id'],
+    			'song' => [
+    				'title' => $this->request->data['title']
+    			],
+    			'key' => $this->request->data['key'],
+    			'order' => $this->request->data['order'],
+    			'performer_id' => $this->request->data['performer_id']
+    		];
+
+    		$setSong = $this->SetSongs->newEntity($data);
+    		if ($this->SetSongs->save($setSong)) {
+    			$this->Flash->success(__('The song and set-song association have been saved.'));
+    			return $this->redirect($redirect_array);
+    		} else {
+    			$this->Flash->error(__('The set song could not be saved. Please, try again.'));
+    		}
+
+    	} else {
+    		$this->Flash->error(__('The song could not be created - no post data'));
+    	}
     }
 
     /**
