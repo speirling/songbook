@@ -97,14 +97,20 @@ class SetSongsController extends AppController
     		$data = [
     			'set_id' => $this->request->data['set_id'],
     			'song' => [
-    				'title' => $this->request->data['title']
+    				'title' => $this->request->data['title'],
+    				'performed_by' => $this->request->data['performed_by']
     			],
     			'key' => $this->request->data['key'],
     			'order' => $this->request->data['order'],
     			'performer_id' => $this->request->data['performer_id']
     		];
 
+			if(array_key_exists('performed_by', $this->request->data)) {
+				$data['song']['performed_by'] = $this->request->data['performed_by'];
+			}
+
     		$setSong = $this->SetSongs->newEntity($data);
+    		
     		if ($this->SetSongs->save($setSong)) {
     			$this->Flash->success(__('The song and set-song association have been saved.'));
     			return $this->redirect($redirect_array);
@@ -191,9 +197,10 @@ class SetSongsController extends AppController
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
-    public function deleteret($ret_controller, $ret_action, $ret_id)
+    public function deleteret($id, $ret_controller, $ret_action, $ret_id)
     {
-    	$this->delete(['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
+    	//expects POST data, not a html link.
+    	$this->delete($id, ['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
     }
     
     /**

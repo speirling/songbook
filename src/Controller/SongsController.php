@@ -103,32 +103,6 @@ class SongsController extends AppController
     }
 
     /**
-     * Version of Add method that sets a different redirect
-     *
-     * @return void Redirects on successful add, renders view otherwise.
-     */
-    public function addforward($forward_controller, $ret_controller, $ret_action, $ret_id, $set_id)
-    {
-    	$song_id = $this->add_base();
-    	if($song_id) {
-    		return $this->redirect([
-    			'controller' => $forward_controller, 
-    			'action' => 'add_ret', 
-    			$ret_controller, 
-    			$ret_action, 
-    			$ret_id, 
-    			$song_id,
-    			$set_id,
-    			$this->request->data['performer_id'],
-    			$this->request->data['key']
-    			
-    		]);
-    	} else {
-    		$this->Flash->error(__('No song ID - The song was not properly added.'));
-    	}
-    }
-
-    /**
      * Edit method
      *
      * @param string|null $id Song id.

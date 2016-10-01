@@ -37,7 +37,7 @@
 	       new_sort_order = order_0 + (order_1 - order_0)/2;
 	       jQuery('.song-order input', current_row).val(new_sort_order);
 	       console.log(current_row, previous_row, jQuery('.song-order input', previous_row).val(), order_0, next_row, jQuery('.song-order input', next_row).val(), order_1, new_sort_order);
-	       current_form = jQuery('form', current_row);
+	       current_form = jQuery('form', current_row)[0];
 	       console.log(current_form);
 	       if(!isNaN(new_sort_order)) {
 	           current_form.submit();

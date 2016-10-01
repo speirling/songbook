@@ -59,6 +59,7 @@
 .playlists.form .playlist-performer-id,
 .playlists.form .playlist-song-id,
 .playlists.form .playlist-new-song-title,
+.playlists.form .playlist-new-song-performed-by,
 .playlists.form .playlist-performer-id,
 .playlists.form .playlist-key,
 .playlists.form .playlist-capo,
@@ -74,7 +75,8 @@
 }
 .playlists.form .playlist-title,
 .playlists.form .playlist-song-id,
-.playlists.form .playlist-new-song-title  {
+.playlists.form .playlist-new-song-title,
+.playlists.form .playlist-new-song-performed-by  {
     width: 20em;
 }
 .playlists.form .playlist-performer-id  {
@@ -173,7 +175,7 @@
     padding-bottom: 0;
 }
 .set-songs td.actions {
-    width: 7em;
+    width: 10em;
 }
 .set-songs td.set-song-details {
     width: 7em;

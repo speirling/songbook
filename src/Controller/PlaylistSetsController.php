@@ -99,7 +99,46 @@ class PlaylistSetsController extends AppController
     	$redirect_array = ['controller' => $ret_controller, 'action' => $ret_action, $ret_id];
     	$this->addsave($data, $redirect_array);
     }
+
+    /**
+     * Creates a new song entry and a set-song to link it to a specified set.
+     * The return to the playlist
+     *
+     * @param string $ret_controller
+     * @param string $ret_action
+     * @param integer $ret_id
+     */
+    public function addAndLinkSet($ret_controller, $ret_action, $ret_id)
+    {
+    	$redirect_array = ['controller' => $ret_controller, 'action' => $ret_action, $ret_id];
+    	 
+    	if ($this->request->is('post')) {
+    		$data = [
+    				'set_id' => $this->request->data['set_id'],
+    				'song' => [
+    						'title' => $this->request->data['title']
+    				],
+    				'key' => $this->request->data['key'],
+    				'order' => $this->request->data['order'],
+    				'performer_id' => $this->request->data['performer_id']
+    		];
+    		$setSong = $this->SetSongs->newEntity($data);
     
+    		$setSong = $this->SetSongs->newEntity($this->request->data, [
+    			'associated' => ['Songs']
+    		]);
+    		
+    		if ($this->SetSongs->save($setSong)) {
+    			$this->Flash->success(__('The song and set-song association have been saved.'));
+    			return $this->redirect($redirect_array);
+    		} else {
+    			$this->Flash->error(__('The set song could not be saved. Please, try again.'));
+    		}
+    
+    	} else {
+    		$this->Flash->error(__('The song could not be created - no post data'));
+    	}
+    }
 
     /**
      * Edit method
@@ -164,6 +203,14 @@ class PlaylistSetsController extends AppController
      */
     public function deleteret($ret_controller, $ret_action, $ret_id)
     {
-    	$this->delete(['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
+        $this->request->allowMethod(['post', 'delete']);
+    	$redirect_array = ['controller' => $ret_controller, 'action' => $ret_action, $ret_id];
+        $playlistSet = $this->PlaylistSets->get($id);
+        if ($this->PlaylistSets->delete($playlistSet)) {
+            $this->Flash->success(__('The playlist set has been deleted.'));
+        } else {
+            $this->Flash->error(__('The playlist set could not be deleted. Please, try again.'));
+        }
+        return $this->redirect($redirect_array);
     }
 }

@@ -98,6 +98,16 @@
                                         'playlists', 'edit', $playlist->id
                                     ]) ?>
                                 </span -->
+                                <span class="button"><?= 
+                                    $this->Html->link(__(
+                                        'Edit'
+                                    ), [
+                                        'controller' => 'Songs', 
+                                        'action' => 'editret', 
+                                        $setSongs->song->id, 
+                                        'playlists', 'edit', $playlist->id
+                                    ]) ?>
+                                </span>
                                 <!-- span class="button"><?= 
                                     $this->Html->link(__(
                                         'View'
@@ -106,9 +116,11 @@
                                         'action' => 'view', 
                                         $setSongs->song->id
                                     ]) ?>
-                                </span -->     
+                                </span --> 
+                                </fieldset>
+                                <?= $this->Form->end() ?>    
                                 <span class="button"><?= 
-                                    $this->Form->postLink(__(
+                                    $this->Form->postLink(__(  //Must be outside the form element!!!
                                         'X'
                                     ), [
                                         'controller' => 'SetSongs', 
@@ -117,15 +129,14 @@
                                         'playlists', 'edit', $playlist->id
                                     ], [
                                         'confirm' => __(
-                                            'Are you sure you want to remove Set-Song relationship # {0}?', 
+                                            'Are you sure you want to remove "'.$setSongs->song->title.'" from set ['.$playlistSets->set->title.']?', 
                                             $setSongs->id
                                         )
                                     ]) ?>
                                 </span>
                                 <!-- span class="button move-up"><button>&uparrow;</button></span>
                                 <span class="button move-down"><button>&downarrow;</button></span -->  
-                                </fieldset>
-                                <?= $this->Form->end() ?>
+                                
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -147,10 +158,11 @@
                         <?= $this->Form->end() ?>
                     </div>
                     <div class="add-new-song form">
-                        <?= $this->Form->create($song, ['url' => ['controller' => 'SetSongs', 'action' => 'add_and_link_song', 'playlists', 'edit', $playlist->id]]) ?>
+                        <?= $this->Form->create($song, ['url' => ['controller' => 'SetSongs', 'action' => 'addAndLinkSong', 'playlists', 'edit', $playlist->id]]) ?>
                         <fieldset>
                             <?php
-                                echo '<span class="playlist-new-song-title">'.$this->Form->input('title', ['label'=> false, 'empty' => 'Enter new Song Title ...']).'</span>';
+                                echo '<span class="playlist-new-song-title">'.$this->Form->input('title', ['label'=> false, 'placeholder' => 'Song Title']).'</span>';
+                                echo '<span class="playlist-new-song-performed-by">'.$this->Form->input('performed_by', ['label'=> false, 'placeholder' => 'Who sang this song?']).'</span>';
                                 echo '<span class="playlist-performer-id">'.$this->Form->input('performer_id', ['label'=> '', 'empty' => 'Performer ...', 'options' => $performers]).'</span>';
                                 echo '<span class="playlist-key">'.$this->Form->input('key', ['label'=> false, 'placeholder' => 'Key']).'</span>';
                                 echo $this->Form->hidden('set_id', ['value' => $playlistSets->set->id]);
