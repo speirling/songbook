@@ -69,7 +69,7 @@
             </tr>
             <tr>
                 <td colspan="5" class="set-songs-container">
-                    <table cellpadding="0" cellspacing="0" class="set-songs setSongs sortable">
+                    <table cellpadding="0" cellspacing="0" class="set-songs setSongs sortable" setnumber="<?= $playlistSets->set->id; ?>">
                         <?php foreach ($playlistSets->set->set_songs as $setSongs): ?>
                         
                         <tr>

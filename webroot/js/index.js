@@ -14,7 +14,8 @@ jQuery(document).ready(function() {
 		handle: '.handle',
 		stop: function (event, ui) {
 			SBK.CakeUI.playlist_sort.set_order_value(ui.item, ui.item.prev(), ui.item.next());
-		}
+		},
+		connectWith: 'table.sortable tbody'
 	});
 	
 	jQuery('.playlists.view .set-songs tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
