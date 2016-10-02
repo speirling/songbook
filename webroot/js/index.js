@@ -10,15 +10,23 @@ jQuery(document).ready(function() {
 	jQuery('select').select2();
 
 	jQuery('table.sortable tbody tr').prepend('<td class="handle">');
-	jQuery('table.sortable tbody').sortable({
+	jQuery('table.sortable.set-songs tbody').sortable({
 		handle: '.handle',
 		stop: function (event, ui) {
 			SBK.CakeUI.playlist_sort.set_order_value(ui.item, ui.item.prev(), ui.item.next());
 		},
-		connectWith: 'table.sortable tbody'
+		connectWith: 'table.sortable.set-songs tbody'
 	});
-	
+	jQuery('table.sortable.sets tbody').sortable({
+		handle: '.handle',
+		stop: function (event, ui) {
+			SBK.CakeUI.sets_sort.set_order_value(ui.item, ui.item.prev(), ui.item.next());
+		},
+		connectWith: 'table.sortable.sets tbody'
+	});
+
 	jQuery('.playlists.view .set-songs tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
+	jQuery('#collapse_sets').on('click touch', SBK.CakeUI.collapse_sets);
 
 
     jQuery('.playlist-edit-form .sets .setSongs .move-up').on('click touch', function(){

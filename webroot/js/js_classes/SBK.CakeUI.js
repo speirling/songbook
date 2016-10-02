@@ -1,5 +1,32 @@
  SBK.CakeUI = {
 
+	sets_sort: {
+		set_order_value: function (current_row, previous_row, next_row) {
+	        var order_0, order_1, new_sort_order;
+	            
+	        if(isNaN(jQuery('input[name=order]', previous_row).val())) {
+	     	   order_0 = 0;
+	        } else {
+	     	   order_0 = parseFloat(jQuery('input[name=order]', previous_row).val());
+	        }
+	        if(isNaN(jQuery('input[name=order]', next_row).val())) {
+	     	   order_1 = 1000000;
+	        } else {
+	     	   order_1 = parseFloat(jQuery('input[name=order]', next_row).val());
+	        }
+	        new_sort_order = order_0 + (order_1 - order_0)/2;
+	        jQuery('input[name=order]', current_row).val(new_sort_order);
+	        
+	        console.log(current_row, previous_row, jQuery('input[name=order]', previous_row).val(), order_0, next_row, jQuery('input[name=order]', next_row).val(), order_1, new_sort_order);
+	        current_form = jQuery('form', current_row)[0];
+	        //console.log(current_form);
+	        if(!isNaN(new_sort_order)) {
+	           current_form.submit();
+	        }
+	    }
+	},
+
+
 	playlist_sort: {
 		move_set_song: function (direction, button) {
 	        var current_row, previous_row, row_before_previous_row, next_row, row_after_next_row, preceding_row, following_row;
@@ -89,5 +116,12 @@
 		       }
 		       SBK.CakeUI.select.mark_row(new_selection);
 		}
+	},
+	
+	collapse_sets: function (event) {
+		event.preventDefault;
+		jQuery('.related table.sets td.set-songs-container').toggle();
+		return false;
+		
 	}
 };

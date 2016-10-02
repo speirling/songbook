@@ -30,19 +30,27 @@
             'action' => 'view', 
             $playlist->id
         ]) ?></span>
+    <span class="button float-right"><?= 
+        $this->Html->link(__(
+            'Sort Sets'
+        ), [
+            'controller' => 'Playlists', 
+            'action' => 'sortSets', 
+            $playlist->id
+        ]) ?></span>
     <?= $this->Form->create($playlist) ?>
     <fieldset>
         <legend><?= __('Edit Playlist') ?></legend>
         <span class="playlist-title"><?= $this->Form->input('title', ['div'=>'playlist-title']) ?></span>
         <span class="playlist-performer-id"><?= $this->Form->input('performer_id') ?></span>
-        <span class="playlist-edit-submit button"><?= $this->Form->button(__('Update')) ?></span>
+        <span class="playlist-edit-submit button"><?= $this->Form->button(__('Update Title & Act')) ?></span>
     </fieldset>
     <?= $this->Form->end() ?>
     <div class="related">
         <?php if (!empty($playlist->playlist_sets)): ?>
         <table cellpadding="0" cellspacing="0" class="sets">
             <?php foreach ($playlist->playlist_sets as $playlistSets): ?>
-            <tr>
+            <tr playliststeid="<?= $playlistSets->id; ?>"  setnumber="<?= $playlistSets->set->id; ?>" setorder="<?= $playlistSets->order; ?>">
                 <td>Set #<?= h($playlistSets->id) ?></td>
                 <td><?= h($playlistSets->set->title)?><?php 
                     if($playlistSets->set->performer->nickname !== '') {
@@ -51,7 +59,7 @@
                         echo ' ('.h($playlistSets->set->performer->name).')';
                     } ?></td>
                 <?php /*<td><?= h($playlistSets->playlist_id) ?></td> */ ?>
-                <td><?= h($playlistSets->order) ?></td>
+                <td class="playlist-sets-order"><?= h($playlistSets->order) ?></td>
                 <td class="actions">
                     <span class="button"><?= 
                         $this->Form->postLink(__('X'), [

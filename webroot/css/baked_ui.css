@@ -80,7 +80,14 @@
     width: 20em;
 }
 .playlists.form .playlist-performer-id  {
-    width: 5em;
+    width: 10em;
+}
+.playlists.form .playlist-title label,
+.playlists.form .playlist-performer-id label {
+    display:none;
+}
+.playlists.form .playlist-performer-id .select2-container {
+    width: 100%;
 }
 .playlists.form .related {
 	border-top: 2px solid gray;

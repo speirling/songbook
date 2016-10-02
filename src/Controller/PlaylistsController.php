@@ -36,7 +36,7 @@ class PlaylistsController extends AppController
     public function view($id = null)
     {
         $playlist = $this->Playlists->get($id, [
-            'contain' => ['Performers', 'PlaylistSets' => ['Sets'=> ['Performers', 'SetSongs'=>['Songs', 'sort' => ['SetSongs.order' => 'ASC']]]]]
+            'contain' => ['Performers', 'PlaylistSets' => ['Sets'=> ['Performers', 'SetSongs'=>['Songs', 'sort' => ['SetSongs.order' => 'ASC']]], 'sort' => ['PlaylistSets.order' => 'ASC']]]
         ]);
         $this->set('playlist', $playlist); 
         $this->set('_serialize', ['playlist']);
@@ -65,6 +65,18 @@ class PlaylistsController extends AppController
     }
 
     /**
+     * sortSets method
+     *
+     * @param string|null $id Playlist id.
+     * @return void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function sortSets($id = null)
+    {
+        return $this->edit($id);
+    }
+
+    /**
      * Edit method
      *
      * @param string|null $id Playlist id.
@@ -74,7 +86,7 @@ class PlaylistsController extends AppController
     public function edit($id = null)
     {
         $playlist = $this->Playlists->get($id, [
-            'contain' => ['Performers', 'PlaylistSets' => ['Sets'=> ['Performers', 'SetSongs'=>['Songs', 'sort' => ['SetSongs.order' => 'ASC']]]]]
+            'contain' => ['Performers', 'PlaylistSets' => ['Sets'=> ['Performers', 'SetSongs'=>['Songs', 'sort' => ['SetSongs.order' => 'ASC']]], 'sort' => ['PlaylistSets.order' => 'ASC']]]
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $playlist = $this->Playlists->patchEntity($playlist, $this->request->data);

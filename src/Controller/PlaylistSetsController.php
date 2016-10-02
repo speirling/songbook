@@ -147,7 +147,7 @@ class PlaylistSetsController extends AppController
      * @return void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit($id = null, $redirect_array = ['action' => 'index'])
     {
         $playlistSet = $this->PlaylistSets->get($id, [
             'contain' => []
@@ -155,8 +155,10 @@ class PlaylistSetsController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $playlistSet = $this->PlaylistSets->patchEntity($playlistSet, $this->request->data);
             if ($this->PlaylistSets->save($playlistSet)) {
+		        // In case the sort order has been changed using javascript - giving fractional ranking values
+            	$this->rerank($playlistSet['playlist_id']);
                 $this->Flash->success(__('The playlist set has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect($redirect_array);
             } else {
                 $this->Flash->error(__('The playlist set could not be saved. Please, try again.'));
             }
@@ -175,6 +177,18 @@ class PlaylistSetsController extends AppController
 		])->contain(['Performers']);
         $this->set(compact('playlistSet', 'sets', 'playlists'));
         $this->set('_serialize', ['playlistSet']);
+    }
+
+    /**
+     * Version of the Edit method that sets a different redirect
+     *
+     * @param string|null $id Playlist Set id.
+     * @return void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function editret($id = null, $ret_controller, $ret_action, $ret_id)
+    {
+        $this->edit($id, ['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
     }
 
     /**
@@ -201,16 +215,26 @@ class PlaylistSetsController extends AppController
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
-    public function deleteret($ret_controller, $ret_action, $ret_id)
+    public function deleteret($id, $ret_controller, $ret_action, $ret_id)
     {
-        $this->request->allowMethod(['post', 'delete']);
     	$redirect_array = ['controller' => $ret_controller, 'action' => $ret_action, $ret_id];
-        $playlistSet = $this->PlaylistSets->get($id);
-        if ($this->PlaylistSets->delete($playlistSet)) {
-            $this->Flash->success(__('The playlist set has been deleted.'));
-        } else {
-            $this->Flash->error(__('The playlist set could not be deleted. Please, try again.'));
-        }
-        return $this->redirect($redirect_array);
+    	//expects POST data, not a html link.
+        return $this->delete($id, $redirect_array);
+    }
+    
+    /**
+     * Function to go through the table for a specific set and revise the values in the sortOrder column into integers
+     */
+    private function rerank($playlist_id) {
+    	$playlist = $this->PlaylistSets->find('all', [
+    		'conditions' => ['PlaylistSets.playlist_id =' => $playlist_id],
+    		'order' => ['PlaylistSets.order' => 'ASC']
+    	]);
+    	$current_order = 0;
+    	foreach($playlist as $playlistSet) {
+    		$current_order = $current_order + 1;
+    		$playlistSet->order = $current_order;
+    		$this->PlaylistSets->save($playlistSet);
+    	}
     }
 }
