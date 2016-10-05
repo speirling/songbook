@@ -79,6 +79,7 @@ class PlaylistSetsController extends AppController
     	$playlistSet = $this->PlaylistSets->patchEntity($playlistSet, $data);
     	if ($this->PlaylistSets->save($playlistSet)) {
     		$this->Flash->success(__('The playlist set has been saved.'));
+    		$this->rerank($data['playlist_id']);
     		return $this->redirect($redirect_array);
     	} else {
     		$this->Flash->error(__('The playlist set could not be saved. Please, try again.'));
@@ -89,11 +90,11 @@ class PlaylistSetsController extends AppController
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
-    public function addret($ret_controller, $ret_action, $ret_id, $set_id = null, $playlist_id = null)
+    public function addret($ret_controller, $ret_action, $ret_id)
     {
     	$data = [
-    		'set_id' => $set_id,
-    		'playlist_id' => $playlist_id,
+    		'set_id' => $this->request->data['set_id'],
+    		'playlist_id' => $this->request->data['playlist_id'],
     		'order' => 10000
     	];
     	$redirect_array = ['controller' => $ret_controller, 'action' => $ret_action, $ret_id];
@@ -101,7 +102,7 @@ class PlaylistSetsController extends AppController
     }
 
     /**
-     * Creates a new song entry and a set-song to link it to a specified set.
+     * Creates a new set entry and a playlist-set to link it to a specified playlist.
      * The return to the playlist
      *
      * @param string $ret_controller
@@ -114,29 +115,26 @@ class PlaylistSetsController extends AppController
     	 
     	if ($this->request->is('post')) {
     		$data = [
-    				'set_id' => $this->request->data['set_id'],
-    				'song' => [
-    						'title' => $this->request->data['title']
-    				],
-    				'key' => $this->request->data['key'],
-    				'order' => $this->request->data['order'],
-    				'performer_id' => $this->request->data['performer_id']
+    			'playlist_id' => $this->request->data['playlist_id'],
+    			'set' => [
+    				'title' => $this->request->data['title'],
+    				'performer_id' => $this->request->data['performer_id'],
+    				'comment' => $this->request->data['comment']
+    			],
+    			'order' => $this->request->data['order']
     		];
-    		$setSong = $this->SetSongs->newEntity($data);
-    
-    		$setSong = $this->SetSongs->newEntity($this->request->data, [
-    			'associated' => ['Songs']
-    		]);
-    		
-    		if ($this->SetSongs->save($setSong)) {
-    			$this->Flash->success(__('The song and set-song association have been saved.'));
+    		$playlistSet = $this->PlaylistSets->newEntity($data);
+
+    		if ($this->PlaylistSets->save($playlistSet)) {
+    			$this->Flash->success(__('The set and playlist-set association have been saved.'));
+    			$this->rerank($data['playlist_id']);
     			return $this->redirect($redirect_array);
     		} else {
-    			$this->Flash->error(__('The set song could not be saved. Please, try again.'));
+    			$this->Flash->error(__('The set or playlist-set association  could not be saved. Please, try again.'));
     		}
     
     	} else {
-    		$this->Flash->error(__('The song could not be created - no post data'));
+    		$this->Flash->error(__('The set could not be created - no post data'));
     	}
     }
 

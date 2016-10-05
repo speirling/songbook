@@ -26,7 +26,7 @@
         <?php
             echo $this->Form->input('title');
             echo $this->Form->input('performer_id', ['options' => $performers]);
-            echo $this->Form->input('Comment');
+            echo $this->Form->input('comment');
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>

@@ -33,7 +33,7 @@
     </table>
     <div class="row">
         <h4><?= __('Comment') ?></h4>
-        <?= $this->Text->autoParagraph(h($set->Comment)); ?>
+        <?= $this->Text->autoParagraph(h($set->comment)); ?>
     </div>
     <div class="related">
         <h4><?= __('Related Set Songs') ?></h4>

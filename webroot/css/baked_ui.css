@@ -64,7 +64,8 @@
 .playlists.form .playlist-key,
 .playlists.form .playlist-capo,
 .playlists.form .playlist-song-order,
-.playlists.form .set-add-song-label {
+.playlists.form .set-add-song-label,
+span.inlinetop {
     display: inline-block;
     vertical-align: top;
 }
@@ -170,6 +171,10 @@
 .playlists.form .set-songs input {
 	margin: 0;
 }
+.playlists.form .playlist-new-set-comment textarea {
+	height: 20px;
+	width: 400px;
+}
 .set-songs-container {
 	padding-left: 3em;
 }
@@ -228,8 +233,14 @@ table.sortable .handle {
    font-size: 2em;
 }
 .playlists.view .set-songs td.set-song-key {
-    width: 3em;
+    width: 4em;
     padding-right: 0;
+}
+.playlists.view .set-songs .capo,
+.playlists.view .set-songs .performed-by {
+	color: gray;
+    font-size: 0.8em;
+    margin-left: 0.8em;
 }
 .playlists.view .set-songs td.actions {
     display: none;

@@ -55,7 +55,7 @@ class PlaylistSetsTable extends Table
         $validator
             ->add('order', 'valid', ['rule' => 'numeric'])
             ->requirePresence('order', 'create')
-            ->notEmpty('order');
+            ->allowEmpty('order');
 
         return $validator;
     }

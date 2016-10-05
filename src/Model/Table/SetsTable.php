@@ -56,7 +56,7 @@ class SetsTable extends Table
             ->notEmpty('title');
 
         $validator
-            ->requirePresence('Comment', 'create')
+            ->add('Comment', 'create')
             ->allowEmpty('Comment');
 
         return $validator;

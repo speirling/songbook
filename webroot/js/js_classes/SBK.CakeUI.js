@@ -118,10 +118,31 @@
 		}
 	},
 	
-	collapse_sets: function (event) {
-		event.preventDefault;
-		jQuery('.related table.sets td.set-songs-container').toggle();
-		return false;
-		
+	toggleable: {
+		sets: function (event) {
+			event.preventDefault;
+			jQuery('.related table.sets td.set-songs-container').toggle();
+			return false;
+		},
+		make: function (container) {
+			var toggle_button, content_div, add_text;
+
+			jQuery(container).wrapInner('<div class="toggle-content"></div>');
+			add_text = jQuery(container).attr('add_text');
+			content_div = jQuery('.toggle-content', container);
+			toggle_button = jQuery('<span class="button show">+ Add</span>').prependTo(container);
+			content_div.hide();
+			toggle_button.click(function (event) {
+				console.log(event, content_div, container);
+				content_div.toggle();
+				if(content_div.is(":visible")) {
+					toggle_button.html('Hide Add form');
+				} else {
+					toggle_button.html('+ Add '.add_text);
+				}
+			});
+			
+		}
+	
 	}
 };

@@ -50,4 +50,8 @@ jQuery(document).ready(function() {
 		event.stopPropagation();
          SBK.CakeUI.select.adjacent_row('down', jQuery(this));
       });
+      
+      jQuery('.add-new-ui').each(function () {
+    	  SBK.CakeUI.toggleable.make(this);
+      });
 });
