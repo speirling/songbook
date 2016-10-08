@@ -18,6 +18,7 @@ class SetsTableTest extends TestCase
      */
     public $fixtures = [
         'app.sets',
+        'app.performers',
         'app.set_songs'
     ];
 
@@ -61,6 +62,16 @@ class SetsTableTest extends TestCase
      * @return void
      */
     public function testValidationDefault()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test buildRules method
+     *
+     * @return void
+     */
+    public function testBuildRules()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

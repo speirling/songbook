@@ -10,6 +10,7 @@ use Cake\Validation\Validator;
 /**
  * Sets Model
  *
+ * @property \Cake\ORM\Association\BelongsTo $Performers
  * @property \Cake\ORM\Association\HasMany $SetSongs
  */
 class SetsTable extends Table
@@ -29,6 +30,10 @@ class SetsTable extends Table
         $this->displayField('title');
         $this->primaryKey('id');
 
+        $this->belongsTo('Performers', [
+            'foreignKey' => 'performer_id',
+            'joinType' => 'INNER'
+        ]);
         $this->hasMany('SetSongs', [
             'foreignKey' => 'set_id'
         ]);
@@ -50,6 +55,23 @@ class SetsTable extends Table
             ->requirePresence('title', 'create')
             ->notEmpty('title');
 
+        $validator
+            ->add('Comment', 'create')
+            ->allowEmpty('Comment');
+
         return $validator;
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->existsIn(['performer_id'], 'Performers'));
+        return $rules;
     }
 }

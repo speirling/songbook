@@ -10,8 +10,9 @@ use Cake\Validation\Validator;
 /**
  * SetSongs Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Songs
  * @property \Cake\ORM\Association\BelongsTo $Sets
+ * @property \Cake\ORM\Association\BelongsTo $Songs
+ * @property \Cake\ORM\Association\BelongsTo $Performers
  */
 class SetSongsTable extends Table
 {
@@ -30,12 +31,16 @@ class SetSongsTable extends Table
         $this->displayField('id');
         $this->primaryKey('id');
 
+        $this->belongsTo('Sets', [
+            'foreignKey' => 'set_id',
+            'joinType' => 'INNER'
+        ]);
         $this->belongsTo('Songs', [
             'foreignKey' => 'song_id',
             'joinType' => 'INNER'
         ]);
-        $this->belongsTo('Sets', [
-            'foreignKey' => 'set_id',
+        $this->belongsTo('Performers', [
+            'foreignKey' => 'performer_id',
             'joinType' => 'INNER'
         ]);
     }
@@ -54,8 +59,14 @@ class SetSongsTable extends Table
 
         $validator
             ->add('order', 'valid', ['rule' => 'numeric'])
-            ->requirePresence('order', 'create')
-            ->notEmpty('order');
+            ->allowEmpty('order');
+
+        $validator
+            ->allowEmpty('key');
+
+        $validator
+            ->add('capo', 'valid', ['rule' => 'numeric'])
+            ->allowEmpty('capo');
 
         return $validator;
     }
@@ -69,8 +80,9 @@ class SetSongsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['song_id'], 'Songs'));
         $rules->add($rules->existsIn(['set_id'], 'Sets'));
+        $rules->add($rules->existsIn(['song_id'], 'Songs'));
+        $rules->add($rules->existsIn(['performer_id'], 'Performers'));
         return $rules;
     }
 }

@@ -18,7 +18,8 @@ class PlaylistSetsControllerTest extends IntegrationTestCase
     public $fixtures = [
         'app.playlist_sets',
         'app.sets',
-        'app.playlists'
+        'app.playlists',
+        'app.acts'
     ];
 
     /**

@@ -18,10 +18,11 @@ class SetSongsTableTest extends TestCase
      */
     public $fixtures = [
         'app.set_songs',
+        'app.sets',
+        'app.performers',
         'app.songs',
         'app.song_instances',
-        'app.song_tags',
-        'app.sets'
+        'app.song_tags'
     ];
 
     /**

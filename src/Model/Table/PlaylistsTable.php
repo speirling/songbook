@@ -10,6 +10,7 @@ use Cake\Validation\Validator;
 /**
  * Playlists Model
  *
+ * @property \Cake\ORM\Association\BelongsTo $Performers
  * @property \Cake\ORM\Association\HasMany $PlaylistSets
  */
 class PlaylistsTable extends Table
@@ -29,6 +30,10 @@ class PlaylistsTable extends Table
         $this->displayField('title');
         $this->primaryKey('id');
 
+        $this->belongsTo('Performers', [
+            'foreignKey' => 'performer_id',
+            'joinType' => 'INNER'
+        ]);
         $this->hasMany('PlaylistSets', [
             'foreignKey' => 'playlist_id'
         ]);
@@ -51,5 +56,18 @@ class PlaylistsTable extends Table
             ->notEmpty('title');
 
         return $validator;
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->existsIn(['performer_id'], 'Performers'));
+        return $rules;
     }
 }

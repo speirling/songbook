@@ -2,7 +2,10 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-
+use App\Model\Entity\SetSong;
+use App\Model\Entity\PlaylistSet;
+use App\Model\Entity\Set;
+use App\Model\Entity\Song;
 /**
  * Playlists Controller
  *
@@ -17,8 +20,9 @@ class PlaylistsController extends AppController
      * @return void
      */
     public function index()
-    {
-        $this->set('playlists', $this->paginate($this->Playlists));
+    {   
+        $playlists = $this->Playlists->find()->contain('Performers');
+        $this->set('playlists', $this->paginate($playlists));
         $this->set('_serialize', ['playlists']);
     }
 
@@ -32,9 +36,9 @@ class PlaylistsController extends AppController
     public function view($id = null)
     {
         $playlist = $this->Playlists->get($id, [
-            'contain' => ['PlaylistSets']
+            'contain' => ['Performers', 'PlaylistSets' => ['Sets'=> ['Performers', 'SetSongs'=>['Songs', 'sort' => ['SetSongs.order' => 'ASC']]], 'sort' => ['PlaylistSets.order' => 'ASC']]]
         ]);
-        $this->set('playlist', $playlist);
+        $this->set('playlist', $playlist); 
         $this->set('_serialize', ['playlist']);
     }
 
@@ -57,6 +61,19 @@ class PlaylistsController extends AppController
         }
         $this->set(compact('playlist'));
         $this->set('_serialize', ['playlist']);
+        $this->set('performers', $this->Playlists->Performers->find('list'));
+    }
+
+    /**
+     * sortSets method
+     *
+     * @param string|null $id Playlist id.
+     * @return void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function sortSets($id = null)
+    {
+        return $this->edit($id);
     }
 
     /**
@@ -69,7 +86,7 @@ class PlaylistsController extends AppController
     public function edit($id = null)
     {
         $playlist = $this->Playlists->get($id, [
-            'contain' => []
+            'contain' => ['Performers', 'PlaylistSets' => ['Sets'=> ['Performers', 'SetSongs'=>['Songs', 'sort' => ['SetSongs.order' => 'ASC']]], 'sort' => ['PlaylistSets.order' => 'ASC']]]
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $playlist = $this->Playlists->patchEntity($playlist, $this->request->data);
@@ -80,8 +97,33 @@ class PlaylistsController extends AppController
                 $this->Flash->error(__('The playlist could not be saved. Please, try again.'));
             }
         }
-        $this->set(compact('playlist'));
+        $setSong = new SetSong();
+        $songs = $this->Playlists->PlaylistSets->Sets->SetSongs->Songs->find('list', [
+        		'keyField' => 'id',
+        		'valueField' => function ($e) {
+        			return $e['title']."  (".$e['performed_by'].")";
+        		}
+        	]
+        );
+        $playlistSet = new PlaylistSet();
+        $set = new Set();
+        $song = new Song();
+        $this->set(compact('playlist', 'setSong', 'songs', 'playlistSet', 'set', 'song'));
         $this->set('_serialize', ['playlist']);
+        $this->set('performers', $this->Playlists->Performers->find('list', [
+            		'keyField' => 'id',
+            		'valueField' => 'nickname'
+                ]
+            )
+        );
+        $this->set('sets', $this->Playlists->PlaylistSets->sets->find('list', [
+            		'keyField' => 'id',
+            		'valueField' =>  function ($e) {
+	        			return $e['title']."  (performer ".$e['performer_id'].")";
+	        		}
+                ]
+            )
+        );
     }
 
     /**

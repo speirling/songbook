@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
 
 /**
  * SetSongs Controller
@@ -19,7 +20,7 @@ class SetSongsController extends AppController
     public function index()
     {
         $this->paginate = [
-            'contain' => ['Songs', 'Sets']
+            'contain' => ['Sets', 'Songs', 'Performers']
         ];
         $this->set('setSongs', $this->paginate($this->SetSongs));
         $this->set('_serialize', ['setSongs']);
@@ -35,7 +36,7 @@ class SetSongsController extends AppController
     public function view($id = null)
     {
         $setSong = $this->SetSongs->get($id, [
-            'contain' => ['Songs', 'Sets']
+            'contain' => ['Sets', 'Songs', 'Performers']
         ]);
         $this->set('setSong', $setSong);
         $this->set('_serialize', ['setSong']);
@@ -46,22 +47,80 @@ class SetSongsController extends AppController
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function add($redirect_array = ['action' => 'index'])
     {
-        $setSong = $this->SetSongs->newEntity();
+	    $setSong = $this->SetSongs->newEntity();
         if ($this->request->is('post')) {
-            $setSong = $this->SetSongs->patchEntity($setSong, $this->request->data);
-            if ($this->SetSongs->save($setSong)) {
-                $this->Flash->success(__('The set song has been saved.'));
-                return $this->redirect(['action' => 'index']);
-            } else {
-                $this->Flash->error(__('The set song could not be saved. Please, try again.'));
-            }
+	    	$setSong = $this->SetSongs->patchEntity($setSong, $this->request->data);
+	        if ($this->SetSongs->save($setSong)) {
+	            $this->Flash->success(__('The set song has been saved.'));
+	            return $this->redirect($redirect_array);
+	        } else {
+	            $this->Flash->error(__('The set song could not be saved. Please, try again.'));
+	        }
         }
-        $songs = $this->SetSongs->Songs->find('list', ['limit' => 200]);
-        $sets = $this->SetSongs->Sets->find('list', ['limit' => 200]);
-        $this->set(compact('setSong', 'songs', 'sets'));
+        $sets = $this->SetSongs->Sets->find('list');
+        $songs = $this->SetSongs->Songs->find('list', [
+		    'keyField' => 'id',
+		    'valueField' => function ($e) {
+                return $e['title']."  (".$e['performed_by'].")";
+		    }
+		]);
+        $performers = $this->SetSongs->Performers->find('list');
+        $this->set(compact('setSong', 'sets', 'songs', 'performers'));
         $this->set('_serialize', ['setSong']);
+    }
+
+    /**
+     * Version of Add method that sets a different redirect
+     *
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    public function addret($ret_controller, $ret_action, $ret_id)
+    {
+    	$this->add(['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
+    }
+    
+    /**
+     * Creates a new song entry and a set-song to link it to a specified set.
+     * The return to the playlist
+     * 
+     * @param string $ret_controller
+     * @param string $ret_action
+     * @param integer $ret_id
+     */
+    public function addAndLinkSong($ret_controller, $ret_action, $ret_id)
+    {
+    	$redirect_array = ['controller' => $ret_controller, 'action' => $ret_action, $ret_id];
+    	
+    	if ($this->request->is('post')) {
+    		$data = [
+    			'set_id' => $this->request->data['set_id'],
+    			'song' => [
+    				'title' => $this->request->data['title'],
+    				'performed_by' => $this->request->data['performed_by']
+    			],
+    			'key' => $this->request->data['key'],
+    			'order' => $this->request->data['order'],
+    			'performer_id' => $this->request->data['performer_id']
+    		];
+
+			if(array_key_exists('performed_by', $this->request->data)) {
+				$data['song']['performed_by'] = $this->request->data['performed_by'];
+			}
+
+    		$setSong = $this->SetSongs->newEntity($data);
+    		
+    		if ($this->SetSongs->save($setSong)) {
+    			$this->Flash->success(__('The song and set-song association have been saved.'));
+    			return $this->redirect($redirect_array);
+    		} else {
+    			$this->Flash->error(__('The set song could not be saved. Please, try again.'));
+    		}
+
+    	} else {
+    		$this->Flash->error(__('The song could not be created - no post data'));
+    	}
     }
 
     /**
@@ -71,7 +130,7 @@ class SetSongsController extends AppController
      * @return void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit($id = null, $redirect_array = ['action' => 'index'])
     {
         $setSong = $this->SetSongs->get($id, [
             'contain' => []
@@ -79,16 +138,39 @@ class SetSongsController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $setSong = $this->SetSongs->patchEntity($setSong, $this->request->data);
             if ($this->SetSongs->save($setSong)) {
+		        // In case the sort order has been changed using javascript - giving fractional ranking values
+		        $this->rerank($setSong['set_id']);
                 $this->Flash->success(__('The set song has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect($redirect_array);
             } else {
                 $this->Flash->error(__('The set song could not be saved. Please, try again.'));
             }
         }
-        $songs = $this->SetSongs->Songs->find('list', ['limit' => 200]);
-        $sets = $this->SetSongs->Sets->find('list', ['limit' => 200]);
-        $this->set(compact('setSong', 'songs', 'sets'));
+        $sets = $this->SetSongs->Sets->find('list');
+        $songs = $this->SetSongs->Songs->find('list', [
+		    'keyField' => 'id',
+		    'valueField' => function ($e) {
+                return $e['title']."  (".$e['performed_by'].")";
+		    }
+		]);
+        $performers = $this->SetSongs->Performers->find('list');
+        $this->set(compact('setSong', 'sets', 'songs', 'performers'));
         $this->set('_serialize', ['setSong']);
+    }
+
+    /**
+     * Version of the Edit method that sets a different redirect
+     *
+     * @param string|null $id Set id.
+     * @param string|null $id Controller to return to.
+     * @param string|null $id View of the return controller.
+     * @param string|null $id id of the return controller.
+     * @return void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function editret($id = null, $ret_controller, $ret_action, $ret_id)
+    {
+    	$this->edit($id, ['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
     }
 
     /**
@@ -98,7 +180,7 @@ class SetSongsController extends AppController
      * @return void Redirects to index.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete($id = null, $redirect_array = ['action' => 'index'])
     {
         $this->request->allowMethod(['post', 'delete']);
         $setSong = $this->SetSongs->get($id);
@@ -107,6 +189,33 @@ class SetSongsController extends AppController
         } else {
             $this->Flash->error(__('The set song could not be deleted. Please, try again.'));
         }
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect($redirect_array);
+    }
+
+    /**
+     * Version of Delete method that sets a different redirect
+     *
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    public function deleteret($id, $ret_controller, $ret_action, $ret_id)
+    {
+    	//expects POST data, not a html link.
+    	$this->delete($id, ['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
+    }
+    
+    /**
+     * Function to go through the table for a specific set and revise the values in the sortOrder column into integers
+     */
+    private function rerank($set_id) {
+    	$set = $this->SetSongs->find('all', [
+    		'conditions' => ['SetSongs.set_id =' => $set_id],
+    		'order' => ['SetSongs.order' => 'ASC']
+    	]);
+    	$current_order = 0;
+    	foreach($set as $setSong) {
+    		$current_order = $current_order + 1;
+    		$setSong->order = $current_order;
+    		$this->SetSongs->save($setSong);
+    	}
     }
 }

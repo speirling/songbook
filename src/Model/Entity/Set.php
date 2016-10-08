@@ -8,6 +8,9 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string $title
+ * @property int $performer_id
+ * @property \App\Model\Entity\Performer $performer
+ * @property string $Comment
  * @property \App\Model\Entity\SetSong[] $set_songs
  */
 class Set extends Entity

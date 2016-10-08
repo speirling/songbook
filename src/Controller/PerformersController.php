@@ -31,9 +31,7 @@ class PerformersController extends AppController
      */
     public function view($id = null)
     {
-        $performer = $this->Performers->get($id, [
-            'contain' => ['SongInstances']
-        ]);
+        $performer = $this->Performers->get($id);
         $this->set('performer', $performer);
         $this->set('_serialize', ['performer']);
     }

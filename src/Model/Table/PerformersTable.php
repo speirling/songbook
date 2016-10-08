@@ -10,7 +10,8 @@ use Cake\Validation\Validator;
 /**
  * Performers Model
  *
- * @property \Cake\ORM\Association\HasMany $SongInstances
+ * @property \Cake\ORM\Association\HasMany $SetSongs
+ * @property \Cake\ORM\Association\HasMany $Sets
  */
 class PerformersTable extends Table
 {
@@ -29,7 +30,13 @@ class PerformersTable extends Table
         $this->displayField('name');
         $this->primaryKey('id');
 
-        $this->hasMany('SongInstances', [
+        $this->hasMany('SetSongs', [
+            'foreignKey' => 'performer_id'
+        ]);
+        $this->hasMany('Sets', [
+            'foreignKey' => 'performer_id'
+        ]);
+        $this->hasMany('Playlists', [
             'foreignKey' => 'performer_id'
         ]);
     }

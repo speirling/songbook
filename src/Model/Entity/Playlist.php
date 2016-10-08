@@ -8,6 +8,7 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string $title
+ * @property int $performer_id
  * @property \App\Model\Entity\PlaylistSet[] $playlist_sets
  */
 class Playlist extends Entity

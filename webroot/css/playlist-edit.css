@@ -113,6 +113,7 @@ li.set .button.toggle-buttons {
 .playlist input.act {
 	border: 0px;
 }
+/*
 span.playlist-title,
 span.playlist-act ,
 span.set-title {
@@ -121,6 +122,7 @@ span.set-title {
 	margin-bottom: 0.3em;
 	margin-right: 3em;
 }
+
 span.playlist-title label,
 span.playlist-act label {
 	display: inline-block;
@@ -128,6 +130,7 @@ span.playlist-act label {
 	text-align: right;
 	font-size: 0.7em;
 }
+*/
 #playlist-book span.playlist-title label,
 #playlist-book span.playlist-act label,
 span.set-title label {
@@ -151,11 +154,11 @@ input.set-title {
 #playlist-holder .detail {
 	display: none;
 }
-
+/*
 .playlist-title {
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
-}
+}*/
 .set-title {
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;

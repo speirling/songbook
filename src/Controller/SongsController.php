@@ -35,9 +35,7 @@ class SongsController extends AppController
      */
     public function view($id = null)
     {
-        $song = $this->Songs->get($id, [
-            'contain' => ['SongInstances', 'SongTags']
-        ]);
+        $song = $this->Songs->get($id);
         $key = null;
         $capo = null;
         if(array_key_exists('key', $_GET)) {
@@ -58,14 +56,34 @@ class SongsController extends AppController
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function add($redirect_array = ['action' => 'index'])
+    {
+    	$id = $this->add_base();
+    	if($id) {
+    		return $this->redirect($redirect_array);
+    	}
+    }
+    
+    /**
+     * Add-base method
+     * To be used by Add method - which does as expected, 
+     * Add-ret, which runs the Add method but then redirects to a different page
+     * and
+     * Add-forward - which is like add-ret except it forwards 
+     * the newly-added id to add-ret on another model, along with 
+     * the original return destination.  
+     *
+     *
+     * @return id of saved record on success, nothing on failure (raises an error).
+     */
+    public function add_base()
     {
         $song = $this->Songs->newEntity();
         if ($this->request->is('post')) {
             $song = $this->Songs->patchEntity($song, $this->request->data);
-            if ($this->Songs->save($song)) {
+            if ($result = $this->Songs->save($song)) {
                 $this->Flash->success(__('The song has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $result->id;
             } else {
                 $this->Flash->error(__('The song could not be saved. Please, try again.'));
             }
@@ -75,13 +93,23 @@ class SongsController extends AppController
     }
 
     /**
+     * Version of Add method that redirects back to a previous page
+     *
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    public function addret($ret_controller, $ret_action, $ret_id)
+    {
+    	$this->add(['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
+    }
+
+    /**
      * Edit method
      *
      * @param string|null $id Song id.
      * @return void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function edit($id = null)
+    public function edit($id = null, $redirect_array = ['action' => 'index'])
     {
         $song = $this->Songs->get($id, [
             'contain' => []
@@ -90,7 +118,7 @@ class SongsController extends AppController
             $song = $this->Songs->patchEntity($song, $this->request->data);
             if ($this->Songs->save($song)) {
                 $this->Flash->success(__('The song has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect($redirect_array);
             } else {
                 $this->Flash->error(__('The song could not be saved. Please, try again.'));
             }
@@ -99,6 +127,21 @@ class SongsController extends AppController
         $this->set('_serialize', ['song']);
     }
 
+    /**
+     * Version of the Edit method that sets a different redirect
+     *
+     * @param string|null $id Set id.
+     * @param string|null $id Controller to return to.
+     * @param string|null $id View of the return controller.
+     * @param string|null $id id of the return controller.
+     * @return void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function editret($id = null, $ret_controller, $ret_action, $ret_id)
+    {
+    	$this->edit($id, ['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
+    }
+    
     /**
      * Delete method
      *

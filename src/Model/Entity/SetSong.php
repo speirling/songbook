@@ -7,11 +7,15 @@ use Cake\ORM\Entity;
  * SetSong Entity.
  *
  * @property int $id
- * @property int $song_id
- * @property \App\Model\Entity\Song $song
  * @property int $set_id
  * @property \App\Model\Entity\Set $set
+ * @property int $song_id
+ * @property \App\Model\Entity\Song $song
  * @property int $order
+ * @property int $performer_id
+ * @property \App\Model\Entity\Performer $performer
+ * @property string $key
+ * @property int $capo
  */
 class SetSong extends Entity
 {
