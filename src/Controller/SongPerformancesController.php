@@ -46,14 +46,12 @@ class SongPerformancesController extends AppController
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function add($redirect_array = ['action' => 'index'])
     {
-        $songPerformance = $this->SongPerformances->newEntity();
         if ($this->request->is('post')) {
-            $songPerformance = $this->SongPerformances->patchEntity($songPerformance, $this->request->data);
             if ($this->SongPerformances->save($songPerformance)) {
                 $this->Flash->success(__('The song performance has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect($redirect_array);
             } else {
                 $this->Flash->error(__('The song performance could not be saved. Please, try again.'));
             }
@@ -61,6 +59,38 @@ class SongPerformancesController extends AppController
         $songs = $this->SongPerformances->Songs->find('list', ['limit' => 200]);
         $this->set(compact('songPerformance', 'songs'));
         $this->set('_serialize', ['songPerformance']);
+    }
+
+    /**
+     * The Save section of the Add method
+     * Separated out so that it can be used for non-post data
+     *
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    private function addsave($data, $redirect_array)
+    {
+    	$songPerformance = $this->SongPerformances->newEntity();
+    	$songPerformance = $this->SongPerformances->patchEntity($songPerformance, $data);
+    	if ($this->SongPerformances->save($songPerformance)) {
+            $this->Flash->success(__('The song performance has been saved.'));
+            return $this->redirect($redirect_array);
+        } else {
+            $this->Flash->error(__('The song performance could not be saved. Please, try again.'));
+        }
+    }
+
+    /**
+     * Version of Add method that sets a different redirect
+     *
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    public function addret($song_id, $ret_controller, $ret_action, $ret_id)
+    {
+    	$data = [
+    		'song_id' => $song_id
+    	];
+    	$redirect_array = ['controller' => $ret_controller, 'action' => $ret_action, $ret_id];
+    	$this->addsave($data, $redirect_array);
     }
 
     /**

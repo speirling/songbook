@@ -46,21 +46,46 @@ class SongVotesController extends AppController
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function add($redirect_array = ['action' => 'index'])
     {
-        $songVote = $this->SongVotes->newEntity();
         if ($this->request->is('post')) {
-            $songVote = $this->SongVotes->patchEntity($songVote, $this->request->data);
-            if ($this->SongVotes->save($songVote)) {
-                $this->Flash->success(__('The song vote has been saved.'));
-                return $this->redirect(['action' => 'index']);
-            } else {
-                $this->Flash->error(__('The song vote could not be saved. Please, try again.'));
-            }
+        	return addsave($this->request->data, $redirect_array);
         }
         $songs = $this->SongVotes->Songs->find('list', ['limit' => 200]);
         $this->set(compact('songVote', 'songs'));
         $this->set('_serialize', ['songVote']);
+    }
+
+    /**
+     * The Save section of the Add method
+     * Separated out so that it can be used for non-post data
+     *
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    private function addsave($data, $redirect_array)
+    {
+    	$songVote = $this->SongVotes->newEntity();
+    	$songVote = $this->SongVotes->patchEntity($songVote, $data);
+    	if ($this->SongVotes->save($songVote)) {
+            $this->Flash->success(__('The song vote has been saved.'));
+            return $this->redirect($redirect_array);
+        } else {
+            $this->Flash->error(__('The song vote could not be saved. Please, try again.'));
+        }
+    }
+
+    /**
+     * Version of Add method that sets a different redirect
+     *
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    public function addret($song_id, $ret_controller, $ret_action, $ret_id)
+    {
+    	$data = [
+    		'song_id' => $song_id
+    	];
+    	$redirect_array = ['controller' => $ret_controller, 'action' => $ret_action, $ret_id];
+    	$this->addsave($data, $redirect_array);
     }
 
     /**

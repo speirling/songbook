@@ -46,11 +46,10 @@ class EventsTable extends Table
             ->allowEmpty('venue');
 
         $validator
-            ->requirePresence('timestamp', 'create')
-            ->notEmpty('timestamp');
+            ->add('timestamp', 'create')
+            ->allowEmpty('timestamp');
 
         $validator
-            ->add('duration_hours', 'valid', ['rule' => 'numeric'])
             ->allowEmpty('duration_hours');
 
         $validator

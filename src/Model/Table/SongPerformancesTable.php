@@ -48,8 +48,8 @@ class SongPerformancesTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->requirePresence('timestamp', 'create')
-            ->notEmpty('timestamp');
+            ->add('timestamp', 'create')
+            ->allowEmpty('timestamp');
 
         return $validator;
     }

@@ -247,7 +247,7 @@ table.sortable .handle {
 }
 .playlists.view .set-songs tr.ui-selected td.actions {
     display: table-cell;
-    width: 8em;
+    width: 16em;
 }
 .playlists.view .actions {
     text-align: right;

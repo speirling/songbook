@@ -43,20 +43,30 @@ class EventsController extends AppController
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function add($redirect_array = ['action' => 'index'])
     {
         $event = $this->Events->newEntity();
         if ($this->request->is('post')) {
             $event = $this->Events->patchEntity($event, $this->request->data);
             if ($this->Events->save($event)) {
                 $this->Flash->success(__('The event has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect($redirect_array);
             } else {
                 $this->Flash->error(__('The event could not be saved. Please, try again.'));
             }
         }
         $this->set(compact('event'));
         $this->set('_serialize', ['event']);
+    }
+
+    /**
+     * Version of Add method that sets a different redirect
+     *
+     * @return void Redirects on successful add, renders view otherwise.
+     */
+    public function addret($ret_controller, $ret_action, $ret_id)
+    {
+    	$this->add(['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
     }
 
     /**

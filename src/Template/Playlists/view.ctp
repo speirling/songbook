@@ -54,6 +54,24 @@
                                         'action' => 'view', 
                                         $setSongs->song->id
                                     ]) ?></span>  
+                                <span class="button vote"><?= 
+                                    $this->Html->link(__(
+                                        'vote'
+                                    ), [
+                                        'controller' => 'SongVotes', 
+                                        'action' => 'addret', 
+                                        $setSongs->song->id,
+                                        'playlists', 'view', $playlist->id
+                                    ]) ?></span>  
+                                <span class="button performance"><?= 
+                                    $this->Html->link(__(
+                                        'played'
+                                    ), [
+                                        'controller' => 'SongPerformances', 
+                                        'action' => 'addret', 
+                                        $setSongs->song->id,
+                                        'playlists', 'view', $playlist->id
+                                    ]) ?></span>  
                                 <span class="button arrow move-up">&uparrow;</span>
                                 <span class="button arrow move-down">&downarrow;</span>           
                             </td>
