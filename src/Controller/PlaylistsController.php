@@ -38,7 +38,9 @@ class PlaylistsController extends AppController
         $playlist = $this->Playlists->get($id, [
             'contain' => ['Performers', 'PlaylistSets' => ['Sets'=> ['Performers', 'SetSongs'=>['Songs', 'sort' => ['SetSongs.order' => 'ASC']]], 'sort' => ['PlaylistSets.order' => 'ASC']]]
         ]);
-        $this->set('playlist', $playlist); 
+
+        $song = new Song();
+        $this->set(compact('playlist', 'song'));
         $this->set('_serialize', ['playlist']);
     }
 

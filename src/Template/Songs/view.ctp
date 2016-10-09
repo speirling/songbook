@@ -6,7 +6,33 @@
         <fieldset><?= $this->Form->input('Search', ['label' => false]) ?></fieldset>
         <span class="button"><?= $this->Form->button(__('Search for Songs')) ?></span>
         <?= $this->Form->end() ?>
-    </span>
+    </span> 
+    <span class="button vote float-right"><?= 
+        $this->Html->link(__(
+            'vote'
+        ), [
+            'controller' => 'SongVotes', 
+            'action' => 'addret', 
+            $song->id,
+            'songs', 'view', $song->id
+        ]) ?></span>  
+    <span class="button performance float-right"><?= 
+        $this->Html->link(__(
+            'played'
+        ), [
+            'controller' => 'SongPerformances', 
+            'action' => 'addret', 
+            $song->id,
+            'songs', 'view', $song->id
+        ]) ?></span>   
+    <span class="button edit float-right"><?= 
+        $this->Html->link(__(
+            'edit'
+        ), [
+            'controller' => 'songs', 
+            'action' => 'edit', 
+            $song->id
+        ]) ?></span>  
     <h3><?= h($song->title) ?></h3>
     <table class="vertical-table">
         <tr class="title">

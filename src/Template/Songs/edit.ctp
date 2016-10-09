@@ -19,20 +19,19 @@
         <li><?= $this->Html->link(__('New Performer'), ['controller' => 'Performers', 'action' => 'add']) ?></li>
     </ul>
 </nav>
-<div class="songs form large-9 medium-8 columns content">
+<div class="songs songs-edit form large-9 medium-8 columns content">
     <?= $this->Form->create($song) ?>
     <fieldset>
+    <?= '<span class="button vote float-right">'.$this->Form->button(__('Save Song')).'</span>' ?>
         <legend><?= __('Edit Song') ?></legend>
         <?php
-            echo $this->Form->input('title');
-            echo $this->Form->input('written_by');
-            echo $this->Form->input('performed_by');
-            echo $this->Form->input('base_key');
-            echo $this->Form->input('content', ['class' => 'sbk-lyrics-panel']);
-            echo $this->Form->input('original_filename');
-            echo $this->Form->input('meta_tags');
+            echo '<span class="song-input-title">'.$this->Form->input('title').'</span>';
+            echo '<span class="song-input-written_by">'.$this->Form->input('written_by').'</span>';
+            echo '<span class="song-input-performed_by">'.$this->Form->input('performed_by').'</span>';
+            echo '<span class="song-input-base_key">'.$this->Form->input('base_key').'</span>';
+            echo '<span class="song-input-tags">'.$this->Form->input('meta_tags').'</span>';
+            echo '<span class="song-input-content">'.$this->Form->input('content', ['class' => 'sbk-lyrics-panel']).'</span>';
         ?>
     </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
     <?= $this->Form->end() ?>
 </div>

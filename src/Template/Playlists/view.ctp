@@ -3,11 +3,13 @@
 <div class="playlists view large-10 medium-9 columns content">
     <span class="button float-right"><?= $this->Html->link(__('Edit Playlist'), ['action' => 'edit', $playlist->id]) ?></span>
     <span class="button float-right"><?= $this->Html->link(__('List Playlists'), ['controller' => 'Playlists', 'action' => 'index']) ?></span>
-    <span class="search-form float-right"><?= $this->Form->create('search songs', ['url' => ['controller' => 'Songs', 'action' => 'index']]) ?>
-        <fieldset><?= $this->Form->input('Search', ['label' => false]) ?></fieldset>
-        <span class="button"><?= $this->Form->button(__('Search for Songs')) ?></span>
+    <span class="search-form float-right">
+        <?= $this->Form->create('search songs', ['url' => ['controller' => 'Songs', 'action' => 'index']]) ?>
+            <fieldset><?= $this->Form->input('Search', ['label' => false]) ?></fieldset>
+            <span class="button"><?= $this->Form->button(__('Search for Songs')) ?></span>
         <?= $this->Form->end() ?>
     </span>
+    <span class="button float-right"><?= $this->Html->link(__('Add new song'), ['controller' => 'Songs', 'action' => 'add']) ?></span>
     <h3><?= h($playlist->title) ?></h3>
     <?php
          if($playlist->performer->nickname !== '') {

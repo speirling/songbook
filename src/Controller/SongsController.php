@@ -56,10 +56,11 @@ class SongsController extends AppController
      *
      * @return void Redirects on successful add, renders view otherwise.
      */
-    public function add($redirect_array = ['action' => 'index'])
+    public function add($redirect_array = ['action' => 'view'])
     {
     	$id = $this->add_base();
     	if($id) {
+    		$redirect_array[] = $id;
     		return $this->redirect($redirect_array);
     	}
     }
@@ -109,7 +110,7 @@ class SongsController extends AppController
      * @return void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function edit($id = null, $redirect_array = ['action' => 'index'])
+    public function edit($id = null, $redirect_array = ['action' => 'view'])
     {
         $song = $this->Songs->get($id, [
             'contain' => []
@@ -118,6 +119,7 @@ class SongsController extends AppController
             $song = $this->Songs->patchEntity($song, $this->request->data);
             if ($this->Songs->save($song)) {
                 $this->Flash->success(__('The song has been saved.'));
+                $redirect_array[] = $id;
                 return $this->redirect($redirect_array);
             } else {
                 $this->Flash->error(__('The song could not be saved. Please, try again.'));

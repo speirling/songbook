@@ -278,6 +278,46 @@ table.sortable .handle {
 	height: 2.2em;
 }
 
+/* songs edit */
+.songs-edit .song-input-title {
+    display: block;
+}
+.songs-edit .song-input-written_by {
+    display: inline-block;
+    min-width: 15em;
+    width: 25%;
+    
+}
+.songs-edit .song-input-performed_by {
+    display: inline-block;
+    min-width: 15em;
+    width: 25%;
+    
+}
+.songs-edit .song-input-base_key {
+    display: inline-block;
+    min-width: 15em;
+    width: 25%;
+    
+}
+.songs-edit .song-input-content,
+.songs-edit .song-input-content div {
+    display: block;
+    height: 30em;
+    
+}
+.songs-edit .song-input-content textarea {
+	height: 100%;
+}
+.songs-edit .song-input-tags {
+    display: inline-block;
+    height: 5em;
+    
+}
+.songs-edit .song-input-tags textarea {
+	height: 2em;
+}
+
 /* song lyrics */
 
 #container .container .songs.view .lyrics-panel {
