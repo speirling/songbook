@@ -1,8 +1,5 @@
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('List Events'), ['action' => 'index']) ?></li>
-    </ul>
+    <?= $this->element('standard_menu') ?>
 </nav>
 <div class="events form large-9 medium-8 columns content">
     <?= $this->Form->create($event) ?>

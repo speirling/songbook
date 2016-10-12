@@ -46,7 +46,6 @@ class EventsTable extends Table
             ->allowEmpty('venue');
 
         $validator
-            ->add('timestamp', 'create')
             ->allowEmpty('timestamp');
 
         $validator
