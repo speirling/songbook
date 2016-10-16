@@ -6,6 +6,7 @@
             echo $this->Form->input('Search', ['Label'=>'Find a song']);
         ?>
     </fieldset>
+    <?= $this->Form->end() ?>
     <ul class="side-nav">
         <?= $this->Form->button(__('Submit')) ?>
         <li class="heading"><?= __('Actions') ?></li>
