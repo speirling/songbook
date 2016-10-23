@@ -130,7 +130,7 @@
 			jQuery(container).wrapInner('<div class="toggle-content"></div>');
 			add_text = jQuery(container).attr('add_text');
 			content_div = jQuery('.toggle-content', container);
-			toggle_button = jQuery('<span class="button show">+ Add</span>').prependTo(container);
+			toggle_button = jQuery('<span class="button show">+ Add ' + add_text + '</span>').prependTo(container);
 			content_div.hide();
 			toggle_button.click(function (event) {
 				console.log(event, content_div, container);
@@ -138,7 +138,7 @@
 				if(content_div.is(":visible")) {
 					toggle_button.html('Hide Add form');
 				} else {
-					toggle_button.html('+ Add '.add_text);
+					toggle_button.html('+ Add ' + add_text);
 				}
 			});
 			
