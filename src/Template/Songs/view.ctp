@@ -82,17 +82,30 @@
             </form>
             </td>
         </tr>
-        <tr class="original-filename">
-            <th><?= __('Original Filename') ?></th>
-            <td><?= h($song->original_filename) ?></td>
-        </tr>
         <tr class="id">
             <th><?= __('Id') ?></th>
             <td><?= $this->Number->format($song->id) ?></td>
         </tr>
-        <tr class="meta-tags">
-            <th><?= __('Meta Tags') ?></th>
-            <td><?= h($song->meta_tags) ?></td>
+        <tr class="tags">
+            <th>
+                <?= __('Tags') ?>
+                <?= $this->Form->create($songTag, ['url' => ['controller' => 'SongTags', 'action' => 'match_list', 'songs', 'edit', $song->id]]) ?>
+                <span class="tag-add-submit button"><?= $this->Form->button(__('(update)')) ?></span>
+            </th>
+            <td>
+                <?php 
+                    $selected_tags = [];
+                    foreach ($song->song_tags as $this_tag) {
+                        array_push($selected_tags, $this_tag['tag_id']);
+                    }
+                ?><fieldset>
+                    <?php
+                        echo '<span class="tag-id">'.$this->Form->input('tag_id', ['label' => '', 'empty' => 'Tag ...', 'options' => $tags, 'multiple' => true, 'default' => $selected_tags]).'</span>';
+                        echo $this->Form->hidden('song_id', ['value' => $song->id]);
+                    ?>
+                </fieldset>
+                <?= $this->Form->end() ?> 
+            </td>
         </tr>
     </table>
     <?= $song->content; ?>

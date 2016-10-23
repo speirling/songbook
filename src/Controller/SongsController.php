@@ -37,7 +37,9 @@ class SongsController extends AppController
      */
     public function view($id = null)
     {
-        $song = $this->Songs->get($id);
+        $song = $this->Songs->get($id, [
+            'contain' => ['SongTags'=>['Tags']]
+        ]);
         $key = null;
         $capo = null;
         if(array_key_exists('key', $_GET)) {
@@ -50,6 +52,8 @@ class SongsController extends AppController
         $this->set('song', $song);
         $this->set('current_key', $key);
         $this->set('capo', $capo);
+        $this->set('tags', $this->Songs->SongTags->Tags->find('list'));
+        $this->set('songTag', new SongTag());
         $this->set('_serialize', ['song']);
     }
 

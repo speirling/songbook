@@ -72,7 +72,7 @@ class SongTagsController extends AppController
      * @param string $ret_action
      * @param integer $ret_id
      */
-    public function addAndLinkSong($ret_controller, $ret_action, $ret_id)
+    public function MatchList($ret_controller, $ret_action, $ret_id)
     {
     	$redirect_array = ['controller' => $ret_controller, 'action' => $ret_action, $ret_id];
 
@@ -117,7 +117,7 @@ class SongTagsController extends AppController
 	        return $this->redirect($redirect_array);
 
     	} else {
-    		$this->Flash->error(__('The Tag could not be created - no post data'));
+    		$this->Flash->error(__('The Tag could not be created - no post data '.serialize($this->request)));
     	}
     }
     /**
