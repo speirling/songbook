@@ -17,10 +17,14 @@ class SongTagsControllerTest extends IntegrationTestCase
      */
     public $fixtures = [
         'app.song_tags',
-        'app.tags',
         'app.songs',
+        'app.set_songs',
+        'app.sets',
+        'app.performers',
+        'app.playlists',
+        'app.playlist_sets',
         'app.song_instances',
-        'app.performers'
+        'app.tags'
     ];
 
     /**

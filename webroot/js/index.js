@@ -7,7 +7,12 @@ jQuery(document).ready(function() {
 	    new SBK.ChordEditor(jQuery('.sbk-lyrics-panel')).render();
 	}
 
-	jQuery('select').select2();
+	jQuery('select').not('.song-tags select').select2();
+	jQuery('.song-tags select').select2({
+	  tags: true,
+	  tokenSeparators: [',', ' ']
+	});
+	
 
 	jQuery('table.sortable tbody tr').prepend('<td class="handle">');
 	jQuery('table.sortable.set-songs tbody').sortable({

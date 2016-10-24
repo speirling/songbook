@@ -333,3 +333,27 @@ table.sortable .handle {
    width: 100%;
    height: auto;
 }
+#container .container .songs.view tr.tags fieldset {
+    margin: 0;
+    padding: 0;
+}
+#container .container .songs.view tr.tags th {
+    font-size: 10px;
+    white-space: nowrap;
+}
+#container .container .songs.view tr.tags th form {
+    display: inline-block;
+}
+#container .container .songs.view tr.tags th span.button {
+    margin: 0;
+    font-size: 0.9em;
+}
+#container .container .songs.view tr.tags fieldset .selection li {
+    font-size: 0.7em;
+}
+#container .container .songs.view tr.tags fieldset .selection span.select2-selection.select2-selection--multiple {
+    min-height: auto;
+    height: 2.5em;
+    border: 0;
+}
+

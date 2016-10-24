@@ -18,8 +18,8 @@ class SongTagsFixture extends TestFixture
     // @codingStandardsIgnoreStart
     public $fields = [
         'id' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
-        'tag_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'song_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
+        'tag_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
@@ -38,8 +38,8 @@ class SongTagsFixture extends TestFixture
     public $records = [
         [
             'id' => 1,
-            'tag_id' => 1,
-            'song_id' => 1
+            'song_id' => 1,
+            'tag_id' => 1
         ],
     ];
 }

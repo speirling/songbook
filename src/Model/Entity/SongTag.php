@@ -4,19 +4,15 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * Song Entity.
+ * SongTag Entity.
  *
  * @property int $id
- * @property string $title
- * @property string $written_by
- * @property string $performed_by
- * @property string $base_key
- * @property string $content
- * @property string $original_filename
- * @property string $meta_tags
- * @property \App\Model\Entity\SongTag[] $song_tags
+ * @property int $song_id
+ * @property \App\Model\Entity\Song $song
+ * @property int $tag_id
+ * @property \App\Model\Entity\Tag $tag
  */
-class Song extends Entity
+class SongTag extends Entity
 {
 
     /**

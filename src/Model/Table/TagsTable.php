@@ -1,19 +1,17 @@
 <?php
 namespace App\Model\Table;
 
-use App\Model\Entity\Song;
+use App\Model\Entity\Tag;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Songs Model
+ * Tags Model
  *
- * @property \Cake\ORM\Association\HasMany $SongInstances
- * @property \Cake\ORM\Association\HasMany $SongTags
  */
-class SongsTable extends Table
+class TagsTable extends Table
 {
 
     /**
@@ -26,17 +24,10 @@ class SongsTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('songs');
+        $this->table('tags');
         $this->displayField('title');
         $this->primaryKey('id');
 
-        $this->hasMany('SetSongs', [
-            'foreignKey' => 'song_id'
-        ]);
-
-        $this->hasMany('SongTags', [
-            'foreignKey' => 'song_id'
-        ]);
     }
 
     /**
@@ -54,24 +45,6 @@ class SongsTable extends Table
         $validator
             ->requirePresence('title', 'create')
             ->notEmpty('title');
-
-        $validator
-            ->allowEmpty('written_by');
-
-        $validator
-            ->allowEmpty('performed_by');
-
-        $validator
-            ->allowEmpty('base_key');
-
-        $validator
-            ->allowEmpty('content');
-
-        $validator
-            ->allowEmpty('original_filename');
-
-        $validator
-            ->allowEmpty('meta_tags');
 
         return $validator;
     }

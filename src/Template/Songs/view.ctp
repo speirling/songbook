@@ -82,76 +82,32 @@
             </form>
             </td>
         </tr>
-        <tr class="original-filename">
-            <th><?= __('Original Filename') ?></th>
-            <td><?= h($song->original_filename) ?></td>
-        </tr>
         <tr class="id">
             <th><?= __('Id') ?></th>
             <td><?= $this->Number->format($song->id) ?></td>
         </tr>
-        <tr class="meta-tags">
-            <th><?= __('Meta Tags') ?></th>
-            <td><?= h($song->meta_tags) ?></td>
+        <tr class="tags">
+            <th>
+                <?= __('Tags') ?>
+                <?= $this->Form->create($songTag, ['url' => ['controller' => 'SongTags', 'action' => 'match_list', 'songs', 'edit', $song->id]]) ?>
+                <span class="tag-add-submit button"><?= $this->Form->button(__('(update)')) ?></span>
+            </th>
+            <td class="song-tags">
+                <?php 
+                    $selected_tags = [];
+                    foreach ($song->song_tags as $this_tag) {
+                        array_push($selected_tags, $this_tag['tag_id']);
+                    }
+                ?><fieldset>
+                    <?php
+                        echo '<span class="tag-id">'.$this->Form->input('tag_id', ['label' => '', 'empty' => '', 'options' => $tags, 'multiple' => true, 'default' => $selected_tags]).'</span>';
+                        echo $this->Form->hidden('song_id', ['value' => $song->id]);
+                    ?>
+                </fieldset>
+                <?= $this->Form->end() ?> 
+            </td>
         </tr>
     </table>
     <?= $song->content; ?>
-    <div class="related">
-        <h4><?= __('Related Song Instances') ?></h4>
-        <?php if (!empty($song->song_instances)): ?>
-        <table cellpadding="0" cellspacing="0">
-            <tr>
-                <th><?= __('Id') ?></th>
-                <th><?= __('Song Id') ?></th>
-                <th><?= __('Performer Id') ?></th>
-                <th><?= __('Key') ?></th>
-                <th class="actions"><?= __('Actions') ?></th>
-            </tr>
-            <?php foreach ($song->song_instances as $songInstances): ?>
-            <tr>
-                <td><?= h($songInstances->id) ?></td>
-                <td><?= h($songInstances->song_id) ?></td>
-                <td><?= h($songInstances->performer_id) ?></td>
-                <td><?= h($songInstances->key) ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('View'), ['controller' => 'SongInstances', 'action' => 'view', $songInstances->id]) ?>
-
-                    <?= $this->Html->link(__('Edit'), ['controller' => 'SongInstances', 'action' => 'edit', $songInstances->id]) ?>
-
-                    <?= $this->Form->postLink(__('Delete'), ['controller' => 'SongInstances', 'action' => 'delete', $songInstances->id], ['confirm' => __('Are you sure you want to delete # {0}?', $songInstances->id)]) ?>
-
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </table>
-    <?php endif; ?>
-    </div>
-    <div class="related">
-        <h4><?= __('Related Song Tags') ?></h4>
-        <?php if (!empty($song->song_tags)): ?>
-        <table cellpadding="0" cellspacing="0">
-            <tr>
-                <th><?= __('Id') ?></th>
-                <th><?= __('Tag Id') ?></th>
-                <th><?= __('Song Id') ?></th>
-                <th class="actions"><?= __('Actions') ?></th>
-            </tr>
-            <?php foreach ($song->song_tags as $songTags): ?>
-            <tr>
-                <td><?= h($songTags->id) ?></td>
-                <td><?= h($songTags->tag_id) ?></td>
-                <td><?= h($songTags->song_id) ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('View'), ['controller' => 'SongTags', 'action' => 'view', $songTags->id]) ?>
-
-                    <?= $this->Html->link(__('Edit'), ['controller' => 'SongTags', 'action' => 'edit', $songTags->id]) ?>
-
-                    <?= $this->Form->postLink(__('Delete'), ['controller' => 'SongTags', 'action' => 'delete', $songTags->id], ['confirm' => __('Are you sure you want to delete # {0}?', $songTags->id)]) ?>
-
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </table>
-    <?php endif; ?>
     </div>
 </div>

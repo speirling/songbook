@@ -18,7 +18,7 @@ class TagsFixture extends TestFixture
     // @codingStandardsIgnoreStart
     public $fields = [
         'id' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
-        'name' => ['type' => 'string', 'length' => 150, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
+        'title' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'fixed' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
@@ -37,7 +37,7 @@ class TagsFixture extends TestFixture
     public $records = [
         [
             'id' => 1,
-            'name' => 'Lorem ipsum dolor sit amet'
+            'title' => 'Lorem ipsum dolor sit amet'
         ],
     ];
 }
