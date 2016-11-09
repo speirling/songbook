@@ -301,7 +301,7 @@ table.sortable .handle {
     
 }
 .songs-edit .song-input-content,
-.songs-edit .song-input-content div {
+.songs-edit .song-input-content div.textarea {
     display: block;
     height: 30em;
     
