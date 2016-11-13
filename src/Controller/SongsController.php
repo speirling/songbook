@@ -22,7 +22,14 @@ class SongsController extends AppController
     public function index()
     {
     	if ($this->request->is('post')) {
-    		$this->Songs = $this->Songs->find()->where(['title LIKE' => '%'.$this->request->data['Search'].'%']);
+    		$this->Songs = $this->Songs->find()
+    			->where(['title LIKE' => '%'.$this->request->data['Search'].'%'])
+    			->order(['id' =>'DESC']);
+    	} else {
+    		{
+    			$this->Songs = $this->Songs->find()
+    			->order(['id' =>'DESC']);
+    		}
     	}
         $this->set('songs', $this->paginate($this->Songs));
         $this->set('_serialize', ['songs']);
