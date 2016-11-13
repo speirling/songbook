@@ -89,7 +89,7 @@
         <tr class="tags">
             <th>
                 <?= __('Tags') ?>
-                <?= $this->Form->create($songTag, ['url' => ['controller' => 'SongTags', 'action' => 'match_list', 'songs', 'edit', $song->id]]) ?>
+                <?= $this->Form->create($songTag, ['url' => ['controller' => 'SongTags', 'action' => 'match_list', 'songs', 'view', $song->id]]) ?>
                 <span class="tag-add-submit button"><?= $this->Form->button(__('(update)')) ?></span>
             </th>
             <td class="song-tags">
