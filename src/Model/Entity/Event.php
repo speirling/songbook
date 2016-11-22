@@ -11,6 +11,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\Time $timestamp
  * @property int $duration_hours
  * @property string $notes
+ * @property \App\Model\Entity\SongPerformance[] $song_performances
  */
 class Event extends Entity
 {

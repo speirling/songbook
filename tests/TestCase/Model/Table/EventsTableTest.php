@@ -17,7 +17,16 @@ class EventsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.events'
+        'app.events',
+        'app.song_performances',
+        'app.songs',
+        'app.set_songs',
+        'app.sets',
+        'app.performers',
+        'app.playlists',
+        'app.playlist_sets',
+        'app.song_tags',
+        'app.tags'
     ];
 
     /**

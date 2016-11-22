@@ -14,26 +14,44 @@ use App\Model\Entity\Tag;
 class SongsController extends AppController
 {
 
+	/**
+	 * Index method
+	 *
+	 * @return void
+	 */
+	public function index()
+	{
+		if ($this->request->is('post')) {
+			$this->Songs = $this->Songs->find()
+			->where(['title LIKE' => '%'.$this->request->data['Search'].'%'])
+			->order(['id' =>'DESC']);
+			$search_string = $this->request->data['Search'];
+		} else {
+			$this->Songs = $this->Songs->find()
+			->order(['id' =>'DESC']);
+			$search_string = '';
+		}
+		$this->set('search_string', $search_string);
+		$this->set('songs', $this->paginate($this->Songs));
+		$this->set('_serialize', ['songs']);
+	}
     /**
-     * Index method
+     * Search method
+     * This isn't usually required - the index method carries out searched.
+     * This is only here becuase I want to return from a 'vote' call to the same search as it was called from
      *
      * @return void
      */
-    public function index()
-    {
-    	if ($this->request->is('post')) {
-    		$this->Songs = $this->Songs->find()
-    			->where(['title LIKE' => '%'.$this->request->data['Search'].'%'])
-    			->order(['id' =>'DESC']);
-    	} else {
-    		{
-    			$this->Songs = $this->Songs->find()
-    			->order(['id' =>'DESC']);
-    		}
-    	}
-        $this->set('songs', $this->paginate($this->Songs));
-        $this->set('_serialize', ['songs']);
-    }
+	public function search()
+	{
+		$search_string = $this->request->pass[0];
+			$this->Songs = $this->Songs->find()
+			->where(['title LIKE' => '%'.$search_string.'%'])
+			->order(['id' =>'DESC']);
+		$this->set('search_string', $search_string);
+		$this->set('songs', $this->paginate($this->Songs));
+		$this->set('_serialize', ['songs']);
+	}
 
     /**
      * View method

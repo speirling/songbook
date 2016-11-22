@@ -11,8 +11,8 @@
             <tr>
                 <th class="id"><?= $this->Paginator->sort('id') ?></th>
                 <th class="title"><?= $this->Paginator->sort('title') ?></th>
-                <th class="written-by"><?= $this->Paginator->sort('written_by') ?></th>
-                <th class="performed-by"><?= $this->Paginator->sort('performed_by') ?></th>
+                <th class="written-by-performed-by"><span class="written-by"><?= $this->Paginator->sort('written_by') ?></span><br>
+                <span class="performed-by"><?= $this->Paginator->sort('performed_by') ?></span></th>
                 <th class="actions"><?= __('Actions') ?></th>
             </tr>
         </thead>
@@ -21,11 +21,29 @@
             <tr>
                 <td class="id"><?= $this->Number->format($song->id) ?></td>
                 <td class="title"><?= h($song->title) ?></td>
-                <td class="written-by"><?= h($song->written_by) ?></td>
-                <td class="performed-by"><?= h($song->performed_by) ?></td>
+                <td class="written-by-performed-by"><span class="written-by"><?= h($song->written_by) ?></span><br>
+                <span class="performed-by"><?= h($song->performed_by) ?></span></td>
                 <td class="actions">
                     <?= $this->Html->link(__('View'), ['action' => 'view', $song->id]) ?>
                     <?= $this->Html->link(__('Edit'), ['action' => 'edit', $song->id]) ?>
+                        <span class="button vote"><?= 
+                                    $this->Html->link(__(
+                                        'vote'
+                                    ), [
+                                        'controller' => 'SongVotes', 
+                                        'action' => 'addret', 
+                                        $song->id,
+                                        'songs', 'search', $search_string
+                                    ]) ?></span>  
+                                <span class="button performance"><?= 
+                                    $this->Html->link(__(
+                                        'played'
+                                    ), [
+                                        'controller' => 'SongPerformances', 
+                                        'action' => 'addret', 
+                                        $song->id,
+                                        'songs', 'search', $search_string
+                                    ]) ?></span>  
                     <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $song->id], ['confirm' => __('Are you sure you want to delete # {0}?', $song->id)]) ?>
                 </td>
             </tr>

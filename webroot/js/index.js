@@ -31,6 +31,7 @@ jQuery(document).ready(function() {
 	});
 
 	jQuery('.playlists.view .set-songs tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
+	jQuery('.songs.index tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
 	jQuery('#collapse_sets').on('click touch', SBK.CakeUI.collapse_sets);
 
 

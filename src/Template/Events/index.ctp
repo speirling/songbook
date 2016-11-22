@@ -1,5 +1,10 @@
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <?= $this->element('standard_menu') ?>
+    <ul class="side-nav">
+        <li class="heading"><?= __('Actions') ?></li>
+        <li><?= $this->Html->link(__('New Event'), ['action' => 'add']) ?></li>
+        <li><?= $this->Html->link(__('List Song Performances'), ['controller' => 'SongPerformances', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('New Song Performance'), ['controller' => 'SongPerformances', 'action' => 'add']) ?></li>
+    </ul>
 </nav>
 <div class="events index large-9 medium-8 columns content">
     <h3><?= __('Events') ?></h3>

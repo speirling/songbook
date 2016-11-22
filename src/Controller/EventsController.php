@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use App\Model\Entity\SongPerformance;
 
 /**
  * Events Controller
@@ -19,6 +20,7 @@ class EventsController extends AppController
     public function index()
     {
         $this->set('events', $this->paginate($this->Events));
+        
         $this->set('_serialize', ['events']);
     }
 
@@ -34,7 +36,14 @@ class EventsController extends AppController
         $event = $this->Events->get($id, [
             'contain' => []
         ]);
+
+        $this->loadModel('SongPerformances');
+        $event_songs = $this->SongPerformances->find('all', [
+        	'conditions' => ["`SongPerformances`.`timestamp` BETWEEN \"".date("Y-m-d H:i:s", strtotime($event->timestamp))."\" AND \"".date("Y-m-d H:i:s", strtotime($event->timestamp) + $event->duration_hours * 60 * 60)."\""],
+            'contain' => ['Songs']
+        ]);
         $this->set('event', $event);
+        $this->set('event_songs', $event_songs);
         $this->set('_serialize', ['event']);
     }
 
