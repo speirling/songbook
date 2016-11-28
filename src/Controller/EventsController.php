@@ -39,9 +39,10 @@ class EventsController extends AppController
 
         $this->loadModel('SongPerformances');
         $event_songs = $this->SongPerformances->find('all', [
-        	'conditions' => ["`SongPerformances`.`timestamp` BETWEEN \"".date("Y-m-d H:i:s", strtotime($event->timestamp))."\" AND \"".date("Y-m-d H:i:s", strtotime($event->timestamp) + $event->duration_hours * 60 * 60)."\""],
-            'contain' => ['Songs']
-        ]);
+        	'conditions' => ["`SongPerformances`.`timestamp` BETWEEN \"".date("Y-m-d H:i:s", strtotime($event->timestamp) - $event->duration_hours * 60 * 60)."\" AND \"".date("Y-m-d H:i:s", strtotime($event->timestamp) + $event->duration_hours * 60 * 60)."\""]
+        ])->distinct(['song_id'])->contain(['Songs', 'SetSongs'=>function($query){
+        	return $query->find('all')->distinct('performer_id', 'key');
+        }])->contain('SetSongs.Performers');
         $this->set('event', $event);
         $this->set('event_songs', $event_songs);
         $this->set('_serialize', ['event']);

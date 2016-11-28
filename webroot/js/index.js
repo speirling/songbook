@@ -33,29 +33,25 @@ jQuery(document).ready(function() {
 	jQuery('.playlists.view .set-songs tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
 	jQuery('.songs.index tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
 	jQuery('#collapse_sets').on('click touch', SBK.CakeUI.collapse_sets);
+	jQuery('.events.view .related tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
 
 
-    jQuery('.playlist-edit-form .sets .setSongs .move-up').on('click touch', function(){
-        SBK.CakeUI.playlist_sort.move_set_song('up', jQuery(this));
+	jQuery('<span class="button arrow move-up">&uparrow;</span>').appendTo('.song-row .actions')
+	.on('click touch', function(event){
+		event.stopPropagation();
+        SBK.CakeUI.select.adjacent_row('up', jQuery(this));
+     });
+
+	jQuery('<span class="button arrow move-down">&downarrow;</span>').appendTo('.song-row .actions')
+	.on('click touch', function(event){
+		event.stopPropagation();
+        SBK.CakeUI.select.adjacent_row('down', jQuery(this));
      });
      
-     jQuery('.playlist-edit-form .sets .setSongs .move-down').on('click touch', function(){
-        SBK.CakeUI.playlist_sort.move_set_song('down', jQuery(this));
-     });
-     jQuery('.playlist-edit-form .sets .setSongs tr:last  .move-down').hide();
-     jQuery('.playlist-edit-form .sets .setSongs tr:first  .move-up').hide();
+     jQuery('tr.song-row:last  .actions.move-down').hide();
+     jQuery('tr.song-row:first .actions.move-up').hide();
      
 
-
-     jQuery('.playlists.view .set-songs .move-up').on('click touch', function(event){
-		event.stopPropagation();
-         SBK.CakeUI.select.adjacent_row('up', jQuery(this));
-      });
-      
-      jQuery('.playlists.view .set-songs .move-down').on('click touch', function(event){
-		event.stopPropagation();
-         SBK.CakeUI.select.adjacent_row('down', jQuery(this));
-      });
       
       jQuery('.add-new-ui').each(function () {
     	  SBK.CakeUI.toggleable.make(this);

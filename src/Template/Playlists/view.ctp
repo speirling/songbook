@@ -43,42 +43,23 @@
                 <td colspan="5">
                     <table cellpadding="0" cellspacing="0" class="set-songs">
                    
-                        <?php foreach ($playlistSets->set->set_songs as $setSongs): ?>
-                        <tr>
-                            <td class="set-song-key set-song-capo"><?= h($setSongs->key) ?><span class="capo">(<?= h($setSongs->capo) ?>)</span></td>
-                            <td class="set-song-title"><?= h($setSongs->song->title) ?><span class="performed-by">(<?= h($setSongs->song->performed_by) ?>)</span></td>
-                            <td class="actions">
-                                <span class="button view"><?= 
-                                    $this->Html->link(__(
-                                        'View'
-                                    ), [
-                                        'controller' => 'Songs', 
-                                        'action' => 'view', 
-                                        $setSongs->song->id
-                                    ]) ?></span>  
-                                <span class="button vote"><?= 
-                                    $this->Html->link(__(
-                                        'vote'
-                                    ), [
-                                        'controller' => 'SongVotes', 
-                                        'action' => 'addret', 
-                                        $setSongs->song->id,
-                                        'playlists', 'view', $playlist->id
-                                    ]) ?></span>  
-                                <span class="button performance"><?= 
-                                    $this->Html->link(__(
-                                        'played'
-                                    ), [
-                                        'controller' => 'SongPerformances', 
-                                        'action' => 'addret', 
-                                        $setSongs->song->id,
-                                        'playlists', 'view', $playlist->id
-                                    ]) ?></span>  
-                                <span class="button arrow move-up">&uparrow;</span>
-                                <span class="button arrow move-down">&downarrow;</span>           
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
+                        <?php foreach ($playlistSets->set->set_songs as $setSong) {
+                            $this_set_songs = [[
+                                'performer' => ['name' => $setSong->song->performed_by, 'nickname' => $setSong->song->performed_by], 
+                                'key' => $setSong->key, 
+                                'capo' => $setSong->capo
+                                ]];
+                            echo $this->element('song_row', [ 
+                                'return_point' => ['controller'=>'playlists', 'method'=>'view', 'id'=>$playlist->id],
+                                'current_song' => $setSong->song,
+                                'this_set_songs' => [[
+                                    'performer' => $setSong->performer, 
+                                    'key' => $setSong->key, 
+                                    'capo' => $setSong->capo
+                                    ]]
+                                ]); 
+                            
+                         } ?>
                     </table>
                 </td>
             </tr>

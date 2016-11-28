@@ -102,9 +102,9 @@
 		
 		adjacent_row: function (direction, button) {
 		        var current_row, new_selection;
-
+console.log(direction, button);
 		       current_row = button.closest('tr');
-		       if(direction === 'up') {
+		       if (direction === 'up') {
 		    	   new_selection = current_row.prev();
 		       } else if(direction === 'down') {
 		    	   new_selection = current_row.next();

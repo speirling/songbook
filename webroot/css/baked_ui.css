@@ -1,36 +1,7 @@
 .float-right {
 	float: right;
 }
-.songs.index table tr td {
-    font-size: 0.8em;
-    overflow: hidden;
-    white-space: nowrap;
-}
-.songs.index table tr .id {
-}
-.songs.index table tr .title {
-}
-.songs.index table tr .written-by-performed-by {
-    font-size: 0.8em;
-    width: 14%;
-},
-.songs.index table tr .written-by,
-.songs.index table tr .performed-by {
-	font-size: 1em;
-    margin: 0;
-}
-.songs.index table tr .actions {
-    width: 40%;
-}
-.songs.index table tr .actions a {
-    display: inline-block;
-    padding: 0.5em;
-    border:1px solid gray;
-}
-.songs.index td:first-child,
-.songs.index th:first-child  {
-    width:  4em;
-}
+
 
 .playlists .sets,
 .playlists .sets .set-songs {
@@ -38,9 +9,6 @@
     width:95%;*/
     right: 0;
     table-layout: auto;
-}
-.playlists .sets .set-songs {
-    background-color: #f9f9e0;
 }
 .playlists .set-songs th {
 	color: gray;
@@ -161,7 +129,8 @@ span.inlinetop {
     width: 100%;
 }
 .playlists.form .button,
-.set-songs .button {
+.set-songs .button,
+tr.song-row .button {
     margin: 0;
     margin-bottom: -2px;
     height: 2.5em;
@@ -185,19 +154,9 @@ span.inlinetop {
 .set-songs table {
     margin-bottom: 0;
 }
-.set-songs td {
-    vertical-align: middle;
-    padding-top: 0;
-    padding-bottom: 0;
-}
-.set-songs td.actions {
-    width: 10em;
-}
+
 .set-songs td.set-song-details {
     width: 7em;
-}
-.set-songs td.set-song-key {
-    width: 8em;
 }
 /* cake submit button inside button span */
 .button button,
@@ -226,44 +185,85 @@ table.sortable .handle {
 	
 }
 
-/* Playlist view */
-.playlists.view .set-songs tr.ui-selected {
+/* Song lists */
+
+table tr.song-row {
+    background-color: #f9f9e0;
+}
+tr.song-row td {
+    vertical-align: middle;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+tr.song-row td.song-id {
+    display: none;
+}
+tr.song-row.ui-selected {
     background-color: #ffaa66;
 }
-.playlists.view .set-songs tr.ui-selected td.actions {
+tr.song-row.ui-selected td.actions {
    font-size: 1.5em;
 }
-.playlists.view .set-songs tr.ui-selected td.actions {
+tr.song-row.ui-selected td.actions {
    font-size: 2em;
 }
-.playlists.view .set-songs td.set-song-key {
+tr.song-row td.actions {
+    width: 10em;
+}
+tr.song-row td.performers {
     width: 4em;
     padding-right: 0;
 }
-.playlists.view .set-songs .capo,
-.playlists.view .set-songs .performed-by {
+tr.song-row td.performers .performer {
+    display: block;
+}
+tr.song-row td.performers .nickname {
+	display: inline-block;
+	font-size: 0.5em;
+	color: gray;
+    width: 4em;
+    padding-right: 0;
+}
+tr.song-row td.performers .key {
+    width: 4em;
+    padding-right: 0;
+}
+tr.song-row td.performers .capo {
 	color: gray;
     font-size: 0.8em;
     margin-left: 0.8em;
-}
-.playlists.view .set-songs td.actions {
     display: none;
 }
-.playlists.view .set-songs tr.ui-selected td.actions {
-    display: table-cell;
+tr.song-row .actions {
+    display: none;
+}
+tr.song-row.ui-selected .actions {
+    display: inline-block;
     width: 16em;
 }
-.playlists.view .actions {
+tr.song-row .actions {
     text-align: right;
 }
-.playlists.view .actions .button {
+tr.song-row .actions .button {
     text-align: center;
     vertical-align: middle;
     margin-top: 0.1em;
     margin-bottom: 0.1em;
+    font-size: 2em;
 }
-.playlists.view .actions .arrow {
+tr.song-row .actions .arrow {
     width: 2.5em;
+}
+tr.song-row td.song-written-by-performed-by {
+	width: 15%;
+}
+tr.song-row .performed-by,
+tr.song-row .written-by {
+    margin-left: 0.8em;
+    font-size: 0.8em;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 /* Embedded song search form */

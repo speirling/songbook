@@ -14,6 +14,9 @@ use App\Model\Entity\Tag;
 class SongsController extends AppController
 {
 
+	public $paginate = [
+			'limit' => 35
+	];
 	/**
 	 * Index method
 	 *

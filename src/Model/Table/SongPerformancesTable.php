@@ -33,6 +33,10 @@ class SongPerformancesTable extends Table
             'foreignKey' => 'song_id',
             'joinType' => 'INNER'
         ]);
+
+        $this->hasMany('SetSongs', [
+        		'foreignKey' => 'song_id'
+        ]);
     }
 
     /**

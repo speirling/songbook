@@ -36,7 +36,7 @@ class PlaylistsController extends AppController
     public function view($id = null)
     {
         $playlist = $this->Playlists->get($id, [
-            'contain' => ['Performers', 'PlaylistSets' => ['Sets'=> ['Performers', 'SetSongs'=>['Songs', 'sort' => ['SetSongs.order' => 'ASC']]], 'sort' => ['PlaylistSets.order' => 'ASC']]]
+            'contain' => ['Performers', 'PlaylistSets' => ['Sets'=> ['Performers', 'SetSongs'=>['Songs', 'sort' => ['SetSongs.order' => 'ASC'], 'Performers']], 'sort' => ['PlaylistSets.order' => 'ASC']]]
         ]);
 
         $song = new Song();

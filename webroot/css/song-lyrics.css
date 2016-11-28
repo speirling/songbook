@@ -91,11 +91,11 @@ div.song-page .multi-.lyrics-panel .line,
 .performed-by {
     color: gray;
 }
-.performed-by,
-.written-by,
-.base-key,
-.songnumber,
-.meta-tags {
+.lyrics-display .performed-by,
+.lyrics-display .written-by,
+.lyrics-display .base-key,
+.lyrics-display .songnumber,
+.lyrics-display .meta-tags {
     margin-left: 0.8em;
     font-size: 0.8em;
 }
