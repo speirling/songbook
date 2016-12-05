@@ -32,8 +32,12 @@ jQuery(document).ready(function() {
 
 	jQuery('.playlists.view .set-songs tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
 	jQuery('.songs.index tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
-	jQuery('#collapse_sets').on('click touch', SBK.CakeUI.collapse_sets);
 	jQuery('.events.view .related tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
+	if(jQuery('.songs.index tbody tr').length === 1) {
+		SBK.CakeUI.select.mark_row(jQuery('.songs.index tbody tr').first());
+	}
+
+	jQuery('#collapse_sets').on('click touch', SBK.CakeUI.collapse_sets);
 
 
 	jQuery('<span class="button arrow move-up">&uparrow;</span>').appendTo('.song-row .actions')
