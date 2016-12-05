@@ -22,7 +22,6 @@
 
 
 
-
 /* playlist edit form with sets and songs */
 
 .playlists.form fieldset,
@@ -210,36 +209,54 @@ tr.song-row.ui-selected td.actions {
 tr.song-row td.actions {
     width: 10em;
 }
-tr.song-row td.performers {
-    width: 4em;
+tr.song-row td.performers,
+.performers {
+    width: 4.5em;
     padding-right: 0;
 }
-tr.song-row td.performers .performer {
+.performers {
+    display: table-cell;
+}
+.performer  {
     display: block;
 }
-tr.song-row td.performers .nickname {
+.songs.view .performers,
+.songs.view .performer  {
+    display: inline-block;
+}
+tr.song-row td.performers .performer  {
+    display: block;
+}
+tr.song-row td.performers .nickname,
+.nickname {
 	display: inline-block;
 	font-size: 0.5em;
 	color: gray;
     width: 4em;
     padding-right: 0;
 }
-tr.song-row td.performers .key {
+tr.song-row td.performers .key-capo-selectors,
+.key {
     width: 4em;
     padding-right: 0;
 }
-tr.song-row td.performers .capo {
-	color: gray;
+tr.song-row td.performers .capo,
+.capo {
+    color: gray;
     font-size: 0.8em;
     margin-left: 0.8em;
     display: none;
+}
+.key-capo-selectors .capo {
+    display: inline-block;
+    font-size: 1em;
 }
 tr.song-row .actions {
     display: none;
 }
 tr.song-row.ui-selected .actions {
     display: inline-block;
-    width: 16em;
+    vertical-align: middle
 }
 tr.song-row .actions {
     text-align: right;
@@ -249,7 +266,7 @@ tr.song-row .actions .button {
     vertical-align: middle;
     margin-top: 0.1em;
     margin-bottom: 0.1em;
-    font-size: 2em;
+    font-size: 1.8em;
 }
 tr.song-row .actions .arrow {
     width: 2.5em;
@@ -264,6 +281,14 @@ tr.song-row .written-by {
     display: inline-block;
     overflow: hidden;
     white-space: nowrap;
+}
+tr.song-row .song-title {
+    display: inline-block;
+}
+tr.song-row.ui-selected .song-title {
+    font-size: 2em;
+    padding: 6px;
+    color: white;
 }
 
 /* Embedded song search form */
@@ -361,3 +386,43 @@ tr.song-row .written-by {
     border: 0;
 }
 
+
+.base-key .key-capo-selectors {
+    display: inline-block;
+    margin-left: 5em;
+    width: 20em;
+}
+
+#container .container .songs.view .base-key .key-capo-selectors .data {
+    width: 4em;
+}
+#container .container .songs.view .base-key .performers .data {
+    width: 9em;
+}
+
+
+/* Song View performer select - as horizontal list */
+.songs.view .performers {
+	width: auto;
+}
+.songs.view .performers .performer {
+    font-size: 1em;
+    border: 1px solid silver;
+    white-space: nowrap;
+    padding-top: 0.2em;
+    padding-left: 0.4em;
+    padding-right: 0.4em;
+    padding-bottom: 0.2em;
+    cursor: pointer;
+}
+.songs.view .performers .nickname {
+    font-size: 1em;
+    width: auto;
+}
+.songs.view .performers .key {
+    display: inline-block;
+    width: auto;
+}
+.songs.view .performers .capo {
+    display: inline-block;
+}

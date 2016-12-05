@@ -50,10 +50,15 @@
         <tr class="base-key">
             <th><?= __('Base Key') ?></th>
             <td><?= h($song->base_key) ?>
-            <form class="key" action="" method="get">
+            <form class="key" action="" method="get" id="key_form" style="display: none;">
+                <input type="text" name="key" value = "<?= $current_key ?>" id="key_input"></input>
+                <input type="text" name="capo" value = "<?= $capo ?>" id="capo_input"></input>
+            </form>
+     
+            <span class="key-capo-selectors">
                 <span class="target-key">
                     <label>key: </label>
-                    <select class="data" onchange="this.form.submit()" name="key">
+                    <select class="data" onchange="SBK.CakeUI.form.submit_value(jQuery(this).val(), '#key_input')">
                         <option value=""></option>
                         <?php 
                             foreach (App\Controller\StaticFunctionController::$NOTE_VALUE_ARRAY as $key => $value) {
@@ -68,7 +73,7 @@
                 </span>
                 <span class="capo">
                     <label>capo: </label>
-                    <select class="data" onchange="this.form.submit()" name="capo">
+                    <select class="data" onchange="SBK.CakeUI.form.submit_value(jQuery(this).val(), '#capo_input')" name="capo">
                     <?php for($capo_index = 0; $capo_index < 9; $capo_index = $capo_index + 1){
                         echo '<option value="' . $capo_index . '"';
                         if($capo_index == $capo) {
@@ -79,7 +84,19 @@
                     ?>
                     </select>
                     </span>
-            </form>
+                </span>
+	
+	            <span class="performers">
+	                    <label>Known keys: </label>
+	                <?php foreach ($song->set_songs as $set_song) {
+	                    echo '<span class="performer" onclick="SBK.CakeUI.form.submit_value_json(\'{&quot;key_input&quot;:&quot;'.$set_song['key'].'&quot;, &quot;capo_input&quot;:'.$set_song['capo'].'}\')">';
+	                    echo '<span class="nickname">'.$set_song['performer']['nickname'].' : </span>';
+	                    echo '<span class="key">'.$set_song['key'].'</span>';
+	                    //echo '<span class="capo">'.$set_song['capo'].'</span>'; 
+	                    echo '</span>';
+	                } ?>
+	            </span>
+            
             </td>
         </tr>
         <tr class="id">

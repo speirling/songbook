@@ -27,11 +27,15 @@ class SongsController extends AppController
 		if ($this->request->is('post')) {
 			$this->Songs = $this->Songs->find()
 			->where(['title LIKE' => '%'.$this->request->data['Search'].'%'])
-			->order(['id' =>'DESC']);
+			->order(['id' =>'DESC'])->contain(['SetSongs'=>function($query){
+        	return $query->find('all')->distinct('performer_id', 'key');
+        }])->contain('SetSongs.Performers');
 			$search_string = $this->request->data['Search'];
 		} else {
 			$this->Songs = $this->Songs->find()
-			->order(['id' =>'DESC']);
+			->order(['id' =>'DESC'])->contain(['SetSongs'=>function($query){
+        	return $query->find('all')->distinct('performer_id', 'key');
+        }])->contain('SetSongs.Performers');
 			$search_string = '';
 		}
 		$this->set('search_string', $search_string);
@@ -50,7 +54,9 @@ class SongsController extends AppController
 		$search_string = $this->request->pass[0];
 			$this->Songs = $this->Songs->find()
 			->where(['title LIKE' => '%'.$search_string.'%'])
-			->order(['id' =>'DESC']);
+			->order(['id' =>'DESC'])->contain(['SetSongs'=>function($query){
+        	return $query->find('all')->distinct('performer_id', 'key');
+        }])->contain('SetSongs.Performers');
 		$this->set('search_string', $search_string);
 		$this->set('songs', $this->paginate($this->Songs));
 		$this->set('_serialize', ['songs']);
@@ -66,8 +72,9 @@ class SongsController extends AppController
     public function view($id = null)
     {
         $song = $this->Songs->get($id, [
-            'contain' => ['SongTags'=>['Tags']]
-        ]);
+            'contain' => ['SongTags'=>['Tags'], 'SetSongs'=>function($query){
+        	return $query->find('all')->distinct('performer_id', 'key');
+        }, 'SetSongs.Performers']]);
         $key = null;
         $capo = null;
         if(array_key_exists('key', $_GET)) {
@@ -147,8 +154,9 @@ class SongsController extends AppController
     public function edit($id = null, $redirect_array = ['action' => 'view'])
     {
         $song = $this->Songs->get($id, [
-            'contain' => ['SongTags'=>['Tags']]
-        ]);
+            'contain' => ['SongTags'=>['Tags'], 'SetSongs'=>function($query){
+        	return $query->find('all')->distinct('performer_id', 'key');
+        }, 'SetSongs.Performers']]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $song = $this->Songs->patchEntity($song, $this->request->data);
             if ($this->Songs->save($song)) {

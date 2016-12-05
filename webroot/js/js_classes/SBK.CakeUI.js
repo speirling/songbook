@@ -102,7 +102,7 @@
 		
 		adjacent_row: function (direction, button) {
 		        var current_row, new_selection;
-console.log(direction, button);
+
 		       current_row = button.closest('tr');
 		       if (direction === 'up') {
 		    	   new_selection = current_row.prev();
@@ -144,5 +144,30 @@ console.log(direction, button);
 			
 		}
 	
+	}, 
+	
+	form: {
+		submit_value: function (value, form_input_selector) {
+			var form_input, form;
+			
+			form_input = jQuery(form_input_selector);
+			form = form_input.closest('form');
+			
+			form_input.val(value);
+			form.submit()
+		},
+		
+		submit_value_json: function (value) {
+			var obj, form_input, form;
+console.log(value);
+			obj = JSON.parse(value);
+			for(form_input_selector in obj) {
+				form_input = jQuery('#' + form_input_selector);
+				form = form_input.closest('form');
+				
+				form_input.val(obj[form_input_selector]);
+			}
+			form.submit(); //assuming that all inputs are in the same form
+		}
 	}
 };

@@ -13,7 +13,7 @@
                 echo $this->element('song_row', [ 
                     'return_point' => ['controller'=>'songs', 'method'=>'search', 'id'=>$search_string],
                     'current_song' => $song,
-                    'this_set_songs' => []
+                    'this_set_songs' => $song->set_songs
                 ]); 
              } ?>  
         </tbody>

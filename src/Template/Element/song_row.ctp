@@ -17,7 +17,7 @@
             echo '</span>';
         } ?>
     </td>
-    <td class="song-title"><?= h($current_song->title) ?> 
+    <td class="song-main"><span class="song-title"><?= h($current_song->title) ?></span> 
     <?php if ($current_song->performed_by === '') {
             echo '<span class="written-by">('.$current_song->written_by.')</span>';
         } else {
