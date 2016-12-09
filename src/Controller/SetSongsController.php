@@ -57,6 +57,8 @@ class SetSongsController extends AppController
 	            return $this->redirect($redirect_array);
 	        } else {
 	            $this->Flash->error(__('The set song could not be saved. Please, try again.'));
+	            debug('Save failed');
+	            debug($setSong); die(); // the [errors] element will tell you why save failed.
 	        }
         }
         $sets = $this->SetSongs->Sets->find('list');

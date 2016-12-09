@@ -5,6 +5,7 @@ use App\Controller\AppController;
 use App\Controller\StaticFunctionController;
 use App\Model\Entity\SongTag;
 use App\Model\Entity\Tag;
+use App\Model\Entity\SetSong;
 
 /**
  * Songs Controller
@@ -84,12 +85,20 @@ class SongsController extends AppController
         	$capo = $_GET['capo'];
         }
         $song['content'] = StaticFunctionController::convert_song_content_to_HTML($song['content'], $song['base_key'], $key, $capo);
+        $setSong = new SetSong();
         $this->set('song', $song);
+        $this->set('setSong', $setSong);
         $this->set('current_key', $key);
         $this->set('capo', $capo);
         $this->set('tags', $this->Songs->SongTags->Tags->find('list'));
         $this->set('songTag', new SongTag());
         $this->set('_serialize', ['song']);
+        $this->set('performers', $this->Songs->SetSongs->Performers->find('list', [
+            		'keyField' => 'id',
+            		'valueField' => 'nickname'
+                ]
+            )
+        );
     }
 
     /**

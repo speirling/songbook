@@ -95,6 +95,21 @@
 	                    //echo '<span class="capo">'.$set_song['capo'].'</span>'; 
 	                    echo '</span>';
 	                } ?>
+	                
+	                   
+		            <?= $this->Form->create($setSong, ['url' => ['controller' => 'SetSongs', 'action' => 'addret', 'songs', 'view', $song->id]]) ?>
+				    <fieldset>
+				        <label><?= __('add:') ?></label>
+				        <?php
+				            echo $this->Form->hidden('set_id', ['value' => 0]);
+				            echo $this->Form->hidden('song_id', ['value' => $song->id]);
+				            echo $this->Form->input('performer_id', ['empty' => 'Please select ...', 'options' => $performers]);
+				            echo $this->Form->input('key');
+				            //echo $this->Form->input('capo');
+				        ?>
+				    </fieldset>
+				    <span class="button"><?= $this->Form->button(__('Submit')) ?></span>
+				    <?= $this->Form->end() ?>
 	            </span>
             
             </td>

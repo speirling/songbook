@@ -426,3 +426,33 @@ tr.song-row.ui-selected .song-title {
 .songs.view .performers .capo {
     display: inline-block;
 }
+
+.songs.view .performers form ,
+.songs.view .performers fieldset {
+    display: inline-block;
+    vertical-align: top;
+    font-size:  0.84em;
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+.songs.view .performers .input  {
+	display: inline-block;
+}
+.songs.view .performers input  {
+	display: inline-block;
+    border: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+.songs.view .performers input#key  {
+    width: 2.5em;
+}
+.songs.view .performers input#capo  {
+    text-align: center;
+    width: 1em;
+}
+.songs.view .performers label[for="performer-id"] {
+	display: none;
+}
