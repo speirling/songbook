@@ -10,8 +10,13 @@
         
         <tbody>
             <?php foreach ($songs as $song){ 
+            if ($search_string == "") {
+                $return_port_id = " ";
+            } else {
+                $return_port_id = $search_string;
+            }
                 echo $this->element('song_row', [ 
-                    'return_point' => ['controller'=>'songs', 'method'=>'search', 'id'=>$search_string],
+                    'return_point' => ['controller'=>'songs', 'method'=>'search', 'id'=>$return_port_id],
                     'current_song' => $song,
                     'this_set_songs' => $song->set_songs
                 ]); 
