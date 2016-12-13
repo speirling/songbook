@@ -4,6 +4,7 @@
   $return_point = [controller, method, id]
   $current_song = [id, title, written_by, performed_by]
   $this_set_songs = distinct array of [performer ([name, nickname]), key, capo]
+  $setSong =  a setSong object
   */
 ?>
 <tr class="song-row">
@@ -51,5 +52,20 @@
             ]) ?>
         </span>    
     </span>
+    <span class="key-form">
+            <?= $this->Form->create($set_song_object, ['url' => ['controller' => 'SetSongs', 'action' => 'addret', $return_point['controller'], $return_point['method'], $return_point['id']]]) ?>
+		    <fieldset>
+		        <label><?= __('add:') ?></label>
+		        <?php
+		            echo $this->Form->hidden('set_id', ['value' => 0]);
+		            echo $this->Form->hidden('song_id', ['value' => $current_song->id]);
+		            echo $this->Form->input('performer_id', ['empty' => 'Please select ...', 'options' => $performers_list]);
+		            echo $this->Form->input('key');
+		            //echo $this->Form->input('capo');
+		        ?>
+		    </fieldset>
+		    <span class="button"><?= $this->Form->button(__('Submit')) ?></span>
+		    <?= $this->Form->end() ?>
+	</span>
     </td>
 </tr>

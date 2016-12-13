@@ -40,8 +40,16 @@ class PlaylistsController extends AppController
         ]);
 
         $song = new Song();
+        $setSong = new SetSong();
+        $this->set('setSong', $setSong);
         $this->set(compact('playlist', 'song'));
         $this->set('_serialize', ['playlist']);
+        $this->set('performers', $this->Songs->SetSongs->Performers->find('list', [
+            		'keyField' => 'id',
+            		'valueField' => 'nickname'
+                ]
+            )
+        );
     }
 
     /**

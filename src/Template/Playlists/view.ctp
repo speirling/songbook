@@ -56,7 +56,8 @@
                                     'performer' => $setSong->performer, 
                                     'key' => $setSong->key, 
                                     'capo' => $setSong->capo
-                                    ]]
+                                    ]],
+                				'set_song_object' => $setSong
                                 ]); 
                             
                          } ?>

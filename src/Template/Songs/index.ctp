@@ -18,7 +18,9 @@
                 echo $this->element('song_row', [ 
                     'return_point' => ['controller'=>'songs', 'method'=>'search', 'id'=>$return_port_id],
                     'current_song' => $song,
-                    'this_set_songs' => $song->set_songs
+                    'this_set_songs' => $song->set_songs,
+                	'set_song_object' => $setSong,
+                	'performers_list' => $performers
                 ]); 
              } ?>  
         </tbody>

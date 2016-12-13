@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use App\Model\Entity\SongPerformance;
+use App\Model\Entity\SetSong;
 
 /**
  * Events Controller
@@ -43,9 +44,17 @@ class EventsController extends AppController
         ])->distinct(['song_id'])->contain(['Songs', 'SetSongs'=>function($query){
         	return $query->find('all')->distinct('performer_id', 'key');
         }])->contain('SetSongs.Performers');
+        $setSong = new SetSong();
+        $this->set('setSong', $setSong);
         $this->set('event', $event);
         $this->set('event_songs', $event_songs);
         $this->set('_serialize', ['event']);
+        $this->set('performers', $this->Songs->SetSongs->Performers->find('list', [
+            		'keyField' => 'id',
+            		'valueField' => 'nickname'
+                ]
+            )
+        );
     }
 
     /**

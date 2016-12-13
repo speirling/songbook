@@ -39,9 +39,17 @@ class SongsController extends AppController
         }])->contain('SetSongs.Performers');
 			$search_string = '';
 		}
+        $setSong = new SetSong();
+        $this->set('setSong', $setSong);
 		$this->set('search_string', $search_string);
 		$this->set('songs', $this->paginate($this->Songs));
 		$this->set('_serialize', ['songs']);
+        $this->set('performers', $this->Songs->SetSongs->Performers->find('list', [
+            		'keyField' => 'id',
+            		'valueField' => 'nickname'
+                ]
+            )
+        );
 	}
     /**
      * Search method
@@ -58,9 +66,17 @@ class SongsController extends AppController
 			->order(['id' =>'DESC'])->contain(['SetSongs'=>function($query){
         	return $query->find('all')->distinct('performer_id', 'key');
         }])->contain('SetSongs.Performers');
+        $setSong = new SetSong();
+        $this->set('setSong', $setSong);
 		$this->set('search_string', $search_string);
 		$this->set('songs', $this->paginate($this->Songs));
 		$this->set('_serialize', ['songs']);
+        $this->set('performers', $this->Songs->SetSongs->Performers->find('list', [
+            		'keyField' => 'id',
+            		'valueField' => 'nickname'
+                ]
+            )
+        );
 	}
 
     /**

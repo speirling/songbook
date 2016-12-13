@@ -35,7 +35,8 @@
                 <?= $this->element('song_row', [ 
                     'return_point' => ['controller'=>'events', 'method'=>'view', 'id'=>$event->id],
                     'current_song' => $this_performance->song,
-                    'this_set_songs' => $this_performance->set_songs
+                    'this_set_songs' => $this_performance->set_songs,
+                	'set_song_object' => $setSong
                     ]); 
                 ?>
             <?php endforeach; ?>
