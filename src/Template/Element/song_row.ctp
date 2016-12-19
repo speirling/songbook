@@ -25,7 +25,7 @@
             echo '<span class="performed-by">('.$current_song->performed_by.')</span>';
     } ?>
     <span class="actions">
-        <span class="button view"><?= $this->Html->link(__('View'), ['action' => 'view', $current_song->id]) ?></span>
+        <span class="button view"><?= $this->Html->link(__('View'), ['controller'=>'Songs', 'action' => 'view', $current_song->id]) ?></span>
         <span class="button edit"><?= $this->Html->link(__('Edit'), ['action' => 'edit', $current_song->id]) ?></span>
         <span class="button vote"><?= 
             $this->Html->link(__(
@@ -50,22 +50,27 @@
                 $return_point['method'], 
                 $return_point['id']
             ]) ?>
-        </span>    
+        </span>
+        <?php
+        if(isset($performers_list)) { ?>
+	    <span class="key-form">
+	            <?= $this->Form->create($set_song_object, ['url' => ['controller' => 'SetSongs', 'action' => 'addret', $return_point['controller'], $return_point['method'], $return_point['id']]]) ?>
+			    <fieldset>
+			        <label><?= __('add key:') ?></label>
+			        <?php
+			            echo $this->Form->hidden('set_id', ['value' => 0]);
+			            echo $this->Form->hidden('song_id', ['value' => $current_song->id]);
+			            echo $this->Form->input('performer_id', ['empty' => 'Please select ...', 'options' => $performers_list]);
+			            echo $this->Form->input('key');
+			            //echo $this->Form->input('capo');
+			        ?>
+			    <span class="button"><?= $this->Form->button(__('Submit')) ?></span>
+			    </fieldset>
+			    <?= $this->Form->end() ?>
+		</span>
+        <?php
+        }
+        ?>
     </span>
-    <span class="key-form">
-            <?= $this->Form->create($set_song_object, ['url' => ['controller' => 'SetSongs', 'action' => 'addret', $return_point['controller'], $return_point['method'], $return_point['id']]]) ?>
-		    <fieldset>
-		        <label><?= __('add:') ?></label>
-		        <?php
-		            echo $this->Form->hidden('set_id', ['value' => 0]);
-		            echo $this->Form->hidden('song_id', ['value' => $current_song->id]);
-		            echo $this->Form->input('performer_id', ['empty' => 'Please select ...', 'options' => $performers_list]);
-		            echo $this->Form->input('key');
-		            //echo $this->Form->input('capo');
-		        ?>
-		    </fieldset>
-		    <span class="button"><?= $this->Form->button(__('Submit')) ?></span>
-		    <?= $this->Form->end() ?>
-	</span>
     </td>
 </tr>

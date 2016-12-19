@@ -6,6 +6,7 @@ use App\Controller\StaticFunctionController;
 use App\Model\Entity\SongTag;
 use App\Model\Entity\Tag;
 use App\Model\Entity\SetSong;
+use App\Model\Entity\Performer;
 
 /**
  * Songs Controller
@@ -44,9 +45,11 @@ class SongsController extends AppController
 		$this->set('search_string', $search_string);
 		$this->set('songs', $this->paginate($this->Songs));
 		$this->set('_serialize', ['songs']);
-        $this->set('performers', $this->Songs->SetSongs->Performers->find('list', [
-            		'keyField' => 'id',
-            		'valueField' => 'nickname'
+
+        $this->loadModel('Performers');
+        $this->set('performers', $this->Performers->find('list', [
+                    'keyField' => 'id',
+                    'valueField' => 'nickname'
                 ]
             )
         );
@@ -71,9 +74,11 @@ class SongsController extends AppController
 		$this->set('search_string', $search_string);
 		$this->set('songs', $this->paginate($this->Songs));
 		$this->set('_serialize', ['songs']);
-        $this->set('performers', $this->Songs->SetSongs->Performers->find('list', [
-            		'keyField' => 'id',
-            		'valueField' => 'nickname'
+
+        $this->loadModel('Performers');
+        $this->set('performers', $this->Performers->find('list', [
+                    'keyField' => 'id',
+                    'valueField' => 'nickname'
                 ]
             )
         );

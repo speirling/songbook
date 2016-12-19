@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use App\Model\Entity\SongPerformance;
 use App\Model\Entity\SetSong;
+use App\Model\Entity\Performer;
 
 /**
  * Events Controller
@@ -49,9 +50,11 @@ class EventsController extends AppController
         $this->set('event', $event);
         $this->set('event_songs', $event_songs);
         $this->set('_serialize', ['event']);
-        $this->set('performers', $this->Songs->SetSongs->Performers->find('list', [
-            		'keyField' => 'id',
-            		'valueField' => 'nickname'
+
+        $this->loadModel('Performers');
+        $this->set('performers', $this->Performers->find('list', [
+                    'keyField' => 'id',
+                    'valueField' => 'nickname'
                 ]
             )
         );

@@ -6,6 +6,8 @@ use App\Model\Entity\SetSong;
 use App\Model\Entity\PlaylistSet;
 use App\Model\Entity\Set;
 use App\Model\Entity\Song;
+use App\Model\Entity\Performer;
+
 /**
  * Playlists Controller
  *
@@ -44,9 +46,11 @@ class PlaylistsController extends AppController
         $this->set('setSong', $setSong);
         $this->set(compact('playlist', 'song'));
         $this->set('_serialize', ['playlist']);
-        $this->set('performers', $this->Songs->SetSongs->Performers->find('list', [
-            		'keyField' => 'id',
-            		'valueField' => 'nickname'
+
+        $this->loadModel('Performers');
+        $this->set('performers', $this->Performers->find('list', [
+                    'keyField' => 'id',
+                    'valueField' => 'nickname'
                 ]
             )
         );
