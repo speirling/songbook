@@ -25,8 +25,8 @@
             echo '<span class="performed-by">('.$current_song->performed_by.')</span>';
     } ?>
     <span class="actions">
-        <span class="button view"><?= $this->Html->link(__('View'), ['controller'=>'Songs', 'action' => 'view', $current_song->id]) ?></span>
-        <span class="button edit"><?= $this->Html->link(__('Edit'), ['action' => 'edit', $current_song->id]) ?></span>
+        <span class="button view"><?= $this->Html->link(__('View'), ['controller'=>'Songs', 'action' => 'view', $current_song->id], ['target'=>'_blank']) ?></span>
+        <span class="button edit"><?= $this->Html->link(__('Edit'), ['action' => 'edit', $current_song->id], ['target'=>'_blank']) ?></span>
         <span class="button vote"><?= 
             $this->Html->link(__(
                 'vote'
