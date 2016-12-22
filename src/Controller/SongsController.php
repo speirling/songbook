@@ -42,6 +42,7 @@ class SongsController extends AppController
 		}
         $setSong = new SetSong();
         $this->set('setSong', $setSong);
+        $this->set('title', 'Song list');
 		$this->set('search_string', $search_string);
 		$this->set('songs', $this->paginate($this->Songs));
 		$this->set('_serialize', ['songs']);
@@ -71,6 +72,7 @@ class SongsController extends AppController
         }])->contain('SetSongs.Performers');
         $setSong = new SetSong();
         $this->set('setSong', $setSong);
+        $this->set('title', 'Search Results');
 		$this->set('search_string', $search_string);
 		$this->set('songs', $this->paginate($this->Songs));
 		$this->set('_serialize', ['songs']);
@@ -109,6 +111,7 @@ class SongsController extends AppController
         $setSong = new SetSong();
         $this->set('song', $song);
         $this->set('setSong', $setSong);
+        $this->set('title', $song['title']);
         $this->set('current_key', $key);
         $this->set('capo', $capo);
         $this->set('tags', $this->Songs->SongTags->Tags->find('list'));
