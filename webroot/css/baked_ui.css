@@ -456,3 +456,41 @@ tr.song-row.ui-selected .song-title {
 .songs.view .performers label[for="performer-id"] {
 	display: none;
 }
+
+
+/* key input form on songs lists */
+
+.song-row .key-form form ,
+.song-row .key-form fieldset {
+    display: inline-block;
+    vertical-align: top;
+    font-size:  0.84em;
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+.song-row .key-form .input  {
+    display: inline-block;
+}
+.song-row .key-form input  {
+    display: inline-block;
+    border: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+.song-row .key-form input#key  {
+    width: 2.5em;
+}
+.song-row .key-form input#capo  {
+    text-align: center;
+    width: 1em;
+}
+.song-row .key-form label[for="key"],
+.song-row .key-form label[for="performer-id"] {
+    display: none;
+}
+.song-row .key-form fieldset label {
+	display:block;
+	text-align: left;
+}

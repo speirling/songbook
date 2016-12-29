@@ -6,6 +6,7 @@ use App\Controller\StaticFunctionController;
 use App\Model\Entity\SongTag;
 use App\Model\Entity\Tag;
 use App\Model\Entity\SetSong;
+use App\Model\Entity\Performer;
 
 /**
  * Songs Controller
@@ -39,9 +40,20 @@ class SongsController extends AppController
         }])->contain('SetSongs.Performers');
 			$search_string = '';
 		}
+        $setSong = new SetSong();
+        $this->set('setSong', $setSong);
+        $this->set('title', 'Song list');
 		$this->set('search_string', $search_string);
 		$this->set('songs', $this->paginate($this->Songs));
 		$this->set('_serialize', ['songs']);
+
+        $this->loadModel('Performers');
+        $this->set('performers', $this->Performers->find('list', [
+                    'keyField' => 'id',
+                    'valueField' => 'nickname'
+                ]
+            )
+        );
 	}
     /**
      * Search method
@@ -58,9 +70,20 @@ class SongsController extends AppController
 			->order(['id' =>'DESC'])->contain(['SetSongs'=>function($query){
         	return $query->find('all')->distinct('performer_id', 'key');
         }])->contain('SetSongs.Performers');
+        $setSong = new SetSong();
+        $this->set('setSong', $setSong);
+        $this->set('title', 'Search Results');
 		$this->set('search_string', $search_string);
 		$this->set('songs', $this->paginate($this->Songs));
 		$this->set('_serialize', ['songs']);
+
+        $this->loadModel('Performers');
+        $this->set('performers', $this->Performers->find('list', [
+                    'keyField' => 'id',
+                    'valueField' => 'nickname'
+                ]
+            )
+        );
 	}
 
     /**
@@ -88,6 +111,7 @@ class SongsController extends AppController
         $setSong = new SetSong();
         $this->set('song', $song);
         $this->set('setSong', $setSong);
+        $this->set('title', $song['title']);
         $this->set('current_key', $key);
         $this->set('capo', $capo);
         $this->set('tags', $this->Songs->SongTags->Tags->find('list'));
