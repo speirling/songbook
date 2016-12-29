@@ -10,7 +10,13 @@
 <tr class="song-row">
     <td class="song-id"><?= h($current_song->id) ?></td>
     <td class="performers">
-        <?php foreach ($this_set_songs as $set_song) {
+        <?php 
+        if(sizeof($this_set_songs) > 0) {
+            $primary_key = $this_set_songs[0]['key'];
+        } else {
+            $primary_key = false;
+        }
+        foreach ($this_set_songs as $set_song) {
             echo '<span class="performer">';
             echo '<span class="nickname">'.$set_song['performer']['nickname'].'</span>';
             echo '<span class="key">'.$set_song['key'].'</span>';
@@ -25,7 +31,7 @@
             echo '<span class="performed-by">('.$current_song->performed_by.')</span>';
     } ?>
     <span class="actions">
-        <span class="button view"><?= $this->Html->link(__('View'), ['controller'=>'Songs', 'action' => 'view', $current_song->id], ['target'=>'_blank']) ?></span>
+        <span class="button view"><?= $this->Html->link(__('View'), ['controller'=>'Songs', 'action' => 'view', $current_song->id.'?key='.$primary_key], ['target'=>'_blank']) ?></span>
         <span class="button edit"><?= $this->Html->link(__('Edit'), ['action' => 'edit', $current_song->id], ['target'=>'_blank']) ?></span>
         <span class="button vote"><?= 
             $this->Html->link(__(
