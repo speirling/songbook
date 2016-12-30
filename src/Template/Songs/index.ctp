@@ -1,8 +1,7 @@
-<?php /* Template/Songs/index.php */ ?>
-
-<nav class="large-2 medium-2 columns" id="actions-sidebar">
-    <?= $this->element('standard_menu') ?>
-</nav>
+<?php /* Template/Songs/index.ctp */  
+    $controller_name = 'Song';
+    echo($this->element('standard_menu', ['controller_name' => $controller_name]) );
+?>
 <div class="songs index large-10 medium-10 columns content">
 
     <h3><?= __('Songs') ?></h3>

@@ -1,11 +1,7 @@
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Event'), ['action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Song Performances'), ['controller' => 'SongPerformances', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Song Performance'), ['controller' => 'SongPerformances', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
+<?php /* Template/Events/index.ctp */ 
+    $controller_name = 'Event';
+    echo($this->element('standard_menu', ['controller_name' => $controller_name]) );
+?>
 <div class="events index large-9 medium-8 columns content">
     <h3><?= __('Events') ?></h3>
     <table cellpadding="0" cellspacing="0">

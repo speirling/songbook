@@ -1,8 +1,7 @@
-<?php /* Template/Playlist/index.php */ ?>
-
-<nav class="large-2 medium-3 columns" id="actions-sidebar">
-    <?= $this->element('standard_menu') ?>
-</nav>
+<?php /* Template/Playlist/index.ctp */  
+    $controller_name = 'Playlist';
+    echo($this->element('standard_menu', ['controller_name' => $controller_name]) );
+?>
 <div class="playlists index large-10 medium-9 columns content">
     <h3><?= __('Playlists') ?></h3>
     <table cellpadding="0" cellspacing="0">

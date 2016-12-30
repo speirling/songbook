@@ -210,14 +210,12 @@ tr.song-row td.actions {
     width: 10em;
 }
 tr.song-row td.performers,
-.performers {
+.performers:not('.index') {
     width: 4.5em;
     padding-right: 0;
 }
-.performers {
-    display: table-cell;
-}
-.performer  {
+.performer,
+.performers.index  {
     display: block;
 }
 .songs.view .performers,
