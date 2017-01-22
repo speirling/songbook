@@ -4,7 +4,8 @@
   $return_point = [controller, method, id]
   $current_song = [id, title, written_by, performed_by]
   $this_set_songs = distinct array of [performer ([name, nickname]), key, capo]
-  $setSong =  a setSong object
+  $set_song_object =  a setSong object - required to set up the key form
+  $performers_list = list of all available performers for drop-down list in key form.
   */
 ?>
 <tr class="song-row">
