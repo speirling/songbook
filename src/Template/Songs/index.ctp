@@ -2,7 +2,7 @@
     $controller_name = 'Song';
     echo($this->element('standard_menu', ['controller_name' => $controller_name]) );
 ?>
-<div class="songs index large-10 medium-10 columns content">
+<div class="songs index large-9 medium-9 columns content">
 
     <h3><?= __('Songs') ?></h3>
     <table cellpadding="0" cellspacing="0">

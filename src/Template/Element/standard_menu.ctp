@@ -1,4 +1,4 @@
-<nav class="large-2 medium-3 columns" id="actions-sidebar">
+<nav class="large-3 medium-3 columns" id="actions-sidebar">
     <?= $this->Form->create(null, [
         'url' => ['controller' => 'Songs', 'action' => 'index']
     ]) ?>
