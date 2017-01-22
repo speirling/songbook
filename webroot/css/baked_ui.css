@@ -492,3 +492,11 @@ tr.song-row.ui-selected .song-title {
 	display:block;
 	text-align: left;
 }
+
+.dashboard .text-search,
+.dashboard .tag-id,
+.dashboard .performer-id,
+.dashboard .venue {
+	display: inline-block;
+	width: 10em;
+}

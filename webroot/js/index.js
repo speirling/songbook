@@ -31,6 +31,7 @@ jQuery(document).ready(function() {
 	});
 
 	jQuery('.playlists.view .set-songs tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
+	jQuery('.dashboard.index tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
 	jQuery('.songs.index tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
 	jQuery('.events.view .related tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
 	if(jQuery('.songs.index tbody tr').length === 1) {
