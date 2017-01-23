@@ -17,12 +17,17 @@
         } else {
             $primary_key = false;
         }
+        $existing_performer_keys = [];
         foreach ($this_set_songs as $set_song) {
-            echo '<span class="performer">';
-            echo '<span class="nickname">'.$set_song['performer']['nickname'].'</span>';
-            echo '<span class="key">'.$set_song['key'].'</span>';
-            echo '<span class="capo">'.$set_song['capo'].'</span>'; 
-            echo '</span>';
+            $performer_key = $set_song['performer']['nickname'].$set_song['key'];
+            if (!in_array($performer_key, $existing_performer_keys)) {
+                array_push($existing_performer_keys, $performer_key);
+                echo '<span class="performer">';
+                echo '<span class="nickname">'.$set_song['performer']['nickname'].'</span>';
+                echo '<span class="key">'.$set_song['key'].'</span>';
+                echo '<span class="capo">'.$set_song['capo'].'</span>';
+                echo '</span>';
+            }
         } ?>
     </td>
     <td class="song-main"><span class="song-title"><?= h($current_song->title) ?></span> 

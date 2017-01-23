@@ -31,8 +31,7 @@
         
         <tbody>
             <?php 
-            foreach ($filtered_list as $song){ 
-            //echo debug($song->set_songs);
+            foreach ($filtered_list as $song){
 	            if ($search_string == "") {
 	                $return_port_id = " ";
 	            } else {

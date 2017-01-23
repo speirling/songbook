@@ -26,22 +26,20 @@ class SongsController extends AppController
 	 */
 	public function index()
 	{
+		$this->Songs = $this->Songs->find();
+		$this->Songs = $this->Songs->contain('SetSongs.Performers');
 		if ($this->request->is('post')) {
-			$this->Songs = $this->Songs->find()
-			->where(['title LIKE' => '%'.$this->request->data['Search'].'%'])
-			->order(['id' =>'DESC'])->contain(['SetSongs'=>function($query){
-                return $query->find('all')->distinct(['performer_id', 'key']);
-        }])->contain('SetSongs.Performers');
 			$search_string = $this->request->data['Search'];
+			$this->Songs = $this->Songs->where(['title LIKE' => '%'.$search_string.'%']);
 		} else {
-			$this->Songs = $this->Songs->find()
-			->order(['id' =>'DESC'])->contain(['SetSongs'=>function($query){
-                return $query->find('all')->distinct(['performer_id', 'key']);
-        }])->contain('SetSongs.Performers');
 			$search_string = '';
 		}
+
+		$this->Songs = $this->Songs->order(['id' =>'DESC']);
+
         $setSong = new SetSong();
         $this->set('setSong', $setSong);
+
         $this->set('title', 'Song list');
 		$this->set('search_string', $search_string);
 		$this->set('songs', $this->paginate($this->Songs));
@@ -57,7 +55,7 @@ class SongsController extends AppController
 	}
     /**
      * Search method
-     * This isn't usually required - the index method carries out searched.
+     * This isn't usually required - the index method carries out searches.
      * This is only here becuase I want to return from a 'vote' call to the same search as it was called from
      *
      * @return void

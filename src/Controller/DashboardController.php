@@ -30,12 +30,7 @@ class DashboardController extends AppController
 		$this->loadModel('Songs');
 		$filtered_list_query = $this->Songs->find();
 		$filtered_list_query->contain(['SongTags'=>['Tags']]);
-		$filtered_list_query->contain(['SetSongs'=>function($query){
-			return $query->find('all')->distinct(['performer_id', 'key']);
-		}]);
-		$filtered_list_query->contain(['SetSongs.Performers'=>function($query){
-			return $query->find('all')->distinct(['performer_id', 'key']);
-		}]);
+		$filtered_list_query->contain(['SetSongs.Performers']);
 		
 		if ($this->request->is(array('post', 'put'))) {
 			if($this->request->data['text_search']) {
@@ -69,7 +64,7 @@ class DashboardController extends AppController
 			$search_string = '';
 			$selected_performer  = '';
 			$selected_tag_array = [];
-		}
+        }
 		
 		$filtered_list_query->distinct(['Songs.id']);
 		$filtered_list_query->order(['Songs.id' =>'DESC']);
