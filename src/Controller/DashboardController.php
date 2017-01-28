@@ -49,17 +49,41 @@ class DashboardController extends AppController
 			} else {
 				$selected_performer = '';
 			}
-/*
-			if($this->request->data['tag_id']) {
+
+			if($this->request->data['tag_id'] && $this->request->data['tag_id'] != 'Tag...') {
 				$selected_tag_array = $this->request->data['tag_id'];
 				$filtered_list_query->matching(
-				    'SongTags.Tags', function ($q) use($selected_tag_array)  {
-				        return $q->where(['Tags.id IN' => $selected_tag_array]);
-				    }
+					'SongTags.Tags', function ($q) use($selected_tag_array)  {
+					return $q->where(['Tags.id IN' => $selected_tag_array]);
+					}
 				);
 			} else {
-				$selected_tag_array =[];
-			}*/
+				$selected_tag_array = [];
+			}
+
+			if($this->request->data['venue']) {
+				$selected_venue = $this->request->data['venue'];
+				//find all of the events that were at this venue
+				$this->loadModel('Events');
+				$venue_query = $this->Events->findAllByVenue($selected_venue);
+				$event_times = $venue_query->toArray();
+				$performance_conditions = [];
+				$this->loadModel('SongPerformances');
+				$performance_query = $this->SongPerformances->find();
+				foreach($venue_query->toArray() as $key => $event) {
+					$performance_query->orWhere("`SongPerformances`.`timestamp` BETWEEN \"".date("Y-m-d H:i:s", strtotime($event->timestamp) - $event->duration_hours * 60 * 60)."\" AND \"".date("Y-m-d H:i:s", strtotime($event->timestamp) + $event->duration_hours * 60 * 60)."\"");
+				}
+				$performance_query->distinct('song_id');
+				$performance_list = $performance_query->extract('song_id');
+				$song_id_list = [];
+				foreach($performance_list as $id=>$song_id) {
+					array_push($song_id_list, $song_id);
+				}
+				$filtered_list_query->where(['id IN' => $song_id_list]);
+		
+			} else {
+				$selected_venue = '';
+			}
 		} else {
 			$search_string = '';
 			$selected_performer  = '';
