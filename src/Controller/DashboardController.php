@@ -60,7 +60,6 @@ class DashboardController extends AppController
 				);
 				$filtered_list_query->group('Songs.id');
 				$filtered_list_query->having(['COUNT(Songs.id) = ' => sizeof($selected_tag_array)]);
-				//echo debug($filtered_list_query);die();
 			} else {
 				$selected_tag_array = [];
 			}
