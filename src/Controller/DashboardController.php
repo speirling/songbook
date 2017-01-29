@@ -50,18 +50,22 @@ class DashboardController extends AppController
 				$selected_performer = '';
 			}
 
-			if($this->request->data['tag_id'] && $this->request->data['tag_id'] != 'Tag...') {
+			if ($this->request->data['tag_id'] && $this->request->data['tag_id'] != 'Tag...') {
 				$selected_tag_array = $this->request->data['tag_id'];
 				$filtered_list_query->matching(
 					'SongTags.Tags', function ($q) use($selected_tag_array)  {
-					return $q->where(['Tags.id IN' => $selected_tag_array]);
+						$q->where(['Tags.id IN' => $selected_tag_array]);
+						return $q;
 					}
 				);
+				$filtered_list_query->group('Songs.id');
+				$filtered_list_query->having(['COUNT(Songs.id) = ' => sizeof($selected_tag_array)]);
+				//echo debug($filtered_list_query);die();
 			} else {
 				$selected_tag_array = [];
 			}
 
-			if($this->request->data['venue']) {
+			if ($this->request->data['venue']) {
 				$selected_venue = $this->request->data['venue'];
 				//find all of the events that were at this venue
 				$this->loadModel('Events');
@@ -76,10 +80,12 @@ class DashboardController extends AppController
 				$performance_query->distinct('song_id');
 				$performance_list = $performance_query->extract('song_id');
 				$song_id_list = [];
-				foreach($performance_list as $id=>$song_id) {
+				foreach($performance_list as $id => $song_id) {
 					array_push($song_id_list, $song_id);
 				}
-				$filtered_list_query->where(['id IN' => $song_id_list]);
+
+				$filtered_list_query->andWhere(['`Songs`.`id` IN' => $song_id_list]);
+				//echo debug($filtered_list_query); die();
 		
 			} else {
 				$selected_venue = '';

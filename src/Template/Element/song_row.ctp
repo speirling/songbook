@@ -36,6 +36,15 @@
         } else {
             echo '<span class="performed-by">('.$current_song->performed_by.')</span>';
     } ?>
+    <span class="tags">
+    <?php 
+    $list_of_tags = '';
+    foreach ($current_song->song_tags as $this_tag) {
+    	$list_of_tags = $list_of_tags . '<span class="tag">' . $this_tag->tag->title . '</span>';
+    }
+    echo $list_of_tags;
+    ?>
+    </span>
     <span class="actions">
         <span class="button view"><?= $this->Html->link(__('View'), ['controller'=>'Songs', 'action' => 'view', $current_song->id.'?key='.$primary_key], ['target'=>'_blank']) ?></span>
         <span class="button edit"><?= $this->Html->link(__('Edit'), ['action' => 'edit', $current_song->id], ['target'=>'_blank']) ?></span>
