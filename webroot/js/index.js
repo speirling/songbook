@@ -55,10 +55,16 @@ jQuery(document).ready(function() {
      
      jQuery('tr.song-row:last  .actions.move-down').hide();
      jQuery('tr.song-row:first .actions.move-up').hide();
-     
 
-      
-      jQuery('.add-new-ui').each(function () {
-    	  SBK.CakeUI.toggleable.make(this);
-      });
+     jQuery('.add-new-ui').each(function () {
+         SBK.CakeUI.toggleable.make(this);
+     });
+
+     jQuery(
+         '.dashboard .performer-id select, ' + 
+         '.dashboard .venue select, ' +
+         '.dashboard .tag-id select'
+     ).change(function () {
+    	 jQuery(this).parents('form').submit();
+     })
 });

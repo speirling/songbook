@@ -513,3 +513,7 @@ tr.song-row.ui-selected .song-title {
     color: gray;
     border-radius: 5px;
 }
+.select2-dropdown li,
+div.input.select .select2 {
+	font-size: 0.7em;
+}

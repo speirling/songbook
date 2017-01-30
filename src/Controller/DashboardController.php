@@ -31,11 +31,11 @@ class DashboardController extends AppController
 		$filtered_list_query = $this->Songs->find();
 		$filtered_list_query->contain(['SongTags'=>['Tags']]);
 		$filtered_list_query->contain(['SetSongs.Performers']);
-		
+		//echo debug($this->request); die();
 		if ($this->request->is(array('post', 'put'))) {
 			if($this->request->data['text_search']) {
 				$search_string = $this->request->data['text_search'];
-				$filtered_list_query->where(['title LIKE' => '%'.$search_string.'%']);	
+				$filtered_list_query->where(['Songs.title LIKE' => '%'.$search_string.'%']);	
 			} else {
 				$search_string = '';
 			}
