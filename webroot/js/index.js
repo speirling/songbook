@@ -61,10 +61,21 @@ jQuery(document).ready(function() {
      });
 
      jQuery(
-         '.dashboard .performer-id select, ' + 
-         '.dashboard .venue select, ' +
-         '.dashboard .tag-id select'
+         '#actions-sidebar .performer-id select, ' +
+         '#actions-sidebar .venue select'
      ).change(function () {
     	 jQuery(this).parents('form').submit();
-     })
+     });
+
+     var DASHBOARD_TAG_TIMEOUT;
+     jQuery(
+             '#actions-sidebar .tag-id select'
+         ).change(function () {
+             var self = jQuery(this);
+
+             clearTimeout (DASHBOARD_TAG_TIMEOUT);
+             DASHBOARD_TAG_TIMEOUT = setTimeout( function () {
+                 self.parents('form').submit();
+             }, 1000);
+         })
 });

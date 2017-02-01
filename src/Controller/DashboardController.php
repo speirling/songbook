@@ -31,15 +31,15 @@ class DashboardController extends AppController
 		$filtered_list_query = $this->Songs->find();
 		$filtered_list_query->contain(['SongTags'=>['Tags']]);
 		$filtered_list_query->contain(['SetSongs.Performers']);
-		//echo debug($this->request); die();
+		//echo debug($this->request->data); die();
 		if ($this->request->is(array('post', 'put'))) {
-			if($this->request->data['text_search']) {
+			if(array_key_exists('text_search', $this->request->data) && $this->request->data['text_search']) {
 				$search_string = $this->request->data['text_search'];
 				$filtered_list_query->where(['Songs.title LIKE' => '%'.$search_string.'%']);	
 			} else {
 				$search_string = '';
 			}
-			if($this->request->data['performer_id']) {
+			if(array_key_exists('performer_id', $this->request->data) && $this->request->data['performer_id']) {
 				$selected_performer = $this->request->data['performer_id'];
 				$filtered_list_query->matching(
 				    'SetSongs.Performers', function ($q) use($selected_performer)  {
@@ -50,7 +50,7 @@ class DashboardController extends AppController
 				$selected_performer = '';
 			}
 
-			if ($this->request->data['tag_id'] && $this->request->data['tag_id'] != 'Tag...') {
+			if (array_key_exists('tag_id', $this->request->data) && $this->request->data['tag_id'] && $this->request->data['tag_id'] != 'Tag...') {
 				$selected_tag_array = $this->request->data['tag_id'];
 				$filtered_list_query->matching(
 					'SongTags.Tags', function ($q) use($selected_tag_array)  {
@@ -64,7 +64,7 @@ class DashboardController extends AppController
 				$selected_tag_array = [];
 			}
 
-			if ($this->request->data['venue']) {
+			if (array_key_exists('venue', $this->request->data) && $this->request->data['venue']) {
 				$selected_venue = $this->request->data['venue'];
 				//find all of the events that were at this venue
 				$this->loadModel('Events');
