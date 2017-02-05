@@ -122,6 +122,7 @@ class DashboardController extends AppController
 		$setSong = new SetSong();
         $this->set('setSong', $setSong);
         
+        $this->set('tags', $this->Songs->SongTags->Tags->find('list'));
         $this->set('title', 'Homepage');
 		$this->set('search_string', $search_string);
 		$this->set('selected_tags', $selected_tag_array);

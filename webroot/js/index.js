@@ -7,11 +7,14 @@ jQuery(document).ready(function() {
 	    new SBK.ChordEditor(jQuery('.sbk-lyrics-panel')).render();
 	}
 
-	jQuery('select').not('.song-tags select').select2();
+	jQuery('select').not('.song-tags select').not('.tag-form select').select2();
 	jQuery('.song-tags select').select2({
-	  tags: true,
-	  tokenSeparators: [',', ' ']
-	});
+		  tags: true,
+		  tokenSeparators: [',', ' ']
+		});
+	jQuery('.tag-form select').select2({
+		  tags: true
+		});
 	
 
 	jQuery('table.sortable tbody tr').prepend('<td class="handle">');

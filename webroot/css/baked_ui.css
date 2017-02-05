@@ -252,6 +252,12 @@ tr.song-row td.performers .capo,
 tr.song-row .actions {
     display: none;
 }
+tr.song-row .key-form,
+tr.song-row .tag-form {
+	display: inline-block;
+    Border: 1px solid gray;
+    vertical-align: middle;
+}
 tr.song-row.ui-selected .actions {
     display: inline-block;
     vertical-align: middle
@@ -458,8 +464,10 @@ tr.song-row.ui-selected .song-title {
 
 /* key input form on songs lists */
 
-.song-row .key-form form ,
-.song-row .key-form fieldset {
+.song-row .key-form form,
+.song-row .key-form fieldset,
+.song-row .tag-form form,
+.song-row .tag-form fieldset {
     display: inline-block;
     vertical-align: top;
     font-size:  0.84em;
@@ -468,7 +476,8 @@ tr.song-row.ui-selected .song-title {
     padding: 0;
 }
 
-.song-row .key-form .input  {
+.song-row .key-form .input,
+.song-row .tag-form .input  {
     display: inline-block;
 }
 .song-row .key-form input  {
@@ -488,17 +497,10 @@ tr.song-row.ui-selected .song-title {
 .song-row .key-form label[for="performer-id"] {
     display: none;
 }
-.song-row .key-form fieldset label {
+.song-row .key-form fieldset label,
+.song-row .tag-form fieldset label {
 	display:block;
 	text-align: left;
-}
-
-.dashboard .text-search,
-.dashboard .tag-id,
-.dashboard .performer-id,
-.dashboard .venue {
-	display: inline-block;
-	width: 10em;
 }
 
 .dashboard .tags {

@@ -6,6 +6,7 @@
   $this_set_songs = distinct array of [performer ([name, nickname]), key, capo]
   $set_song_object =  a setSong object - required to set up the key form
   $performers_list = list of all available performers for drop-down list in key form.
+  $tags = list of all avilable tags
   */
 ?>
 <tr class="song-row">
@@ -49,7 +50,7 @@
     </span>
     <span class="actions">
         <span class="button view"><?= $this->Html->link(__('View'), ['controller'=>'Songs', 'action' => 'view', $current_song->id.'?key='.$primary_key], ['target'=>'_blank']) ?></span>
-        <span class="button edit"><?= $this->Html->link(__('Edit'), ['action' => 'edit', $current_song->id], ['target'=>'_blank']) ?></span>
+        <span class="button edit"><?= $this->Html->link(__('Edit'), ['controller'=>'Songs', 'action' => 'edit', $current_song->id], ['target'=>'_blank']) ?></span>
         <span class="button vote"><?= 
             $this->Html->link(__(
                 'vote'
@@ -79,7 +80,6 @@
 	    <span class="key-form">
 	            <?= $this->Form->create($set_song_object, ['url' => ['controller' => 'SetSongs', 'action' => 'addret', $return_point['controller'], $return_point['method'], $return_point['id']]]) ?>
 			    <fieldset>
-			        <label><?= __('add key:') ?></label>
 			        <?php
 			            echo $this->Form->hidden('set_id', ['value' => 0]);
 			            echo $this->Form->hidden('song_id', ['value' => $current_song->id]);
@@ -87,10 +87,31 @@
 			            echo $this->Form->input('key');
 			            //echo $this->Form->input('capo');
 			        ?>
-			    <span class="button"><?= $this->Form->button(__('Submit')) ?></span>
+			    <span class="button"><?= $this->Form->button(__('Add Key')) ?></span>
 			    </fieldset>
 			    <?= $this->Form->end() ?>
 		</span>
+        <?php
+        }
+
+		if(isset($tags)) {?>
+	    <span class="tag-form">
+	        <?php
+	            $selected_tags = [];
+	            foreach ($current_song->song_tags as $this_tag) {
+	                array_push($selected_tags, $this_tag['tag_id']);
+	            }
+	        ?>
+	        <?= $this->Form->create(null, ['url' => ['controller' => 'SongTags', 'action' => 'matchListAjax']]) ?>
+	        <fieldset>
+	            <?php
+	                echo '<span class="tag-id">'.$this->Form->input('tag_id', ['label' => '', 'options' => $tags, 'multiple' => true, 'default' => $selected_tags]).'</span>';
+	                echo $this->Form->hidden('song_id', ['value' => $current_song->id]);
+	            ?>
+	        </fieldset>
+	        <span class="tag-add-submit button"><?= $this->Form->button(__('Update tags'), ['type' => 'button', 'onclick' => 'SBK.CakeUI.form.ajaxify(this);']) ?></span>
+	        <?= $this->Form->end() ?>
+	    </span>
         <?php
         }
         ?>

@@ -145,29 +145,56 @@
 		}
 	
 	}, 
-	
+
 	form: {
 		submit_value: function (value, form_input_selector) {
 			var form_input, form;
-			
+
 			form_input = jQuery(form_input_selector);
 			form = form_input.closest('form');
 			
 			form_input.val(value);
 			form.submit()
 		},
-		
+
 		submit_value_json: function (value) {
 			var obj, form_input, form;
-console.log(value);
+
 			obj = JSON.parse(value);
 			for(form_input_selector in obj) {
 				form_input = jQuery('#' + form_input_selector);
 				form = form_input.closest('form');
-				
+
 				form_input.val(obj[form_input_selector]);
 			}
 			form.submit(); //assuming that all inputs are in the same form
+		},
+
+		ajaxify: function (button) {
+			var form = jQuery(button).parents('form'), target = form.attr('action');
+
+			//console.log('ajaxify', form.serialize(), target);
+			jQuery.ajax({
+					url: target,
+					data: form.serialize(),
+					success: function (d) {
+						var response = JSON.parse(d);
+
+						if(response.success == true) {
+							console.log(response);
+						    location.reload();
+						} else {
+							console.log(response);
+							console.log(typeof(response));
+							console.log('Reponse indicates tag update failed');
+						}
+					},
+					error: function(error) {
+						console.log(error.responseText);
+						console.log('tag update failed');
+					}
+				}
+			)
 		}
 	}
 };
