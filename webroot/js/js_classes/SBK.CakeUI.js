@@ -170,31 +170,64 @@
 			form.submit(); //assuming that all inputs are in the same form
 		},
 
-		ajaxify: function (button) {
+		ajaxify: function (button, success_callback) {
 			var form = jQuery(button).parents('form'), target = form.attr('action');
 
-			//console.log('ajaxify', form.serialize(), target);
+			console.log('ajaxify', form.serialize(), target);
 			jQuery.ajax({
-					url: target,
-					data: form.serialize(),
-					success: function (d) {
-						var response = JSON.parse(d);
+                    url: target,
+                    data: form.serialize(),
+                    success: function (response) {
+                        if(response.success === true) {
+                            if(typeof(success_callback) === 'function') {
+                                success_callback(response, form);
+                            }
+                        } else {
+                            console.log(response);
+                            console.log(typeof(response));
+                            console.log('Response indicates ajax call ' + target + ' failed');
+                        }
+                    },
+                    error: function(error) {
+                        console.log('ajax call ' + target + ' failed: ', error);
+                    }
+                }
+            )
+        },
+    },
 
-						if(response.success == true) {
-							console.log(response);
-						    location.reload();
-						} else {
-							console.log(response);
-							console.log(typeof(response));
-							console.log('Reponse indicates tag update failed');
-						}
-					},
-					error: function(error) {
-						console.log(error.responseText);
-						console.log('tag update failed');
-					}
-				}
-			)
-		}
-	}
+    ajaxcallback: {
+        song_row: {
+            set_tags: function (response, form) {
+                var tags = response.tag_data, index = 0, list_of_tags = '', song_row = form.closest('tr.song-row');
+
+                for (index = 0; index < tags.length; index= index + 1) {
+                    list_of_tags = list_of_tags + '<span class="tag">' + tags[index] + '</span>';
+                }
+                jQuery('span.tags', song_row).html(list_of_tags);
+            },
+            add_key: function (response, form) {
+                var performer = response.performer_data, new_key_html = '', song_row = form.closest('tr.song-row');
+
+                    new_key_html = new_key_html + '<span class="performer">';
+                    new_key_html = new_key_html + '<span class="nickname">' + performer[1]['nickname'] + '</span>';
+                    new_key_html = new_key_html + '<span class="key">' + performer[0]['key'] + '</span>';
+                    if(typeof(performer[0]['capo']) !== 'undefined') {
+                        new_key_html = new_key_html + '<span class="capo">' + performer[0]['capo'] + '</span>';
+                    }
+                    new_key_html = new_key_html + '</span>';
+                jQuery('td.performers', song_row).append(new_key_html);
+            }
+        },
+        register_performance: function (response, button) {
+            var song_row = button.closest('tr.song-row');
+
+            song_row.addClass('played');
+        },
+        register_vote: function (response, button) {
+            var song_row = button.closest('tr.song-row');
+
+            song_row.addClass('voted');
+        }
+    }
 };

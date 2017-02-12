@@ -9,7 +9,7 @@
   $tags = list of all avilable tags
   */
 ?>
-<tr class="song-row">
+<tr class="song-row <?php if($current_song->played) {echo 'played';} ?>">
     <td class="song-id"><?= h($current_song->id) ?></td>
     <td class="performers">
         <?php 
@@ -40,78 +40,70 @@
     <span class="tags">
     <?php 
     if($current_song->song_tags) {
-	    $list_of_tags = '';
-	    foreach ($current_song->song_tags as $this_tag) {
+        $list_of_tags = '';
+        foreach ($current_song->song_tags as $this_tag) {
             $list_of_tags = $list_of_tags . '<span class="tag">' . $this_tag->tag->title . '</span>';
-	    }
-	    echo $list_of_tags;
+        }
+        echo $list_of_tags;
     }
     ?>
     </span>
     <span class="actions">
         <span class="button view"><?= $this->Html->link(__('View'), ['controller'=>'Songs', 'action' => 'view', $current_song->id.'?key='.$primary_key], ['target'=>'_blank']) ?></span>
         <span class="button edit"><?= $this->Html->link(__('Edit'), ['controller'=>'Songs', 'action' => 'edit', $current_song->id], ['target'=>'_blank']) ?></span>
-        <span class="button vote"><?= 
-            $this->Html->link(__(
-                'vote'
-            ), [
-                'controller' => 'SongVotes', 
-                'action' => 'addret', 
-                $current_song->id,
-                $return_point['controller'], 
-                $return_point['method'], 
-                $return_point['id']
-            ]) ?>
+        <span class="vote">
+            <?= $this->Form->create(null, ['url' => ['controller' => 'SongVotes', 'action' => 'addAjax']]) ?>
+            <?= $this->Form->hidden('song_id', ['value' => $current_song->id]);    ?>
+            <span class="vote-register-submit button">
+                <?= $this->Form->button(__('Vote'), ['type' => 'button', 'onclick' => 'SBK.CakeUI.form.ajaxify(this, SBK.CakeUI.ajaxcallback.register_vote);']) ?>
+            </span>
+            <?= $this->Form->end() ?>
         </span>  
-        <span class="button performance"><?= 
-            $this->Html->link(__(
-                'played'
-            ), [
-                'controller' => 'SongPerformances', 
-                'action' => 'addret',  
-                $current_song->id,
-                $return_point['controller'], 
-                $return_point['method'], 
-                $return_point['id']
-            ]) ?>
+        <span class="played">
+            <?= $this->Form->create(null, ['url' => ['controller' => 'SongPerformances', 'action' => 'addAjax']]) ?>
+            <?= $this->Form->hidden('song_id', ['value' => $current_song->id]);    ?>
+            <span class="performance-register-submit button">
+                <?= $this->Form->button(__('Played'), ['type' => 'button', 'onclick' => 'SBK.CakeUI.form.ajaxify(this, SBK.CakeUI.ajaxcallback.register_performance);']) ?>
+            </span>
+            <?= $this->Form->end() ?>
         </span>
         <?php
         if(isset($performers_list)) { ?>
-	    <span class="key-form">
-	            <?= $this->Form->create($set_song_object, ['url' => ['controller' => 'SetSongs', 'action' => 'addret', $return_point['controller'], $return_point['method'], $return_point['id']]]) ?>
-			    <fieldset>
-			        <?php
-			            echo $this->Form->hidden('set_id', ['value' => 0]);
-			            echo $this->Form->hidden('song_id', ['value' => $current_song->id]);
-			            echo $this->Form->input('performer_id', ['empty' => 'Please select ...', 'options' => $performers_list]);
-			            echo $this->Form->input('key');
-			            //echo $this->Form->input('capo');
-			        ?>
-			    <span class="button"><?= $this->Form->button(__('Add Key')) ?></span>
-			    </fieldset>
-			    <?= $this->Form->end() ?>
-		</span>
+        <span class="key-form">
+            <?= $this->Form->create($set_song_object, ['url' => ['controller' => 'SetSongs', 'action' => 'addAjax']]) ?>
+            <fieldset>
+                <?php
+                    echo $this->Form->hidden('set_id', ['value' => 0]);
+                    echo $this->Form->hidden('song_id', ['value' => $current_song->id]);
+                    echo $this->Form->input('performer_id', ['empty' => 'Please select ...', 'options' => $performers_list]);
+                    echo $this->Form->input('key');
+                    //echo $this->Form->input('capo');
+                ?>
+            <span class="button"><?= $this->Form->button(__('Add Key'), ['type' => 'button', 'onclick' => 'SBK.CakeUI.form.ajaxify(this, SBK.CakeUI.ajaxcallback.song_row.add_key);']) ?></span>
+            </fieldset>
+            <?= $this->Form->end() ?>
+        </span>
         <?php
         }
 
-		if(isset($tags)) {?>
-	    <span class="tag-form">
-	        <?php
-	            $selected_tags = [];
-	            foreach ($current_song->song_tags as $this_tag) {
-	                array_push($selected_tags, $this_tag['tag_id']);
-	            }
-	        ?>
-	        <?= $this->Form->create(null, ['url' => ['controller' => 'SongTags', 'action' => 'matchListAjax']]) ?>
-	        <fieldset>
-	            <?php
-	                echo '<span class="tag-id">'.$this->Form->input('tag_id', ['label' => '', 'options' => $tags, 'multiple' => true, 'default' => $selected_tags]).'</span>';
-	                echo $this->Form->hidden('song_id', ['value' => $current_song->id]);
-	            ?>
-	        </fieldset>
-	        <span class="tag-add-submit button"><?= $this->Form->button(__('Update tags'), ['type' => 'button', 'onclick' => 'SBK.CakeUI.form.ajaxify(this);']) ?></span>
-	        <?= $this->Form->end() ?>
-	    </span>
+        if(isset($tags)) {?>
+        <span class="tag-form">
+            <?php
+                $selected_tags = [];
+                foreach ($current_song->song_tags as $this_tag) {
+                    array_push($selected_tags, $this_tag['tag_id']);
+                }
+            ?>
+            <?= $this->Form->create(null, ['url' => ['controller' => 'SongTags', 'action' => 'matchListAjax']]) ?>
+            <fieldset>
+                <?php
+                    echo '<span class="tag-id">'.$this->Form->input('tag_id', ['label' => '', 'options' => $tags, 'multiple' => true, 'default' => $selected_tags]).'</span>';
+                    echo $this->Form->hidden('song_id', ['value' => $current_song->id]);
+                ?>
+            </fieldset>
+            <span class="tag-add-submit button"><?= $this->Form->button(__('Update tags'), ['type' => 'button', 'onclick' => 'SBK.CakeUI.form.ajaxify(this, SBK.CakeUI.ajaxcallback.song_row.set_tags);']) ?></span>
+            <?= $this->Form->end() ?>
+        </span>
         <?php
         }
         ?>

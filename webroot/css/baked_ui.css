@@ -129,7 +129,7 @@ span.inlinetop {
 }
 .playlists.form .button,
 .set-songs .button,
-tr.song-row .button {
+tr. .button {
     margin: 0;
     margin-bottom: -2px;
     height: 2.5em;
@@ -188,6 +188,9 @@ table.sortable .handle {
 
 table tr.song-row {
     background-color: #f9f9e0;
+}
+table tr.song-row.played {
+    background-color: #f0f0ff;
 }
 tr.song-row td {
     vertical-align: middle;
@@ -293,6 +296,10 @@ tr.song-row.ui-selected .song-title {
     font-size: 2em;
     padding: 6px;
     color: white;
+}
+tr.song-row .played form,
+tr.song-row .vote form {
+    display: inline-block;
 }
 
 /* Embedded song search form */

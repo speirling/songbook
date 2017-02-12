@@ -28,10 +28,53 @@ class DashboardController extends AppController
 	public function index()
 	{
 		$this->loadModel('Songs');
+		$this->loadModel('Events');
+		$this->loadModel('SongPerformances');
+		$this->loadModel('SongVotes');
+
 		$filtered_list_query = $this->Songs->find();
+		$filtered_list_query->select(['id', 'title', 'written_by', 'performed_by', 'base_key', 'content'], false);
 		$filtered_list_query->contain(['SongTags'=>['Tags']]);
 		$filtered_list_query->contain(['SetSongs.Performers']);
-		//echo debug($this->request->data); die();
+
+		// start song performances -------------------
+		//find all of the songs played in the last 3 hours (supposed to be current event)
+		$performance_conditions = [];
+		$performance_query = $this->SongPerformances->find();
+		$performance_query->Where("`SongPerformances`.`timestamp` BETWEEN \"" . date("Y-m-d H:i:s",  strtotime('-3 hours'))."\" AND \"".date("Y-m-d H:i:s")."\"");
+		$performance_query->distinct('song_id');
+		$performance_list = $performance_query->extract('song_id');
+
+		$song_id_list = [];
+		foreach($performance_list as $id => $song_id) {
+			array_push($song_id_list, $song_id);
+		}
+
+		if(sizeof($song_id_list) > 0) {
+			$song_id_string = str_replace(['[', ']'], ['(', ')'], json_encode($song_id_list));
+			$filtered_list_query->select(['played' => '(`Songs`.`id` IN ' . $song_id_string . ')']);
+		}
+		// end song performances -------------------
+
+		// start song votes -------------------
+		//similary, find all of the songs voted in the last 3 hours (supposed to be current event)
+		$vote_conditions = [];
+		$vote_query = $this->SongVotes->find();
+		$vote_query->Where("`SongVotes`.`timestamp` BETWEEN \"" . date("Y-m-d H:i:s",  strtotime('-3 hours'))."\" AND \"".date("Y-m-d H:i:s")."\"");
+		$vote_query->distinct('song_id');
+		$vote_list = $vote_query->extract('song_id');
+
+		$song_id_list = [];
+		foreach($vote_list as $id => $song_id) {
+			array_push($song_id_list, $song_id);
+		}
+
+		if(sizeof($song_id_list) > 0) {
+			$song_id_string = str_replace(['[', ']'], ['(', ')'], json_encode($song_id_list));
+			$filtered_list_query->select(['played' => '(`Songs`.`id` IN ' . $song_id_string . ')']);
+		}
+		// end song votes -------------------
+
 		if ($this->request->is(array('post', 'put'))) {
 			if(array_key_exists('text_search', $this->request->data) && $this->request->data['text_search']) {
 				$search_string = $this->request->data['text_search'];
@@ -67,11 +110,11 @@ class DashboardController extends AppController
 			if (array_key_exists('venue', $this->request->data) && $this->request->data['venue']) {
 				$selected_venue = $this->request->data['venue'];
 				//find all of the events that were at this venue
-				$this->loadModel('Events');
 				$venue_query = $this->Events->findAllByVenue($selected_venue);
 				$event_times = $venue_query->toArray();
+
+				//find all of the songs played during the times of the events at that venue
 				$performance_conditions = [];
-				$this->loadModel('SongPerformances');
 				$performance_query = $this->SongPerformances->find();
 				foreach($venue_query->toArray() as $key => $event) {
 					$performance_query->orWhere("`SongPerformances`.`timestamp` BETWEEN \"".date("Y-m-d H:i:s", strtotime($event->timestamp) - $event->duration_hours * 60 * 60)."\" AND \"".date("Y-m-d H:i:s", strtotime($event->timestamp) + $event->duration_hours * 60 * 60)."\"");
@@ -85,7 +128,7 @@ class DashboardController extends AppController
 
 				$filtered_list_query->andWhere(['`Songs`.`id` IN' => $song_id_list]);
 				//echo debug($filtered_list_query); die();
-		
+
 			} else {
 				$selected_venue = '';
 			}
@@ -94,22 +137,20 @@ class DashboardController extends AppController
 			$selected_performer  = '';
 			$selected_tag_array = [];
         }
-		
+
 		$filtered_list_query->distinct(['Songs.id']);
 		$filtered_list_query->order(['Songs.id' =>'DESC']);
 
-		//echo debug($filtered_list_query); die();
-        
 		//pass the list of all tags to the view
         $this->loadModel('Tags');
         $all_tags = $this->Tags->find('list');
         $this->set('all_tags', $all_tags);
-        
+
         //pass the list of all Performers to the view        
         $this->loadModel('Performers');
         $performers = $this->Performers->find('all');
 		$this->set('performers', $performers);
-		
+
 		//pass the list of all known venues to the view
 		$this->loadModel('Events');
         $venues = $this->Events->find('list', [
@@ -117,17 +158,16 @@ class DashboardController extends AppController
 		    'valueField' => 'venue'
 		])->distinct(['venue']);
 		$this->set('venues', $venues);
-		
+
 		//a setSong object is required in order to set up the key form on each song row
 		$setSong = new SetSong();
         $this->set('setSong', $setSong);
-        
+
         $this->set('tags', $this->Songs->SongTags->Tags->find('list'));
         $this->set('title', 'Homepage');
 		$this->set('search_string', $search_string);
 		$this->set('selected_tags', $selected_tag_array);
 		$this->set('filtered_list', $this->paginate($filtered_list_query));
-		//$this->set('_serialize', ['songs']);
 
         $this->loadModel('Performers');
         $this->set('performers', $this->Performers->find('list', [
