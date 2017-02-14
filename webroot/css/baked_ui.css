@@ -298,7 +298,8 @@ tr.song-row.ui-selected .song-title {
     color: white;
 }
 tr.song-row .played form,
-tr.song-row .vote form {
+tr.song-row .vote form,
+tr.song-row .view form {
     display: inline-block;
 }
 

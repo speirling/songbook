@@ -49,8 +49,14 @@
     ?>
     </span>
     <span class="actions">
-        <span class="button view"><?= $this->Html->link(__('View'), ['controller'=>'Songs', 'action' => 'view', $current_song->id.'?key='.$primary_key], ['target'=>'_blank']) ?></span>
-        <span class="button edit"><?= $this->Html->link(__('Edit'), ['controller'=>'Songs', 'action' => 'edit', $current_song->id], ['target'=>'_blank']) ?></span>
+        <span class="view">
+            <?= $this->Form->create(null, ['type' => 'get', 'target'=>'_new', 'url' => ['controller'=>'Songs', 'action' => 'view', $current_song->id]]) ?>
+            <?= $this->Form->hidden('key', ['value' => $primary_key]);    ?>
+            <span class="vew-song-submit button">
+                <?= $this->Form->button(__('View'), ['type' => 'submit']) ?>
+            </span>
+            <?= $this->Form->end() ?>
+        </span>
         <span class="vote">
             <?= $this->Form->create(null, ['url' => ['controller' => 'SongVotes', 'action' => 'addAjax']]) ?>
             <?= $this->Form->hidden('song_id', ['value' => $current_song->id]);    ?>
