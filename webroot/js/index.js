@@ -7,11 +7,14 @@ jQuery(document).ready(function() {
 	    new SBK.ChordEditor(jQuery('.sbk-lyrics-panel')).render();
 	}
 
-	jQuery('select').not('.song-tags select').select2();
+	jQuery('select').not('.song-tags select').not('.tag-form select').select2();
 	jQuery('.song-tags select').select2({
-	  tags: true,
-	  tokenSeparators: [',', ' ']
-	});
+		  tags: true,
+		  tokenSeparators: [',', ' ']
+		});
+	jQuery('.tag-form select').select2({
+		  tags: true
+		});
 	
 
 	jQuery('table.sortable tbody tr').prepend('<td class="handle">');
@@ -31,6 +34,7 @@ jQuery(document).ready(function() {
 	});
 
 	jQuery('.playlists.view .set-songs tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
+	jQuery('.dashboard.index tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
 	jQuery('.songs.index tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
 	jQuery('.events.view .related tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
 	if(jQuery('.songs.index tbody tr').length === 1) {
@@ -54,10 +58,27 @@ jQuery(document).ready(function() {
      
      jQuery('tr.song-row:last  .actions.move-down').hide();
      jQuery('tr.song-row:first .actions.move-up').hide();
-     
 
-      
-      jQuery('.add-new-ui').each(function () {
-    	  SBK.CakeUI.toggleable.make(this);
-      });
+     jQuery('.add-new-ui').each(function () {
+         SBK.CakeUI.toggleable.make(this);
+     });
+
+     jQuery(
+         '#actions-sidebar .performer-id select, ' +
+         '#actions-sidebar .venue select'
+     ).change(function () {
+    	 jQuery(this).parents('form').submit();
+     });
+
+     var DASHBOARD_TAG_TIMEOUT;
+     jQuery(
+             '#actions-sidebar .tag-id select'
+         ).change(function () {
+             var self = jQuery(this);
+
+             clearTimeout (DASHBOARD_TAG_TIMEOUT);
+             DASHBOARD_TAG_TIMEOUT = setTimeout( function () {
+                 self.parents('form').submit();
+             }, 1000);
+         })
 });

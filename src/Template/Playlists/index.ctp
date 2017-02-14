@@ -1,4 +1,4 @@
-<?php /* Template/Playlist/index.ctp */  
+<?php /* Template/Playlist/index.ctp */
     $controller_name = 'Playlist';
     echo($this->element('standard_menu', ['controller_name' => $controller_name]) );
 ?>

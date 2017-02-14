@@ -74,52 +74,141 @@ class SongTagsController extends AppController
      */
     public function MatchList($ret_controller, $ret_action, $ret_id)
     {
-    	$redirect_array = ['controller' => $ret_controller, 'action' => $ret_action, $ret_id];
+        $redirect_array = ['controller' => $ret_controller, 'action' => $ret_action, $ret_id];
 
-    	$previous_tag_songs_query = $this->SongTags->find('all')
-    	->where(['song_id' => $this->request->data['song_id']]);
-    	$previous_tag_songs = [];
-    	foreach($previous_tag_songs_query as $this_previous_tag_song) {
-    		$previous_tag_songs[] = $this_previous_tag_song;
-    	}
-    	$reused_tags = [];
-    	if ($this->request->is('post')) {
-    		foreach ($this->request->data['tag_id'] as $this_tag_id) {
-    			if (is_numeric($this_tag_id)) {
-    				$reused_tags[] = $this_tag_id;
+        $previous_tag_songs_query = $this->SongTags->find('all')
+        ->where(['song_id' => $this->request->data['song_id']]);
+        $previous_tag_songs = [];
+        foreach($previous_tag_songs_query as $this_previous_tag_song) {
+            $previous_tag_songs[] = $this_previous_tag_song;
+        }
+        $reused_tags = [];
+        if ($this->request->is('post')) {
+            foreach ($this->request->data['tag_id'] as $this_tag_id) {
+                if (is_numeric($this_tag_id)) {
+                    $reused_tags[] = $this_tag_id;
                     $data = [
-                        'song_id' => $this->request->data['song_id'],
-                        'tag_id' => $this_tag_id
-	                ];
-    			} else {
+                            'song_id' => $this->request->data['song_id'],
+                            'tag_id' => $this_tag_id
+                    ];
+                } else {
                     $data = [
-                        'song_id' => $this->request->data['song_id'],
-                        'tag' => [
-                             'title' => $this_tag_id
-                         ]
-	                ];
-    			}
+                            'song_id' => $this->request->data['song_id'],
+                            'tag' => [
+                                    'title' => $this_tag_id
+                            ]
+                    ];
+                }
 
-    			$songTag = $this->SongTags->newEntity($data);
-    			//debug($songTag);
-    			if (!$this->SongTags->save($songTag)) {
-    				$this->Flash->error(__('The Song/Tag could not be saved. Please, try again.'));
-    			}
+                $songTag = $this->SongTags->newEntity($data);
+                //debug($songTag);
+                if (!$this->SongTags->save($songTag)) {
+                    $this->Flash->error(__('The Song/Tag could not be saved. Please, try again.'));
+                }
             }
-            
+
             foreach($previous_tag_songs as $this_previous_tag_song_object) {
-            	if (!in_array($this_previous_tag_song_object->tag_id, $reused_tags)) {
-            		$this->SongTags->delete($this_previous_tag_song_object);
-            	}
+                if (!in_array($this_previous_tag_song_object->tag_id, $reused_tags)) {
+                    $this->SongTags->delete($this_previous_tag_song_object);
+                }
             }
-            
-	        $this->Flash->success(__('The list of song tags has been saved.'));
-	        return $this->redirect($redirect_array);
 
-    	} else {
-    		$this->Flash->error(__('The Tag could not be created - no post data '.serialize($this->request)));
-    	}
+            $this->Flash->success(__('The list of song tags has been saved.'));
+            return $this->redirect($redirect_array);
+
+        } else {
+            $this->Flash->error(__('The Tag could not be created - no post data '.serialize($this->request)));
+        }
     }
+
+    /**
+     * Based on (working) MatchList() above, but modified to accept ajax request
+     * Creates a new tag entry or takes an existing tag and a links it to a specified song.
+     */
+    public function MatchListAjax()
+    {
+        //as this function will only be called through Ajax, set the response type to json:
+        $this->response->type('json');
+        //and avoid rendering a CakePHP View:
+        $this->autoRender = false;
+
+        $report = [];
+
+        $request_data = $this->request->query;
+        if (array_key_exists('song_id', $request_data)) {
+            $previous_tag_songs_query = $this->SongTags->find('all');
+            $previous_tag_songs_query->contain('Tags');
+            $previous_tag_songs_query->where(['song_id' => $request_data['song_id']]);
+            $previous_tag_songs = [];
+            foreach($previous_tag_songs_query as $this_previous_tag_song) {
+                $previous_tag_songs[] = $this_previous_tag_song;
+            }
+            $reused_tags = [];
+            if (array_key_exists('tag_id', $request_data) && sizeof($request_data['tag_id']) > 0) {
+                foreach ((array) $request_data['tag_id'] as $this_tag_id) {
+                    $data = NULL;
+                    if (is_numeric($this_tag_id)) {
+                        $reused_tags[] = $this_tag_id;
+                        $data = [
+                            'song_id' => $request_data['song_id'],
+                            'tag_id' => $this_tag_id
+                        ];
+                    } elseif ($this_tag_id !== '') {
+                        $data = [
+                            'song_id' => $request_data['song_id'],
+                            'tag' => [
+                             'title' => $this_tag_id
+                             ]
+                        ];
+                    }
+                    if    (!is_null($data)) {
+                        $songTag = $this->SongTags->newEntity($data);
+
+                        if (!$this->SongTags->save($songTag)) {
+                            $report[] = ['Not saved: ' =>  $data];
+                        } else {
+                            $report[] = ['Saved: ' =>  $data];
+                        }
+                    }
+                }
+
+                foreach($previous_tag_songs as $this_previous_tag_song_object) {
+                    if (!in_array($this_previous_tag_song_object->tag_id, $reused_tags)) {
+                        $this->SongTags->delete($this_previous_tag_song_object);
+                    }
+                }
+            } else {
+                $this->response->body(json_encode([
+                        "success" => FALSE,
+                        "report" => 'No Tags created - no [tag_ids] provided.'
+                ]));
+                return $this->response;
+            }
+        } else {
+            $this->response->body(json_encode([
+                    "success" => FALSE,
+                    "report" => 'Tags could not be created - no [song_id] provided. '
+            ]));
+            return $this->response;
+        }
+
+        $resulting_tags_query = $this->SongTags->find('all');
+        $resulting_tags_query->contain('Tags');
+        $resulting_tags_query->where(['song_id' => $request_data['song_id']]);
+        $resulting_tags = [];
+        foreach($resulting_tags_query as $this_tag) {
+            //echo debug($this_tag);
+            $resulting_tags[] = $this_tag->tag->title;
+        }
+
+        $this->response->body(json_encode([
+            "success" => TRUE,
+            "report" => $report,
+            "tag_data" => $resulting_tags
+        ]));
+        return $this->response;
+    }
+
     /**
      * Edit method
      *

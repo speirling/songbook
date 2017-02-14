@@ -129,7 +129,7 @@ span.inlinetop {
 }
 .playlists.form .button,
 .set-songs .button,
-tr.song-row .button {
+tr. .button {
     margin: 0;
     margin-bottom: -2px;
     height: 2.5em;
@@ -188,6 +188,9 @@ table.sortable .handle {
 
 table tr.song-row {
     background-color: #f9f9e0;
+}
+table tr.song-row.played {
+    background-color: #f0f0ff;
 }
 tr.song-row td {
     vertical-align: middle;
@@ -252,6 +255,12 @@ tr.song-row td.performers .capo,
 tr.song-row .actions {
     display: none;
 }
+tr.song-row .key-form,
+tr.song-row .tag-form {
+	display: inline-block;
+    Border: 1px solid gray;
+    vertical-align: middle;
+}
 tr.song-row.ui-selected .actions {
     display: inline-block;
     vertical-align: middle
@@ -287,6 +296,11 @@ tr.song-row.ui-selected .song-title {
     font-size: 2em;
     padding: 6px;
     color: white;
+}
+tr.song-row .played form,
+tr.song-row .vote form,
+tr.song-row .view form {
+    display: inline-block;
 }
 
 /* Embedded song search form */
@@ -458,8 +472,10 @@ tr.song-row.ui-selected .song-title {
 
 /* key input form on songs lists */
 
-.song-row .key-form form ,
-.song-row .key-form fieldset {
+.song-row .key-form form,
+.song-row .key-form fieldset,
+.song-row .tag-form form,
+.song-row .tag-form fieldset {
     display: inline-block;
     vertical-align: top;
     font-size:  0.84em;
@@ -468,7 +484,8 @@ tr.song-row.ui-selected .song-title {
     padding: 0;
 }
 
-.song-row .key-form .input  {
+.song-row .key-form .input,
+.song-row .tag-form .input  {
     display: inline-block;
 }
 .song-row .key-form input  {
@@ -488,7 +505,25 @@ tr.song-row.ui-selected .song-title {
 .song-row .key-form label[for="performer-id"] {
     display: none;
 }
-.song-row .key-form fieldset label {
+.song-row .key-form fieldset label,
+.song-row .tag-form fieldset label {
 	display:block;
 	text-align: left;
+}
+
+.dashboard .tags {
+}
+.dashboard .tags .tag {
+    display: inline-block;
+    padding:1px;
+    background-color: #f0f0f0;
+    margin-right: 1px;
+    border: 1px solid silver;
+    font-size: 10px;
+    color: gray;
+    border-radius: 5px;
+}
+.select2-dropdown li,
+div.input.select .select2 {
+	font-size: 0.7em;
 }

@@ -1,16 +1,15 @@
-<nav class="large-2 medium-3 columns" id="actions-sidebar">
-    <?= $this->Form->create(null, [
-        'url' => ['controller' => 'Songs', 'action' => 'index']
-    ]) ?>
+<nav class="large-3 medium-3 columns" id="actions-sidebar">
+    <?= $this->Form->create(null, ['url' => ['controller' => 'dashboard', 'action' => 'index']]) ?>
     <fieldset>
-        <?php
-            echo $this->Form->input('Search', ['Label'=>'Find a song']);
-        ?>
+        <span class="text-search">
+        <?= $this->Form->input('text_search', ['label'=>'Text Search (name only)']); ?>
+        </span>
+        <span class="selected-tags-and-performer button"><?= $this->Form->button(__('Find Songs')) ?></span>
     </fieldset>
     <?= $this->Form->end() ?>
     <ul class="side-nav">
-        <?= $this->Form->button(__('Submit')) ?>
         <li class="heading"><?= __('Main Menu') ?></li>
+        <li><?= $this->Html->link(__('Dashboard'), ['controller' => 'Dashboard', 'action' => 'index']) ?></li>
         <li><?= $this->Html->link(__('New Song'), ['controller' => 'Songs', 'action' => 'add']) ?></li>
         <li><?= $this->Html->link(__('New Event'), ['controller' => 'Events', 'action' => 'add']) ?></li>
         <li><?= $this->Html->link(__('Songs'), ['controller' => 'Songs', 'action' => 'index']) ?></li>

@@ -94,6 +94,38 @@ class SongPerformancesController extends AppController
     }
 
     /**
+     * Version of Add method that responds to ajax
+     *
+     * @return json object.
+     */
+    public function addAjax()
+    {
+        //as this function will only be called through Ajax, set the response type to json:
+        $this->response->type('json');
+        //and avoid rendering a CakePHP View:
+        $this->autoRender = false;
+
+        $request_data = $this->request->query;
+        $data = [
+            'song_id' => $request_data['song_id']
+        ];
+        $songPerformance = $this->SongPerformances->newEntity();
+        $songPerformance = $this->SongPerformances->patchEntity($songPerformance, $data);
+        if ($this->SongPerformances->save($songPerformance)) {
+            $this->response->body(json_encode([
+                "success" => TRUE,
+                "report" => 'The song performance has been saved.'
+            ]));
+        } else {
+            $this->response->body(json_encode([
+                "success" => FALSE,
+                "report" => 'The song performance could not be saved. Please, try again.'
+            ]));
+        }
+        return $this->response;
+    }
+
+    /**
      * Edit method
      *
      * @param string|null $id Song Performance id.

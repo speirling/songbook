@@ -2,15 +2,10 @@
 
 <div class="songs view content lyrics-display">
     <span class="button float-right"><?= $this->Html->link(__('List Playlists'), ['controller' => 'Playlists', 'action' => 'index']) ?></span>
-    <span class="search-form float-right">
-	    <?= $this->Form->create(null, ['url' => ['controller' => 'dashboard', 'action' => 'index']]) ?>
-	    <fieldset>
-	        <span class="text-search">
-	        <?= $this->Form->input('text_search', ['label'=>False]); ?>
-	        </span>
-	    </fieldset>
-	    <span class="selected-tags-and-performer button"><?= $this->Form->button(__('Search')) ?></span>
-	    <?= $this->Form->end() ?>
+    <span class="search-form float-right"><?= $this->Form->create('search songs', ['url' => ['controller' => 'Songs', 'action' => 'index']]) ?>
+        <fieldset><?= $this->Form->input('Search', ['label' => false]) ?></fieldset>
+        <span class="button"><?= $this->Form->button(__('Search for Songs')) ?></span>
+        <?= $this->Form->end() ?>
     </span> 
     <span class="button vote float-right"><?= 
         $this->Html->link(__(

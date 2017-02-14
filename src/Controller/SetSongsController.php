@@ -74,6 +74,39 @@ class SetSongsController extends AppController
     }
 
     /**
+     * Based on (working) add() above, but modified to accept ajax request
+     * Creates a new tag entry or takes an existing tag and a links it to a specified song.
+     */
+    public function addAjax()
+    {
+        //as this function will only be called through Ajax, set the response type to json:
+        $this->response->type('json');
+        //and avoid rendering a CakePHP View:
+        $this->autoRender = false;
+        $request_data = $this->request->query;
+
+        $setSong = $this->SetSongs->newEntity();
+
+        $setSong = $this->SetSongs->patchEntity($setSong, $request_data);
+        if ($this->SetSongs->save($setSong)) {
+            $performer = $this->SetSongs->Performers->get($setSong->performer_id);
+
+            $this->response->body(json_encode([
+                    "success" => TRUE,
+                    "report" => 'The set song has been saved.',
+                    "performer_data" => [$setSong, $performer]
+            ]));
+            return $this->response;
+        } else {
+            $this->response->body(json_encode([
+                    "success" => FALSE,
+                    "report" => debug($setSong, false)
+            ]));
+            return $this->response;
+        }
+
+    }
+    /**
      * Version of Add method that sets a different redirect
      *
      * @return void Redirects on successful add, renders view otherwise.
