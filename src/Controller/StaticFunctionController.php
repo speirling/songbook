@@ -234,7 +234,11 @@ class StaticFunctionController extends AppController
 			$chord_note = '';
 		}
 		$chord_modifier = substr($chord, $modifier_start);
-		$key_conversion_value = StaticFunctionController::$NOTE_VALUE_ARRAY[$target_key] - StaticFunctionController::$NOTE_VALUE_ARRAY[$base_key];
+        if(array_key_exists($target_key, StaticFunctionController::$NOTE_VALUE_ARRAY) && array_key_exists($base_key, StaticFunctionController::$NOTE_VALUE_ARRAY)) {
+            $key_conversion_value = StaticFunctionController::$NOTE_VALUE_ARRAY[$target_key] - StaticFunctionController::$NOTE_VALUE_ARRAY[$base_key];			
+        } else {
+            $key_conversion_value = 0;
+        }
 		if(StaticFunctionController::$key_transpose_parameters['capo']) {
 			$key_conversion_value = $key_conversion_value - StaticFunctionController::$key_transpose_parameters['capo'];
 		}
