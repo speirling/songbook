@@ -297,9 +297,8 @@ tr.song-row.ui-selected .song-title {
     padding: 6px;
     color: white;
 }
-tr.song-row .played form,
-tr.song-row .vote form,
-tr.song-row .view form {
+
+.ajax-button-form form {
     display: inline-block;
 }
 
@@ -373,6 +372,9 @@ tr.song-row .view form {
     -moz-column-rule: 0.1em solid silver;
    width: 100%;
    height: auto;
+}
+.songs.view .ajax-button-form {
+    float: right;
 }
 #container .container .songs.view tr.tags fieldset {
     margin: 0;

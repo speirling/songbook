@@ -1,7 +1,7 @@
 <?php /* Template/Songs/view.php */ ?>
 
-<div class="songs view content lyrics-display">
-    <span class="button float-right"><?= $this->Html->link(__('List Playlists'), ['controller' => 'Playlists', 'action' => 'index']) ?></span>
+<div class="songs view content lyrics-display song-row"> <?php /* .song-row required for ajax callbacks for played and vote to work. */?>
+    <span class="button float-right"><?= $this->Html->link(__('Dashboard'), ['controller' => 'Dashboard', 'action' => 'index']) ?></span>
     <span class="search-form float-right">
 	    <?= $this->Form->create(null, ['url' => ['controller' => 'dashboard', 'action' => 'index']]) ?>
 	    <fieldset>
@@ -12,24 +12,8 @@
 	    <span class="selected-tags-and-performer button"><?= $this->Form->button(__('Search')) ?></span>
 	    <?= $this->Form->end() ?>
     </span> 
-    <span class="button vote float-right"><?= 
-        $this->Html->link(__(
-            'vote'
-        ), [
-            'controller' => 'SongVotes', 
-            'action' => 'addret', 
-            $song->id,
-            'songs', 'view', $song->id
-        ]) ?></span>  
-    <span class="button performance float-right"><?= 
-        $this->Html->link(__(
-            'played'
-        ), [
-            'controller' => 'SongPerformances', 
-            'action' => 'addret', 
-            $song->id,
-            'songs', 'view', $song->id
-        ]) ?></span>   
+    <?= $this->element('ajax-button-form-played', ['current_song' => $song]); ?>
+    <?= $this->element('ajax-button-form-vote', ['current_song' => $song]); ?>          
     <span class="button edit float-right"><?= 
         $this->Html->link(__(
             'edit'
@@ -146,5 +130,4 @@
         </tr>
     </table>
     <?= $song->content; ?>
-    </div>
 </div>

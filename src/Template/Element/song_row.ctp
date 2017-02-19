@@ -49,30 +49,9 @@
     ?>
     </span>
     <span class="actions">
-        <span class="view">
-            <?= $this->Form->create(null, ['type' => 'get', 'target'=>'_new', 'url' => ['controller'=>'Songs', 'action' => 'view', $current_song->id]]) ?>
-            <?= $this->Form->hidden('key', ['value' => $primary_key]);    ?>
-            <span class="vew-song-submit button">
-                <?= $this->Form->button(__('View'), ['type' => 'submit']) ?>
-            </span>
-            <?= $this->Form->end() ?>
-        </span>
-        <span class="vote">
-            <?= $this->Form->create(null, ['url' => ['controller' => 'SongVotes', 'action' => 'addAjax']]) ?>
-            <?= $this->Form->hidden('song_id', ['value' => $current_song->id]);    ?>
-            <span class="vote-register-submit button">
-                <?= $this->Form->button(__('Vote'), ['type' => 'button', 'onclick' => 'SBK.CakeUI.form.ajaxify(this, SBK.CakeUI.ajaxcallback.register_vote);']) ?>
-            </span>
-            <?= $this->Form->end() ?>
-        </span>  
-        <span class="played">
-            <?= $this->Form->create(null, ['url' => ['controller' => 'SongPerformances', 'action' => 'addAjax']]) ?>
-            <?= $this->Form->hidden('song_id', ['value' => $current_song->id]);    ?>
-            <span class="performance-register-submit button">
-                <?= $this->Form->button(__('Played'), ['type' => 'button', 'onclick' => 'SBK.CakeUI.form.ajaxify(this, SBK.CakeUI.ajaxcallback.register_performance);']) ?>
-            </span>
-            <?= $this->Form->end() ?>
-        </span>
+        <?= $this->element('ajax-button-form-view', ['current_song' => $current_song, 'primary_key' => $primary_key]); ?>
+        <?= $this->element('ajax-button-form-played', ['current_song' => $current_song]); ?>
+        <?= $this->element('ajax-button-form-vote', ['current_song' => $current_song]); ?>
         <?php
         if(isset($performers_list)) { ?>
         <span class="key-form">

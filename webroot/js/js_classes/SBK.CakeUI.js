@@ -220,12 +220,12 @@
             }
         },
         register_performance: function (response, button) {
-            var song_row = button.closest('tr.song-row');
+            var song_row = button.closest('.song-row');
 
             song_row.addClass('played');
         },
         register_vote: function (response, button) {
-            var song_row = button.closest('tr.song-row');
+            var song_row = button.closest('.song-row');
 
             song_row.addClass('voted');
         }
