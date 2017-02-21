@@ -1,14 +1,8 @@
-<?php /* Template/Songs/edit.php */ ?>
+<?php /* Template/Songs/edit.php */ 
+    $controller_name = 'Song';
+    echo($this->element('standard_menu', ['controller_name' => $controller_name, 'delete_id' => $song->id]) );
+?>
 
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-        <li><?= $this->Form->postLink(
-                __('Delete'),
-                ['action' => 'delete', $song->id],
-                ['confirm' => __('Are you sure you want to delete # {0}?', $song->id)]
-            )
-        ?>
-    <?= $this->element('standard_menu') ?>
-</nav>
 <div class="songs songs-edit form large-9 medium-8 columns content">
     <?= $this->Form->create($song) ?>
     <fieldset>

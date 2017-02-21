@@ -1,8 +1,9 @@
 <?php /* Template/Dashboard/index.ctp */  
     $controller_name = 'Dashboard';
 ?>
+
 <nav class="large-2 medium-2 columns" id="actions-sidebar">
-    <?= $this->Form->create($filtered_list, ['url' => ['controller' => 'dashboard', 'action' => 'index']]) ?>
+<?= $this->Form->create($filtered_list, ['url' => ['controller' => 'dashboard', 'action' => 'index']]) ?>
     <fieldset>
         <span class="text-search">
         <?= $this->Form->input('text_search', ['label'=>'Text Search (name only)', 'default' => $search_string]); ?>
@@ -22,7 +23,6 @@
     <?= $this->Form->end() ?>
     
     <ul class="side-nav">
-        <li class="heading"><?= __('Main Menu') ?></li>
         <li><?= $this->Html->link(__('New Song'), ['controller' => 'Songs', 'action' => 'add']) ?></li>
         <li><?= $this->Html->link(__('New Event'), ['controller' => 'Events', 'action' => 'add']) ?></li>
         <li><?= $this->Html->link(__('Songs'), ['controller' => 'Songs', 'action' => 'index']) ?></li>
@@ -31,6 +31,8 @@
         <li><?= $this->Html->link(__('Events'), ['controller' => 'Events', 'action' => 'index']) ?></li>
     </ul>
 </nav>
+
+
 
 <div class="dashboard index large-9 medium-9 columns content">
 
