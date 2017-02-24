@@ -1,16 +1,7 @@
-
-<nav class="large-2 medium-2 columns" id="actions-sidebar">
-    <?= $this->element('standard_menu') ?>
-
-    <ul class="side-nav">
-        <li><?= $this->Html->link(__('Edit Event'), ['action' => 'edit', $event->id]) ?> </li>
-        <li><?= $this->Form->postLink(__('Delete Event'), ['action' => 'delete', $event->id], ['confirm' => __('Are you sure you want to delete # {0}?', $event->id)]) ?> </li>
-        <li><?= $this->Html->link(__('List Events'), ['action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Event'), ['action' => 'add']) ?> </li>
-        <li><?= $this->Html->link(__('List Song Performances'), ['controller' => 'SongPerformances', 'action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New Song Performance'), ['controller' => 'SongPerformances', 'action' => 'add']) ?> </li>
-    </ul>
-</nav>
+<?php /* Template/Events/view.ctp */ 
+    $controller_name = 'Event';
+    echo($this->element('standard_menu', ['controller_name' => $controller_name]) );
+?>
 <div class="events view large-9 medium-8 columns content">
     <h3>#<?= h($event->id) ?> : <?= h($event->venue) ?></h3>
     <table class="vertical-table">
@@ -29,17 +20,23 @@
     </div>
     <div class="related">
         <h4><?= __('Related Song Performances') ?></h4>
-        <?php if (!empty($event_songs)): ?>
+        <?php if (!empty($filtered_list)): ?>
         <table cellpadding="0" cellspacing="0">
-            <?php foreach ($event_songs as $this_performance): ?>
-                <?= $this->element('song_row', [ 
-                    'return_point' => ['controller'=>'events', 'method'=>'view', 'id'=>$event->id],
-                    'current_song' => $this_performance->song,
-                    'this_set_songs' => $this_performance->set_songs,
-                	'set_song_object' => $setSong
-                    ]); 
-                ?>
-            <?php endforeach; ?>
+            <tbody>
+            <?php 
+            foreach ($filtered_list as $current_song){
+                if ($search_string == "") {
+                    $return_port_id = " ";
+                } else {
+                    $return_port_id = $search_string;
+                }
+                echo $this->element('song_row', [
+                    'current_song' => $current_song,
+                    'this_set_songs' => $current_song->set_songs,
+                    'performers_list' => $performers
+                ]); 
+             } ?>  
+        </tbody>
         </table>
     <?php endif; ?>
     </div>

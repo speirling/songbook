@@ -49,12 +49,9 @@
                 } else {
                     $return_port_id = $search_string;
                 }
-                echo $this->element('song_row', [ 
-                    'return_point' => ['controller'=>'dashboard', 'method'=>'index', 'id'=>$return_port_id],
+                echo $this->element('song_row', [
                     'current_song' => $song,
-                    //'this_set_songs' => [$song->_matchingData['SetSongs']],
                     'this_set_songs' => $song->set_songs,
-                    'set_song_object' => $setSong,
                     'performers_list' => $performers
                 ]); 
              } ?>  

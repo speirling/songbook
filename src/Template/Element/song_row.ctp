@@ -55,7 +55,7 @@
         <?php
         if(isset($performers_list)) { ?>
         <span class="key-form">
-            <?= $this->Form->create($set_song_object, ['url' => ['controller' => 'SetSongs', 'action' => 'addAjax']]) ?>
+            <?= $this->Form->create(Null, ['url' => ['controller' => 'SetSongs', 'action' => 'addAjax']]) ?>
             <fieldset>
                 <?php
                     echo $this->Form->hidden('set_id', ['value' => 0]);
@@ -71,7 +71,7 @@
         <?php
         }
 
-        if(isset($tags)) {?>
+        if(isset($all_tags)) {?>
         <span class="tag-form">
             <?php
                 $selected_tags = [];
@@ -82,7 +82,7 @@
             <?= $this->Form->create(null, ['url' => ['controller' => 'SongTags', 'action' => 'matchListAjax']]) ?>
             <fieldset>
                 <?php
-                    echo '<span class="tag-id">'.$this->Form->input('tag_id', ['label' => '', 'options' => $tags, 'multiple' => true, 'default' => $selected_tags]).'</span>';
+                    echo '<span class="tag-id">'.$this->Form->input('tag_id', ['label' => '', 'options' => $all_tags, 'multiple' => true, 'default' => $selected_tags]).'</span>';
                     echo $this->Form->hidden('song_id', ['value' => $current_song->id]);
                 ?>
             </fieldset>

@@ -33,31 +33,19 @@ class EventsController extends AppController
      * @return void
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view($id = null, $copyable = Null)
     {
         $event = $this->Events->get($id, [
             'contain' => []
         ]);
-
-        $this->loadModel('SongPerformances');
-        $event_songs = $this->SongPerformances->find('all', [
-        	'conditions' => ["`SongPerformances`.`timestamp` BETWEEN \"".date("Y-m-d H:i:s", strtotime($event->timestamp) - $event->duration_hours * 60 * 60)."\" AND \"".date("Y-m-d H:i:s", strtotime($event->timestamp) + $event->duration_hours * 60 * 60)."\""]
-        ])->distinct(['song_id'])->contain(['Songs', 'SetSongs'=>function($query){
-        	return $query->find('all')->distinct('performer_id', 'key');
-        }])->contain('SetSongs.Performers');
-        $setSong = new SetSong();
-        $this->set('setSong', $setSong);
+        
+        $this->loadComponent('songlist');
+        $this->songlist->filterAllSongs($event);
+        
         $this->set('event', $event);
-        $this->set('event_songs', $event_songs);
-        $this->set('_serialize', ['event']);
-
-        $this->loadModel('Performers');
-        $this->set('performers', $this->Performers->find('list', [
-                    'keyField' => 'id',
-                    'valueField' => 'nickname'
-                ]
-            )
-        );
+        if($copyable == 'plain') {
+        	$this->render('copyable_list');
+        }
     }
 
     /**

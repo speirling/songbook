@@ -23,6 +23,7 @@
                 <td><?= $this->Number->format($event->duration_hours) ?></td>
                 <td class="actions">
                     <?= $this->Html->link(__('View'), ['action' => 'view', $event->id]) ?>
+                    <?= $this->Html->link(__('Copyable'), ['action' => 'view', $event->id, 'plain']) ?>
                     <?= $this->Html->link(__('Edit'), ['action' => 'edit', $event->id]) ?>
                     <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $event->id], ['confirm' => __('Are you sure you want to delete # {0}?', $event->id)]) ?>
                 </td>
