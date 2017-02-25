@@ -17,22 +17,12 @@
         ?>
     </fieldset>
     <?= $this->Form->end() ?>
-    <div class="song-tags">
-        <?php 
-            $selected_tags = [];
-            foreach ($song->song_tags as $this_tag) {
-                array_push($selected_tags, $this_tag['tag_id']);
-            }
-        ?>
-        <?= $this->Form->create($songTag, ['url' => ['controller' => 'SongTags', 'action' => 'match_list', 'songs', 'edit', $song->id]]) ?>
-        <fieldset>
-            <?php
-                echo '<span class="tag-id">'.$this->Form->input('tag_id', ['label' => '', 'empty' => 'Tag ...', 'options' => $tags, 'multiple' => true, 'default' => $selected_tags]).'</span>';
-                echo $this->Form->hidden('song_id', ['value' => $song->id]);
-            ?>
-        </fieldset>                            
-        <span class="tag-add-submit button"><?= $this->Form->button(__('Update tags')) ?></span>
-        <?= $this->Form->end() ?> 
-    </div>
+    <?php 
+        echo $this->element('ajax-form-tags', [
+            'current_song' => $song,
+            'all_tags' => $song->tags,
+            'ajax_callback' => 'SBK.CakeUI.ajaxcallback.song_view.set_tags'
+        ]);
+    ?>
     
 </div>

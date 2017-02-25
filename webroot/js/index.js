@@ -12,7 +12,7 @@ jQuery(document).ready(function() {
 		  tags: true,
 		  tokenSeparators: [',', ' ']
 		});
-	jQuery('.tag-form select').select2({
+	jQuery('.tag-form select').width('100%').select2({
 		  tags: true
 		});
 	

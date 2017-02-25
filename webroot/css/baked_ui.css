@@ -472,7 +472,7 @@ tr.song-row.ui-selected .song-title {
 }
 
 
-/* key input form on songs lists */
+/* key & tag input forms on songs lists and song views*/
 
 .song-row .key-form form,
 .song-row .key-form fieldset,
@@ -484,6 +484,19 @@ tr.song-row.ui-selected .song-title {
     width: auto;
     margin: 0;
     padding: 0;
+}
+
+.tag-form form {
+    background-color: white;
+}
+.tag-form form.ajax-in-progress {
+    background-color: #dcdcdc;
+}
+.tag-form form.ajax-success {
+    background-color: #dcfadc;
+}
+.tag-form form.ajax-error {
+    background-color: #fadcdc;
 }
 
 .song-row .key-form .input,

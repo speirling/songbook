@@ -173,11 +173,14 @@
 		ajaxify: function (button, success_callback) {
 			var form = jQuery(button).parents('form'), target = form.attr('action');
 
+			form.removeClass('ajax-error').removeClass('ajax-success').addClass('ajax-in-progress');
 			console.log('ajaxify', form.serialize(), target);
 			jQuery.ajax({
                     url: target,
                     data: form.serialize(),
                     success: function (response) {
+                        form.removeClass('ajax-in-progress').addClass('ajax-success');
+                        setTimeout(function () {form.removeClass('ajax-success');}, 500);
                         if(response.success === true) {
                             if(typeof(success_callback) === 'function') {
                                 success_callback(response, form);
@@ -189,6 +192,7 @@
                         }
                     },
                     error: function(error) {
+                        form.removeClass('ajax-in-progress').addClass('ajax-error').delay(1500).removeClass('ajax-error');
                         console.log('ajax call ' + target + ' failed: ', error);
                     }
                 }
@@ -217,6 +221,11 @@
                     }
                     new_key_html = new_key_html + '</span>';
                 jQuery('td.performers', song_row).append(new_key_html);
+            }
+        },
+        song_view: {
+            set_tags: function (response, form) {
+
             }
         },
         register_performance: function (response, button) {

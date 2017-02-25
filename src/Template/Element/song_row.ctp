@@ -71,25 +71,12 @@
         <?php
         }
 
-        if(isset($all_tags)) {?>
-        <span class="tag-form">
-            <?php
-                $selected_tags = [];
-                foreach ($current_song->song_tags as $this_tag) {
-                    array_push($selected_tags, $this_tag['tag_id']);
-                }
-            ?>
-            <?= $this->Form->create(null, ['url' => ['controller' => 'SongTags', 'action' => 'matchListAjax']]) ?>
-            <fieldset>
-                <?php
-                    echo '<span class="tag-id">'.$this->Form->input('tag_id', ['label' => '', 'options' => $all_tags, 'multiple' => true, 'default' => $selected_tags]).'</span>';
-                    echo $this->Form->hidden('song_id', ['value' => $current_song->id]);
-                ?>
-            </fieldset>
-            <span class="tag-add-submit button"><?= $this->Form->button(__('Update tags'), ['type' => 'button', 'onclick' => 'SBK.CakeUI.form.ajaxify(this, SBK.CakeUI.ajaxcallback.song_row.set_tags);']) ?></span>
-            <?= $this->Form->end() ?>
-        </span>
-        <?php
+        if(isset($all_tags)) {
+            echo $this->element('ajax-form-tags', [
+                'current_song' => $current_song,
+                'all_tags' => $all_tags,
+            	'ajax_callback' => 'SBK.CakeUI.ajaxcallback.song_row.set_tags'
+            ]);
         }
         ?>
     </span>
