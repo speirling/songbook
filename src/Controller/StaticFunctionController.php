@@ -207,18 +207,24 @@ class StaticFunctionController extends AppController
 		if(StaticFunctionController::note_to_lower($note) === $note) {
 			$lowercase = true;
 		}
-		$new_note_number = StaticFunctionController::find_note_number(StaticFunctionController::$NOTE_VALUE_ARRAY[StaticFunctionController::note_to_upper($note)], $adjustment);
-		if(is_null($use_sharps)) {
-			$new_note = StaticFunctionController::$VALUE_NOTE_ARRAY_DEFAULT[$new_note_number];
-		} elseif($use_sharps === true) {
-			$new_note = StaticFunctionController::$VALUE_NOTE_ARRAY_SHARP[$new_note_number];
-		} else {
-			$new_note = StaticFunctionController::$VALUE_NOTE_ARRAY_FLAT[$new_note_number];
-		}
-		if($lowercase) {
-			$new_note = StaticFunctionController::note_to_lower($new_note);
-		}
-		return $new_note;
+		$note_upper = StaticFunctionController::note_to_upper($note);
+        if (array_key_exists($note_upper, StaticFunctionController::$NOTE_VALUE_ARRAY)) {
+            $new_note_number = StaticFunctionController::find_note_number(StaticFunctionController::$NOTE_VALUE_ARRAY[$note_upper], $adjustment);
+            if(is_null($use_sharps)) {
+            	$new_note = StaticFunctionController::$VALUE_NOTE_ARRAY_DEFAULT[$new_note_number];
+            } elseif($use_sharps === true) {
+            	$new_note = StaticFunctionController::$VALUE_NOTE_ARRAY_SHARP[$new_note_number];
+            } else {
+            	$new_note = StaticFunctionController::$VALUE_NOTE_ARRAY_FLAT[$new_note_number];
+            }
+            if($lowercase) {
+            	$new_note = StaticFunctionController::note_to_lower($new_note);
+            }
+        } else {
+            $new_note = $note;
+        }
+
+        return $new_note;
 	}
 	
 	public static function transpose_chord($chord, $base_key, $target_key, $capo = NULL) {
