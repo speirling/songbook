@@ -34,7 +34,7 @@
 
 
 
-<div class="dashboard index large-9 medium-9 columns content">
+<div class="dashboard index large-10 medium-10 columns content">
 
     <h3><?= __('Homepage') ?></h3>
     
