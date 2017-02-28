@@ -21,7 +21,7 @@
         ?>
     </fieldset>
     <span class="tag-add-submit button">
-        <?php echo $this->Form->button(__('Update tags'), ['type' => 'button', 'onclick' => 'SBK.CakeUI.form.ajaxify(this, '.$ajax_callback.');']); ?>
+        <?php echo $this->Form->button(__('Update tags'), ['type' => 'button', 'onclick' => 'SBK.CakeUI.form.ajaxify(this, SBK.CakeUI.ajaxcallback.song_row.set_tags);']); ?>
     </span>
-    <?php $this->Form->end(); ?>
+    <?= $this->Form->end() ?>
 </span>
