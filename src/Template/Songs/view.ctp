@@ -24,17 +24,11 @@
         ]) ?></span>  
     <h3><?= h($song->title) ?></h3>
     <table class="vertical-table">
-        <tr class="title">
-            <th><?= __('Title') ?></th>
-            <td><?= h($song->title) ?></td>
-        </tr>
-        <tr class="written-by">
+        <tr class="written-by performed-by">
             <th><?= __('Written By') ?></th>
-            <td><?= h($song->written_by) ?></td>
-        </tr>
-        <tr class="performed-by">
-            <th><?= __('Performed By') ?></th>
-            <td><?= h($song->performed_by) ?></td>
+            <td><?= h($song->written_by) ?>
+            <span class="blue-bold"><?= __('Performed By') ?></span>
+            <span class="td"><?= h($song->performed_by) ?></span></td>
         </tr>
         <tr class="base-key">
             <th><?= __('Base Key') ?></th>
@@ -102,10 +96,6 @@
 	            </span>
             
             </td>
-        </tr>
-        <tr class="id">
-            <th><?= __('Id') ?></th>
-            <td><?= $this->Number->format($song->id) ?></td>
         </tr>
         <tr class="tags">
             <th>

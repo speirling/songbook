@@ -3,216 +3,27 @@
 	    padding: 2.5em;
 	}
 }
-
-div.song-page table {
-	width: 100%;
-}
-
-.song-page td {
-	vertical-align: top;
-}
-.song-page td.detail {
-	text-align: right;
-}
-div.song-page .multi-.lyrics-panel .line,
-#playlist-book .lyrics-panel .line {
-	font-size: 0.8em;
-}
-
-.chord {
-    display: inline-block;
-    position:relative;
-    padding-bottom: 1.3em;
-    bottom: 0;
-    width: 1px;
-    color: #660000;
-    font-size: 0.8em;
-    font-family: verdana;
-}
-
-.chord.full-width {
-	width: auto;
-    margin-left: 1em;
-    margin-right: 1em;
-}
-.page-header,
-.song-content {
-    padding: 0em;
-}
-.page-header,
-.lyrics-display {
-    background-color: white;
-}
-.page-header {
-	position: relative;
-	border-bottom: 0.12em solid silver;
-	font-size: 1em;
-    padding-top: 0;
-}
-.following-page .page-header {
-    font-size: 0.6em;
-}
-.following-page .page-header h2 {
-    border-bottom: 0;
-}
-.following-page .page-header .key,
-.following-page .page-header .written-by,
-.following-page .page-header .performed-by,
-.following-page .page-header .songnumber {
-	display: none;
-}
-
-.songnumber {
-	color: #4080c0;
-	float: right;
-	margin-top: 0.3em;
-}
-
-.pagenumber {
-	display: block;
-	font-size: 0.5em;
-	position: absolute;
-	right: 1em;
-	top: 5em;
-}
-
-.page-header .title {
-    margin: 0;
-    font-size: 1.5em;
-	color:#004080;
-	overflow: hidden;
-	white-space: nowrap;
-    padding-top: 0;
-    border-bottom: 0.08em solid silver;
-}
-.lyrics-panel  .performed-by {
-	display: inline-block;
-}
-.performed-by {
-    color: gray;
-}
-.lyrics-display .performed-by,
-.lyrics-display .written-by,
-.lyrics-display .base-key,
-.lyrics-display .songnumber,
-.lyrics-display .meta-tags {
-    margin-left: 0.8em;
-    font-size: 0.8em;
-}
-
-.page-header .key {
-    width: auto;
-    background-color: #f3f3f3;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-}
-
-.page-header .key,
-.page-header .written-by,
-.page-header .performed-by,
-.page-header .songnumber {
-    display: inline-block;
-}
-
-.page-header .label,
-.page-header label,
-.base-key .label,
-.base-key label {
-	font-style: normal;
-	background-color: transparent;
-	color: black;
-	padding-left: 0;
-	margin: 0;
-	display: inline-block;
-	padding-right: 0.5em;
-}
-.page-header .key .data,
-.base-key .key .data {
-    margin-bottom: 0.2em;
-    padding: 0.1em;
-    height: 1.7em;
-}
-.page-header .label,
-.page-header label,
-.page-header .data {
-    font-size: 0.8em;
-}
-.base-key .label,
-.base-key label,
-.base-key .data {
-    font-size: 1em;
-}
-.base-key .label,
-.base-key label {
-    color: #1798a5;
-    font-weight: bold;
-}
-.base-key form.key {
-	display: inline-block;
-	Width: 20em;
-	margin-left: 5em;
-}
-.page-header .key .target-key .data,
-.base-key .key .target-key .data {
-    width: 4em;
-}
-.page-header .key  .target-key.no-base-key .data,
-.base-key .key  .target-key.no-base-key .data {
-    display: inline-block;
-    width: 10em;
-    font-size: 1em;
-}
-.page-header .key .capo .data,
-.base-key .key .capo .data {
-    width: 3em;
-}
-.page-header .key .capo,
-.base-key .key .capo {
-	margin-right: 0.7em;
-	margin-left: 0.7em;
-}
-.page-header .key .capo .label,
-.page-header .key .capo label,
-.base-key .key .capo .label,
-.base-key .key .capo label {
-	margin-right: 0.2em;
-}
-.page-header .key .capo .data {
-}
-.page-header .key .singer {
-	font-size: 1em;
-	font-weight: normal;
-	width: auto;
-	display: inline;
-	color: gray;
-}
-
-.line {
-    font-size: 0.8em;
-    margin-bottom: 0.5em;
-    margin-top: 0.2em;
-}
 /*@media screen {
-	.line {
-	    font-size: 0.8em;
-	}
+    .line {
+        font-size: 0.8em;
+    }
 
-	.lyrics-panel {
-	    font-size: 1em;     
-	    padding-left: 0.5em;     
-	    padding-right: 0.5em;
-	}
-	.lyrics-panel .lyrics-panel {
-	         .lyrics-panel-width: 20em;
-	         -moz-column-width: 20em;
-	         -webkit-column-width: 20em;
-	          
-	         column-count: 5;
-	         -moz-column-count: 5;
-	         -webkit-column-count: 5;
-	         
-	         column-fill: auto;
-	}
+    .lyrics-panel {
+        font-size: 1em;     
+        padding-left: 0.5em;     
+        padding-right: 0.5em;
+    }
+    .lyrics-panel .lyrics-panel {
+             .lyrics-panel-width: 20em;
+             -moz-column-width: 20em;
+             -webkit-column-width: 20em;
+              
+             column-count: 5;
+             -moz-column-count: 5;
+             -webkit-column-count: 5;
+             
+             column-fill: auto;
+    }
 }
 
 @media print {*/
@@ -234,110 +45,288 @@ div.song-page .multi-.lyrics-panel .line,
     }*/
 /*}*/
 
-/*#container .container,*/
-#container .container .lyrics-display,
-#container .container .row {
-    height: 95%; /* This line breaks the CakePHP3 form. Because of class .container inside id container*/
-    margin-bottom: 0;
-    padding-bottom: 0;
+/* Lyrics panel - text and chords */
+.line {
+    font-size: 0.8em;
+    margin-bottom: 0.5em;
+    margin-top: 0.2em;
+}
+.chord {
+    display: inline-block;
+    position:relative;
+    padding-bottom: 1.3em;
+    bottom: 0;
+    width: 1px;
+    color: #660000;
+    font-size: 0.8em;
+    font-family: verdana;
 }
 
+.chord.full-width {
+	width: auto;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+.chord .bass_note_modifier {
+    color: gray;
+    font-weight: normal;
+}
+.chord .separator {
+    margin-left: 0.2em;
+}
+#container>section.container .lyrics-display {
+    position: absolute ;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
 .lyrics-display .lyrics-panel {
-	height: 80%;
+    height: calc(100% - 200px) ;
+    /*width: 100%;*/
+    overflow: auto;
+    
          column-gap: 20px;
          column-rule: 0.1em solid silver;
-         column-width: 250px;
+         column-width:350px;
          column-fill: auto;
     
          -moz-column-gap: 20px;
          -moz-column-rule: 0.1em solid silver;
-         -moz-column-width: 250px;
+         -moz-column-width: 350px;
          -moz-column-fill: auto;
+    
+         -webkit-column-gap: 20px;
+         -webkit-column-rule: 1px solid silver;
+         -webkit-column-width: 350px;
+         -webkit-column-fill: auto;
+   
+/*
+      -webkit-column-count: 2;
+     -moz-column-count: 2;
+          column-count: 2;
+          
+  -webkit-column-width: auto;
+     -moz-column-width: auto;
+          column-width: auto;
+        *//*
+    -moz-column-rule: 0.1em solid silver;*/
+}
+.iPad .lyrics-display .lyrics-panel {
+    height: 700px;
+    margin-bottom: 1em;
     
          -webkit-column-gap: 20px;
          -webkit-column-rule: 1px solid silver;
          -webkit-column-width: 250px;
          -webkit-column-fill: auto;
-	
 }
-.lyrics-display.zoom-1 .lyrics-panel {
-    font-size: 0.75em;
+.lyrics-display h3 {
+    white-space: nowrap;
 }
-.lyrics-display.zoom-2 .lyrics-panel {
-    font-size: 1em;
-}
-.lyrics-display.zoom-3 .lyrics-panel {
-    font-size: 1.3em;
-}
-.lyrics-display.zoom-4 .lyrics-panel {
-    font-size: 1.6em;
-}
-.lyrics-display.zoom-5 .lyrics-panel {
-    font-size: 2em;
-}
-.lyrics-display.zoom-6 .lyrics-panel {
-    font-size: 2.3em;
-}
-.lyrics-display.zoom-7 .lyrics-panel {
-    font-size: 2.6em;
-}.lyrics-display.zoom-8 .lyrics-panel {
-    font-size: 2.9em;
-}
+.lyrics-display.zoom-1 .lyrics-panel { font-size: 0.75em; }
+.lyrics-display.zoom-2 .lyrics-panel { font-size: 1em;    }
+.lyrics-display.zoom-3 .lyrics-panel { font-size: 1.3em;  }
+.lyrics-display.zoom-4 .lyrics-panel { font-size: 1.6em;  }
+.lyrics-display.zoom-5 .lyrics-panel { font-size: 2em;    }
+.lyrics-display.zoom-6 .lyrics-panel { font-size: 2.3em;  }
+.lyrics-display.zoom-7 .lyrics-panel { font-size: 2.6em;  }
+.lyrics-display.zoom-8 .lyrics-panel { font-size: 2.9em;  }
 .lyrics-display .line .text {
     display: inline;
     vertical-align: bottom;
 }
 .lyrics-panel.chords-hidden .chord {
-	display: none;
-}
-.chord .bass_note_modifier {
-	color: gray;
-	font-weight: normal;
-}
-.chord .separator {
-	margin-left: 0.2em;
-}
-
-#lyrics-edit {
-	margin-bottom: 220px;
-}
-#lyrics-edit input {
-	width: 90%;
-}
-.no-base-key {
-	font-weight: normal;
-	font-style: italic;
-	font-size:0.6em;
-}
-
-    table.manual-column {
-        width: 100%;
-        margin: 0;
-        border: 0;
-        border-collapse:separate;
-    }
-    table.manual-.lyrics-panel td {
-        vertical-align: top;
-        padding: 0;
-    }
-    
-
-.content.songs.view h4 {
     display: none;
 }
 
-tr.title,
-tr.id,
-tr.original-filename {
-	display: none;
+
+/* Metadata table */
+
+.lyrics-display table.vertical-table td .blue-bold {
+    display: inline-block;
+    color: #1798A5;
+    font-weight: bold;
+    vertical-align: center;
+    margin-left: 8em;
 }
-.songs.view table.vertical-table td,
-.songs.view table.vertical-table th {
-	font-size: 0.8em;
-	padding: 0;
-	text-align: left;
+.lyrics-display table.vertical-table th,
+.lyrics-display table.vertical-table td .blue-bold {
+    width: 8em;
 }
 
-.songs.view table.vertical-table th {
-	width: 8em;
+.lyrics-display table.vertical-table td,
+.lyrics-display table.vertical-table th {
+    font-size: 0.8em;
+    padding: 0;
+    text-align: left;
 }
+.lyrics-display .performed-by,
+.lyrics-display .written-by,
+.lyrics-display .base-key,
+.lyrics-display .songnumber,
+.lyrics-display .meta-tags {
+    margin-left: 0.8em;
+    font-size: 0.8em;
+}
+
+.base-key .label,
+.base-key label {
+	font-style: normal;
+	background-color: transparent;
+	color: black;
+	padding-left: 0;
+	margin: 0;
+	display: inline-block;
+	padding-right: 0.5em;
+}
+
+.base-key .key .data {
+    margin-bottom: 0.2em;
+    padding: 0.1em;
+    height: 1.7em;
+}
+.base-key .label,
+.base-key label,
+.base-key .data {
+    font-size: 1em;
+}
+.base-key .label,
+.base-key label {
+    color: #1798a5;
+    font-weight: bold;
+}
+.base-key form.key {
+	display: inline-block;
+	Width: 20em;
+	margin-left: 1em;
+}
+
+.base-key .key .target-key .data {
+    width: 4em;
+}
+
+.base-key .key  .target-key.no-base-key .data {
+    display: inline-block;
+    width: 10em;
+    font-size: 1em;
+}
+
+.base-key .key .capo .data {
+    width: 3em;
+}
+
+.base-key .key .capo {
+	margin-right: 0.7em;
+	margin-left: 0.7em;
+}
+
+.base-key .key .capo .label,
+.base-key .key .capo label {
+	margin-right: 0.2em;
+}
+
+.base-key .key-capo-selectors {
+    display: inline-block;
+    margin-left: 1em;
+    width: 16em;
+}
+
+
+        /* Song View performer select - as horizontal list */
+        .songs.view .performers {
+            width: auto;
+        }
+        .songs.view .performers .performer {
+            font-size: 1em;
+            border: 1px solid silver;
+            white-space: nowrap;
+            padding-top: 0.2em;
+            padding-left: 0.4em;
+            padding-right: 0.4em;
+            padding-bottom: 0.2em;
+            cursor: pointer;
+        }
+        .songs.view .performers .nickname {
+            font-size: 1em;
+            width: auto;
+        }
+        .songs.view .performers .key {
+            display: inline-block;
+            width: auto;
+        }
+        .songs.view .performers .capo {
+            display: inline-block;
+        }
+        
+        .songs.view .performers form ,
+        .songs.view .performers fieldset {
+            display: inline-block;
+            vertical-align: top;
+            width: auto;
+            margin: 0;
+            padding: 0;
+        }
+
+        .songs.view .performers fieldset .select2 {
+            font-size:  1em; /* to counteract baked_ui.css line 430 (0.7em)*/
+        }
+        
+        .songs.view .performers .input  {
+            display: inline-block;
+        }
+        .songs.view .performers input  {
+            display: inline-block;
+            margin-bottom: 0;
+            height: 2em;
+            padding-left: 0;
+            padding-right: 0;
+        }
+        .songs.view .performers input#key  {
+            width: 2.5em;
+        }
+        .lyrics-display .performers input#capo  {
+            text-align: center;
+            width: 1em;
+        }
+        .lyrics-display .performers label[for="performer-id"] {
+            display: none;
+        }
+        
+        /* key for each performer */
+        #container .container .lyrics-display .base-key .key-capo-selectors .data {
+            width: 4em;
+        }
+        #container .container .lyrics-display .base-key .performers .data {
+            width: 9em;
+        }
+             
+             
+        /* Tag editor ajax form */
+        .lyrics-display .ajax-button-form {
+            float: right;
+        }
+        #container .container .lyrics-display tr.tags fieldset {
+            margin: 0;
+            padding: 0;
+        }
+        #container .container .lyrics-display tr.tags th {
+            font-size: 10px;
+            white-space: nowrap;
+        }
+        #container .container .lyrics-display tr.tags th form {
+            display: inline-block;
+        }
+        #container .container .lyrics-display tr.tags th span.button {
+            margin: 0;
+            font-size: 0.9em;
+        }
+        #container .container .lyrics-display tr.tags fieldset .selection li {
+            font-size: 0.7em;
+        }
+        #container .container .lyrics-display tr.tags fieldset .selection span.select2-selection.select2-selection--multiple {
+            min-height: auto;
+            height: 2.5em;
+            border: 0;
+        }
+                        

@@ -1,3 +1,52 @@
+body,
+#container {
+    font-family: sans-serif;
+    /*font-size: 12px;*/
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+#container>section.container {
+    position: absolute;
+    top: 45px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.button {
+    display: inline-block;
+    white-space: nowrap;
+    margin: 0.5em;
+    padding: 0.5em;
+    border: 1px solid gray;
+    cursor: pointer;
+    background-color: #f3f3f3;
+    color: gray;
+    font-size: 0.8em;
+    text-align: center;
+    line-height: 2em;
+}
+.button:hover {
+    color: white;
+}
+.button.pressed {
+    background-color: green;
+    color: white;
+    border-color: white;
+}
+.button.disabled {
+    background-color: transparent;
+    color: white;
+    border-color: white;
+}
+.button a {
+    color: inherit;
+    text-decoration: none;
+}
+
 .float-right {
 	float: right;
 }
@@ -358,118 +407,7 @@ tr.song-row.ui-selected .song-title {
 	height: 2em;
 }
 
-/* song lyrics */
 
-#container .container .songs.view .lyrics-panel {
-	  -webkit-column-count: 2;
-     -moz-column-count: 2;
-          column-count: 2;
-  -webkit-column-width: auto;
-     -moz-column-width: auto;
-          column-width: auto;
-   /*-moz-column-fill: auto;
-    /*-moz-column-gap: 20px;*/
-    -moz-column-rule: 0.1em solid silver;
-   width: 100%;
-   height: auto;
-}
-.songs.view .ajax-button-form {
-    float: right;
-}
-#container .container .songs.view tr.tags fieldset {
-    margin: 0;
-    padding: 0;
-}
-#container .container .songs.view tr.tags th {
-    font-size: 10px;
-    white-space: nowrap;
-}
-#container .container .songs.view tr.tags th form {
-    display: inline-block;
-}
-#container .container .songs.view tr.tags th span.button {
-    margin: 0;
-    font-size: 0.9em;
-}
-#container .container .songs.view tr.tags fieldset .selection li {
-    font-size: 0.7em;
-}
-#container .container .songs.view tr.tags fieldset .selection span.select2-selection.select2-selection--multiple {
-    min-height: auto;
-    height: 2.5em;
-    border: 0;
-}
-
-
-.base-key .key-capo-selectors {
-    display: inline-block;
-    margin-left: 5em;
-    width: 20em;
-}
-
-#container .container .songs.view .base-key .key-capo-selectors .data {
-    width: 4em;
-}
-#container .container .songs.view .base-key .performers .data {
-    width: 9em;
-}
-
-
-/* Song View performer select - as horizontal list */
-.songs.view .performers {
-	width: auto;
-}
-.songs.view .performers .performer {
-    font-size: 1em;
-    border: 1px solid silver;
-    white-space: nowrap;
-    padding-top: 0.2em;
-    padding-left: 0.4em;
-    padding-right: 0.4em;
-    padding-bottom: 0.2em;
-    cursor: pointer;
-}
-.songs.view .performers .nickname {
-    font-size: 1em;
-    width: auto;
-}
-.songs.view .performers .key {
-    display: inline-block;
-    width: auto;
-}
-.songs.view .performers .capo {
-    display: inline-block;
-}
-
-.songs.view .performers form ,
-.songs.view .performers fieldset {
-    display: inline-block;
-    vertical-align: top;
-    font-size:  0.84em;
-    width: auto;
-    margin: 0;
-    padding: 0;
-}
-
-.songs.view .performers .input  {
-	display: inline-block;
-}
-.songs.view .performers input  {
-	display: inline-block;
-    border: 0;
-    padding-left: 0;
-    padding-right: 0;
-}
-.songs.view .performers input#key  {
-    width: 2.5em;
-}
-.songs.view .performers input#capo  {
-    text-align: center;
-    width: 1em;
-}
-.songs.view .performers label[for="performer-id"] {
-	display: none;
-}
 
 
 /* key & tag input forms on songs lists and song views*/

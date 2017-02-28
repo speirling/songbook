@@ -3,6 +3,10 @@
 jQuery(document).ready(function() {
 	var lyrics_panels = jQuery('.sbk-lyrics-panel');
 
+	//special css for iPad
+	if(navigator.userAgent.search(/ipad/i) > 0) {
+	    jQuery('body').addClass('iPad');
+	}
 	if (lyrics_panels.length > 0) {
 	    new SBK.ChordEditor(jQuery('.sbk-lyrics-panel')).render();
 	}
