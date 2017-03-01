@@ -87,15 +87,18 @@ class songlistComponent extends Component {
 			$filtered_list_query->select(['voted' => '(`Songs`.`id` IN ' . $song_id_string . ')']);
 		}
 		// end song votes -------------------
-	
+
+		$filter_on = false;
 		if ($controller->request->is(array('post', 'put'))) {
 			if(array_key_exists('text_search', $controller->request->data) && $controller->request->data['text_search']) {
+				$filter_on = true;
 				$search_string = $controller->request->data['text_search'];
 				$filtered_list_query->where(['Songs.title LIKE' => '%'.$search_string.'%']);
 			} else {
 				$search_string = '';
 			}
 			if(array_key_exists('performer_id', $controller->request->data) && $controller->request->data['performer_id']) {
+				$filter_on = true;
 				$selected_performer = $controller->request->data['performer_id'];
 				$filtered_list_query->matching(
 						'SetSongs.Performers', function ($q) use($selected_performer)  {
@@ -107,6 +110,7 @@ class songlistComponent extends Component {
 			}
 	
 			if (array_key_exists('tag_id', $controller->request->data) && $controller->request->data['tag_id'] && $controller->request->data['tag_id'] != 'Tag...') {
+				$filter_on = true;
 				$selected_tag_array = $controller->request->data['tag_id'];
 				$filtered_list_query->matching(
 						'SongTags.Tags', function ($q) use($selected_tag_array)  {
@@ -121,6 +125,7 @@ class songlistComponent extends Component {
 			}
 	
 			if (array_key_exists('venue', $controller->request->data) && $controller->request->data['venue']) {
+				$filter_on = true;
 				$selected_venue = $controller->request->data['venue'];
 				//find all of the events that were at this venue
 				$venue_query = $controller->Events->findAllByVenue($selected_venue);
@@ -150,7 +155,7 @@ class songlistComponent extends Component {
 			$selected_performer  = '';
 			$selected_tag_array = [];
 		}
-	
+
 		$filtered_list_query->distinct(['Songs.id']);
 		$filtered_list_query->order(['Songs.id' =>'DESC']);
 	
@@ -178,7 +183,13 @@ class songlistComponent extends Component {
 	
 		$controller->set('search_string', $search_string);
 		$controller->set('selected_tags', $selected_tag_array);
-		$controller->set('filtered_list', $controller->paginate($filtered_list_query));
+		if($filter_on) {
+			$controller->set('filtered_list', $filtered_list_query);
+			$controller->set('filter_on', FALSE);
+		} else {
+			$controller->set('filtered_list', $controller->paginate($filtered_list_query));
+			$controller->set('filter_on', TRUE);
+		}
 	
 		$controller->loadModel('Performers');
 		$controller->set('performers', $controller->Performers->find('list', [

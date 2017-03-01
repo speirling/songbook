@@ -19,6 +19,7 @@
         <?= $this->Form->input('venue', ['empty' => 'Please select ...', 'options' => $venues]); ?>
         </span>
         <span class="selected-tags-and-performer button"><?= $this->Form->button(__('Filter the list')) ?></span>
+        <span class="clear-filters button"><button type="button" onclick="SBK.CakeUI.form.clear_filters(this)">X</button></span>
     </fieldset>
     <?= $this->Form->end() ?>
     
@@ -34,11 +35,7 @@
 
 
 
-<div class="dashboard index large-10 medium-10 columns content">
-
-    <h3><?= __('Homepage') ?></h3>
-    
-    
+<div class="dashboard index large-10 medium-10 columns content">   
     <table cellpadding="0" cellspacing="0">
         
         <tbody>
@@ -57,6 +54,7 @@
              } ?>  
         </tbody>
     </table>
+    <?php if($filter_on) { ?>
     <div class="paginator">
         <ul class="pagination">
             <?= $this->Paginator->prev('< ' . __('previous')) ?>
@@ -65,4 +63,5 @@
         </ul>
         <p><?= $this->Paginator->counter() ?></p>
     </div>
+    <?php } ?>
 </div>

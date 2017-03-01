@@ -198,6 +198,14 @@
                 }
             )
         },
+        
+        clear_filters: function (button) {
+            var form = button.closest('form');
+            
+            jQuery('input', form).val('');
+            jQuery('select', form).val(null).trigger('change');
+            console.log(jQuery('select', form));
+        }
     },
 
     ajaxcallback: {
