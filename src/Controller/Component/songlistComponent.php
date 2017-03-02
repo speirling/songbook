@@ -109,9 +109,13 @@ class songlistComponent extends Component {
 				$selected_performer = '';
 			}
 	
-			if (array_key_exists('tag_id', $controller->request->data) && $controller->request->data['tag_id'] && $controller->request->data['tag_id'] != 'Tag...') {
+			if (
+					array_key_exists('filter_tag_id', $controller->request->data) 
+					&& $controller->request->data['filter_tag_id'] 
+					&& $controller->request->data['filter_tag_id'] != 'Tag...'
+				) {
 				$filter_on = true;
-				$selected_tag_array = $controller->request->data['tag_id'];
+				$selected_tag_array = $controller->request->data['filter_tag_id'];
 				$filtered_list_query->matching(
 						'SongTags.Tags', function ($q) use($selected_tag_array)  {
 						$q->where(['Tags.id IN' => $selected_tag_array]);

@@ -12,7 +12,7 @@
         <?= $this->Form->input('performer_id', ['empty' => 'Please select ...', 'options' => $performers]); ?>
         </span>
         <span class="tag-id"><label for="tag-id">Tags</label>
-        <?= $this->Form->input('tag_id', ['label' => '', 'options' => $all_tags, 'multiple' => true, 'default' => $selected_tags]); ?>
+        <?= $this->Form->input('filter_tag_id', ['label' => '', 'options' => $all_tags, 'multiple' => true, 'default' => $selected_tags]); ?>
         </span>
         <span class="venue">
         <?= $this->Form->input('venue', ['empty' => 'Please select ...', 'options' => $venues]); ?>
