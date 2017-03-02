@@ -185,10 +185,10 @@ class songlistComponent extends Component {
 		$controller->set('selected_tags', $selected_tag_array);
 		if($filter_on) {
 			$controller->set('filtered_list', $filtered_list_query);
-			$controller->set('filter_on', FALSE);
+			$controller->set('filter_on', TRUE);
 		} else {
 			$controller->set('filtered_list', $controller->paginate($filtered_list_query));
-			$controller->set('filter_on', TRUE);
+			$controller->set('filter_on', FALSE);
 		}
 	
 		$controller->loadModel('Performers');

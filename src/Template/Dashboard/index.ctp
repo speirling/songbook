@@ -11,7 +11,6 @@
         <span class="performer-id">                          
         <?= $this->Form->input('performer_id', ['empty' => 'Please select ...', 'options' => $performers]); ?>
         </span>
-        <?= $this->Form->hidden('Search', ['value' => $search_string]);  ?>
         <span class="tag-id"><label for="tag-id">Tags</label>
         <?= $this->Form->input('tag_id', ['label' => '', 'options' => $all_tags, 'multiple' => true, 'default' => $selected_tags]); ?>
         </span>
@@ -54,7 +53,7 @@
              } ?>  
         </tbody>
     </table>
-    <?php if($filter_on) { ?>
+    <?php if(!$filter_on) { ?>
     <div class="paginator">
         <ul class="pagination">
             <?= $this->Paginator->prev('< ' . __('previous')) ?>
