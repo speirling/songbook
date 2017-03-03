@@ -211,7 +211,7 @@ SBK.ChordEditor = SBK.Class.extend({
 
         
 
-        self.input.bind('keypress', function (event) {console.log(event.charCode);
+        self.input.bind('keypress', function (event) {
             self.handle_charCode(event.charCode);
             return false;
         });
@@ -398,8 +398,6 @@ SBK.ChordEditor = SBK.Class.extend({
     display_value: function () {
         var self = this, chord_html = '', v;
 
-        console.log(self.chord_object);
-
         if (typeof(self.chord_object.note) !== 'undefined') {
             chord_html = chord_html + '<span class="note">' + self.chord_object.note + '</span>';
         }
@@ -467,6 +465,14 @@ SBK.ChordEditor = SBK.Class.extend({
                         self.chord_object.bass_note = text;
                     }
                     break;
+
+                case 'bass_note_modifier':
+                    self.bass_note_requested = false;
+                    text = self.chord_object.bass_note + SBK.StaticFunctions.charCode_to_key_modifier(cc);
+                    if (text) {
+                        self.chord_object.bass_note = text;
+                    }
+                    break;
                 }
             }
         }
@@ -489,7 +495,7 @@ SBK.ChordEditor = SBK.Class.extend({
     },
 
     register_backspace: function (chord_text) {
-        var self = this, bass_note, note, key = false, cc, bass_note = false, bass_note_modifier = false, chord_text, char;
+        var self = this, bass_note, note, key = false, bass_note = false, bass_note_modifier = false, chord_text, char;
 
         if (typeof(self.chord_object.bass_note) !== 'undefined') {
             bass_note = self.chord_object.bass_note.slice(0, -1);
@@ -514,8 +520,8 @@ SBK.ChordEditor = SBK.Class.extend({
         self.display_value();
     },
 
-    next_part: function (cc) { // determine how keypress should be determined - what part of the chord ar eyou in - not, modifier or bassnote
-        var self = this, result = false, bass_note, note, key = false, cc, bass_note = false, bass_note_modifier = false, chord_text, char;
+    next_part: function (cc) { // determine how keypress should be determined - what part of the chord are you in - note, modifier, bassnote or bassnote modifier
+        var self = this, result = false, bass_note, note, key = false, bass_note = false, bass_note_modifier = false, chord_text, char;
 
             if (typeof(self.chord_object.bass_note) === 'undefined') {
                 if (typeof(self.chord_object.modifier) === 'undefined') {
@@ -563,16 +569,17 @@ SBK.ChordEditor = SBK.Class.extend({
             } else {
              // bass note mode
                 if (typeof(self.chord_object.bass_note) ==='undefined') {
-                    bass_note = '';
-                } else {
-                    bass_note = self.chord_object.bass_note;
-                }
-                if (bass_note.length === 0) { // first bass note character must be a key (lower case)
-                    return 'bass_note';
-                } else if (bass_note.length === 1) { //bass notes can only have two characters - a key and a flat or sharp
-                    return 'bass_note_modifier';
-                } else {
                     return false;
+                } else {
+                    bass_note_length = self.chord_object.bass_note.length;
+
+                    if (bass_note_length === 0) { // first bass note character must be a key (lower case)
+                        return 'bass_note';
+                    } else if (bass_note_length === 1) { //bass notes can only have two characters - a key and a flat or sharp
+                        return 'bass_note_modifier';
+                    } else {
+                        return false;
+                    }
                 }
             }
 
