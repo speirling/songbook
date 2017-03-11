@@ -76,11 +76,11 @@ class SongTagsController extends AppController
     {
         $redirect_array = ['controller' => $ret_controller, 'action' => $ret_action, $ret_id];
 
-        $previous_tag_songs_query = $this->SongTags->find('all')
+        $previous_song_tags_query = $this->SongTags->find('all')
         ->where(['song_id' => $this->request->data['song_id']]);
-        $previous_tag_songs = [];
-        foreach($previous_tag_songs_query as $this_previous_tag_song) {
-            $previous_tag_songs[] = $this_previous_tag_song;
+        $previous_song_tags = [];
+        foreach($previous_song_tags_query as $this_previous_tag_song) {
+            $previous_song_tags[] = $this_previous_tag_song;
         }
         $reused_tags = [];
         if ($this->request->is('post')) {
@@ -107,7 +107,7 @@ class SongTagsController extends AppController
                 }
             }
 
-            foreach($previous_tag_songs as $this_previous_tag_song_object) {
+            foreach($previous_song_tags as $this_previous_tag_song_object) {
                 if (!in_array($this_previous_tag_song_object->tag_id, $reused_tags)) {
                     $this->SongTags->delete($this_previous_tag_song_object);
                 }
@@ -136,12 +136,12 @@ class SongTagsController extends AppController
 
         $request_data = $this->request->query;
         if (array_key_exists('song_id', $request_data)) {
-            $previous_tag_songs_query = $this->SongTags->find('all');
-            $previous_tag_songs_query->contain('Tags');
-            $previous_tag_songs_query->where(['song_id' => $request_data['song_id']]);
-            $previous_tag_songs = [];
-            foreach($previous_tag_songs_query as $this_previous_tag_song) {
-                $previous_tag_songs[] = $this_previous_tag_song;
+            $previous_song_tags_query = $this->SongTags->find('all');
+            $previous_song_tags_query->contain('Tags');
+            $previous_song_tags_query->where(['song_id' => $request_data['song_id']]);
+            $previous_song_tags = [];
+            foreach($previous_song_tags_query as $this_previous_tag_song) {
+                $previous_song_tags[] = $this_previous_tag_song;
             }
             $reused_tags = [];
             if (array_key_exists('tag_id', $request_data) && sizeof($request_data['tag_id']) > 0) {
@@ -172,7 +172,7 @@ class SongTagsController extends AppController
                     }
                 }
 
-                foreach($previous_tag_songs as $this_previous_tag_song_object) {
+                foreach($previous_song_tags as $this_previous_tag_song_object) {
                     if (!in_array($this_previous_tag_song_object->tag_id, $reused_tags)) {
                         $this->SongTags->delete($this_previous_tag_song_object);
                     }
@@ -209,6 +209,83 @@ class SongTagsController extends AppController
         return $this->response;
     }
 
+
+    /**
+     * Add a list of tags to each of a list of songs
+     */
+    public function AddTagMultiAjax()
+    {
+        //as this function will only be called through Ajax, set the response type to json:
+        $this->response->type('json');
+        //and avoid rendering a CakePHP View:
+        $this->autoRender = false;
+
+        $report = [];
+        $resulting_tags = '';
+
+        $request_data = $this->request->query;
+
+        if (array_key_exists('song_id', $request_data)) {
+            $report[] = 'song ids received';
+            $tag_ids = $request_data['tag_id'];
+            $song_ids = $request_data['song_id'];
+
+            if (sizeof($tag_ids) > 0) {
+                foreach($song_ids as $this_song_id) {
+                    foreach ((array) $tag_ids as $this_tag_id) {
+                        $data = NULL;
+                        if (is_numeric($this_tag_id)) {
+                            $reused_tags[] = $this_tag_id;
+                            $data = [
+                                    'song_id' => $this_song_id,
+                                    'tag_id' => $this_tag_id
+                            ];
+                        } elseif ($this_tag_id !== '') {
+                            $data = [
+                                'song_id' => $this_song_id,
+                                'tag' => [
+                                        'title' => $this_tag_id
+                                ]
+                            ];
+                        }
+                        if (!is_null($data)) {
+                            $songTag = $this->SongTags->newEntity($data);
+                            if (!$this->SongTags->save($songTag)) {
+                                $report[] = ['Not saved: ' =>  $data];
+                            } else {
+                                $report[] = ['Saved: ' =>  $data];
+                            }
+                        }
+                    }
+                }
+                $tag_names = [];
+                $song_tags_query = $this->SongTags->Tags->find()->where(['id IN' => $tag_ids]);
+                foreach($song_tags_query as $this_song_tag) {
+                    $tag_names[] = $this_song_tag->title;
+                }
+                $this->response->body(json_encode([
+                        "success" => TRUE,
+                        "report" => $report,
+                        "tag_ids" => $tag_ids,
+                        "tag_names" => $tag_names,
+                        "song_ids" => $song_ids
+                ]));
+                return $this->response;
+            } else {
+                $this->response->body(json_encode([
+                        "success" => False,
+                        "report" => 'Tags could not be created - no [tag_ids] provided. '
+                ]));
+                return $this->response;
+            }
+        } else {
+            $this->response->body(json_encode([
+                    "success" => FALSE,
+                    "report" => 'Tags could not be created - no [song_ids] provided. '
+            ]));
+            return $this->response;
+        }
+    }
     /**
      * Edit method
      *

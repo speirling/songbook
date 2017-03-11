@@ -1,12 +1,13 @@
 /*global jQuery document */
 
 jQuery(document).ready(function() {
-	var lyrics_panels = jQuery('.sbk-lyrics-panel');
 
 	//special css for iPad
 	if(navigator.userAgent.search(/ipad/i) > 0) {
 	    jQuery('body').addClass('iPad');
 	}
+
+	var lyrics_panels = jQuery('.sbk-lyrics-panel');
 	if (lyrics_panels.length > 0) {
 	    new SBK.ChordEditor(jQuery('.sbk-lyrics-panel')).render();
 	}
@@ -47,7 +48,7 @@ jQuery(document).ready(function() {
 
 	jQuery('#collapse_sets').on('click touch', SBK.CakeUI.collapse_sets);
 
-
+	// Songlist -----------------------------
 	jQuery('<span class="button arrow move-up">&uparrow;</span>').appendTo('.song-row .actions')
 	.on('click touch', function(event){
 		event.stopPropagation();
@@ -62,6 +63,9 @@ jQuery(document).ready(function() {
      
      jQuery('tr.song-row:last  .actions.move-down').hide();
      jQuery('tr.song-row:first .actions.move-up').hide();
+
+     jQuery('tr.song-row .multi-select').on('click touch', SBK.CakeUI.select.tag_multi_edit);
+     //end song list -----------------------
 
      jQuery('.add-new-ui').each(function () {
          SBK.CakeUI.toggleable.make(this);

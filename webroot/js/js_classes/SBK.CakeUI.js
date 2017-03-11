@@ -115,9 +115,27 @@
 		    	   return;
 		       }
 		       SBK.CakeUI.select.mark_row(new_selection);
+		},
+
+		tag_multi_edit: function () {
+		    var selected_ids = [], song_id_inputs_html = '', index;
+
+		    jQuery('.multi-select input:checked').each(function () {
+		        selected_ids.push(jQuery(this).val());
+		    });
+		    for (index = 0; index < selected_ids.length; index = index + 1) {
+		        song_id_inputs_html = song_id_inputs_html + '<input name=song_id[] type="hidden" value="' + selected_ids[index] + '" />';
+		    };
+
+		    jQuery('#tag_multieditor .song_id_input_holder').html(song_id_inputs_html);
+		    if (selected_ids.length > 0) {
+		        jQuery('#tag_multieditor').show();
+		    } else {
+                jQuery('#tag_multieditor').hide();
+            }
 		}
 	},
-	
+
 	toggleable: {
 		sets: function (event) {
 			event.preventDefault;
@@ -202,7 +220,7 @@
         clear_filters: function (button) {
             var form = button.closest('form');
             
-            jQuery('input', form).val('');
+        jQuery('input', form).val('');
             jQuery('select', form).val(null).trigger('change');
             console.log(jQuery('select', form));
         }
@@ -229,6 +247,19 @@
                     }
                     new_key_html = new_key_html + '</span>';
                 jQuery('td.performers', song_row).append(new_key_html);
+            }
+        },
+        multitag: function (response, form) {
+            var tag_ids = response['tag_ids'], tag_names = response['tag_names'], song_ids = response['song_ids'], song_index, tag_index, song_tag_holder;
+
+            for (tag_index = 0; tag_index < tag_names.length; tag_index = tag_index + 1) {
+                for (song_index = 0; song_index < song_ids.length; song_index = song_index + 1) {
+                    song_tag_holder = jQuery('#song_id_' + song_ids[song_index] + ' .song-main .tags');
+                    existing_tag = jQuery("span.tag:contains('" + tag_names[tag_index] + "')", song_tag_holder).length;
+                    if(existing_tag == 0) {
+                        song_tag_holder.append('<span class="tag">' + tag_names[tag_index] + '</span>');
+                    }
+                }
             }
         },
         song_view: {
