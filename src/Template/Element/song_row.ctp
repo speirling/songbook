@@ -9,8 +9,9 @@
   $tags = list of all avilable tags
   */
 ?>
-<tr class="song-row <?php if($current_song->played) {echo 'played';} ?>">
+<tr class="song-row<?php if($current_song->played) {echo ' played';} ?>" id="song_id_<?= h($current_song->id) ?>">
     <td class="song-id"><?= h($current_song->id) ?></td>
+    <td class="multi-select"><input type="checkbox" name="song_multiselect" value="<?= h($current_song->id) ?>"></td>
     <td class="performers">
         <?php 
         if(sizeof($this_set_songs) > 0) {

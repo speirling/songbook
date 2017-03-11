@@ -21,7 +21,7 @@
         <span class="clear-filters button"><button type="button" onclick="SBK.CakeUI.form.clear_filters(this)">X</button></span>
     </fieldset>
     <?= $this->Form->end() ?>
-    
+
     <ul class="side-nav">
         <li><?= $this->Html->link(__('New Song'), ['controller' => 'Songs', 'action' => 'add']) ?></li>
         <li><?= $this->Html->link(__('New Event'), ['controller' => 'Events', 'action' => 'add']) ?></li>
@@ -33,10 +33,23 @@
 </nav>
 
 
-
 <div class="dashboard index large-10 medium-10 columns content">   
+	<div id="tag_multieditor" style="display: none;">
+		<span class="tag-form">
+		    <?= $this->Form->create(null, ['url' => ['controller' => 'SongTags', 'action' => 'AddTagMultiAjax']]);  ?>
+		    <fieldset>
+		        <?php
+		        echo '<span class="tag-id">'.$this->Form->input('tag_id', ['label' => '', 'style'=>'width: 80%', 'options' => $all_tags, 'multiple' => true, 'default' => $selected_tags]).'</span>';
+		        ?>
+            <span class="song_id_input_holder"></span>
+		    </fieldset>
+		    <span class="tag-add-submit button">
+		        <?php echo $this->Form->button(__('Tag <br> selected <br> songs'), ['type' => 'button', 'onclick' => 'SBK.CakeUI.form.ajaxify(this, SBK.CakeUI.ajaxcallback.multitag);']); ?>
+		    </span>
+		    <?= $this->Form->end() ?>
+		</span>
+	</div>
     <table cellpadding="0" cellspacing="0">
-        
         <tbody>
             <?php 
             foreach ($filtered_list as $song){
