@@ -32,7 +32,33 @@
     </ul>
 </nav>
 
+<div class="print_title"><?php
+	$print_title = '';
+	if ($search_string) {
+		$print_title = $print_title . $search_string;
+		$print_title = $print_title . " | ";
+	}
+	foreach($performers as $performer_id => $performer_title) {
+		if($performer_id == $selected_performer && $performer_id != 0) {
+			$print_title = $print_title . $performer_title;
+			$print_title = $print_title . " | ";
+		}
+	}
+	foreach($venues as $venue_id => $venue_title) {
+		if($venue_id == $selected_venue) {
+			$print_title = $print_title . $venue_title;
+			$print_title = $print_title . " | ";
+		}
+	}
+	foreach($all_tags as $tag_id => $tag_title) {
+		if(in_array($tag_id, $selected_tags)) {
+			$print_title = $print_title . $tag_title;
+			$print_title = $print_title . ", ";
+		}
+	}
 
+	echo substr($print_title, 0, -2);
+?></div>
 <div class="dashboard index large-10 medium-10 columns content">   
 	<div id="tag_multieditor" style="display: none;">
 		<span class="tag-form">

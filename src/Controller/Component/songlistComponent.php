@@ -27,7 +27,7 @@ class songlistComponent extends Component {
 	
 		// start song performances -------------------
 		if(is_null($event)) {
-			//find all of the songs played in the last 3 hours (supposed to be current event)
+			//find all of the songs played in the last 3 hours (supposed to be current event) and add a parameter that identifies them as played
 			$performance_conditions = [];
 			$performance_query = $controller->SongPerformances->find();
 			$performance_query->Where("`SongPerformances`.`timestamp` BETWEEN \"" . date("Y-m-d H:i:s",  strtotime('-3 hours'))."\" AND \"".date("Y-m-d H:i:s")."\"");
@@ -44,7 +44,7 @@ class songlistComponent extends Component {
 				$filtered_list_query->select(['played' => '(`Songs`.`id` IN ' . $song_id_string . ')']);
 			}
 		} else {
-			//find all of the songs played during the event - assume event time +/- event duration
+			//find all of the songs played during the event - assume event time +/- event duration - and restrict the final list to just those songs
 			if(isset($event->duration_hours) && $event->duration_hours > 0) {
 				$event_duration_seconds = $event->duration_hours * 60 * 60;
 			} else {
@@ -70,7 +70,7 @@ class songlistComponent extends Component {
 		// end song performances -------------------
 	
 		// start song votes -------------------
-		//similary, find all of the songs voted in the last 3 hours (supposed to be current event)
+		//similary, find all of the songs voted in the last 3 hours (supposed to be current event) and add a parameter that identifies them as voted
 		$vote_conditions = [];
 		$vote_query = $controller->SongVotes->find();
 		$vote_query->Where("`SongVotes`.`timestamp` BETWEEN \"" . date("Y-m-d H:i:s",  strtotime('-3 hours'))."\" AND \"".date("Y-m-d H:i:s")."\"");
@@ -158,6 +158,7 @@ class songlistComponent extends Component {
 			$search_string = '';
 			$selected_performer  = '';
 			$selected_tag_array = [];
+			$selected_venue = '';
 		}
 
 		$filtered_list_query->distinct(['Songs.id']);
@@ -198,6 +199,10 @@ class songlistComponent extends Component {
 			$controller->set('filtered_list', $controller->paginate($filtered_list_query));
 			$controller->set('filter_on', FALSE);
 		}
+
+		//for the print title
+		$controller->set('selected_performer', $selected_performer);
+		$controller->set('selected_venue', $selected_venue);
 	}
 }
 ?>

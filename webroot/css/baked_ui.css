@@ -520,3 +520,25 @@ tr.song-row td.multi-select input {
 #tag_multieditor .tag-form fieldset span.select2 {
     width:100% !important;  /* temporary hack - select2 sets element width. It would be better to figure how to override this in the select2 library */
 }
+
+.print_title {
+    display: none;
+}
+ @media print {
+    nav {
+        display:none;
+    }
+    div#container,
+    .container.clearfix,
+    .dashboard.index {
+        display: inline !important;
+    }
+    .print_title {
+        display: block;
+        border-bottom: 1 px solid gray;
+    }
+    table {
+        display: inline;
+    }
+}
+
