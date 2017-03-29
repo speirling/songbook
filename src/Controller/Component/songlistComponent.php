@@ -171,7 +171,11 @@ class songlistComponent extends Component {
 		//pass the list of all Performers to the view
 		$controller->loadModel('Performers');
 		$performers = $controller->Performers->find('all');
-		$controller->set('performers', $performers);
+		$controller->set('performers', $controller->Performers->find('list', [
+				'keyField' => 'id',
+				'valueField' => 'nickname'
+			])
+		);
 	
 		//pass the list of all known venues to the view
 		$controller->loadModel('Events');
@@ -194,13 +198,6 @@ class songlistComponent extends Component {
 			$controller->set('filtered_list', $controller->paginate($filtered_list_query));
 			$controller->set('filter_on', FALSE);
 		}
-	
-		$controller->loadModel('Performers');
-		$controller->set('performers', $controller->Performers->find('list', [
-				'keyField' => 'id',
-				'valueField' => 'nickname'
-			])
-		);
 	}
 }
 ?>
