@@ -261,6 +261,10 @@
                     }
                 }
             }
+            jQuery('.multi-select input').each(function () {
+                jQuery(this).attr('checked', false);
+            });
+            SBK.CakeUI.select.tag_multi_edit();
         },
         song_view: {
             set_tags: function (response, form) {
