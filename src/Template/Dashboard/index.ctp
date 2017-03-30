@@ -6,7 +6,7 @@
 <?= $this->Form->create($filtered_list, ['url' => ['controller' => 'dashboard', 'action' => 'index']]) ?>
     <fieldset>
         <span class="text-search">
-        <?= $this->Form->input('text_search', ['label'=>'Text Search (name only)', 'default' => $search_string]); ?>
+        <?= $this->Form->input('text_search', ['label'=>'Name Search', 'default' => $search_string]); ?>
         </span>
         <span class="performer-id">                          
         <?= $this->Form->input('performer_id', ['empty' => 'Please select ...', 'options' => $performers]); ?>
@@ -19,6 +19,9 @@
         </span>
         <span class="selected-tags-and-performer button"><?= $this->Form->button(__('Filter the list')) ?></span>
         <span class="clear-filters button"><button type="button" onclick="SBK.CakeUI.form.clear_filters(this)">X</button></span>
+        <span class="tag-id-exclude"><label for="exclude-tag-id">Exclude Tags</label>
+        <?= $this->Form->input('exclude_tag_id', ['label' => '', 'options' => $all_tags, 'multiple' => true, 'default' => $selected_exclude_tags]); ?>
+        </span>
     </fieldset>
     <?= $this->Form->end() ?>
 
@@ -84,11 +87,29 @@
                 } else {
                     $return_port_id = $search_string;
                 }
-                echo $this->element('song_row', [
-                    'current_song' => $song,
-                    'this_set_songs' => $song->set_songs,
-                    'performers_list' => $performers
-                ]); 
+
+                $display_row = true;
+                if(sizeof($selected_exclude_tags) > 0) {
+                    $no_of_excludables = 0;
+                    foreach($selected_exclude_tags as $this_exclude_tag) {
+                        foreach($song->song_tags as $this_tag) {
+                            if($this_tag->tag->id ==  (int) $this_exclude_tag) {
+                                $no_of_excludables = $no_of_excludables + 1;
+                            }
+                        }
+                    }
+
+                    if($no_of_excludables == sizeof($selected_exclude_tags)) {
+                        $display_row = false;
+                    }
+                }
+                if($display_row) {
+                    echo $this->element('song_row', [
+                        'current_song' => $song,
+                        'this_set_songs' => $song->set_songs,
+                        'performers_list' => $performers
+                    ]);
+                }
              } ?>  
         </tbody>
     </table>

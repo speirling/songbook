@@ -127,7 +127,19 @@ class songlistComponent extends Component {
 			} else {
 				$selected_tag_array = [];
 			}
-	
+
+            //Exclude tags - only songs that do NOT contain ALL of the selected tags here will be displayed
+            if (
+                    array_key_exists('exclude_tag_id', $controller->request->data)
+                    && $controller->request->data['exclude_tag_id']
+                    && $controller->request->data['exclude_tag_id'] != 'Tag...'
+                    ) {
+                        //$filter_on = true; //Can lead to Maximum execution time fatal error!
+                        $selected_exclude_tag_array = $controller->request->data['exclude_tag_id'];
+                    } else {
+                        $selected_exclude_tag_array = [];
+                    }
+
 			if (array_key_exists('venue', $controller->request->data) && $controller->request->data['venue']) {
 				$filter_on = true;
 				$selected_venue = $controller->request->data['venue'];
@@ -149,7 +161,6 @@ class songlistComponent extends Component {
 				}
 	
 				$filtered_list_query->andWhere(['`Songs`.`id` IN' => $song_id_list]);
-				//echo debug($filtered_list_query); die();
 	
 			} else {
 				$selected_venue = '';
@@ -158,11 +169,13 @@ class songlistComponent extends Component {
 			$search_string = '';
 			$selected_performer  = '';
 			$selected_tag_array = [];
+			$selected_exclude_tag_array = [];
 			$selected_venue = '';
 		}
 
 		$filtered_list_query->distinct(['Songs.id']);
 		$filtered_list_query->order(['Songs.id' =>'DESC']);
+		//echo debug($filtered_list_query); die();
 	
 		//pass the list of all tags to the view
 		$controller->loadModel('Tags');
@@ -203,6 +216,7 @@ class songlistComponent extends Component {
 		//for the print title
 		$controller->set('selected_performer', $selected_performer);
 		$controller->set('selected_venue', $selected_venue);
+		$controller->set('selected_exclude_tags', $selected_exclude_tag_array);
 	}
 }
 ?>
