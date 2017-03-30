@@ -71,14 +71,15 @@ jQuery(document).ready(function() {
          SBK.CakeUI.toggleable.make(this);
      });
 
+     var DASHBOARD_TAG_TIMEOUT;
      jQuery(
          '#actions-sidebar .performer-id select, ' +
          '#actions-sidebar .venue select'
      ).change(function () {
+         clearTimeout (DASHBOARD_TAG_TIMEOUT);
     	 jQuery(this).parents('form').submit();
      });
 
-     var DASHBOARD_TAG_TIMEOUT;
      jQuery(
              '#actions-sidebar .tag-id select'
          ).change(function () {
@@ -87,6 +88,7 @@ jQuery(document).ready(function() {
              clearTimeout (DASHBOARD_TAG_TIMEOUT);
              DASHBOARD_TAG_TIMEOUT = setTimeout( function () {
                  self.parents('form').submit();
-             }, 1000);
+             }, 5000);
          })
-});
+    });
+    jQuery('.selected-tags-and-performer.button').click(function(){clearTimeout (DASHBOARD_TAG_TIMEOUT);})
