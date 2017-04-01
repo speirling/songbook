@@ -174,9 +174,13 @@ class songlistComponent extends Component {
 		}
 
 		$filtered_list_query->distinct(['Songs.id']);
-		$filtered_list_query->order(['Songs.id' =>'DESC']);
-		//echo debug($filtered_list_query); die();
-	
+        if($filter_on) {
+            $filtered_list_query->order(['Songs.title' =>'ASC']);
+        } else {
+            $filtered_list_query->order(['Songs.id' =>'DESC']);
+        }
+        //echo debug($filtered_list_query); die();
+
 		//pass the list of all tags to the view
 		$controller->loadModel('Tags');
 		$all_tags = $controller->Tags->find('list');
