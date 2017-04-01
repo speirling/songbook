@@ -29,7 +29,6 @@ class DashboardController extends AppController
 	{
 		$this->loadComponent('songlist');
 		$this->songlist->filterAllSongs();
-
-		$this->set('title', 'Homepage');
+		$this->set('title', $this->page_title);
 	}
 }

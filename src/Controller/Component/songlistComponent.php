@@ -188,12 +188,11 @@ class songlistComponent extends Component {
 	
 		//pass the list of all Performers to the view
 		$controller->loadModel('Performers');
-		$performers = $controller->Performers->find('all');
-		$controller->set('performers', $controller->Performers->find('list', [
-				'keyField' => 'id',
-				'valueField' => 'nickname'
-			])
-		);
+		$performers = $controller->Performers->find('list', [
+			'keyField' => 'id',
+			'valueField' => 'nickname'
+		]);
+		$controller->set('performers', $performers);
 	
 		//pass the list of all known venues to the view
 		$controller->loadModel('Events');
@@ -221,6 +220,65 @@ class songlistComponent extends Component {
 		$controller->set('selected_performer', $selected_performer);
 		$controller->set('selected_venue', $selected_venue);
 		$controller->set('selected_exclude_tags', $selected_exclude_tag_array);
+
+		//for the print title
+		$controller->set('print_title', $this->print_title($search_string, $selected_performer, $selected_venue, $selected_tag_array, $selected_exclude_tag_array, $performers, $venues, $all_tags));
+		$controller->page_title = $this->page_title($search_string, $selected_performer, $selected_venue, $selected_tag_array, $selected_exclude_tag_array, $performers, $venues, $all_tags);
+	}
+
+	private function print_title($search_string = '', $selected_performer = '', $selected_venue = '', $selected_tag_array = [], $selected_exclude_tag_array = '', $performers = [], $venues = [], $all_tags = []) {
+		$print_title = '';
+		if ($search_string) {
+			$print_title = $print_title . $search_string;
+			$print_title = $print_title . " | ";
+		}
+		foreach($performers as $performer_id => $performer_title) {
+			if($performer_id == $selected_performer && $performer_id != 0) {
+				$print_title = $print_title . $performer_title;
+				$print_title = $print_title . " | ";
+			}
+		}
+		foreach($venues as $venue_id => $venue_title) {
+			if($venue_id == $selected_venue) {
+				$print_title = $print_title . $venue_title;
+				$print_title = $print_title . " | ";
+			}
+		}
+		foreach($all_tags as $tag_id => $tag_title) {
+			if(in_array($tag_id, $selected_tag_array)) {
+				$print_title = $print_title . $tag_title;
+				$print_title = $print_title . ", ";
+			}
+		}
+
+		return substr($print_title, 0, -2);
+	}
+
+	private function page_title($search_string = '', $selected_performer = '', $selected_venue = '', $selected_tag_array = [], $selected_exclude_tag_array = '', $performers = [], $venues = [], $all_tags = []) {
+		$page_title = '';
+		foreach($performers as $performer_id => $performer_title) {
+			if($performer_id == $selected_performer && $performer_id != 0) {
+				$page_title = $page_title . substr($performer_title, 0, 1);
+			}
+		}
+		foreach($venues as $venue_id => $venue_title) {
+			if($venue_id == $selected_venue) {
+				$page_title = $page_title . substr($venue_title, 0, 1);
+			}
+		}
+		foreach($all_tags as $tag_id => $tag_title) {
+			if(in_array($tag_id, $selected_tag_array)) {
+				$page_title = $page_title . substr($tag_title, 0, 1);
+			}
+		}
+		if ($search_string) {
+			$page_title = $page_title . substr($search_string, 0, 1);
+		}
+		if($page_title == '') {
+			$page_title = 'Home';
+		}
+
+		return $page_title;
 	}
 }
 ?>
