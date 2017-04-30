@@ -525,7 +525,11 @@ tr.song-row td.multi-select input {
     display: none;
 }
  @media print {
-    nav {
+    nav,
+    .top-button-set,
+    .ajax-button-form,
+    .button, 
+    .songs.view .performers  form {
         display:none;
     }
     div#container,
@@ -539,6 +543,10 @@ tr.song-row td.multi-select input {
     }
     table {
         display: inline;
+    }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: transparent;
+        border: none;
     }
 }
 

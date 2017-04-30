@@ -129,12 +129,14 @@ class songlistComponent extends Component {
 			}
 
             //Exclude tags - only songs that do NOT contain ALL of the selected tags here will be displayed
+            $exclude_all = false; // there's no interface to set this yet, and it seems that it would be more effective to exclude all songs that contain any of the selected tage (smaller list)
             if (
                     array_key_exists('exclude_tag_id', $controller->request->data)
                     && $controller->request->data['exclude_tag_id']
                     && $controller->request->data['exclude_tag_id'] != 'Tag...'
                     ) {
-                        //$filter_on = true; //Can lead to Maximum execution time fatal error!
+                        $filter_on = true; //Can lead to Maximum execution time fatal error! .... but pagination doesn't pass filter queries so is not useful for filtered lists, so fatal error may be preferable!
+                        ini_set('max_execution_time', 100); //to compensate for previous line
                         $selected_exclude_tag_array = $controller->request->data['exclude_tag_id'];
                     } else {
                         $selected_exclude_tag_array = [];
@@ -169,6 +171,7 @@ class songlistComponent extends Component {
 			$search_string = '';
 			$selected_performer  = '';
 			$selected_tag_array = [];
+			$exclude_all = false;
 			$selected_exclude_tag_array = [];
 			$selected_venue = '';
 		}
@@ -217,8 +220,7 @@ class songlistComponent extends Component {
 		}
 
 		//for the print title
-		$controller->set('selected_performer', $selected_performer);
-		$controller->set('selected_venue', $selected_venue);
+		$controller->set('exclude_all', $exclude_all);
 		$controller->set('selected_exclude_tags', $selected_exclude_tag_array);
 
 		//for the print title

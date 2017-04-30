@@ -19,7 +19,7 @@
         </span>
         <span class="selected-tags-and-performer button"><?= $this->Form->button(__('Filter the list')) ?></span>
         <span class="clear-filters button"><button type="button" onclick="SBK.CakeUI.form.clear_filters(this)">X</button></span>
-        <span class="tag-id-exclude"><label for="exclude-tag-id">Exclude Tags</label>
+        <span class="tag-id-exclude"><label for="exclude-tag-id">Exclude songs with any of these Tags</label>
         <?= $this->Form->input('exclude_tag_id', ['label' => '', 'options' => $all_tags, 'multiple' => true, 'default' => $selected_exclude_tags]); ?>
         </span>
     </fieldset>
@@ -72,10 +72,15 @@
                             }
                         }
                     }
-
-                    if($no_of_excludables == sizeof($selected_exclude_tags)) {
-                        $display_row = false;
-                    }
+                    if($exclude_all) {
+	                    if($no_of_excludables == sizeof($selected_exclude_tags)) {
+	                        $display_row = false;
+	                    }
+					} else {
+	                    if($no_of_excludables > 0) {
+	                        $display_row = false;
+	                    }
+					}
                 }
                 if($display_row) {
                     echo $this->element('song_row', [

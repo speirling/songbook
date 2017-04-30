@@ -1,8 +1,8 @@
 <?php /* Template/Songs/view.php */ ?>
 
 <div class="songs view content lyrics-display song-row"> <?php /* .song-row required for ajax callbacks for played and vote to work. */?>
-    <span class="button float-right"><?= $this->Html->link(__('Dashboard'), ['controller' => 'Dashboard', 'action' => 'index']) ?></span>
-    <span class="search-form float-right">
+    <span class="button float-right top-button-set"><?= $this->Html->link(__('Dashboard'), ['controller' => 'Dashboard', 'action' => 'index']) ?></span>
+    <span class="search-form float-right top-button-set">
 	    <?= $this->Form->create(null, ['url' => ['controller' => 'dashboard', 'action' => 'index']]) ?>
 	    <fieldset>
 	        <span class="text-search">
@@ -14,7 +14,7 @@
     </span> 
     <?= $this->element('ajax-button-form-played', ['current_song' => $song]); ?>
     <?= $this->element('ajax-button-form-vote', ['current_song' => $song]); ?>          
-    <span class="button edit float-right"><?= 
+    <span class="button edit float-right top-button-set"><?= 
         $this->Html->link(__(
             'edit'
         ), [
