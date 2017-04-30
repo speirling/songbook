@@ -1,7 +1,6 @@
 /*global jQuery document */
 
 jQuery(document).ready(function() {
-
 	//special css for iPad
 	if(navigator.userAgent.search(/ipad/i) > 0) {
 	    jQuery('body').addClass('iPad');
@@ -73,19 +72,23 @@ jQuery(document).ready(function() {
 
      var DASHBOARD_TAG_TIMEOUT;
      jQuery(
-         '#actions-sidebar .performer-id select, ' +
-         '#actions-sidebar .venue select'
-     ).change(function () {
-         clearTimeout (DASHBOARD_TAG_TIMEOUT);
-    	 jQuery(this).parents('form').submit();
-     });
+             '#actions-sidebar .select2, ' +
+             '#actions-sidebar .text-search input '
+         ).click(function () {
+             var self = jQuery(this);
 
+             clearTimeout (DASHBOARD_TAG_TIMEOUT);
+         });
      jQuery(
-             '#actions-sidebar .tag-id select'
+             '#actions-sidebar .performer-id select, ' +
+             '#actions-sidebar .venue select, ' +
+             '#actions-sidebar .tag-id select, ' +
+             '#actions-sidebar .tag-id-exclude select '
          ).change(function () {
              var self = jQuery(this);
 
              clearTimeout (DASHBOARD_TAG_TIMEOUT);
+
              DASHBOARD_TAG_TIMEOUT = setTimeout( function () {
                  self.parents('form').submit();
              }, 5000);
