@@ -95,6 +95,12 @@ class songlistComponent extends Component {
 			}
 	
 			// Tags: Limit the result to songs that are associated with any of the passed array of tags
+			/*
+			 * This has to be done as a subquery, because a HAVING COUNT() must be used to ensure that only songs that are associated with _all_ of the specified tags will be displayed.
+			 * That statement interferes with larger more complex queries - e.g. filtered byt Tag _and_ Performer, and can filter out any records that have multiple entries in the final query.
+			 *                 $filtered_list_query->having(['COUNT(Songs.id) = ' => sizeof($selected_tag_array)]);
+			 * Keeping the HAVING COUNT() inside a subquery seems to avoid that problem
+			 */
 			if (
 					array_key_exists('filter_tag_id', $controller->request->data) 
 					&& $controller->request->data['filter_tag_id'] 
@@ -102,20 +108,21 @@ class songlistComponent extends Component {
 				) {
 				$filter_on = true;
 				$selected_tag_array = $controller->request->data['filter_tag_id'];
-				$filtered_list_query->matching(
+				$subquery_SongWithAllTags = $controller->Songs->find();
+				$subquery_SongWithAllTags->matching(
 					'SongTags.Tags', function ($q) use ($selected_tag_array)  {
 					$q->where(['Tags.id IN' => $selected_tag_array]);
 					return $q;
 					}
 				);
-				$filtered_list_query->group('Songs.id');
-				/* 
-				 * The following line was added to ensure that only songs that are associated with _all_ of the specified tags will be dsplayed.
-				 * Unfortunately that interferes with larger more complex queries - e.g. filtered byt Tag _and_ Performer,
-				 * And in that case can filter out any records that have multiple entries in the final query.
-				 *                 $filtered_list_query->having(['COUNT(Songs.id) = ' => sizeof($selected_tag_array)]);
-				 */
-				$filtered_list_query->having(['COUNT(Songs.id) = ' => sizeof($selected_tag_array)]); 
+				$subquery_SongWithAllTags->group('Songs.id');
+				$subquery_SongWithAllTags->having(['COUNT(Songs.id) = ' => sizeof($selected_tag_array)]);
+				$filtered_list_query->Join([
+					'table' => $subquery_SongWithAllTags,
+					'alias' => 'subquery_SongWithAllTags',
+					'type' => 'INNER',
+					'conditions' => '`subquery_SongWithAllTags`.`Songs__id` = `Songs`.`id`'
+				]);
 			} else {
 				$selected_tag_array = [];
 			}
