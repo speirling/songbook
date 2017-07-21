@@ -220,9 +220,16 @@
         clear_filters: function (button) {
             var form = button.closest('form');
             
-        jQuery('input', form).val('');
+            jQuery('input', form).val('');
             jQuery('select', form).val(null).trigger('change');
-            console.log(jQuery('select', form));
+        },
+        clear_text_search_field: function (button_raw) {
+            var button, container;
+
+            button = jQuery(button_raw);
+            container = button.closest('.text-search');
+            jQuery('input', container).val('');
+            SBK.CakeUI.filter_songlist(jQuery('.index>table'), '');
         }
     },
 
@@ -281,5 +288,16 @@
 
             song_row.addClass('voted');
         }
+    },
+
+    filter_songlist:  function (songlist_table, filter_value) {
+        var self = this, current_row, show_this_row, song_title;
+
+        jQuery('.song-row', songlist_table).each(function () {
+            current_row = jQuery(this);
+            song_title = jQuery('.song-title', current_row).html();
+            show_this_row = song_title.toLowerCase().indexOf(filter_value.toLowerCase()) !== -1;
+            current_row.toggle(show_this_row);
+        });
     }
 };

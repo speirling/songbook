@@ -79,6 +79,7 @@ jQuery(document).ready(function() {
 
              clearTimeout (DASHBOARD_TAG_TIMEOUT);
          });
+
      jQuery(
              '#actions-sidebar .performer-id select, ' +
              '#actions-sidebar .venue select, ' +
@@ -92,6 +93,12 @@ jQuery(document).ready(function() {
              DASHBOARD_TAG_TIMEOUT = setTimeout( function () {
                  self.parents('form').submit();
              }, 5000);
-         })
-    });
-    jQuery('.selected-tags-and-performer.button').click(function(){clearTimeout (DASHBOARD_TAG_TIMEOUT);})
+         });
+
+     jQuery('#actions-sidebar .text-search input').on('keypress', function () {
+         SBK.CakeUI.filter_songlist(jQuery('.index>table'), jQuery(this).val());
+     });
+     jQuery('.selected-tags-and-performer.button').click(function(){
+         clearTimeout (DASHBOARD_TAG_TIMEOUT);
+     });
+});
