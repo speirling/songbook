@@ -3,7 +3,7 @@
 ?>
 
 <nav class="large-2 medium-2 columns" id="actions-sidebar">
-<?= $this->Form->create($filtered_list, ['url' => ['controller' => 'dashboard', 'action' => 'index']]) ?>
+<?= $this->Form->create($filtered_list, ['type' => 'get', 'url' => ['controller' => 'dashboard', 'action' => 'index']]) ?>
     <fieldset>
         <span class="text-search">
         <?= $this->Form->input('text_search', ['label'=>'Name Search', 'default' => $search_string]); ?>

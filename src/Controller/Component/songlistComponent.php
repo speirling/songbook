@@ -84,11 +84,16 @@ class songlistComponent extends Component {
 		// end song votes -------------------
 
 		$filter_on = false;
-		if ($controller->request->is(array('post', 'put'))) {
+		if ($controller->request->is(array('post', 'put', 'get'))) {
+			if ($controller->request->is(array('get'))) {
+				$query_parameters = $controller->request->query;
+			} else {
+				$query_parameters = $controller->request->data;
+			}
 			// Title: Song Title text search
-			if (array_key_exists('text_search', $controller->request->data) && $controller->request->data['text_search']) {
+			if (array_key_exists('text_search', $query_parameters) && $query_parameters['text_search']) {
 				$filter_on = true;
-				$search_string = $controller->request->data['text_search'];
+				$search_string = $query_parameters['text_search'];
 				$filtered_list_query->where(['Songs.title LIKE' => '%'.$search_string.'%']);
 			} else {
 				$search_string = '';
@@ -102,12 +107,12 @@ class songlistComponent extends Component {
 			 * Keeping the HAVING COUNT() inside a subquery seems to avoid that problem
 			 */
 			if (
-					array_key_exists('filter_tag_id', $controller->request->data) 
-					&& $controller->request->data['filter_tag_id'] 
-					&& $controller->request->data['filter_tag_id'] != 'Tag...'
+					array_key_exists('filter_tag_id', $query_parameters)
+					&& $query_parameters['filter_tag_id']
+					&& $query_parameters['filter_tag_id'] != 'Tag...'
 				) {
 				$filter_on = true;
-				$selected_tag_array = $controller->request->data['filter_tag_id'];
+				$selected_tag_array = $query_parameters['filter_tag_id'];
 				$subquery_SongWithAllTags = $controller->Songs->find();
 				$subquery_SongWithAllTags->matching(
 					'SongTags.Tags', function ($q) use ($selected_tag_array)  {
@@ -128,9 +133,9 @@ class songlistComponent extends Component {
 			}
 			
 			// Performer: Limit the result to songs associated with a specific performer
-			if (array_key_exists('performer_id', $controller->request->data) && $controller->request->data['performer_id']) {
+			if (array_key_exists('performer_id', $query_parameters) && $query_parameters['performer_id']) {
 				$filter_on = true;
-				$selected_performer = $controller->request->data['performer_id'];
+				$selected_performer = $query_parameters['performer_id'];
 				$filtered_list_query->matching(
 					'SetSongs.Performers', function ($q) use($selected_performer)  {
 						return $q->where(['Performers.id' => $selected_performer]);
@@ -143,21 +148,21 @@ class songlistComponent extends Component {
             //Exclude tags:  - only songs that do NOT contain ALL of the selected tags here will be displayed
             $exclude_all = false; // there's no interface to set this yet, and it seems that it would be more effective to exclude all songs that contain any of the selected tage (smaller list)
             if (
-                    array_key_exists('exclude_tag_id', $controller->request->data)
-                    && $controller->request->data['exclude_tag_id']
-                    && $controller->request->data['exclude_tag_id'] != 'Tag...'
+                    array_key_exists('exclude_tag_id', $query_parameters)
+                    && $query_parameters['exclude_tag_id']
+                    && $query_parameters['exclude_tag_id'] != 'Tag...'
             ) {
                 $filter_on = true; //Can lead to Maximum execution time fatal error! .... but pagination doesn't pass filter queries so is not useful for filtered lists, so fatal error may be preferable!
                 ini_set('max_execution_time', 100); //to compensate for previous line
-                $selected_exclude_tag_array = $controller->request->data['exclude_tag_id'];
+                $selected_exclude_tag_array = $query_parameters['exclude_tag_id'];
             } else {
                 $selected_exclude_tag_array = [];
             }
 
             // Venue :  limit the result to songs that were placed withtin an event at the specified venue
-			if (array_key_exists('venue', $controller->request->data) && $controller->request->data['venue']) {
+			if (array_key_exists('venue', $query_parameters) && $query_parameters['venue']) {
 				$filter_on = true;
-				$selected_venue = $controller->request->data['venue'];
+				$selected_venue = $query_parameters['venue'];
 				//find all of the events that were at this venue
 				$venue_query = $controller->Events->findAllByVenue($selected_venue);
 				$event_times = $venue_query->toArray();
