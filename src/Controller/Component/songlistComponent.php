@@ -228,8 +228,9 @@ class songlistComponent extends Component {
 		//a setSong object is required in order to set up the key form on each song row
 		$setSong = new SetSong();
 		$controller->set('setSong', $setSong);
-	
+
 		$controller->set('search_string', $search_string);
+		$controller->set('selected_performer', $selected_performer);
 		$controller->set('selected_tags', $selected_tag_array);
 		if($filter_on) {
 			$controller->set('filtered_list', $filtered_list_query);

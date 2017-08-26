@@ -10,7 +10,7 @@
         <span class="clear-filters button"><button type="button" onclick="SBK.CakeUI.form.clear_text_search_field(this)">X</button></span>
         </span>
         <span class="performer-id">                          
-        <?= $this->Form->input('performer_id', ['empty' => 'Please select ...', 'options' => $performers]); ?>
+        <?= $this->Form->input('performer_id', ['empty' => 'Please select ...', 'options' => $performers, 'default' => $selected_performer]); ?>
         </span>
         <span class="tag-id"><label for="tag-id">Tags</label>
         <?= $this->Form->input('filter_tag_id', ['label' => '', 'options' => $all_tags, 'multiple' => true, 'default' => $selected_tags]); ?>
