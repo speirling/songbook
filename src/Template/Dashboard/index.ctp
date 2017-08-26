@@ -3,14 +3,14 @@
 ?>
 
 <nav class="large-2 medium-2 columns" id="actions-sidebar">
-<?= $this->Form->create($filtered_list, ['url' => ['controller' => 'dashboard', 'action' => 'index']]) ?>
+<?= $this->Form->create($filtered_list, ['type' => 'get', 'url' => ['controller' => 'dashboard', 'action' => 'index']]) ?>
     <fieldset>
         <span class="text-search">
         <?= $this->Form->input('text_search', ['label'=>'Name Search', 'default' => $search_string]); ?>
         <span class="clear-filters button"><button type="button" onclick="SBK.CakeUI.form.clear_text_search_field(this)">X</button></span>
         </span>
         <span class="performer-id">                          
-        <?= $this->Form->input('performer_id', ['empty' => 'Please select ...', 'options' => $performers]); ?>
+        <?= $this->Form->input('performer_id', ['empty' => 'Please select ...', 'options' => $performers, 'default' => $selected_performer]); ?>
         </span>
         <span class="tag-id"><label for="tag-id">Tags</label>
         <?= $this->Form->input('filter_tag_id', ['label' => '', 'options' => $all_tags, 'multiple' => true, 'default' => $selected_tags]); ?>
@@ -33,6 +33,10 @@
         <li><?= $this->Html->link(__('Playlists'), ['controller' => 'Playlists', 'action' => 'index']) ?></li>
         <li><?= $this->Html->link(__('Performers'), ['controller' => 'Performers', 'action' => 'index']) ?></li>
         <li><?= $this->Html->link(__('Events'), ['controller' => 'Events', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('E-AMU'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'1', 'filter_tag_id'=>[15]]]) ?></li>
+        <li><?= $this->Html->link(__('M-AMU'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'3', 'filter_tag_id'=>[15]]]) ?></li>
+        <li><?= $this->Html->link(__('E-Irish'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'1', 'filter_tag_id'=>[2]]]) ?></li>
+        <li><?= $this->Html->link(__('E-Lively-AMU'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'1', 'filter_tag_id'=>[13, 15]]]) ?></li>
     </ul>
 </nav>
 
