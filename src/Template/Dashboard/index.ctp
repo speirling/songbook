@@ -7,6 +7,7 @@
     <fieldset>
         <span class="text-search">
         <?= $this->Form->input('text_search', ['label'=>'Name Search', 'default' => $search_string]); ?>
+        <span class="clear-filters button"><button type="button" onclick="SBK.CakeUI.form.clear_text_search_field(this)">X</button></span>
         </span>
         <span class="performer-id">                          
         <?= $this->Form->input('performer_id', ['empty' => 'Please select ...', 'options' => $performers]); ?>

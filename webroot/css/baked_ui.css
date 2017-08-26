@@ -122,7 +122,7 @@ span.inlinetop {
 .playlists.form .set-song-capo .input  {
     display: inline-block;
     vertical-align: middle;
-    text-aling: center;
+    text-align: center;
 }
 .playlists.form input,
 .search-form input  {
@@ -550,3 +550,18 @@ tr.song-row td.multi-select input {
     }
 }
 
+.text-search {
+    display: block;
+    position: relative;
+    left: 0;
+    right: 0;
+}
+.text-search .input.text {
+    width: 60%;
+    display: inline-block;
+    position: relative;
+}
+.text-search .button {
+    vertical-align: bottom;
+    margin-bottom: 1.5em;
+}
