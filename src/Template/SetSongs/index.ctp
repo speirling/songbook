@@ -2,7 +2,7 @@
     $controller_name = 'SetSong';
     echo($this->element('standard_menu', ['controller_name' => $controller_name]) );
 ?>
-<div class="setSongs index large-9 medium-8 columns content">
+<div class="setSongs filter-columns index large-9 medium-8 columns content">
     <h3><?= __('Set Songs') ?></h3>
     <table cellpadding="0" cellspacing="0">
         <thead>
@@ -36,6 +36,7 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+    <?php /*
     <div class="paginator">
         <ul class="pagination">
             <?= $this->Paginator->prev('< ' . __('previous')) ?>
@@ -44,4 +45,6 @@
         </ul>
         <p><?= $this->Paginator->counter() ?></p>
     </div>
+    <?php
+    */ ?>
 </div>

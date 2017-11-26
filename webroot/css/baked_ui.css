@@ -565,3 +565,7 @@ tr.song-row td.multi-select input {
     vertical-align: bottom;
     margin-bottom: 1.5em;
 }
+
+.filter-columns tr.hide-row {
+    display: none;
+}

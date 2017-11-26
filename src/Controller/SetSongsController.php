@@ -22,7 +22,10 @@ class SetSongsController extends AppController
         $this->paginate = [
             'contain' => ['Sets', 'Songs', 'Performers']
         ];
-        $this->set('setSongs', $this->paginate($this->SetSongs));
+        //$this->set('setSongs', $this->paginate($this->SetSongs));
+        $this->set('setSongs', $this->SetSongs->find('all',[
+            'contain' => ['Sets', 'Songs', 'Performers']
+        ]));
         $this->set('_serialize', ['setSongs']);
     }
 

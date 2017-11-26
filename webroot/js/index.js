@@ -101,4 +101,48 @@ jQuery(document).ready(function() {
      jQuery('.selected-tags-and-performer.button').click(function(){
          clearTimeout (DASHBOARD_TAG_TIMEOUT);
      });
+
+     // Make table filterable by columns ----------------------
+     /* Any table can be made filterable by assigning it the class "filter-columns" - or by contining it within a container that has that class. */
+     jQuery('.filter-columns').each(function () {
+         var table = jQuery(this), count = 0, filter_strings = [], filter_callback;
+
+         jQuery('th', table).each(function () {
+             var th = jQuery(this), column = count, input = jQuery('<input type="text">').appendTo(th);
+             
+             input.keyup(function () {
+                 filter_strings[column] = input.val();
+
+                 filter_callback();
+             });
+             count = count + 1;
+         });
+
+         function filter_callback () {
+             jQuery('tr', table).each(function () {
+                 var tr = jQuery(this), count = 0, display_row = true, hide_row_class = 'hide-row';
+
+                 jQuery('td', tr).each(function () {
+                     var td = jQuery(this), search_string = filter_strings[count], text = td.text(), result;
+
+                     if(typeof(search_string) !== 'undefined' && search_string !== '') {
+                        result = text.search(new RegExp(search_string, "i"));
+                        console.log(count, search_string, text, result);
+                         if (result === -1) {
+                             console.log('hide----------------');
+                             display_row = false;
+                         };
+                     }
+
+                     count = count + 1;
+                 });
+
+                 if(display_row) {
+                     tr.removeClass(hide_row_class);
+                 } else {
+                     tr.addClass(hide_row_class);
+                 } 
+             });
+         }
+     })
 });
