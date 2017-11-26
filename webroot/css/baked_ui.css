@@ -569,3 +569,12 @@ tr.song-row td.multi-select input {
 .filter-columns tr.hide-row {
     display: none;
 }
+
+
+.set-song-edit {
+    display: inline-block;
+    border: 1px solid gray;
+}
+.set-song-edit span {
+    font-size: 1em;
+}

@@ -80,6 +80,23 @@
             ]);
         }
         ?>
+        <span class="set-song-edit">
+        <?php
+        if(sizeof($this_set_songs) > 0) {
+            $primary_key = $this_set_songs[0]['key'];
+        } else {
+            $primary_key = false;
+        }
+        $existing_performer_keys = [];
+        foreach ($this_set_songs as $set_song) {
+                echo '<span class="set-song">';
+                echo '<span class="nickname">'.$set_song['performer']['nickname'].'</span>';
+                echo '<span class="key">'.$set_song['key'].'</span>';
+                echo '<span class="capo">'.$set_song['capo'].'</span>';
+                echo '<span class="set-song-edit-button button">' . $this->Html->link(__('Edit'), ['controller' => 'setSongs', 'action' => 'edit', $set_song->id]) . '</span>'; 
+                echo '</span>';
+        } ?>
+        </span>
     </span>
     </td>
 </tr>
