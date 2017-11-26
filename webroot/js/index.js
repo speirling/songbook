@@ -48,6 +48,11 @@ jQuery(document).ready(function() {
 	jQuery('#collapse_sets').on('click touch', SBK.CakeUI.collapse_sets);
 
 	// Songlist -----------------------------
+	jQuery('div.dashboard').attr('tabindex', 0).focus().keypress(function (event) {
+	    SBK.CakeUI.select.up_down_arrow_keypress(event);
+        return false;
+    });
+
 	jQuery('<span class="button arrow move-up">&uparrow;</span>').appendTo('.song-row .actions')
 	.on('click touch', function(event){
 		event.stopPropagation();

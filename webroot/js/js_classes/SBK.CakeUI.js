@@ -77,7 +77,8 @@
 	},
 
 	select: {
-		
+		current_selection: false,
+
 		clicked_row: function(event) {
 			event.stopPropagation();
 			//alert('row clicked');
@@ -96,26 +97,48 @@
 		mark_row: function(row) {
 			//alert('marking');
 			//alert(row);
-	        jQuery(row).siblings().removeClass("ui-selected");
-	        jQuery(row).addClass("ui-selected");		
-	    },
+            jQuery(row).siblings().removeClass("ui-selected");
+            jQuery(row).addClass("ui-selected");
+            SBK.CakeUI.select.current_selection = row;
+        },
 		
 		adjacent_row: function (direction, button) {
-		        var current_row, new_selection;
+            var current_row, new_selection;
 
-		       current_row = button.closest('tr');
-		       if (direction === 'up') {
-		    	   new_selection = current_row.prev();
-		       } else if(direction === 'down') {
-		    	   new_selection = current_row.next();
-		       } else {
-		           return;
-		       }
-		       if(typeof(new_selection) === 'undefined') {
-		    	   return;
-		       }
-		       SBK.CakeUI.select.mark_row(new_selection);
+            current_row = button.closest('tr');
+            if (direction === 'up') {
+                new_selection = current_row.prev();
+            } else if(direction === 'down') {
+                new_selection = current_row.next();
+            } else {
+                return;
+            }
+            if(typeof(new_selection) === 'undefined') {
+                return;
+            }
+            SBK.CakeUI.select.mark_row(new_selection);
 		},
+
+        up_down_arrow_keypress: function (event) {
+            var kc = event.keyCode, cc=event.charCode;
+
+            if(typeof(SBK.CakeUI.select.current_selection) != 'object') {
+                SBK.CakeUI.select.current_selection = jQuery('.dashboard table tr:first-child');
+            } else if (SBK.CakeUI.select.current_selection.length === 0) {
+                SBK.CakeUI.select.current_selection = jQuery('.dashboard table tr:first-child');
+            }
+            if (kc === 40) { /* Down arrow */
+                SBK.CakeUI.select.adjacent_row('down', SBK.CakeUI.select.current_selection);
+            } else if (kc === 38) { /* Up arrow */
+                SBK.CakeUI.select.adjacent_row('up', SBK.CakeUI.select.current_selection);
+            } else if(cc === 112){ /* "p"   */
+                jQuery('.performance-register-submit button', SBK.CakeUI.select.current_selection).trigger('click');
+            } else if(cc === 118){ /* "v"   */
+                jQuery('.view-song-submit button', SBK.CakeUI.select.current_selection).trigger('click');
+            } else {
+                return false;
+            }
+        },
 
 		tag_multi_edit: function () {
 		    var selected_ids = [], song_id_inputs_html = '', index;
