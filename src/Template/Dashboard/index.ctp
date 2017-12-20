@@ -33,10 +33,11 @@
         <li><?= $this->Html->link(__('Playlists'), ['controller' => 'Playlists', 'action' => 'index']) ?></li>
         <li><?= $this->Html->link(__('Performers'), ['controller' => 'Performers', 'action' => 'index']) ?></li>
         <li><?= $this->Html->link(__('Events'), ['controller' => 'Events', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('E-AMU'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'1', 'filter_tag_id'=>[15]]]) ?></li>
-        <li><?= $this->Html->link(__('M-AMU'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'3', 'filter_tag_id'=>[15]]]) ?></li>
-        <li><?= $this->Html->link(__('E-Irish'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'1', 'filter_tag_id'=>[2]]]) ?></li>
-        <li><?= $this->Html->link(__('E-Lively-AMU'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'1', 'filter_tag_id'=>[13, 15]]]) ?></li>
+        <li><?= $this->Html->link(__('E-AMU'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'1', 'filter_tag_id'=>[15]]], ['target'=>'_blank']) ?></li>
+        <li><?= $this->Html->link(__('M-AMU'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'3', 'filter_tag_id'=>[15]]], ['target'=>'_blank']) ?></li>
+        <li><?= $this->Html->link(__('E-Irish'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'1', 'filter_tag_id'=>[2]]], ['target'=>'_blank']) ?></li>
+        <li><?= $this->Html->link(__('E-Lively-AMU'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'1', 'filter_tag_id'=>[13, 15]]], ['target'=>'_blank']) ?></li>
+        <li><?= $this->Html->link(__('Christmas-AMU'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'filter_tag_id'=>[15, 21]]], ['target'=>'_blank']) ?></li>
         <li><?= $this->Html->link(__('Keys'), ['controller' => 'SetSongs', 'action' => 'index']) ?></li>
     </ul>
 </nav>
