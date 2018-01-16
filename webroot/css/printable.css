@@ -1,0 +1,38 @@
+body.printable {
+    margin: 20px;
+}
+.printable h3  {
+    margin: 0;
+    padding: 0;
+}
+ .printable table.attribution {
+     display: table;
+     margin: 0;
+ }
+.printable table.page {
+     page-break-after: always;
+ }
+.printable table.page:last-child {
+     page-break-after: avoid;
+ }
+.printable table.page td {
+     width : 600px;
+     vertical-align: top;
+    font-size: 24px;
+ }
+.lyrics-display.printable {
+    position: relative;
+}
+
+.printable .performed-by.written-by {
+    line-height: 0.8;
+}
+.printable .performed-by.written-by th,
+.printable .performed-by.written-by td  {
+    line-height: 1;
+    margin-left: 0.8em;
+    font-size: 0.6em;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+}
