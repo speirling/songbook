@@ -33,6 +33,20 @@
         <li><?= $this->Html->link(__('Playlists'), ['controller' => 'Playlists', 'action' => 'index']) ?></li>
         <li><?= $this->Html->link(__('Performers'), ['controller' => 'Performers', 'action' => 'index']) ?></li>
         <li><?= $this->Html->link(__('Events'), ['controller' => 'Events', 'action' => 'index']) ?></li>
+        <hr>
+        <li><?= $this->Html->link(__('Filters'), ['controller' => 'Bookmarkurls', 'action' => 'index'], ['target' => '_blank']) ?></li>
+        <li><!--  ?= debug($performers) ? -->
+	        <span class="add-filter ajax-button-form">
+			    <?= $this->Form->create(null, ['url' => ['controller' => 'BookmarkurlsController', 'action' => 'addAjax']]) ?>
+			    <?= $this->Form->hidden('query_string', ['value' => $_SERVER['QUERY_STRING']]);    ?>
+                <?= $this->Form->input('title', ['label' => 'save current filter as ', 'value' => $print_title]);    ?>
+			    <span class="performance-register-submit button">
+			        <?= $this->Form->button(__('Save Current Filter'), ['type' => 'button', 'onclick' => 'SBK.CakeUI.form.ajaxify(this);']) ?>
+			    </span>
+			    <?= $this->Form->end() ?>
+			</span>
+        </li>
+        <hr>
         <li><?= $this->Html->link(__('E-AMU'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'1', 'filter_tag_id'=>[15]]], ['target'=>'_blank']) ?></li>
         <li><?= $this->Html->link(__('M-AMU'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'3', 'filter_tag_id'=>[15]]], ['target'=>'_blank']) ?></li>
         <li><?= $this->Html->link(__('E-Irish'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'1', 'filter_tag_id'=>[2]]], ['target'=>'_blank']) ?></li>
@@ -40,6 +54,7 @@
         <li><?= $this->Html->link(__('Christmas-AMU'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'filter_tag_id'=>[15, 21]]], ['target'=>'_blank']) ?></li>
         <li><?= $this->Html->link(__('Keys'), ['controller' => 'SetSongs', 'action' => 'index']) ?></li>
     </ul>
+    
 </nav>
 
 <div class="print_title"><?= $print_title ?></div>
