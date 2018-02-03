@@ -84,45 +84,89 @@ class SongsController extends AppController
         );
 	}
 
-    /**
-     * View method
-     *
-     * @param string|null $id Song id.
-     * @return void
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $song = $this->Songs->get($id, [
-            'contain' => ['SongTags'=>['Tags'], 'SetSongs'=>function($query){
-                return $query->find('all')->distinct(['performer_id', 'key']);
-        }, 'SetSongs.Performers']]);
-        $key = null;
-        $capo = null;
-        if(array_key_exists('key', $_GET)) {
-        	$key = $_GET['key'];
-        }
-        if(array_key_exists('capo', $_GET)) {
-        	$capo = $_GET['capo'];
-        }
-        $song['content'] = StaticFunctionController::convert_song_content_to_HTML($song['content'], $song['base_key'], $key, $capo);
-        $setSong = new SetSong();
-        $this->set('song', $song);
-        $this->set('setSong', $setSong);
-        $this->set('title', $song['title']);
-        $this->set('current_key', $key);
-        $this->set('capo', $capo);
-        $this->set('tags', $this->Songs->SongTags->Tags->find('list'));
-        $this->set('songTag', new SongTag());
-        $this->set('_serialize', ['song']);
-        $this->set('performers', $this->Songs->SetSongs->Performers->find('list', [
-            		'keyField' => 'id',
-            		'valueField' => 'nickname'
-                ]
-            )
-        );
-    }
+	/**
+	 * View method
+	 *
+	 * @param string|null $id Song id.
+	 * @return void
+	 * @throws \Cake\Network\Exception\NotFoundException When record not found.
+	 */
+	public function view($id = null)
+	{
+		$song = $this->Songs->get($id, [
+				'contain' => ['SongTags'=>['Tags'], 'SetSongs'=>function($query){
+				return $query->find('all')->distinct(['performer_id', 'key']);
+				}, 'SetSongs.Performers']]);
+		$key = null;
+		$capo = null;
+		if(array_key_exists('key', $_GET)) {
+			$key = $_GET['key'];
+		}
+		if(array_key_exists('capo', $_GET)) {
+			$capo = $_GET['capo'];
+		}
+		$song['content'] = StaticFunctionController::convert_song_content_to_HTML($song['content'], $song['base_key'], $key, $capo);
+		$setSong = new SetSong();
+		$this->set('song', $song);
+		$this->set('setSong', $setSong);
+		$this->set('title', $song['title']);
+		$this->set('current_key', $key);
+		$this->set('capo', $capo);
+		$this->set('tags', $this->Songs->SongTags->Tags->find('list'));
+		$this->set('songTag', new SongTag());
+		$this->set('_serialize', ['song']);
+		$this->set('performers', $this->Songs->SetSongs->Performers->find('list', [
+				'keyField' => 'id',
+				'valueField' => 'nickname'
+		]
+				)
+				);
+	}
 
+	/**
+	 * Print method
+	 * copied from the View method
+	 *
+	 * @param string|null $id Song id.
+	 * @return void
+	 * @throws \Cake\Network\Exception\NotFoundException When record not found.
+	 */
+	public function printable($id = null)
+	{
+		$song = $this->Songs->get($id, [
+				'contain' => ['SongTags'=>['Tags'], 'SetSongs'=>function($query){
+				return $query->find('all')->distinct(['performer_id', 'key']);
+				}, 'SetSongs.Performers']]);
+		$key = null;
+		$capo = null;
+		if(array_key_exists('key', $_GET)) {
+			$key = $_GET['key'];
+		}
+		if(array_key_exists('capo', $_GET)) {
+			$capo = $_GET['capo'];
+		}
+		$song['content'] = StaticFunctionController::convert_song_content_to_HTML($song['content'], $song['base_key'], $key, $capo);
+		$song['printable_content'] = StaticFunctionController::format_html_for_print($song['content']);
+		//debug($song['printable_content']);
+		$setSong = new SetSong();
+		$this->set('song', $song);
+		$this->set('setSong', $setSong);
+		$this->set('title', $song['title']);
+		$this->set('current_key', $key);
+		$this->set('capo', $capo);
+		$this->set('tags', $this->Songs->SongTags->Tags->find('list'));
+		$this->set('songTag', new SongTag());
+		$this->set('_serialize', ['song']);
+		$this->set('performers', $this->Songs->SetSongs->Performers->find('list', [
+				'keyField' => 'id',
+				'valueField' => 'nickname'
+		]));
+		//after CakePHP 3.4
+		//$this->viewBuilder()->setLayout('printable');
+		//before CakePHP 3.4
+		$this->viewBuilder()->Layout('printable');
+	}
+	
     /**
      * Add method
      *

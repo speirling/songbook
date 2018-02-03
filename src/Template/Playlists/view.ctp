@@ -48,11 +48,7 @@
                             echo $this->element('song_row', [ 
                                 'return_point' => ['controller'=>'playlists', 'method'=>'view', 'id'=>$playlist->id],
                                 'current_song' => $setSong->song,
-                                'this_set_songs' => [[
-                                    'performer' => $setSong->performer, 
-                                    'key' => $setSong->key, 
-                                    'capo' => $setSong->capo
-                                    ]],
+                                'this_set_songs' => [$setSong],
                 				'set_song_object' => $setSong
                                 ]); 
                             

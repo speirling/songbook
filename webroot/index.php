@@ -95,7 +95,8 @@ Cake\Core\Configure::write(
             'song-edit.css',
             'song-lyrics.css',
             'baked_ui.css',
-            'chord_editor.css'
+            'chord_editor.css',
+            'printable.css'
         )
     )
 );

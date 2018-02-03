@@ -161,6 +161,92 @@ class StaticFunctionController extends AppController
 		return $contentHTML;
 	}
 	
+	public static function format_html_for_print($contentHTML) {
+		//css sets font size to 16 px, then this works on an A4 page in Firefox:
+		$height_of_line_with_chords = 29.65;
+		$height_of_line_without_chords = 18;
+		$page_height = 560;
+		//////////
+		$number_of_columns_per_page = 2;
+		
+		$doc = new \DOMDocument();
+		$doc->loadHTML($contentHTML);
+		$xpath = new \DOMXPath($doc);
+		$lines = $xpath->query("//div[@class='line']");
+		$lines_with_chords = $xpath->query("//div[span[@class='chord']]");
+		
+		$total_Lines = $lines->length;
+		$no_lines_with_chords = $lines_with_chords->length;
+		$total_height = ($no_lines_with_chords * $height_of_line_with_chords) + ($total_Lines - $no_lines_with_chords) * $height_of_line_without_chords;
+		$number_of_columns = $total_height / $page_height;
+		
+		$content_height = 0;
+		$current_page = 1;
+		$current_column = 1;
+		$pages = [];
+		
+		list($pages[$current_page], $row, $td) = StaticFunctionController::create_printable_page($doc, $current_page);
+		
+		foreach($lines as $line) {
+			$line_contains_chords = $xpath->query("span[@class='chord']", $line)->length;
+			/*
+				debug($doc->saveHTML($line));
+				//<div class="line"><span class="text">a real go</span><span class="chord">Bm</span><span class="text">od time I feel al</span><span class="chord">Em</span><span class="text">i-i-i-i</span><span class="chord">A</span><span class="text"> ve</span></div>
+				debug($line_contains_chords);
+				//3
+			*/
+			if($line_contains_chords > 0){
+				$line_height = $height_of_line_with_chords;
+			} else {
+				$line_height = $height_of_line_without_chords;
+			}
+			$content_height = $content_height + $line_height;
+			if ($content_height > $page_height) {
+				$current_column = $current_column + 1;
+				if($current_column > $number_of_columns_per_page) {
+					//new page
+					$current_page = $current_page + 1;
+					$current_column = 1;
+					$content_height = 0;
+					list($pages[$current_page], $row, $td) = StaticFunctionController::create_printable_page($doc, $current_page);
+				} else {
+				   //new column
+					$content_height = 0;
+					$td = $doc->createElement('td');
+					$row->appendChild($td);
+				}
+			}
+			$td->appendChild($line);
+		}
+		
+		
+		$lines_with_chords = $xpath->query("//div[span[@class='chord']]");
+		
+		$original_content_panel = $xpath->query("//div[@class='lyrics-panel']");
+		foreach($original_content_panel as $panel) {
+			$panel->parentNode->removeChild($panel);
+		}
+		
+		$return = $doc->saveHTML();
+		
+		
+		return $return;
+	}
+	
+	public static function create_printable_page ($doc, $page_no) {
+		$page = $doc->createElement('table');
+		$page->setAttribute('class', 'printable lyrics-display page ' . $page_no);
+		$tbody = $doc->createElement('tbody');
+		$row = $doc->createElement('row');
+		$td = $doc->createElement('td');
+		$row->appendChild($td);
+		$tbody->appendChild($row);
+		$page->appendChild($tbody);
+		$doc->appendChild($page);
+		
+		return [$page, $row, $td];
+	}
+	
 	public static function output_pdf($display, $title = '', $orientation = 'portrait') {
 		$pdf = new WKPDF();
 		$pdf->set_orientation($orientation);
