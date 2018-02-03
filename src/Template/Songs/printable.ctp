@@ -1,4 +1,4 @@
-<?php /* Template/Songs/view.php */ ?>
+<?php /* Template/Songs/printable.php */ ?>
 
     <h3 class="printable"><?= h($song->title) ?></h3>
     <table class="vertical-table attribution printable">

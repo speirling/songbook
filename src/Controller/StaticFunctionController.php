@@ -162,9 +162,11 @@ class StaticFunctionController extends AppController
 	}
 	
 	public static function format_html_for_print($contentHTML) {
+		//css sets font size to 16 px, then this works on an A4 page in Firefox:
 		$height_of_line_with_chords = 29.65;
 		$height_of_line_without_chords = 18;
-		$page_height = 650;
+		$page_height = 560;
+		//////////
 		$number_of_columns_per_page = 2;
 		
 		$doc = new \DOMDocument();
