@@ -169,12 +169,13 @@ class StaticFunctionController extends AppController
 		//////////
 		$number_of_columns_per_page = 2;
 		
-		$doc = new \DOMDocument();
-		$doc->loadHTML($contentHTML);
+		$doc = new \DOMDocument('1.0', 'UTF-8');
+		$doc->loadHTML(mb_convert_encoding($contentHTML, 'HTML-ENTITIES', 'UTF-8'));
+		
 		$xpath = new \DOMXPath($doc);
 		$lines = $xpath->query("//div[@class='line']");
 		$lines_with_chords = $xpath->query("//div[span[@class='chord']]");
-		
+
 		$total_Lines = $lines->length;
 		$no_lines_with_chords = $lines_with_chords->length;
 		$total_height = ($no_lines_with_chords * $height_of_line_with_chords) + ($total_Lines - $no_lines_with_chords) * $height_of_line_without_chords;
