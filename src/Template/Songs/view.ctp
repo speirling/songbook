@@ -13,7 +13,8 @@
 	    <?= $this->Form->end() ?>
     </span> 
     <?= $this->element('ajax-button-form-played', ['current_song' => $song]); ?>
-    <?= $this->element('ajax-button-form-vote', ['current_song' => $song]); ?>          
+    <?= $this->element('ajax-button-form-vote', ['current_song' => $song]); ?>
+    <span class="button float-right top-button-set"><?= $this->Html->link(__('Print'), ['controller' => 'Songs', 'action' => 'printable', $song->id, '?' => ['key' => $current_key, 'capo' => $capo]]) ?></span>
     <span class="button edit float-right top-button-set"><?= 
         $this->Html->link(__(
             'edit'
