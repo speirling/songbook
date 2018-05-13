@@ -161,20 +161,25 @@ class StaticFunctionController extends AppController
 		return $contentHTML;
 	}
 	
-	public static function format_html_for_print($contentHTML) {
-		//css sets font size to 16 px, then this works on an A4 page in Firefox:
-		$height_of_line_with_chords = 29.65;
-		$height_of_line_without_chords = 18;
-		$page_height = 560;
+	public static function convert_content_HTML_to_columns($contentHTML, $page_height = 590, $page_width = 680, $number_of_columns_per_page = 2, $font_size_in_pixels = 16) {
+		//this is called from SongsController -> printable() with $contentHTML set to the output from convert_song_content_to_HTML
+		/*
+		 * if css sets font size to 16 px, then this works on an A4 page in Firefox:
+		 * 		$height_of_line_with_chords = 35.133; //2.1958 x font size in px
+		 * 		$height_of_line_without_chords = 18; //1.125 x font size in px
+		*/
 		//////////
-		$number_of_columns_per_page = 2;
 		
-		$doc = new \DOMDocument();
-		$doc->loadHTML($contentHTML);
+		$height_of_line_with_chords = $font_size_in_pixels * 2.2;
+		$height_of_line_without_chords = $font_size_in_pixels * 1.125;
+		
+		$doc = new \DOMDocument('1.0', 'UTF-8');
+		$doc->loadHTML(mb_convert_encoding($contentHTML, 'HTML-ENTITIES', 'UTF-8'));
+		
 		$xpath = new \DOMXPath($doc);
 		$lines = $xpath->query("//div[@class='line']");
 		$lines_with_chords = $xpath->query("//div[span[@class='chord']]");
-		
+
 		$total_Lines = $lines->length;
 		$no_lines_with_chords = $lines_with_chords->length;
 		$total_height = ($no_lines_with_chords * $height_of_line_with_chords) + ($total_Lines - $no_lines_with_chords) * $height_of_line_without_chords;
@@ -185,9 +190,11 @@ class StaticFunctionController extends AppController
 		$current_column = 1;
 		$pages = [];
 		
-		list($pages[$current_page], $row, $td) = StaticFunctionController::create_printable_page($doc, $current_page);
+		list($pages[$current_page], $row, $td) = StaticFunctionController::create_printable_page($doc, $current_page, $page_width);
 		
 		foreach($lines as $line) {
+			//set the font size
+			$line->setAttribute("font-size", $font_size_in_pixels);
 			$line_contains_chords = $xpath->query("span[@class='chord']", $line)->length;
 			/*
 				debug($doc->saveHTML($line));
@@ -208,7 +215,7 @@ class StaticFunctionController extends AppController
 					$current_page = $current_page + 1;
 					$current_column = 1;
 					$content_height = 0;
-					list($pages[$current_page], $row, $td) = StaticFunctionController::create_printable_page($doc, $current_page);
+					list($pages[$current_page], $row, $td) = StaticFunctionController::create_printable_page($doc, $current_page, $page_width);
 				} else {
 				   //new column
 					$content_height = 0;
@@ -228,14 +235,14 @@ class StaticFunctionController extends AppController
 		}
 		
 		$return = $doc->saveHTML();
-		
-		
+
 		return $return;
 	}
 	
-	public static function create_printable_page ($doc, $page_no) {
+	public static function create_printable_page ($doc, $page_no, $page_width) {
 		$page = $doc->createElement('table');
-		$page->setAttribute('class', 'printable lyrics-display page ' . $page_no);
+		$page->setAttribute('class', 'printable lyrics-display page page-' . $page_no);
+		$page->setAttribute('style', 'width: ' . $page_width . 'px;');
 		$tbody = $doc->createElement('tbody');
 		$row = $doc->createElement('row');
 		$td = $doc->createElement('td');

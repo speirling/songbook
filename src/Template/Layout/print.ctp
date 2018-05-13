@@ -1,4 +1,4 @@
-<?php /* Template/Layout/printable.php */ 
+<?php
 /**
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
@@ -22,11 +22,10 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
     <?php if (isset($title)) {
-    	echo ($title . ' (printable)');
+    	echo ($title);
     } else { ?>
         EP Songbook:
         <?= $this->fetch('title') ?>
-         (printable)
         <?php } ?>
     </title>
     <?= $this->Html->meta('icon') ?>
@@ -41,7 +40,9 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
 </head>
-<body class="printable">
-    <?= $this->fetch('content') ?>
+<body>
+
+            <?= $this->fetch('content') ?>
+
 </body>
 </html>

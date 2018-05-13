@@ -11,12 +11,12 @@ body.printable {
  }
 .printable table.page {
      page-break-after: always;
+     /*border: 1px solid gray;*/
  }
 .printable table.page:last-child {
      page-break-after: avoid;
  }
 .printable table.page td {
-     width : 600px;
      vertical-align: top;
     font-size: 20px;
  }

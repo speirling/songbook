@@ -1,8 +1,8 @@
-@media print {
+/*@media print {
 	#container {
 	    padding: 2.5em;
 	}
-}
+}*/
 /*@media screen {
     .line {
         font-size: 0.8em;
@@ -47,7 +47,7 @@
 
 /* Lyrics panel - text and chords */
 .line {
-    font-size: 0.8em;
+    font-size: 0.8em; /* hard-set in printable script - html to columns */
     margin-bottom: 0.5em;
     margin-top: 0.2em;
 }
