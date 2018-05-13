@@ -524,7 +524,7 @@ tr.song-row td.multi-select input {
 .print_title {
     display: none;
 }
- @media print {
+ /*@media print {
     nav,
     .top-button-set,
     .ajax-button-form,
@@ -549,7 +549,7 @@ tr.song-row td.multi-select input {
         border: none;
     }
 }
-
+*/
 .text-search {
     display: block;
     position: relative;

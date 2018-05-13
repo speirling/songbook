@@ -31,4 +31,11 @@ class DashboardController extends AppController
 		$this->songlist->filterAllSongs();
 		$this->set('title', $this->page_title);
 	}
+	public function printable()
+	{
+		$this->loadComponent('songlist');
+		$this->songlist->filterAllSongs();
+		$this->viewBuilder()->layout('printable');
+		$this->set('title', $this->page_title);
+	}
 }
