@@ -105,6 +105,9 @@ class SongsController extends AppController
 		if(array_key_exists('capo', $_GET)) {
 			$capo = $_GET['capo'];
 		}
+		if(strpos($song['base_key'], " ") > 0) {
+			debug("Cannot transpose this song because the given base key contains a space!!");
+		}
 		$song['content'] = StaticFunctionController::convert_song_content_to_HTML($song['content'], $song['base_key'], $key, $capo);
 		$setSong = new SetSong();
 		$this->set('song', $song);
