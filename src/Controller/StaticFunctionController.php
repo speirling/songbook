@@ -113,6 +113,13 @@ class StaticFunctionController extends AppController
 		if(StaticFunctionController::$key_transpose_parameters['transpose']) {
 			$replaced_chord = StaticFunctionController::transpose_chord($replaced_chord, StaticFunctionController::$key_transpose_parameters['base_key'], StaticFunctionController::$key_transpose_parameters['display_key']);
 		}
+		//if there's a bass modifier, give it its own html
+		
+		if(strpos($replaced_chord, '/') !== false) {
+			$parts = explode('/', $replaced_chord);
+			$replaced_chord = $parts[0] . '<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">' . $parts[1] . '</span>';
+		}
+		
 		return '</span><span class="chord' . $fullsize_class . '">'.$replaced_chord.'</span><span class="text">';
 	}
 	
@@ -147,10 +154,8 @@ class StaticFunctionController extends AppController
 		$contentHTML = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $contentHTML);
 		//empty lines - put in a non-breaking space so that they don't collapse?
 		$contentHTML = preg_replace('/<div class=\"line\"><span class=\"text\">[\s]*?<\/span><\/div>/', '<div class="line"><span class="text">&#160;</span></div>', $contentHTML);
-		//anything in square brackets is taken to be a chord and should be processed to create chord html
+		//anything in square brackets is taken to be a chord and should be processed to create chord html - including bass modifier
 		$contentHTML = preg_replace_callback('/\[(.*?)\]/', 'self::chord_replace_callback', $contentHTML);
-		//if there's a bass modifier, give it its own html
-		$contentHTML = preg_replace('#<span class="chord">([^<]*?)/([^<]*?)</span>#','<span class="chord">$1<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">$2</span></span>', $contentHTML);
 		//&nbsp; doesn't work in XML unless it's specifically declared..... this was added when the songbook was xml based, but still works here so...
 		$contentHTML = preg_replace('/&nbsp;/', '&#160;', $contentHTML); 
 		//if a 'score' reference is included, insert the image referred to in it. It should be in the webroot/score/ directory
