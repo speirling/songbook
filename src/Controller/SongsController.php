@@ -149,7 +149,14 @@ class SongsController extends AppController
 			$capo = $_GET['capo'];
 		}
 		$song['content'] = StaticFunctionController::convert_song_content_to_HTML($song['content'], $song['base_key'], $key, $capo);
-		$song['printable_content'] = StaticFunctionController::convert_content_HTML_to_columns($song['content']);
+
+		$song_parameters["title"] = $song["title"];
+		$song_parameters["written_by"] = $song["written_by"];
+		$song_parameters["performed_by"] = $song["performed_by"];
+		$song_parameters["current_key"] = $song["current_key"];
+		$song_parameters["capo"] = $song["capo"];
+		$song_parameters["id"] = $song["id"];
+		$song['printable_content'] = StaticFunctionController::convert_content_HTML_to_columns($song['content'], $song_parameters);
 		//debug($song['printable_content']);
 		$setSong = new SetSong();
 		$this->set('song', $song);

@@ -9,9 +9,16 @@ body.printable {
      display: table;
      margin: 0;
  }
-.printable table.page {
+ table.set-header {
+ 	page-break-after: always;
+ }
+.printable table.page,
+table.page.printable  {
      page-break-after: always;
      /*border: 1px solid gray;*/
+     display: block;
+     height: 1040px;
+     border: 1px solid black;
  }
 .printable table.page:last-child {
      page-break-after: avoid;

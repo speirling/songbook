@@ -99,28 +99,44 @@ class StaticFunctionController extends AppController
 	
 		return str_pad($hours, 2, '0', STR_PAD_LEFT).':'.str_pad($minutes, 2, '0', STR_PAD_LEFT);
 	}
-	
+
 	public static function chord_replace_callback($chord) {
 		$replaced_chord = $chord[1];
 		$fullsize_class = '';
-		
-        if(strpos($replaced_chord, '!') !== false) {
-            //This is one of those chords followed by whitepace, that needs to be set to greater than 0 space.
-            //I'll use a class for that
-            $fullsize_class = " full-width";
-            $replaced_chord = str_replace('!', '', $replaced_chord);
-        }
+	
+		if(strpos($replaced_chord, '!') !== false) {
+			//This is one of those chords followed by whitepace, that needs to be set to greater than 0 space.
+			//I'll use a class for that
+			$fullsize_class = " full-width";
+			$replaced_chord = str_replace('!', '', $replaced_chord);
+		}
 		if(StaticFunctionController::$key_transpose_parameters['transpose']) {
 			$replaced_chord = StaticFunctionController::transpose_chord($replaced_chord, StaticFunctionController::$key_transpose_parameters['base_key'], StaticFunctionController::$key_transpose_parameters['display_key']);
 		}
 		//if there's a bass modifier, give it its own html
-		
+	
 		if(strpos($replaced_chord, '/') !== false) {
 			$parts = explode('/', $replaced_chord);
 			$replaced_chord = $parts[0] . '<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">' . $parts[1] . '</span>';
 		}
-		
+	
 		return '</span><span class="chord' . $fullsize_class . '">'.$replaced_chord.'</span><span class="text">';
+	}
+
+	public static function score_replace_callback($score_params) {
+		$score_path_info = pathinfo($score_params[1]);
+				
+		if(array_key_exists('display_key', StaticFunctionController::$key_transpose_parameters)) { //if no key has been chosen - and the default key is used - then this is not set.
+			$score_filename = $score_path_info['filename'] . "_" . StaticFunctionController::$key_transpose_parameters['display_key'] . "." . $score_path_info['extension'];
+	
+			if(!file_exists("/fileserver/data/songbook_images/" . $score_filename)) {
+				$score_filename = $score_path_info['filename'] . "." . $score_path_info['extension'];
+			}
+		} else {
+			$score_filename = $score_path_info['filename'] . "." . $score_path_info['extension'];
+		}
+		
+		return '<img src="/songbook/score/' . $score_filename . '" />';
 	}
 	
     public static function convert_song_content_to_HTML($content, $base_key = NULL, $display_key = NULL, $capo = NULL) {
@@ -149,7 +165,7 @@ class StaticFunctionController extends AppController
         // In PHP "\h" matches a 'horizontal whitespace' character so the expression '/\](\h*?)\[/' should find relevant chords
 		$contentHTML = preg_replace('/\](\h*?)\[/', '!]$1[', $contentHTML);
 		//replace spaces with non-breaking spaces
-		$contentHTML = str_replace(' ', '&#160;', $contentHTML);
+		//$contentHTML = str_replace(' ', '&#160;', $contentHTML); //20190811 I'm wondering about the wisdom of this... disable for now and see i the resulting line wrapping is more readable.
 		//replace end-of-line with the end of a div and the start of a line div
 		$contentHTML = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $contentHTML);
 		//empty lines - put in a non-breaking space so that they don't collapse?
@@ -159,43 +175,142 @@ class StaticFunctionController extends AppController
 		//&nbsp; doesn't work in XML unless it's specifically declared..... this was added when the songbook was xml based, but still works here so...
 		$contentHTML = preg_replace('/&nbsp;/', '&#160;', $contentHTML); 
 		//if a 'score' reference is included, insert the image referred to in it. It should be in the webroot/score/ directory
-		$contentHTML = preg_replace('/\{score:(.*?)\}/', '<img src="/songbook/score/$1" />', $contentHTML);
+		//$contentHTML = preg_replace('/\{score:(.*?)\}/', '<img src="/songbook/score/$1" />', $contentHTML);
+		$contentHTML = preg_replace_callback('/\{score:(.*?)\}/', 'self::score_replace_callback', $contentHTML);
 		//Finally, wrap the song lyric content in a lyrics-panel div
 		$contentHTML = '<div class="lyrics-panel"><div class="line"><span class="text">'.$contentHTML.'</span></div></div>';
 	
 		return $contentHTML;
 	}
 	
-	public static function convert_content_HTML_to_columns($contentHTML, $page_height = 590, $page_width = 680, $number_of_columns_per_page = 2, $font_size_in_pixels = 16) {
+	public static function convert_content_HTML_to_columns($contentHTML, $song_parameters, $page_height = 1040, $page_width = 690, $number_of_columns_per_page = 2, $font_size_in_pixels = 16, $height_of_first_page_header_table = 180, $current_page = 1) {
+	    $page_parameters = array (
+	        "page_height" => $page_height,
+	        "page_width" => $page_width, 
+	        "font_size_in_pixels" => $font_size_in_pixels
+	    );
 		//this is called from SongsController -> printable() with $contentHTML set to the output from convert_song_content_to_HTML
 		/*
 		 * if css sets font size to 16 px, then this works on an A4 page in Firefox:
 		 * 		$height_of_line_with_chords = 35.133; //2.1958 x font size in px
 		 * 		$height_of_line_without_chords = 18; //1.125 x font size in px
+		 * 
+		 * This worked for Night Sky in Firefox at print 100%:
+		 * $page_height = 750, $page_width = 690, $number_of_columns_per_page = 2, $font_size_in_pixels = 16
+		 * Didn't work for Spéirling! first page became too big, and pushed main content to second page. Maybe has more chords?
+		 * This is what worked for Spéirling:
+		 * $page_height = 600, $page_width = 690, $number_of_columns_per_page = 2, $font_size_in_pixels = 16
 		*/
 		//////////
-		
+	    //debug($contentHTML);
 		$height_of_line_with_chords = $font_size_in_pixels * 2.2;
 		$height_of_line_without_chords = $font_size_in_pixels * 1.125;
-		
+				
 		$doc = new \DOMDocument('1.0', 'UTF-8');
-		$doc->loadHTML(mb_convert_encoding($contentHTML, 'HTML-ENTITIES', 'UTF-8'));
+		$doc->loadHTML(mb_convert_encoding($contentHTML, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 		
 		$xpath = new \DOMXPath($doc);
 		$lines = $xpath->query("//div[@class='line']");
 		$lines_with_chords = $xpath->query("//div[span[@class='chord']]");
 
+		//To decide the number of columns, you need to know the max length of a line, the total number of lines, the number of lines with chords, the total height of lyrics&chords
 		$total_Lines = $lines->length;
-		$no_lines_with_chords = $lines_with_chords->length;
-		$total_height = ($no_lines_with_chords * $height_of_line_with_chords) + ($total_Lines - $no_lines_with_chords) * $height_of_line_without_chords;
-		$number_of_columns = $total_height / $page_height;
+		$number_of_lines_with_chords = $lines_with_chords->length;
+		$height_of_all_lyric_lines = 
+		          ($number_of_lines_with_chords * $height_of_line_with_chords) + 
+		          ($total_Lines - $number_of_lines_with_chords) * $height_of_line_without_chords;
 		
-		$content_height = 0;
-		$current_page = 1;
+		$line_stats = StaticFunctionController::get_line_stats($lines);
+		//debug($line_stats);
+		
+		
+		/*
+		 * How many characters would fit in a column without wrapping? If 2 columns, empirically 45 characters doesn't wrap.
+		Assume if only one column 90 characters might wrap. Or 100.
+		How many lines on a page? If only one page, empirically it looks like 25 lines
+		Second (and subsequent)  page wouldn't have the title bar so maybe 30 lines.
+		So if more than 25 lines, and lines are less than 45 characters, then 2 columns will work fine.
+		Otherwise  ... ?
+		
+		$number_of_columns_if_only_one_page = $height_of_all_lyric_lines / $page_height;
+		
+		Max columns = page_width / max_line_width
+		if no_of_lines / Max_columns < 25 then go for columns
+		if you have to go onto a second page anyway, test if single column will do?
+		
+		
+		Assume that a wrapped line takes up 2 line spaces.
+		
+		assume max 2 columns
+		calculate height of all lines 1 column
+		calculate height 2 column where more lines would wrap.
+		
+		If total_height_1_column < 25 then no brainer, 1 column
+		If total_height_1_column > 25 and total_height_2_column < 50 then go for 2 columns, it'll fit on one page
+		If total_height_2_column > 50 then you're looking at 2 pages, so if total_height_1_column < 55 then go for one column to avoid wrapping, otherwise 2 columns
+		
+		you could weight it that if the vast majority of lines are wrapped then go for 1 column anyway?
+		 */
+		
+		$height_of_page_1 = 25; //lines
+		$height_of_page_2 = 30; //lines;
+		
+		if($line_stats['total_height_1_column'] < $height_of_page_1) {
+		    // 1 column on one page
+		    $no_of_columns = 1;
+		} elseif ($line_stats['total_height_2_column'] < $height_of_page_1 * 2) {
+		    // 2 columns on one page
+		    $no_of_columns = 2;
+		} elseif ($line_stats['total_height_1_column'] < $height_of_page_1 + $height_of_page_2) {
+		    // 1 column on 2 pages
+		    $no_of_columns = 1;
+		} else {
+		    // 2 columns, multiple pages
+		    $no_of_columns = 2;
+		}
+		
+		$number_of_columns_per_page = $no_of_columns;
+		
 		$current_column = 1;
 		$pages = [];
+
+		list($pages[$current_page], $tbody, $row, $td) = StaticFunctionController::create_printable_page($doc, $current_page, $page_parameters, $song_parameters["id"]);
 		
-		list($pages[$current_page], $row, $td) = StaticFunctionController::create_printable_page($doc, $current_page, $page_width);
+		
+		//At the top of the first page put the song heading
+		$row_header = $doc->createElement('tr');
+		$tbody->insertBefore($row_header, $row);
+		
+		$td_header = $doc->createElement('td');
+		$row_header->appendChild($td_header);
+		
+		$title_heading = $doc->createDocumentFragment();
+		$title_heading->appendXML(
+		    "<h3>" . $song_parameters["title"] .                                       "</h3>"   . "\n" .
+		    "<table class=\"vertical-table attribution\">"                             . "\n" .
+    		    "<tr class=\"written-by performed-by\">"                                         . "\n" .
+        		    "<th>" . 'Written By' .                                             "</th>"  . "\n" .
+    		        "<td>" . $song_parameters["written_by"] .                           "</td>"  . "\n" .
+        		    "<th>" . 'Performed By' .                                           "</th>"  . "\n" .
+        		    "<td>" . $song_parameters["performed_by"] .                         "</td>"  . "\n" .
+        		    "<th>" . '&#160;&#160;&#160;&#160;|&#160;&#160;&#160;&#160; Key' .  "</th>"  . "\n" .
+        		    "<td>" . $song_parameters["current_key"] .                          "</td>"  . "\n" .
+                    "<th>" . 'Capo' .                                                   "</th>"  . "\n" .
+    		        "<td>" . $song_parameters["capo"] .                                 "</td>"  . "\n" .
+        		"</tr>" . "\n" .
+    		"</table>"
+		    );
+		$row_header->setAttribute("class", "title-block");
+		$td_header->setAttribute("class", "song-title");
+		$td_header->setAttribute("colspan", $number_of_columns_per_page);
+		$td_header->appendChild($title_heading);
+
+		
+		//$row_header->parentNode->insertBefore($row_header, $row);
+		
+		
+		//Set the lyrics table on the first page to take account of the header
+		$content_height = $height_of_first_page_header_table;
 		
 		foreach($lines as $line) {
 			//set the font size
@@ -220,7 +335,7 @@ class StaticFunctionController extends AppController
 					$current_page = $current_page + 1;
 					$current_column = 1;
 					$content_height = 0;
-					list($pages[$current_page], $row, $td) = StaticFunctionController::create_printable_page($doc, $current_page, $page_width);
+					list($pages[$current_page], $tbody, $row, $td) = StaticFunctionController::create_printable_page($doc, $current_page, $page_parameters, $song_parameters["id"]);
 				} else {
 				   //new column
 					$content_height = 0;
@@ -239,24 +354,87 @@ class StaticFunctionController extends AppController
 			$panel->parentNode->removeChild($panel);
 		}
 		
-		$return = $doc->saveHTML();
+		$doc->formatOutput = true;
+		$return = str_replace("<?xml version=\"1.0\" standalone=\"yes\"?>", "", $doc->saveXML());
 
 		return $return;
 	}
 	
-	public static function create_printable_page ($doc, $page_no, $page_width) {
+	private static function get_line_stats($array_of_html_lyric_lines) {
+	    $column_width_1_column = 100; //characters
+	    $column_width_2_column = 45; //characters
+	    
+	    $total_height_1_column = 0;
+	    $total_height_2_column = 0;
+	    
+	    $non_zero_length_lines_count = 0;
+	    $non_zero_length_lines_total = 0;
+	    
+	    $number_of_lines = 0;
+	    $number_of_wrapped_lines_2_column = 0;
+	    
+	    $max_length = 0;
+	    foreach ($array_of_html_lyric_lines as $this_line) {
+	        $number_of_lines = $number_of_lines + 1;
+	        //debug($this_line);
+	        $xpath = new \DOMXPath($this_line->ownerDocument);
+	        $line_without_chords = $xpath->query("span[not (@class='chord')]", $this_line);
+	        $this_line_length = 0;
+	        foreach($line_without_chords as $this_node) {
+	            //debug($this_node->textContent);
+	            $this_line_length = $this_line_length + strlen($this_node->textContent);
+	        }
+	        
+	        if ($this_line_length > $max_length) {
+	            $max_length = $this_line_length;
+	        }
+	        if($this_line_length > 0) {
+	            $non_zero_length_lines_count = $non_zero_length_lines_count + 1;
+	            $non_zero_length_lines_total = $non_zero_length_lines_total + $this_line_length;
+	        }
+	        $total_height_1_column = $total_height_1_column + ceil($this_line_length / $column_width_1_column);
+	        $total_height_2_column = $total_height_2_column + ceil($this_line_length / $column_width_2_column);
+	        if($this_line_length > $column_width_2_column) {
+	            $number_of_wrapped_lines_2_column = $number_of_wrapped_lines_2_column + 1;
+	        }
+	        
+	        //StaticFunctionController::debug_DOMNodeList($this_line);
+	        //$line_without_chords = preg_replace('/<span class=\"chord\">[\s]*?<\/span>/',"",$this_line);
+	        //debug($line_without_chords);
+	    }
+	    
+	    return array(
+	        'maximum_line_length' => $max_length, 
+	        'total_height_1_column' => $total_height_1_column, 
+	        'total_height_2_column' => $total_height_2_column, 
+	        'average_line_length' => ceil($non_zero_length_lines_total / $non_zero_length_lines_count),
+	        'number_of_wrapped_lines_2_column' => $number_of_wrapped_lines_2_column,
+	        'total_number_of_lines' => $number_of_lines
+	    );
+	}
+	
+	public static function create_printable_page ($container, $page_no, $page_parameters, $song_id = 0) {
+	    $doc = $container->ownerDocument;
+	    if(is_null($doc)) {
+	        $doc = $container;
+	    }
 		$page = $doc->createElement('table');
-		$page->setAttribute('class', 'printable lyrics-display page page-' . $page_no);
-		$page->setAttribute('style', 'width: ' . $page_width . 'px;');
+		$page->setAttribute('class', 'printable lyrics-display page song-' . $song_id . ' page-' . $page_no );
+		$page->setAttribute('style', 'width: ' . $page_parameters["page_width"] . 'px; height: ' . $page_parameters["page_height"] . 'px; font-size:' . $page_parameters["font_size_in_pixels"] . "px;");
+		
 		$tbody = $doc->createElement('tbody');
-		$row = $doc->createElement('row');
+		
+		$row = $doc->createElement('tr');
+		$tbody->appendChild($row);
+		
 		$td = $doc->createElement('td');
 		$row->appendChild($td);
-		$tbody->appendChild($row);
-		$page->appendChild($tbody);
-		$doc->appendChild($page);
 		
-		return [$page, $row, $td];
+		$page->appendChild($tbody);
+		
+		$container->appendChild($page);
+		
+		return [$page, $tbody, $row, $td];
 	}
 	
 	public static function output_pdf($display, $title = '', $orientation = 'portrait') {
