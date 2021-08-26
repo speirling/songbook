@@ -5,20 +5,40 @@ body.printable {
     margin: 0;
     padding: 0;
 }
+.printable h4  {
+    margin: 0;
+    padding: 0;
+    font-size: 18px; 
+}
  .printable table.attribution {
      display: table;
      margin: 0;
  }
-.printable table.page {
-     page-break-after: always;
-     /*border: 1px solid gray;*/
+ table.set-header {
+ 	page-break-after: always;
+ }
+.printable table.page,
+table.page.printable  {
+     border: 1px solid gray;
+     display: block;
+     height: 1000px;
+ }
+.printable table.page.single-song,
+table.page.printable.single-song  {
+     page-break-before: never;
+ }
+.printable table.page.multiple-songs,
+table.page.printable.multiple-songs  {
+     page-break-before: always;
  }
 .printable table.page:last-child {
      page-break-after: avoid;
  }
+.printable table.page tr,
 .printable table.page td {
-     vertical-align: top;
+    vertical-align: top;
     font-size: 20px;
+    border: 0px;
  }
 .lyrics-display.printable {
     position: relative;
@@ -26,13 +46,39 @@ body.printable {
 
 .printable .performed-by.written-by {
     line-height: 0.8;
+    border: 0px;
 }
 .printable .performed-by.written-by th,
 .printable .performed-by.written-by td  {
+	font-size: 10px;
     line-height: 1;
-    margin-left: 0.8em;
-    font-size: 0.6em;
+    margin-left: 0;
     display: inline-block;
     overflow: hidden;
     white-space: nowrap;
+    vertical-align: middle;
+}
+.printable .performed-by.written-by th.written-by {
+	width: 50px;
+}
+.printable .performed-by.written-by td.written-by {
+	width: 180px;
+}
+.printable .performed-by.written-by th.performed-by {
+	width: 70px;
+}
+.printable .performed-by.written-by td.performed-by {
+	width: 180px;
+}
+.printable .performed-by.written-by th.key {
+	width: 50px;
+}
+.printable .performed-by.written-by td.key {
+	
+}
+.printable .performed-by.written-by th.capo {
+	width: 50px;
+}
+.printable .performed-by.written-by td.capo {
+	
 }
