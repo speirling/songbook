@@ -5,6 +5,11 @@ body.printable {
     margin: 0;
     padding: 0;
 }
+.printable h4  {
+    margin: 0;
+    padding: 0;
+    font-size: 18px; 
+}
  .printable table.attribution {
      display: table;
      margin: 0;
@@ -14,10 +19,17 @@ body.printable {
  }
 .printable table.page,
 table.page.printable  {
-     page-break-after: always;
      border: 1px solid gray;
      display: block;
      height: 1000px;
+ }
+.printable table.page.single-song,
+table.page.printable.single-song  {
+     page-break-before: never;
+ }
+.printable table.page.multiple-songs,
+table.page.printable.multiple-songs  {
+     page-break-before: always;
  }
 .printable table.page:last-child {
      page-break-after: avoid;

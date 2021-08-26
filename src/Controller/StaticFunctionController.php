@@ -192,7 +192,7 @@ class StaticFunctionController extends AppController
     	        "font_size_in_pixels" => 16, //px
     	        "height_of_page_1_lines" => 35, //lines
     	        "height_of_page_2_lines" => 40, //lines;
-    	        "height_of_line_with_chords" => 16 * 3, //font_size_in_pixels * 3,
+    	        "height_of_line_with_chords" => 16 * 2.9, //font_size_in_pixels * 2.9,
     	        "height_of_line_without_chords" => 16 * 1.8, // font_size_in_pixels * 1.8,
     	        "column_width" => array (
     	            "1_column" => 100, //characters
@@ -200,6 +200,8 @@ class StaticFunctionController extends AppController
     	        )
     	    )
 	    ) {
+	    
+	    $page_parameters["style_set_or_song"] = $song_parameters["style_set_or_song"]; //there's got to be a more elegant way of passing this from Controller to page creator
 	    $current_page = 1;
 		//this is called from SongsController -> printable() with $contentHTML set to the output from convert_song_content_to_HTML
 		/*
@@ -285,7 +287,7 @@ class StaticFunctionController extends AppController
 
 		foreach($lines as $line) {
 			//set the font size
-		    $line->setAttribute("font-size", $page_parameters["font_size_in_pixels"]);
+		    $line->setAttribute("style", "font-size: " . $page_parameters["font_size_in_pixels"] . "px;");
 			$line_contains_chords = $xpath->query("span[@class='chord']", $line)->length;
 			$line_with_chords_removed = $xpath->query("span[not (@class='chord')]", $line);
 			$this_line_length = 0;
@@ -295,7 +297,7 @@ class StaticFunctionController extends AppController
 			}
 
 			if ($line_contains_chords > 0){
-				$line_height = 1.6;
+				$line_height = 1.7;
 			} else {
 				$line_height = 1;
 			}
@@ -373,7 +375,7 @@ class StaticFunctionController extends AppController
 	        
 	        if ($line_contains_chords > 0){
 	            $line_height_px = $page_parameters["height_of_line_with_chords"];
-	            $line_height_lines = 1.6;
+	            $line_height_lines = 1.7;
 	            
 	        } else {
 	            $line_height_px = $page_parameters["height_of_line_without_chords"];
@@ -480,7 +482,7 @@ class StaticFunctionController extends AppController
 	        $doc = $container;
 	    }
 		$page = $doc->createElement('table');
-		$page->setAttribute('class', 'printable lyrics-display page song-' . $song_id . ' page-' . $page_no );
+		$page->setAttribute('class', 'printable lyrics-display page song-' . $song_id . ' page-' . $page_no . ' ' . $page_parameters["style_set_or_song"] );
 		$page->setAttribute('style', 'width: ' . $page_parameters["page_width"] . 'px; height: ' . $page_parameters["page_height"] . 'px; font-size:' . $page_parameters["font_size_in_pixels"] . "px;");
 		
 		$tbody = $doc->createElement('tbody');

@@ -156,6 +156,7 @@ class SongsController extends AppController
 		$song_parameters["current_key"] = $song["current_key"];
 		$song_parameters["capo"] = $song["capo"];
 		$song_parameters["id"] = $song["id"];
+		$song_parameters["style_set_or_song"] = "single-songs";
 		$song['printable_content'] = StaticFunctionController::convert_content_HTML_to_columns($song['content'], $song_parameters);
 		//debug($song['printable_content']);
 		$setSong = new SetSong();

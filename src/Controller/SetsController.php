@@ -213,6 +213,7 @@ class SetsController extends AppController
             $song_parameters["performed_by"] = $setSong->song["performed_by"];
             $song_parameters["current_key"] = $setSong["key"];
             $song_parameters["capo"] = $setSong["capo"];
+            $song_parameters["style_set_or_song"] = "multiple-songs";
             
             $html = StaticFunctionController::convert_song_content_to_HTML(
                 $setSong->song->content, 

@@ -4,6 +4,7 @@
 ?>
 <div class="playlists view large-10 medium-9 columns content">
     <span class="button float-right"><?= $this->Html->link(__('Edit Playlist'), ['action' => 'edit', $playlist->id]) ?></span>
+    <span class="button float-right"><?= $this->Html->link(__('Print all songs in Playlist'), ['action' => 'printable', $playlist->id]) ?></span>
     <span class="button float-right"><?= $this->Html->link(__('List Playlists'), ['controller' => 'Playlists', 'action' => 'index']) ?></span>
     <span class="button float-right"><?= $this->Html->link(__('Add new song'), ['controller' => 'Songs', 'action' => 'add']) ?></span>
     <h3><?= h($playlist->title) ?></h3>
