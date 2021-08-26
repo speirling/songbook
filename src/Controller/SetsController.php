@@ -206,20 +206,26 @@ class SetsController extends AppController
             'contain' => ['SetSongs' => ['Songs' ]]
         ]);
         foreach ($set->set_songs as $setSong) {
-            //debug($setSong->song);
-            $content = $setSong->song->content;
-            //echo $content;
+            //debug($setSong);
             $song_parameters["id"] = $setSong->song["id"];
             $song_parameters["title"] = $setSong->song["title"];
             $song_parameters["written_by"] = $setSong->song["written_by"];
             $song_parameters["performed_by"] = $setSong->song["performed_by"];
-            $song_parameters["current_key"] = $setSong->song["current_key"];
-            $song_parameters["capo"] = $setSong->song["capo"];
-            $html = StaticFunctionController::convert_song_content_to_HTML($content);
-            //echo $html;
+            $song_parameters["current_key"] = $setSong["key"];
+            $song_parameters["capo"] = $setSong["capo"];
             
-            $pages = StaticFunctionController::convert_content_HTML_to_columns($html, $song_parameters);
-            //echo $columns;
+            $html = StaticFunctionController::convert_song_content_to_HTML(
+                $setSong->song->content, 
+                $setSong->song["base_key"], 
+                $setSong["key"], 
+                $setSong["capo"]
+            );
+            
+            $pages = StaticFunctionController::convert_content_HTML_to_columns(
+                $html, 
+                $song_parameters
+            );
+
             $setSong->song->html_pages = $pages;
         } //foreach
         $this->set('set', $set);
