@@ -217,6 +217,7 @@ class SetsController extends AppController
             $song_parameters["capo"] = $setSong->song["capo"];
             $html = StaticFunctionController::convert_song_content_to_HTML($content);
             //echo $html;
+            
             $pages = StaticFunctionController::convert_content_HTML_to_columns($html, $song_parameters);
             //echo $columns;
             $setSong->song->html_pages = $pages;

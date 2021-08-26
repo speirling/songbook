@@ -21,8 +21,8 @@
         //debug($set); 
         if (!empty($set->set_songs)) {
             foreach ($set->set_songs as $setSong) {
-            //debug($setSong->song);
-            echo($setSong->song->html_pages) ;
+                //debug($setSong->song);
+                echo($setSong->song->html_pages) ;
 		    } //endforeach 
         } //endif
         ?>
