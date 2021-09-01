@@ -35,6 +35,8 @@
         <li><?= $this->Html->link(__('Events'), ['controller' => 'Events', 'action' => 'index']) ?></li>
         <hr>
         <?= $this->Html->link(__('Printable'), ['controller' => 'dashboard', 'action' => 'printable', '?'=>['text_search'=>'', 'performer_id'=>'1', 'filter_tag_id'=>[15]]], ['target'=>'_blank']) ?>
+        <br>
+        <?= $this->Html->link(__('Print All Lyrics'), ['controller' => 'dashboard', 'action' => 'printLyricSheets', '?'=>['text_search'=>'', 'performer_id'=>'1', 'filter_tag_id'=>[15]]], ['target'=>'_blank']) ?>
         <hr>
         <li><?= $this->Html->link(__('Filters'), ['controller' => 'Bookmarkurls', 'action' => 'index'], ['target' => '_blank']) ?></li>
         <li><!--  ?= debug($performers) ? -->
