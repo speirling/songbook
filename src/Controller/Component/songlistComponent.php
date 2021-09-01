@@ -10,7 +10,8 @@ use App\Model\Entity\SetSong;
 use App\Model\Entity\Performer;
 
 class songlistComponent extends Component {
-
+    public $filtered_list = null;
+    
 	public function filterAllSongs($event = Null) {
 	
 		$controller = $this->_registry->getController();
@@ -234,6 +235,7 @@ class songlistComponent extends Component {
 		$controller->set('selected_tags', $selected_tag_array);
 		if($filter_on) {
 			$controller->set('filtered_list', $filtered_list_query);
+			$this->filtered_list = $filtered_list_query; //so tha the calling class can access this list, not just the ctp template
 			$controller->set('filter_on', TRUE);
 		} else {
 			$controller->set('filtered_list', $controller->paginate($filtered_list_query));
