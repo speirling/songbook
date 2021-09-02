@@ -10,7 +10,8 @@ use App\Model\Entity\SetSong;
 use App\Model\Entity\Performer;
 
 class songlistComponent extends Component {
-
+    public $filtered_list = null;
+    
 	public function filterAllSongs($event = Null) {
 	
 		$controller = $this->_registry->getController();
@@ -90,6 +91,7 @@ class songlistComponent extends Component {
 			} else {
 				$query_parameters = $controller->request->data;
 			}
+			    
 			// Title: Song Title text search
 			if (array_key_exists('text_search', $query_parameters) && $query_parameters['text_search']) {
 				$filter_on = true;
@@ -132,6 +134,8 @@ class songlistComponent extends Component {
 				$selected_tag_array = [];
 			}
 			
+			$controller->set('filter_tag_id', $selected_tag_array);
+			
 			// Performer: Limit the result to songs associated with a specific performer
 			if (array_key_exists('performer_id', $query_parameters) && $query_parameters['performer_id']) {
 				$filter_on = true;
@@ -144,6 +148,8 @@ class songlistComponent extends Component {
 			} else {
 				$selected_performer = '';
 			}
+			
+			$controller->set('performer_id', $selected_performer);
 
             //Exclude tags:  - only songs that do NOT contain ALL of the selected tags here will be displayed
             $exclude_all = false; // there's no interface to set this yet, and it seems that it would be more effective to exclude all songs that contain any of the selected tage (smaller list)
@@ -234,6 +240,7 @@ class songlistComponent extends Component {
 		$controller->set('selected_tags', $selected_tag_array);
 		if($filter_on) {
 			$controller->set('filtered_list', $filtered_list_query);
+			$this->filtered_list = $filtered_list_query; //so tha the calling class can access this list, not just the ctp template
 			$controller->set('filter_on', TRUE);
 		} else {
 			$controller->set('filtered_list', $controller->paginate($filtered_list_query));

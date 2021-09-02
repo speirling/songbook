@@ -38,4 +38,64 @@ class DashboardController extends AppController
 		$this->viewBuilder()->layout('printable');
 		$this->set('title', $this->page_title);
 	}
+	
+	/**
+	 * printLyricSheets method
+	 *
+	 */
+	public function printLyricSheets($id = null)
+	{
+	    $this->loadComponent('songlist');
+	    $this->songlist->filterAllSongs();
+	    $pages = array();
+	    //debug($this->songlist->filtered_list);	    die();
+	    
+	    foreach ($this->songlist->filtered_list as $song){
+	        //debug($song);
+	        //debug($song["set_songs"][0]);
+	        if(sizeof($song["set_songs"]) > 0) {
+	            $setSong = $song["set_songs"][0];
+	        } else {
+	            $setSong = array (
+	                "key" => '',
+	                "capo" => ''
+	            );
+	        }
+	        //debug($setSong);
+	        
+	        $song_parameters["id"] = $song["id"];
+	        $song_parameters["title"] = $song["title"];
+	        $song_parameters["written_by"] = $song["written_by"];
+	        $song_parameters["performed_by"] = $song["performed_by"];
+	        $song_parameters["current_key"] = $setSong["key"];
+	        $song_parameters["capo"] = $setSong["capo"];
+	        $song_parameters["style_set_or_song"] = "multiple-songs";
+	        //debug($song["content"]);
+	        //debug( $song["base_key"]);;debug($setSong["key"]);debug($setSong["capo"]);
+	        //debug(StaticFunctionController::convert_song_content_to_HTML);
+	         $html = StaticFunctionController::convert_song_content_to_HTML(
+	         $song["content"],
+	         $song["base_key"],
+	         $setSong["key"],
+	         $setSong["capo"]
+	         );
+	        
+	         $pages[] = StaticFunctionController::convert_content_HTML_to_columns(
+	         $html,
+	         $song_parameters
+	         );
+	         
+	         $this->set('pages', $pages);
+	         $this->set('_serialize', ['pages']);
+	         
+	    }
+	    
+
+	    
+	    //after CakePHP 3.4
+	    //$this->viewBuilder()->setLayout('printable');
+	    //before CakePHP 3.4
+	    $this->viewBuilder()->Layout('printable');
+	}
+	
 }

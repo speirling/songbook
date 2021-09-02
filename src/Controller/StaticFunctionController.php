@@ -190,10 +190,12 @@ class StaticFunctionController extends AppController
     	        "page_height" => 1000, //px?
     	        "page_width" => 690, //px?
     	        "font_size_in_pixels" => 16, //px
-    	        "height_of_page_1_lines" => 35, //lines
-    	        "height_of_page_2_lines" => 40, //lines;
-    	        "height_of_line_with_chords" => 16 * 2.9, //font_size_in_pixels * 2.9,
-    	        "height_of_line_without_chords" => 16 * 1.8, // font_size_in_pixels * 1.8,
+    	        "height_of_page_1_lines" => 33, //lines
+    	        "height_of_page_2_lines" => 39, //lines;
+    	        "height_of_line_with_chords" => 16 * 3, //font_size_in_pixels * 2.9,
+    	        "height_of_line_without_chords" => 16 * 1.9, // font_size_in_pixels * 1.8,
+    	        "line_multiplier_wrapped" => 1.7,
+    	        "line_multiplier_chords" => 1.9,
     	        "column_width" => array (
     	            "1_column" => 100, //characters
     	            "2_column" => 45 //characters
@@ -297,12 +299,12 @@ class StaticFunctionController extends AppController
 			}
 
 			if ($line_contains_chords > 0){
-				$line_height = 1.7;
+				$line_height = $page_parameters["line_multiplier_chords"];
 			} else {
 				$line_height = 1;
 			}
 			$additional_line = ceil($this_line_length / $column_width) - 1;
-			$content_height = $content_height + (1 + $additional_line * 0.75) * $line_height; // if the line wraps, it doesn't take up the same space as 2 full lines
+			$content_height = $content_height + (1 + $additional_line * ($page_parameters["line_multiplier_wrapped"] - 1)) * $line_height; // if the line wraps, it doesn't take up the same space as 2 full lines
 			if ($content_height > $page_height) {
 				$current_column = $current_column + 1;
 				if($current_column > $line_stats['no_of_columns']) {
@@ -338,19 +340,7 @@ class StaticFunctionController extends AppController
 	
 	private static function get_line_stats(
     	    $array_of_html_lyric_lines,
-    	    $page_parameters = array (
-    	        "page_height" => 1000,       //px
-    	        "page_width" => 690,         //px
-    	        "font_size_in_pixels" => 16, //px
-    	        "height_of_page_1_lines" => 34,    //lines
-    	        "height_of_page_2_lines" => 40,    //lines;
-    	        "height_of_line_with_chords" => 16 * 2.9, //font_size_in_pixels * 2.9,
-    	        "height_of_line_without_chords" => 16 * 1.8, // font_size_in_pixels * 1.8,
-    	        "column_width" => array (
-    	            "1_column" => 100, //characters
-    	            "2_column" => 45 //characters
-    	        )
-    	    )
+    	    $page_parameters = array ()
 	    ) {
 	        
 	        $total_height_1_column_lines = 0;
@@ -375,7 +365,7 @@ class StaticFunctionController extends AppController
 	        
 	        if ($line_contains_chords > 0){
 	            $line_height_px = $page_parameters["height_of_line_with_chords"];
-	            $line_height_lines = 1.7;
+	            $line_height_lines = $page_parameters["line_multiplier_chords"];
 	            
 	        } else {
 	            $line_height_px = $page_parameters["height_of_line_without_chords"];
@@ -399,11 +389,11 @@ class StaticFunctionController extends AppController
 	        $additional_line_2_column = ceil($this_line_length / $page_parameters["column_width"]["2_column"]) - 1;
 	        //debug(" additional_line_1_column " . $additional_line_1_column . " additional_line_2_column " . $additional_line_2_column);
 	        
-	        $total_height_1_column_lines = $total_height_1_column_lines + (1 + $additional_line_1_column * 0.75) * $line_height_lines; //number of lines
-	        $total_height_2_column_lines = $total_height_2_column_lines + (1 + $additional_line_2_column * 0.75) * $line_height_lines; //number of lines
+	        $total_height_1_column_lines = $total_height_1_column_lines + (1 + $additional_line_1_column * ($page_parameters["line_multiplier_wrapped"] - 1)) * $line_height_lines; //number of lines
+	        $total_height_2_column_lines = $total_height_2_column_lines + (1 + $additional_line_2_column * ($page_parameters["line_multiplier_wrapped"] - 1)) * $line_height_lines; //number of lines
 	        
-	        $total_height_1_column_px = $total_height_1_column_px + (1 + $additional_line_1_column * 0.75) * $line_height_px; //pixels
-	        $total_height_2_column_px = $total_height_2_column_px + (1 + $additional_line_2_column * 0.75) * $line_height_px; //pixels
+	        $total_height_1_column_px = $total_height_1_column_px + (1 + $additional_line_1_column * ($page_parameters["line_multiplier_wrapped"] - 1)) * $line_height_px; //pixels
+	        $total_height_2_column_px = $total_height_2_column_px + (1 + $additional_line_2_column * ($page_parameters["line_multiplier_wrapped"] - 1)) * $line_height_px; //pixels
 	        
 	        
 	        if($this_line_length > $page_parameters["column_width"]["2_column"]) {
@@ -460,13 +450,19 @@ class StaticFunctionController extends AppController
 	        $no_of_pages = 1 + ceil(($total_height_1_column_lines - $page_parameters["height_of_page_1_lines"]) / $page_parameters["height_of_page_2_lines"]);
 	    }
 	    
+	    if($non_zero_length_lines_count ===0) {
+	        $average_line_length = 0;
+	    } else {
+	       $average_line_length = ceil($non_zero_length_lines_total / $non_zero_length_lines_count);
+	    }
+	    
 	    return array(
 	        'maximum_line_length' => $max_length,
 	        'total_height_1_column_lines' => $total_height_1_column_lines,
 	        'total_height_2_column_lines' => $total_height_2_column_lines,
 	        'total_height_1_column_px' => $total_height_1_column_px,
 	        'total_height_2_column_px' => $total_height_2_column_px, 
-	        'average_line_length' => ceil($non_zero_length_lines_total / $non_zero_length_lines_count),
+	        'average_line_length' => $average_line_length,
 	        'number_of_wrapped_lines_2_column' => $number_of_wrapped_lines_2_column,
 	        'total_number_of_lines' => $number_of_lines,
 	        'non_zero_length_lines_count' => $non_zero_length_lines_count,
