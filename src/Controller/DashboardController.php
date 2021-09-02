@@ -53,7 +53,14 @@ class DashboardController extends AppController
 	    foreach ($this->songlist->filtered_list as $song){
 	        //debug($song);
 	        //debug($song["set_songs"][0]);
-	        $setSong = $song["set_songs"][0];
+	        if(sizeof($song["set_songs"]) > 0) {
+	            $setSong = $song["set_songs"][0];
+	        } else {
+	            $setSong = array (
+	                "key" => '',
+	                "capo" => ''
+	            );
+	        }
 	        //debug($setSong);
 	        
 	        $song_parameters["id"] = $song["id"];

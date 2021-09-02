@@ -91,6 +91,7 @@ class songlistComponent extends Component {
 			} else {
 				$query_parameters = $controller->request->data;
 			}
+			    
 			// Title: Song Title text search
 			if (array_key_exists('text_search', $query_parameters) && $query_parameters['text_search']) {
 				$filter_on = true;
@@ -133,6 +134,8 @@ class songlistComponent extends Component {
 				$selected_tag_array = [];
 			}
 			
+			$controller->set('filter_tag_id', $selected_tag_array);
+			
 			// Performer: Limit the result to songs associated with a specific performer
 			if (array_key_exists('performer_id', $query_parameters) && $query_parameters['performer_id']) {
 				$filter_on = true;
@@ -145,6 +148,8 @@ class songlistComponent extends Component {
 			} else {
 				$selected_performer = '';
 			}
+			
+			$controller->set('performer_id', $selected_performer);
 
             //Exclude tags:  - only songs that do NOT contain ALL of the selected tags here will be displayed
             $exclude_all = false; // there's no interface to set this yet, and it seems that it would be more effective to exclude all songs that contain any of the selected tage (smaller list)

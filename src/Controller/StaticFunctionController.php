@@ -450,13 +450,19 @@ class StaticFunctionController extends AppController
 	        $no_of_pages = 1 + ceil(($total_height_1_column_lines - $page_parameters["height_of_page_1_lines"]) / $page_parameters["height_of_page_2_lines"]);
 	    }
 	    
+	    if($non_zero_length_lines_count ===0) {
+	        $average_line_length = 0;
+	    } else {
+	       $average_line_length = ceil($non_zero_length_lines_total / $non_zero_length_lines_count);
+	    }
+	    
 	    return array(
 	        'maximum_line_length' => $max_length,
 	        'total_height_1_column_lines' => $total_height_1_column_lines,
 	        'total_height_2_column_lines' => $total_height_2_column_lines,
 	        'total_height_1_column_px' => $total_height_1_column_px,
 	        'total_height_2_column_px' => $total_height_2_column_px, 
-	        'average_line_length' => ceil($non_zero_length_lines_total / $non_zero_length_lines_count),
+	        'average_line_length' => $average_line_length,
 	        'number_of_wrapped_lines_2_column' => $number_of_wrapped_lines_2_column,
 	        'total_number_of_lines' => $number_of_lines,
 	        'non_zero_length_lines_count' => $non_zero_length_lines_count,
