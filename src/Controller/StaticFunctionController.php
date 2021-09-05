@@ -247,30 +247,29 @@ class StaticFunctionController extends AppController
 		$title_heading = $doc->createDocumentFragment();
 		
 		$title_heading_html = "";
-		$title_heading_html = $title_heading_html . "<h3>" . $song_parameters["title"] .                                       "</h3>"   . "\n" ;
+		$title_heading_html = $title_heading_html . "<h3>" . htmlspecialchars($song_parameters["title"]) .                                       "</h3>"   . "\n" ;
 		$title_heading_html = $title_heading_html . "<table class=\"vertical-table attribution\">"                             . "\n" ;
 		$title_heading_html = $title_heading_html .     "<tr class=\"written-by performed-by\">"                                         . "\n" ;
 		if(trim($song_parameters["written_by"]) !== "") {
 		    $title_heading_html = $title_heading_html .         "<th class=\"written-by\">" . 'Written By' .                                             "</th>"  . "\n" ;
-		    $title_heading_html = $title_heading_html .         "<td class=\"written-by\">" . $song_parameters["written_by"] .                           "</td>"  . "\n" ;
+		    $title_heading_html = $title_heading_html .         "<td class=\"written-by\">" . htmlspecialchars($song_parameters["written_by"]) .                           "</td>"  . "\n" ;
 		}
 		if(trim($song_parameters["performed_by"]) !== "") {
 		    $title_heading_html = $title_heading_html .   		"<th class=\"performed-by\">" . 'Performed By' .                                           "</th>"  . "\n" ;
-		    $title_heading_html = $title_heading_html .   		"<td class=\"performed-by\">" . $song_parameters["performed_by"] .                         "</td>"  . "\n" ;
+		    $title_heading_html = $title_heading_html .   		"<td class=\"performed-by\">" . htmlspecialchars($song_parameters["performed_by"]) .                         "</td>"  . "\n" ;
 		}
 		if(trim($song_parameters["current_key"]) !== "") {
 		    $title_heading_html = $title_heading_html .   		"<th class=\"key\">" . '&#160;&#160;&#160;&#160;|&#160;&#160;&#160;&#160; Key' .  "</th>"  . "\n" ;
-		    $title_heading_html = $title_heading_html .   		"<td class=\"key\">" . $song_parameters["current_key"] .                          "</td>"  . "\n" ;
+		    $title_heading_html = $title_heading_html .   		"<td class=\"key\">" . htmlspecialchars($song_parameters["current_key"]) .                          "</td>"  . "\n" ;
 		}
 		if(trim($song_parameters["capo"]) !== "") {
 		    $title_heading_html = $title_heading_html .   		"<th class=\"capo\">" . 'Capo' .                                                   "</th>"  . "\n" ;
-		    $title_heading_html = $title_heading_html .   		"<td class=\"capo\">" . $song_parameters["capo"] .                                 "</td>"  . "\n" ;
+		    $title_heading_html = $title_heading_html .   		"<td class=\"capo\">" . htmlspecialchars($song_parameters["capo"]) .                                 "</td>"  . "\n" ;
 		}
 		
 		$title_heading_html = $title_heading_html .    "</tr>" . "\n" ;
 		$title_heading_html = $title_heading_html . "</table>";
-		
-		
+
 		$title_heading->appendXML($title_heading_html);
 		$row_header->setAttribute("class", "title-block");
 		$td_header->setAttribute("class", "song-title");
