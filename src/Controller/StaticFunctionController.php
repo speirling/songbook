@@ -103,7 +103,7 @@ class StaticFunctionController extends AppController
 	public static function chord_replace_callback($chord) {
 		$replaced_chord = $chord[1];
 		$fullsize_class = '';
-	
+		
 		if(strpos($replaced_chord, '!') !== false) {
 			//This is one of those chords followed by whitepace, that needs to be set to greater than 0 space.
 			//I'll use a class for that
@@ -120,7 +120,7 @@ class StaticFunctionController extends AppController
 			$replaced_chord = $parts[0] . '<span class="bass_note_modifier separator">/</span><span class="bass_note_modifier note">' . $parts[1] . '</span>';
 		}
 	
-		return '</span><span class="chord' . $fullsize_class . '">'.$replaced_chord.'</span><span class="text">';
+		return '<span class="chord' . $fullsize_class . '"><span class="chord-symbol-align">'.$replaced_chord.'</span></span>';  //.chord-symbol-align required to position chord symbol relative to the .chord container, which is positioned inside the lyric word.
 	}
 
 	public static function score_replace_callback($score_params) {
@@ -159,27 +159,63 @@ class StaticFunctionController extends AppController
 	
 		$contentHTML = $content;
 		//convert ampersand to xml character entity &#38;
-		$contentHTML = preg_replace('/&([^#n])/', '&#38;$1', $contentHTML);  
+		$contentHTML = preg_replace('/&([^#n])/', '&#38;$1', $contentHTML); 
+
+		//-------------
         // chords that are close together - [Am][D] etc ... even [Am]  [D].... should be separated by characters equal in width to the chord (or by margin in css?)
-        //I'll mark these kinds of chords with "!" so that I can set their class in  chord_replace_callback()
-        // In PHP "\h" matches a 'horizontal whitespace' character so the expression '/\](\h*?)\[/' should find relevant chords
+        // I'll mark these kinds of chords with "!" so that I can set their class in  chord_replace_callback()
+		// In PHP "\h" matches a 'horizontal whitespace' character so the expression '/\](\h*?)\[/' should find relevant chords
 		$contentHTML = preg_replace('/\](\h*?)\[/', '!]$1[', $contentHTML);
-		//replace spaces with non-breaking spaces
-		//$contentHTML = str_replace(' ', '&#160;', $contentHTML); //20190811 I'm wondering about the wisdom of this... disable for now and see i the resulting line wrapping is more readable.
-		//replace end-of-line with the end of a div and the start of a line div
-		$contentHTML = preg_replace('/\n/','</span></div><div class="line"><span class="text">', $contentHTML);
-		//empty lines - put in a non-breaking space so that they don't collapse?
-		$contentHTML = preg_replace('/<div class=\"line\"><span class=\"text\">[\s]*?<\/span><\/div>/', '<div class="line"><span class="text">&#160;</span></div>', $contentHTML);
+		// Previous regex doesn't catch chords at the end of a line, outside a word. They should also be full-width.
+		$contentHTML = preg_replace('/\](\s*?)[\n\r]/', '!]$1', $contentHTML);
+		//-------------
+
+		// replace end-of-line with the end of a div and the start of a line div
+		$contentHTML = preg_replace('/\n/','</div><div class="line">', $contentHTML);
+		// empty lines - put in a non-breaking space so that they don't collapse
+		$contentHTML = preg_replace('/<div class=\"line\">[\s]*?<\/div>/', '<div class="line">&#160;</div>', $contentHTML);
+
+		//-------------
+		// surround each word in a line with a span so that you can prevent them breaking at the point where there's a chord, if the line has to wrap.
+		// First, replace each valid word boundry with '</span><span class="word">'. Note this will leave an extra <\/span> at the beginning of the line, and an extra <span class="word"> at the end. they'll have to be dealt with after.
+		// it will also mark whitespace as a word - not sure that's a problem, but it's unintuitive and untidy so it'll have to be dealt with after also.
+		$word_boundry_exceptions = ''.
+		  		'<.*?>'               /* ignore html tags                                                                    */ . '(*SKIP)(*FAIL)' . '|' .
+		  		'\[.*?\][\w]?'        /* ignore Chords                                                                       */ . '(*SKIP)(*FAIL)' . '|' .
+		  		'[\x{2019}](?=.?)'    /* single quote (unicode apostrophe) should be treated as an apostrophe                */ . '(*SKIP)(*FAIL)' . '|' .
+		  		'[\']\w?'             /* apostrophe should be included within a word, or with the word that it ends.         */ . '(*SKIP)(*FAIL)' . '|' .
+		  		'[\/](?=.?)'          /* ignore forward slash                                                                */ . '(*SKIP)(*FAIL)' . '|' .
+		  		'[\,](?=.?)'          /* comma should be included in the word that it follows                                */ . '(*SKIP)(*FAIL)' . '|' .
+		  		'[-]\w?'              /* ignore dash                                                                         */ . '(*SKIP)(*FAIL)' . '|' .
+		  		'\!'                  /* ignore exclamation marks - they get put into chords to shown they need extra space  */ . '(*SKIP)(*FAIL)' . '|' .
+		  		'\&#160;'             /* ignore unicode character entity (non-breaking space)                                */ . '(*SKIP)(*FAIL)' . '|' . 
+        '';
+	
+		$contentHTML = preg_replace('/' . $word_boundry_exceptions . '\b/u', '</span><span class="word">', $contentHTML);
+		//if a chord is at the start of a line, instead of inside a word, it is missed by the regex above. Catch it now:
+		$contentHTML = preg_replace('/>\[/u', '></span><span class="word">[', $contentHTML);
+		//previous regex surrouns whitespace with word spans - remove them:
+		$contentHTML = preg_replace('/<span class="word">(\s*?)<\/span>/u', '$1', $contentHTML);
+		//-------------
+
+		//-------------
 		//anything in square brackets is taken to be a chord and should be processed to create chord html - including bass modifier
 		$contentHTML = preg_replace_callback('/\[(.*?)\]/', 'self::chord_replace_callback', $contentHTML);
+		//-------------
+
 		//&nbsp; doesn't work in XML unless it's specifically declared..... this was added when the songbook was xml based, but still works here so...
 		$contentHTML = preg_replace('/&nbsp;/', '&#160;', $contentHTML); 
 		//if a 'score' reference is included, insert the image referred to in it. It should be in the webroot/score/ directory
-		//$contentHTML = preg_replace('/\{score:(.*?)\}/', '<img src="/songbook/score/$1" />', $contentHTML);
 		$contentHTML = preg_replace_callback('/\{score:(.*?)\}/', 'self::score_replace_callback', $contentHTML);
 		//Finally, wrap the song lyric content in a lyrics-panel div
-		$contentHTML = '<div class="lyrics-panel"><div class="line"><span class="text">'.$contentHTML.'</span></div></div>';
-	
+		$contentHTML = '<div class="lyrics-panel"><div class="line">'.$contentHTML.'</div></div>';
+
+		//clean up from word wrapping regex. If you do this any earlier it misses the '</span>' at the very start
+		//get rid of the <\span> at the start of the line:
+		$contentHTML = preg_replace('/<div class="line"><\/span>/', '<div class="line">', $contentHTML);
+		//and the <span class="word"> at the end:
+		$contentHTML = preg_replace('/<span class="word">[\.\s\r\n]*<\/div>/u', '</div>', $contentHTML);
+
 		return $contentHTML;
 	}
 	

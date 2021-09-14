@@ -48,18 +48,25 @@
 /* Lyrics panel - text and chords */
 .line {
     font-size: 0.8em; /* hard-set in printable script - html to columns */
-    margin-bottom: 0.5em;
-    margin-top: 0.2em;
+
+    margin-top: 0.5em;
+}
+.word {
+	white-space: nowrap;
 }
 .chord {
     display: inline-block;
     position:relative;
     padding-bottom: 1.3em;
+    margin-top:1em;
     bottom: 0;
-    width: 1px;
     color: #660000;
     font-size: 0.8em;
     font-family: verdana;
+}
+.chord .chord-symbol-align {
+    position: absolute;
+    transform: translate(-50%, -80%);
 }
 
 .chord.full-width {
@@ -83,6 +90,7 @@
 }
 .lyrics-display .lyrics-panel {
     height: calc(100% - 200px) ;
+    padding-left: 1em; /* so that a chord over the first word is fully visble. */
     /*width: 100%;*/
     overflow: auto;
     
