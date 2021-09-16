@@ -238,9 +238,9 @@ class songlistComponent extends Component {
 		$controller->set('search_string', $search_string);
 		$controller->set('selected_performer', $selected_performer);
 		$controller->set('selected_tags', $selected_tag_array);
+		$this->filtered_list = $filtered_list_query; //so that the calling class can access this list, not just the ctp template
 		if($filter_on) {
 			$controller->set('filtered_list', $filtered_list_query);
-			$this->filtered_list = $filtered_list_query; //so tha the calling class can access this list, not just the ctp template
 			$controller->set('filter_on', TRUE);
 		} else {
 			$controller->set('filtered_list', $controller->paginate($filtered_list_query));
