@@ -158,8 +158,8 @@ class StaticFunctionController extends AppController
 		}
 	
 		$contentHTML = $content;
-		//convert ampersand to xml character entity &#38;
-		$contentHTML = preg_replace('/&([^#n])/', '&#38;$1', $contentHTML); 
+		//if apecial characters have found their way into  lyrics in the database, get rid of them
+		$contentHTML = preg_replace('/&nbsp;/', '', $contentHTML);  
 
 		//-------------
         // chords that are close together - [Am][D] etc ... even [Am]  [D].... should be separated by characters equal in width to the chord (or by margin in css?)
@@ -169,30 +169,54 @@ class StaticFunctionController extends AppController
 		// Previous regex doesn't catch chords at the end of a line, outside a word. They should also be full-width.
 		$contentHTML = preg_replace('/\](\s*?)[\n\r]/', '!]$1', $contentHTML);
 		//-------------
-
+		
+		//if a 'score' reference is included, insert the image referred to in it. It should be in the webroot/score/ directory
+		//(has to be done before 'word' spans are inserted)
+		//(also before curly brackets are ignored)
+		$contentHTML = preg_replace_callback('/\{score:(.*?)\}/', 'self::score_replace_callback', $contentHTML);
+		
 		//-------------
 		// surround each word in a line with a span so that you can prevent them breaking at the point where there's a chord, if the line has to wrap.
 		// First, replace each valid word boundry with '</span><span class="word">'. Note this will leave an extra <\/span> at the beginning of the line, and an extra <span class="word"> at the end. they'll have to be dealt with after.
 		// it will also mark whitespace as a word - not sure that's a problem, but it's unintuitive and untidy so it'll have to be dealt with after also.
-		$word_boundry_exceptions = ''.
-		  		'<.*?>'               /* ignore html tags                                                                    */ . '(*SKIP)(*FAIL)' . '|' .
-		  		'\[.*?\][\w]?'        /* ignore Chords                                                                       */ . '(*SKIP)(*FAIL)' . '|' .
-		  		'[\x{2019}](?=.?)'    /* single quote (unicode apostrophe) should be treated as an apostrophe                */ . '(*SKIP)(*FAIL)' . '|' .
-		  		'[\'][\w]?'             /* apostrophe should be included within a word, or with the word that it ends.         */ . '(*SKIP)(*FAIL)' . '|' .
-		  		'[\/](?=.?)'          /* ignore forward slash                                                                */ . '(*SKIP)(*FAIL)' . '|' .
-		  		'[\?](?=.?)'          /* Question mark should be part of the word it follows.                                                               */ . '(*SKIP)(*FAIL)' . '|' .
-		  		//','                /* comma should be included in the word that it follows                                */ . '(*SKIP)(*FAIL)' . '|' .
-		  		'[-]\w?'              /* ignore dash                                                                         */ . '(*SKIP)(*FAIL)' . '|' .
-		  		'\!'                  /* ignore exclamation marks - they get put into chords to shown they need extra space  */ . '(*SKIP)(*FAIL)' . '|' .
-		  		'\&#160;'             /* ignore unicode character entity (non-breaking space)                                */ . '(*SKIP)(*FAIL)' . '|' . 
-        '';
-	
-		$contentHTML = preg_replace('/' . $word_boundry_exceptions . '\b/u', '</span><span class="word">', $contentHTML);
-		//if a chord is at the start of a line, instead of inside a word, it is missed by the regex above. 
-		//Similarly, an apostrohe at the start of a line, or double quotes
-		//Catch them now:
-		$contentHTML = preg_replace('/^([\[\'\"\?\(\x{201C}])/mu', '</span><span class="word">$1', $contentHTML);
-		$contentHTML = preg_replace('/([\]\'\"\?\)\x{201C}])$/mu', '$1</span><span class="word">', $contentHTML);
+		
+		$exceptions = array( 
+		    "[", 
+		    "]",
+		    "/",
+		    "'",
+		    '"',
+		    '-',
+		    '.',
+		    "?",
+		    "!",
+		    "*",
+		    ":",
+		    "(",
+		    ")",
+		    "{",
+		    "}",
+		    "x{0040}",   //at symbol (commat)    @
+		    "x{00A9}",   //Copyright symbol      ©
+		    "x{2018}",   //OpenCurlyQuote        ‘
+		    "x{2019}",   //CloseCurlyQuote       ’
+		    "x{201C}",   //OpenCurlyDoubleQuote  “
+		    "x{201D}"    //CloseCurlyDoubleQuote ”
+		);
+		$exception_string = "";
+		$ignore_string = "";
+		foreach($exceptions as $e) {
+		    $exception_string = $exception_string . "\\" . $e;
+		    $ignore_string = $ignore_string . "[\\" . $e . "](?=.?)(*SKIP)(*FAIL)|";
+        }
+        // ignoring html and chords first, and also &#38; then the "ignore list" above
+        $contentHTML = preg_replace('/<.*?>(*SKIP)(*FAIL)|\[.*?\][\w]?(*SKIP)(*FAIL)|' . $ignore_string . '\b/u', '</span><span class="word">', $contentHTML); 
+        //if a chord is at the start of a line, instead of inside a word, it is missed by the regex above.
+        //Similarly, an apostrohe at the start of a line, or double quotes
+        // I had a problem with one song with :: <div class="line">    [A]You're</span> :: ... i.e whitespace before [ at the start of the line. So allow variable no. of whitespace before each of the non-word charaters at the start of line
+        $contentHTML = preg_replace('/^\s*?([' . $exception_string . '])/mu', '</span><span class="word">$1', $contentHTML);
+		$contentHTML = preg_replace('/([' . $exception_string . '])\s*?$/mu', '$1</span><span class="word">', $contentHTML);
+		
 		/*
 		$contentHTML = preg_replace('/^\[/m', '</span><span class="word">[', $contentHTML);
 		//the above regex misses apostrophe at the start of a line ("'twas")
@@ -220,8 +244,6 @@ class StaticFunctionController extends AppController
 
 		//&nbsp; doesn't work in XML unless it's specifically declared..... this was added when the songbook was xml based, but still works here so...
 		$contentHTML = preg_replace('/&nbsp;/', '&#160;', $contentHTML); 
-		//if a 'score' reference is included, insert the image referred to in it. It should be in the webroot/score/ directory
-		$contentHTML = preg_replace_callback('/\{score:(.*?)\}/', 'self::score_replace_callback', $contentHTML);
 		//Finally, wrap the song lyric content in a lyrics-panel div
 		$contentHTML = '<div class="lyrics-panel"><div class="line">'.$contentHTML.'</div></div>';
 
@@ -230,7 +252,10 @@ class StaticFunctionController extends AppController
 		$contentHTML = preg_replace('/<div class="line">(\s*?)<\/span>/', '<div class="line">$1', $contentHTML);
 		//and the <span class="word"> at the end:
 		$contentHTML = preg_replace('/<span class="word">[\.\s\r\n]*<\/div>/u', '</div>', $contentHTML);
-
+		
+		//convert ampersand to xml character entity &#38; to avoid errors with the DOM command
+		$contentHTML = preg_replace('/&([^#n])/', '&#38;$1', $contentHTML);
+		
 		return $contentHTML;
 	}
 	
