@@ -191,8 +191,8 @@ class StaticFunctionController extends AppController
 		//if a chord is at the start of a line, instead of inside a word, it is missed by the regex above. 
 		//Similarly, an apostrohe at the start of a line, or double quotes
 		//Catch them now:
-		$contentHTML = preg_replace('/^([\[\'\"\?\(])/m', '</span><span class="word">$1', $contentHTML);
-		$contentHTML = preg_replace('/([\]\'\"\?\)])$/m', '$1</span><span class="word">', $contentHTML);
+		$contentHTML = preg_replace('/^([\[\'\"\?\(\x{201C}])/mu', '</span><span class="word">$1', $contentHTML);
+		$contentHTML = preg_replace('/([\]\'\"\?\)\x{201C}])$/mu', '$1</span><span class="word">', $contentHTML);
 		/*
 		$contentHTML = preg_replace('/^\[/m', '</span><span class="word">[', $contentHTML);
 		//the above regex misses apostrophe at the start of a line ("'twas")
@@ -215,7 +215,7 @@ class StaticFunctionController extends AppController
 		
 		//-------------
 		//anything in square brackets is taken to be a chord and should be processed to create chord html - including bass modifier
-// 		$contentHTML = preg_replace_callback('/\[(.*?)\]/', 'self::chord_replace_callback', $contentHTML);
+ 		$contentHTML = preg_replace_callback('/\[(.*?)\]/', 'self::chord_replace_callback', $contentHTML);
 		//-------------
 
 		//&nbsp; doesn't work in XML unless it's specifically declared..... this was added when the songbook was xml based, but still works here so...
