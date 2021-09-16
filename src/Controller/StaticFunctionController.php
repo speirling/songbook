@@ -170,11 +170,6 @@ class StaticFunctionController extends AppController
 		$contentHTML = preg_replace('/\](\s*?)[\n\r]/', '!]$1', $contentHTML);
 		//-------------
 
-		// replace end-of-line with the end of a div and the start of a line div
-		$contentHTML = preg_replace('/\n/','</div><div class="line">', $contentHTML);
-		// empty lines - put in a non-breaking space so that they don't collapse
-		$contentHTML = preg_replace('/<div class=\"line\">[\s]*?<\/div>/', '<div class="line">&#160;</div>', $contentHTML);
-
 		//-------------
 		// surround each word in a line with a span so that you can prevent them breaking at the point where there's a chord, if the line has to wrap.
 		// First, replace each valid word boundry with '</span><span class="word">'. Note this will leave an extra <\/span> at the beginning of the line, and an extra <span class="word"> at the end. they'll have to be dealt with after.
@@ -183,24 +178,44 @@ class StaticFunctionController extends AppController
 		  		'<.*?>'               /* ignore html tags                                                                    */ . '(*SKIP)(*FAIL)' . '|' .
 		  		'\[.*?\][\w]?'        /* ignore Chords                                                                       */ . '(*SKIP)(*FAIL)' . '|' .
 		  		'[\x{2019}](?=.?)'    /* single quote (unicode apostrophe) should be treated as an apostrophe                */ . '(*SKIP)(*FAIL)' . '|' .
-		  		'[\']\w?'             /* apostrophe should be included within a word, or with the word that it ends.         */ . '(*SKIP)(*FAIL)' . '|' .
+		  		'[\'][\w]?'             /* apostrophe should be included within a word, or with the word that it ends.         */ . '(*SKIP)(*FAIL)' . '|' .
 		  		'[\/](?=.?)'          /* ignore forward slash                                                                */ . '(*SKIP)(*FAIL)' . '|' .
-		  		'[\,](?=.?)'          /* comma should be included in the word that it follows                                */ . '(*SKIP)(*FAIL)' . '|' .
+		  		'[\?](?=.?)'          /* Question mark should be part of the word it follows.                                                               */ . '(*SKIP)(*FAIL)' . '|' .
+		  		//','                /* comma should be included in the word that it follows                                */ . '(*SKIP)(*FAIL)' . '|' .
 		  		'[-]\w?'              /* ignore dash                                                                         */ . '(*SKIP)(*FAIL)' . '|' .
 		  		'\!'                  /* ignore exclamation marks - they get put into chords to shown they need extra space  */ . '(*SKIP)(*FAIL)' . '|' .
 		  		'\&#160;'             /* ignore unicode character entity (non-breaking space)                                */ . '(*SKIP)(*FAIL)' . '|' . 
         '';
 	
 		$contentHTML = preg_replace('/' . $word_boundry_exceptions . '\b/u', '</span><span class="word">', $contentHTML);
-		//if a chord is at the start of a line, instead of inside a word, it is missed by the regex above. Catch it now:
-		$contentHTML = preg_replace('/>\[/u', '></span><span class="word">[', $contentHTML);
-		//previous regex surrouns whitespace with word spans - remove them:
+		//if a chord is at the start of a line, instead of inside a word, it is missed by the regex above. 
+		//Similarly, an apostrohe at the start of a line, or double quotes
+		//Catch them now:
+		$contentHTML = preg_replace('/^([\[\'\"\?\(])/m', '</span><span class="word">$1', $contentHTML);
+		$contentHTML = preg_replace('/([\]\'\"\?\)])$/m', '$1</span><span class="word">', $contentHTML);
+		/*
+		$contentHTML = preg_replace('/^\[/m', '</span><span class="word">[', $contentHTML);
+		//the above regex misses apostrophe at the start of a line ("'twas")
+		$contentHTML = preg_replace('/^\'/m', '</span><span class="word">\'', $contentHTML);
+		*/
+		//the above regex misses apostrophe at the end of a line of a line ("...'")
+		$contentHTML = preg_replace('/\'$/m', '\'</span><span class="word">', $contentHTML);
+		//commas aren't caught effectively by the regex above - leaving '</span><span class="word">,' in places where it should be ',</span><span class="word">'
+		$contentHTML = str_replace('</span><span class="word">,', ',</span><span class="word">', $contentHTML);
+		//previous regex surrounds whitespace with word spans - remove them:
 		$contentHTML = preg_replace('/<span class="word">(\s*?)<\/span>/u', '$1', $contentHTML);
 		//-------------
 
+		
+		// replace end-of-line with the end of a div and the start of a line div
+		$contentHTML = preg_replace('/\n/','</div><div class="line">', $contentHTML);
+		// empty lines - put in a non-breaking space so that they don't collapse
+		$contentHTML = preg_replace('/<div class=\"line\">[\s]*?<\/div>/', '<div class="line">&#160;</div>', $contentHTML);
+		
+		
 		//-------------
 		//anything in square brackets is taken to be a chord and should be processed to create chord html - including bass modifier
-		$contentHTML = preg_replace_callback('/\[(.*?)\]/', 'self::chord_replace_callback', $contentHTML);
+// 		$contentHTML = preg_replace_callback('/\[(.*?)\]/', 'self::chord_replace_callback', $contentHTML);
 		//-------------
 
 		//&nbsp; doesn't work in XML unless it's specifically declared..... this was added when the songbook was xml based, but still works here so...
@@ -212,7 +227,7 @@ class StaticFunctionController extends AppController
 
 		//clean up from word wrapping regex. If you do this any earlier it misses the '</span>' at the very start
 		//get rid of the <\span> at the start of the line:
-		$contentHTML = preg_replace('/<div class="line"><\/span>/', '<div class="line">', $contentHTML);
+		$contentHTML = preg_replace('/<div class="line">(\s*?)<\/span>/', '<div class="line">$1', $contentHTML);
 		//and the <span class="word"> at the end:
 		$contentHTML = preg_replace('/<span class="word">[\.\s\r\n]*<\/div>/u', '</div>', $contentHTML);
 
@@ -258,6 +273,11 @@ class StaticFunctionController extends AppController
 		
 				
 		$doc = new \DOMDocument('1.0', 'UTF-8');
+		/*
+		$contentHTML = preg_replace('/<\/span>/', "</span>
+", $contentHTML); 
+		debug($contentHTML);
+		// */
 		$doc->loadHTML(mb_convert_encoding($contentHTML, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 		
 		$xpath = new \DOMXPath($doc);
