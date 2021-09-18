@@ -101,6 +101,9 @@ class StaticFunctionController extends AppController
 	}
 
 	public static function chord_replace_callback($chord) {
+	    if(strpos($chord[1], "span") !== false) {
+	    debug ($chord);
+	    }
 		$replaced_chord = $chord[1];
 		$fullsize_class = '';
 		
@@ -158,8 +161,8 @@ class StaticFunctionController extends AppController
 		}
 	
 		$contentHTML = $content;
-		//if apecial characters have found their way into  lyrics in the database, get rid of them
-		$contentHTML = preg_replace('/&nbsp;/', '', $contentHTML);  
+		//if special characters have found their way into  lyrics in the database, get rid of them
+		$contentHTML = preg_replace('/&nbsp;/', ' ', $contentHTML);  
 
 		//-------------
         // chords that are close together - [Am][D] etc ... even [Am]  [D].... should be separated by characters equal in width to the chord (or by margin in css?)
@@ -174,7 +177,7 @@ class StaticFunctionController extends AppController
 		//(has to be done before 'word' spans are inserted)
 		//(also before curly brackets are ignored)
 		$contentHTML = preg_replace_callback('/\{score:(.*?)\}/', 'self::score_replace_callback', $contentHTML);
-		
+                		
 		//-------------
 		// surround each word in a line with a span so that you can prevent them breaking at the point where there's a chord, if the line has to wrap.
 		// First, replace each valid word boundry with '</span><span class="word">'. Note this will leave an extra <\/span> at the beginning of the line, and an extra <span class="word"> at the end. they'll have to be dealt with after.
@@ -192,6 +195,8 @@ class StaticFunctionController extends AppController
 		    "!",
 		    "*",
 		    ":",
+		    ";",
+		    "#",
 		    "(",
 		    ")",
 		    "{",
@@ -207,21 +212,20 @@ class StaticFunctionController extends AppController
 		$ignore_string = "";
 		foreach($exceptions as $e) {
 		    $exception_string = $exception_string . "\\" . $e;
-		    $ignore_string = $ignore_string . "[\\" . $e . "](?=.?)(*SKIP)(*FAIL)|";
+		    $ignore_string = $ignore_string . "\\" . $e . ".(*SKIP)(*FAIL)|";
         }
+        
         // ignoring html and chords first, and also &#38; then the "ignore list" above
-        $contentHTML = preg_replace('/<.*?>(*SKIP)(*FAIL)|\[.*?\][\w]?(*SKIP)(*FAIL)|' . $ignore_string . '\b/u', '</span><span class="word">', $contentHTML); 
+        //a problem arose in one song with "de[G]ad.[G#dim]" at the end of a line. The ".[" ended up with a word boundary between . and [ . so add an exception for characters in front of [: \.? \[.*?\][\w]?
+        //debug($ignore_string);
+        $contentHTML = preg_replace('/<.*?>(*SKIP)(*FAIL)|[\.^\n]?\[.*?\][\w]?(*SKIP)(*FAIL)|' . $ignore_string . '\b/u', '</span><span class="word">', $contentHTML); 
+        //debug($contentHTML);
         //if a chord is at the start of a line, instead of inside a word, it is missed by the regex above.
-        //Similarly, an apostrohe at the start of a line, or double quotes
+        //Similarly, an apostrophe at the start of a line, or double quotes
         // I had a problem with one song with :: <div class="line">    [A]You're</span> :: ... i.e whitespace before [ at the start of the line. So allow variable no. of whitespace before each of the non-word charaters at the start of line
         $contentHTML = preg_replace('/^\s*?([' . $exception_string . '])/mu', '</span><span class="word">$1', $contentHTML);
 		$contentHTML = preg_replace('/([' . $exception_string . '])\s*?$/mu', '$1</span><span class="word">', $contentHTML);
-		
-		/*
-		$contentHTML = preg_replace('/^\[/m', '</span><span class="word">[', $contentHTML);
-		//the above regex misses apostrophe at the start of a line ("'twas")
-		$contentHTML = preg_replace('/^\'/m', '</span><span class="word">\'', $contentHTML);
-		*/
+
 		//the above regex misses apostrophe at the end of a line of a line ("...'")
 		$contentHTML = preg_replace('/\'$/m', '\'</span><span class="word">', $contentHTML);
 		//commas aren't caught effectively by the regex above - leaving '</span><span class="word">,' in places where it should be ',</span><span class="word">'
