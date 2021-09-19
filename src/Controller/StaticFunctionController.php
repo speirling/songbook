@@ -266,11 +266,85 @@ class StaticFunctionController extends AppController
 	public static function convert_content_HTML_to_columns(
 	        $contentHTML, 
 	        $song_parameters, 
-	        $page_size = 'A4'
+	        $print_page = 'A4',
+	        $print_size = 'default'
 	    ) {
+	        
+        $print_page_configuration = \Cake\Core\Configure::read('print_page');
+        $page_config_values = $print_page_configuration[$print_page];
+        $print_size_configuration = \Cake\Core\Configure::read('print_size');
+        $size_config_values = $print_size_configuration[$print_size];
+        
+        $title_height = $size_config_values['font_sizes']['title'] * 1.5 
+                      + $size_config_values['font_sizes']['attributions'] * 1.5 
+                      + $size_config_values['content_padding'] * 2;
+                      
+        $p1_content_height = $page_config_values['page_height']
+                      - $title_height
+                      - $size_config_values['content_padding'] * 2;
+                      
+        $p2_content_height = $page_config_values['page_height']
+                      - $size_config_values['content_padding'] * 2;
+                      
+        $height_of_line_without_chords = $size_config_values['font_sizes']['lyrics'] * 1.125 
+                                       + $size_config_values['lyric_line_top_margin'];
+        
+        $height_of_line_with_chords = $size_config_values['font_sizes']['lyrics'] * 1.125 
+                                    + $size_config_values['font_sizes']['chords'] * 1.125
+                                    + $size_config_values['lyric_line_top_margin'];
+                                    
+        $height_of_wrapped_line_without_chords = $size_config_values['font_sizes']['lyrics'] * 1.125 *2
+                                    + $size_config_values['lyric_line_top_margin'];
+                                    
+        $height_of_wrapped_line_with_chords = $size_config_values['font_sizes']['lyrics'] * 1.125 *2
+                                    + $size_config_values['font_sizes']['chords'] * 1.125 *2
+                                    + $size_config_values['lyric_line_top_margin'];
+                                    
+        $characters_per_column_1_column = ($page_config_values['page_width'] - $size_config_values['content_padding'] * 2)
+                                    / $size_config_values['lyric_width_per_100_characters']
+                                    * 100;
+                                    
+        $characters_per_column_2_column = ($page_config_values['page_width'] /2 - $size_config_values['content_padding'] * 2)
+                                    / $size_config_values['lyric_width_per_100_characters']
+                                    * 100;
+                                    
+	    //$print_page_configuration[$page_size]
+	    $page_parameters = [
+	        "page_height" => $page_config_values['page_height'],
+	        "page_width" => $page_config_values['page_width'],
+	        "font_size_in_pixels" => $size_config_values['font_sizes']['lyrics'], //px
+	        "height_of_page_1_lines" => $p1_content_height / $height_of_line_without_chords, //lines
+	        "height_of_page_2_lines" => $p2_content_height / $height_of_line_without_chords, //lines;
+	        "height_of_line_with_chords" => $height_of_line_with_chords, 
+	        "height_of_line_without_chords" => $height_of_line_without_chords, // font_size_in_pixels * 1.8,
+	        "height_of_wrapped_line_without_chords" => $height_of_wrapped_line_without_chords,
+	        "height_of_wrapped_line_with_chords" => $height_of_wrapped_line_with_chords,
+	        "line_multiplier_wrapped" => $height_of_wrapped_line_without_chords / $height_of_line_without_chords,
+	        "line_multiplier_chords" => $height_of_wrapped_line_with_chords / $height_of_wrapped_line_with_chords,
+    	    "column_width" => [
+    	        "1_column" => $characters_per_column_1_column, //characters
+    	        "2_column" => $characters_per_column_2_column //characters
+    	    ]
+	    ];
+	    debug($size_config_values);
+	    debug($page_parameters);
+	    /* original estimates:
+	     "page_height" => 1000,
+	        "page_width" => 690,
+	        "font_size_in_pixels" => 16, //px
+    	    "height_of_page_1_lines" => 33, //lines
+    	    "height_of_page_2_lines" => 39, //lines;
+    	    "height_of_line_with_chords" => 16 * 3, //font_size_in_pixels * 2.9,
+    	    "height_of_line_without_chords" => 16 * 1.9, // font_size_in_pixels * 1.8,
+    	    "line_multiplier_wrapped" => 1.7,
+    	    "line_multiplier_chords" => 1.9,
+    	    "column_width" => [
+    	        "1_column" => 100, //characters
+    	        "2_column" => 45 //characters
+	     * */
 	    
-	    $print_page_configuration = \Cake\Core\Configure::read('print_page');
-	    $page_parameters = $print_page_configuration[$page_size];
+	    
+	    
 	    $page_parameters["style_set_or_song"] = $song_parameters["style_set_or_song"]; //there's got to be a more elegant way of passing this from Controller to page creator
 	    $current_page = 1;
 		//this is called from SongsController -> printable() with $contentHTML set to the output from convert_song_content_to_HTML

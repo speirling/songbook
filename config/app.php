@@ -343,4 +343,22 @@ return [
             ]
         ],
     ],
+    'print_size' => [
+        'default' => [
+            "font_sizes" => [
+                "lyrics" => 16, //px
+                "chords" => 12, //px
+                "title" => 27, //px
+                "attributions" =>  10 //px
+            ],
+            "lyric_width_per_100_characters" => 670, //px
+            "content_padding" => 10, //px
+            "lyric_line_top_margin" => 8, //px
+            "font_family" => 'verdana',
+            "column_width" => [
+                "1_column" => 100, //characters
+                "2_column" => 45 //characters
+            ]
+        ],
+    ],
 ];
