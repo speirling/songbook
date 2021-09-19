@@ -218,7 +218,7 @@ class StaticFunctionController extends AppController
         // ignoring html and chords first, and also &#38; then the "ignore list" above
         //a problem arose in one song with "de[G]ad.[G#dim]" at the end of a line. The ".[" ended up with a word boundary between . and [ . so add an exception for characters in front of [: \.? \[.*?\][\w]?
         //debug($ignore_string);
-        $contentHTML = preg_replace('/<.*?>(*SKIP)(*FAIL)|[\.^\n]?\[.*?\][\w]?(*SKIP)(*FAIL)|' . $ignore_string . '\b/u', '</span><span class="word">', $contentHTML); 
+        $contentHTML = preg_replace('/<.*?>(*SKIP)(*FAIL)|[' . $exception_string . '^\n]?\[.*?\][\w]?(*SKIP)(*FAIL)|' . $ignore_string . '\b/u', '</span><span class="word">', $contentHTML); 
         //debug($contentHTML);
         //if a chord is at the start of a line, instead of inside a word, it is missed by the regex above.
         //Similarly, an apostrophe at the start of a line, or double quotes
