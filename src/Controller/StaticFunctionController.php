@@ -266,23 +266,11 @@ class StaticFunctionController extends AppController
 	public static function convert_content_HTML_to_columns(
 	        $contentHTML, 
 	        $song_parameters, 
-    	    $page_parameters = array (
-    	        "page_height" => 1000, //px?
-    	        "page_width" => 690, //px?
-    	        "font_size_in_pixels" => 16, //px
-    	        "height_of_page_1_lines" => 33, //lines
-    	        "height_of_page_2_lines" => 39, //lines;
-    	        "height_of_line_with_chords" => 16 * 3, //font_size_in_pixels * 2.9,
-    	        "height_of_line_without_chords" => 16 * 1.9, // font_size_in_pixels * 1.8,
-    	        "line_multiplier_wrapped" => 1.7,
-    	        "line_multiplier_chords" => 1.9,
-    	        "column_width" => array (
-    	            "1_column" => 100, //characters
-    	            "2_column" => 45 //characters
-    	        )
-    	    )
+	        $page_size = 'A4'
 	    ) {
 	    
+	    $print_page_configuration = \Cake\Core\Configure::read('print_page');
+	    $page_parameters = $print_page_configuration[$page_size];
 	    $page_parameters["style_set_or_song"] = $song_parameters["style_set_or_song"]; //there's got to be a more elegant way of passing this from Controller to page creator
 	    $current_page = 1;
 		//this is called from SongsController -> printable() with $contentHTML set to the output from convert_song_content_to_HTML
