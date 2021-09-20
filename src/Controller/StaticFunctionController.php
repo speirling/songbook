@@ -269,10 +269,10 @@ class StaticFunctionController extends AppController
 	        $print_page = 'A4',
 	        $print_size = 'default'
 	    ) {
-	        
-        $print_page_configuration = \Cake\Core\Configure::read('print_page');
+	        debug($contentHTML);
+        $print_page_configuration = \Cake\Core\Configure::read('Songbook.print_page');
         $page_config_values = $print_page_configuration[$print_page];
-        $print_size_configuration = \Cake\Core\Configure::read('print_size');
+        $print_size_configuration = \Cake\Core\Configure::read('Songbook.print_size');
         $size_config_values = $print_size_configuration[$print_size];
         
         $title_height = $size_config_values['font_sizes']['title'] * 1.5 

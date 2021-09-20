@@ -323,42 +323,4 @@ return [
     'Session' => [
         'defaults' => 'php',
     ],
-    /**
-     * Printout Page configurations
-     */
-    'print_page' => [
-        'A4' => [
-            "page_height" => 1000, //px?
-            "page_width" => 690, //px?
-            "font_size_in_pixels" => 16, //px
-            "height_of_page_1_lines" => 33, //lines
-            "height_of_page_2_lines" => 39, //lines;
-            "height_of_line_with_chords" => 16 * 3, //font_size_in_pixels * 2.9,
-            "height_of_line_without_chords" => 16 * 1.9, // font_size_in_pixels * 1.8,
-            "line_multiplier_wrapped" => 1.7,
-            "line_multiplier_chords" => 1.9,
-            "column_width" => [
-                "1_column" => 100, //characters
-                "2_column" => 45 //characters
-            ]
-        ],
-    ],
-    'print_size' => [
-        'default' => [
-            "font_sizes" => [
-                "lyrics" => 16, //px
-                "chords" => 12, //px
-                "title" => 27, //px
-                "attributions" =>  10 //px
-            ],
-            "lyric_width_per_100_characters" => 670, //px
-            "content_padding" => 10, //px
-            "lyric_line_top_margin" => 8, //px
-            "font_family" => 'verdana',
-            "column_width" => [
-                "1_column" => 100, //characters
-                "2_column" => 45 //characters
-            ]
-        ],
-    ],
 ];
