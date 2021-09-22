@@ -242,9 +242,12 @@ class songlistComponent extends Component {
 		if($filter_on) {
 			$controller->set('filtered_list', $filtered_list_query);
 			$controller->set('filter_on', TRUE);
+		} elseif(array_key_exists("unpaginated", $query_parameters)) {
+		    $controller->set('filtered_list', $filtered_list_query);
+		    $controller->set('filter_on', TRUE); //prevents the footer haveing 'next' & 'previous' buttons
 		} else {
-			$controller->set('filtered_list', $controller->paginate($filtered_list_query));
-			$controller->set('filter_on', FALSE);
+		    $controller->set('filtered_list', $controller->paginate($filtered_list_query));
+		    $controller->set('filter_on', FALSE);
 		}
 
 		//for the print title

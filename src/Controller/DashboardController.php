@@ -37,6 +37,10 @@ class DashboardController extends AppController
 		$this->songlist->filterAllSongs();
 		$this->viewBuilder()->layout('printable');
 		$this->set('title', $this->page_title);
+		$print_page = "A4";
+		$print_size = "default";
+		$this->set('print_page', $print_page);
+		$this->set('print_size', $print_size);
 	}
 	
 	/**
