@@ -157,8 +157,11 @@ class SongsController extends AppController
 		$song_parameters["capo"] = $song["capo"];
 		$song_parameters["id"] = $song["id"];
 		$song_parameters["style_set_or_song"] = "single-songs";
-		$song['printable_content'] = StaticFunctionController::convert_content_HTML_to_columns($song['content'], $song_parameters);
-		//debug($song['printable_content']);
+		$print_page = "A4";
+		$print_size = "default";
+		
+		$song['printable_content'] = StaticFunctionController::convert_content_HTML_to_columns($song['content'], $song_parameters, $print_page, $print_size);
+
 		$setSong = new SetSong();
 		$this->set('song', $song);
 		$this->set('setSong', $setSong);
@@ -172,6 +175,8 @@ class SongsController extends AppController
 				'keyField' => 'id',
 				'valueField' => 'nickname'
 		]));
+		$this->set('print_page', $print_page);
+		$this->set('print_size', $print_size);
 		//after CakePHP 3.4
 		//$this->viewBuilder()->setLayout('printable');
 		//before CakePHP 3.4

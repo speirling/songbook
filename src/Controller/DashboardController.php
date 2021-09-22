@@ -70,28 +70,30 @@ class DashboardController extends AppController
 	        $song_parameters["current_key"] = $setSong["key"];
 	        $song_parameters["capo"] = $setSong["capo"];
 	        $song_parameters["style_set_or_song"] = "multiple-songs";
+	        $print_page = "A4";
+	        $print_size = "default";
 	        //debug($song["content"]);
 	        //debug( $song["base_key"]);;debug($setSong["key"]);debug($setSong["capo"]);
 	        //debug(StaticFunctionController::convert_song_content_to_HTML);
 	         $html = StaticFunctionController::convert_song_content_to_HTML(
-	         $song["content"],
-	         $song["base_key"],
-	         $setSong["key"],
-	         $setSong["capo"]
+    	         $song["content"],
+    	         $song["base_key"],
+    	         $setSong["key"],
+    	         $setSong["capo"]
 	         );
 	        
 	         $pages[] = StaticFunctionController::convert_content_HTML_to_columns(
-	         $html,
-	         $song_parameters
+    	         $html,
+    	         $song_parameters
 	         );
 	         
+	         $this->set('print_page', $print_page);
+	         $this->set('print_size', $print_size);
 	         $this->set('pages', $pages);
 	         $this->set('_serialize', ['pages']);
 	         
 	    }
-	    
 
-	    
 	    //after CakePHP 3.4
 	    //$this->viewBuilder()->setLayout('printable');
 	    //before CakePHP 3.4
