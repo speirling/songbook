@@ -22,6 +22,7 @@ class songlistComponent extends Component {
 		$controller->loadModel('SongVotes');
 	
 		$filtered_list_query = $controller->Songs->find();
+		
 		$filtered_list_query->select(['id', 'title', 'written_by', 'performed_by', 'base_key', 'content'], false);
 		$filtered_list_query->contain(['SongTags'=>['Tags']]);
 		$filtered_list_query->contain(['SetSongs.Performers']);
@@ -90,6 +91,16 @@ class songlistComponent extends Component {
 				$query_parameters = $controller->request->query;
 			} else {
 				$query_parameters = $controller->request->data;
+			}
+			
+			/*
+			 * allow sorting by
+			 *              songbook/dashboard/print-lyric-sheets?unpaginated&sort=title
+			 *              songbook/dashboard?sort=title
+			 * etc.
+			 */ 
+			if($query_parameters['sort'] === 'title') {
+			    $filtered_list_query->order(['title' => 'ASC']);
 			}
 			    
 			// Title: Song Title text search
