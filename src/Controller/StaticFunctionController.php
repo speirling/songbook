@@ -159,7 +159,9 @@ class StaticFunctionController extends AppController
 	
 		$contentHTML = $content;
 		//if special characters have found their way into  lyrics in the database, get rid of them
-		$contentHTML = preg_replace('/&nbsp;/', ' ', $contentHTML);  
+		$contentHTML = preg_replace('/&nbsp;/', ' ', $contentHTML);
+		$contentHTML = preg_replace('/<br>/', "
+", $contentHTML);  //I can't get a new line inserted using regex.... maybe subsequent "replace"s change it back?
 
 		//-------------
         // chords that are close together - [Am][D] etc ... even [Am]  [D].... should be separated by characters equal in width to the chord (or by margin in css?)
@@ -343,7 +345,7 @@ class StaticFunctionController extends AppController
 		
 
 		$line_stats = self::get_line_stats( $lines, $page_parameters);
-		//debug(  $song_parameters["title"]);debug($line_stats);
+		//debug(  $song_parameters["title"]);//debug($line_stats);
 		
 		$current_column = 1;
 		
