@@ -20,8 +20,7 @@ body.printable {
 .printable table.page,
 table.page.printable  {
      border: 1px solid gray;
-     display: block;
-     height: 1000px;
+     table-layout:fixed;
  }
 .printable table.page.single-song,
 table.page.printable.single-song  {
@@ -39,6 +38,12 @@ table.page.printable.multiple-songs  {
     vertical-align: top;
     font-size: 20px;
     border: 0px;
+ }
+ .printable table.page tbody {
+    width: 100%;
+ }
+ .printable table.page td.song-title {
+    overflow: hidden;
  }
 .lyrics-display.printable {
     position: relative;

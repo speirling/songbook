@@ -22,6 +22,7 @@ class songlistComponent extends Component {
 		$controller->loadModel('SongVotes');
 	
 		$filtered_list_query = $controller->Songs->find();
+		
 		$filtered_list_query->select(['id', 'title', 'written_by', 'performed_by', 'base_key', 'content'], false);
 		$filtered_list_query->contain(['SongTags'=>['Tags']]);
 		$filtered_list_query->contain(['SetSongs.Performers']);
@@ -90,6 +91,16 @@ class songlistComponent extends Component {
 				$query_parameters = $controller->request->query;
 			} else {
 				$query_parameters = $controller->request->data;
+			}
+			
+			/*
+			 * allow sorting by
+			 *              songbook/dashboard/print-lyric-sheets?unpaginated&sort=title
+			 *              songbook/dashboard?sort=title
+			 * etc.
+			 */ 
+			if($query_parameters['sort'] === 'title') {
+			    $filtered_list_query->order(['title' => 'ASC']);
 			}
 			    
 			// Title: Song Title text search
@@ -238,13 +249,16 @@ class songlistComponent extends Component {
 		$controller->set('search_string', $search_string);
 		$controller->set('selected_performer', $selected_performer);
 		$controller->set('selected_tags', $selected_tag_array);
+		$this->filtered_list = $filtered_list_query; //so that the calling class can access this list, not just the ctp template
 		if($filter_on) {
 			$controller->set('filtered_list', $filtered_list_query);
-			$this->filtered_list = $filtered_list_query; //so tha the calling class can access this list, not just the ctp template
 			$controller->set('filter_on', TRUE);
+		} elseif(array_key_exists("unpaginated", $query_parameters)) {
+		    $controller->set('filtered_list', $filtered_list_query);
+		    $controller->set('filter_on', TRUE); //prevents the footer haveing 'next' & 'previous' buttons
 		} else {
-			$controller->set('filtered_list', $controller->paginate($filtered_list_query));
-			$controller->set('filter_on', FALSE);
+		    $controller->set('filtered_list', $controller->paginate($filtered_list_query));
+		    $controller->set('filter_on', FALSE);
 		}
 
 		//for the print title

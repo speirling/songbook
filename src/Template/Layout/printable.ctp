@@ -34,6 +34,31 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->Html->css('base.css') ?>
     <?= $this->Html->css('cake.css') ?>
     <?= $this->Html->css(Cake\Core\Configure::read('Songbook.css_library')); ?>
+    <?php
+    $print_size_configuration = \Cake\Core\Configure::read('Songbook.print_size');
+    $size_config_values = $print_size_configuration[$print_size];
+    $local_css_statement = "\n" . 
+	   	    ".line {\n" .
+	   	    "    margin-top: " . $size_config_values['lyric_line_top_margin'] .  "px; \n" .
+	   	    "\n}" .
+	   	    ".line .word {\n" .
+	   	    "    font-size: " . $size_config_values['font_sizes']['lyrics'] .  "px; \n" .
+	   	    "\n}" .
+	   	    ".line .word .chord {\n" .
+	   	    "    font-size: " . $size_config_values['font_sizes']['chords'] .  "px; \n" .
+	   	    "}\n" .
+	   	    ".title-block .song-title h3 {\n" .
+	   	    "    font-size: " . $size_config_values['font_sizes']['title'] .  "px; \n" .
+	   	    "}\n" .
+	   	    ".title-block .attribution .performed-by.written-by th, .title-block .attribution .performed-by.written-by td {\n" .
+	   	    "    font-size: " . $size_config_values['font_sizes']['attributions'] .  "px; \n" .
+	   	    "}\n" .
+	   	    
+	    "";
+	    echo '<style type="text/css">';
+	    echo $local_css_statement;
+	    echo '</style>';
+    ?>
 	<?= $this->Html->script(Cake\Core\Configure::read('Songbook.js_library')); ?>
     
 

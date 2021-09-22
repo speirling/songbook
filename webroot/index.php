@@ -33,9 +33,9 @@ use Cake\Routing\DispatcherFactory;
 
 /* Songbook configuration */
 Cake\Core\Configure::write(
-    'Songbook', array(
+    'Songbook', [
         'playlist_directory' => '/fileserver/data/playlists',
-        'js_library' => array(
+        'js_library' => [
             'js_dependencies/jquery-1.10.2.js',
             'js_dependencies/jquery-ui-1.10.4.custom.min.js',
             'js_dependencies/jsrender.min.js',
@@ -83,8 +83,8 @@ Cake\Core\Configure::write(
             //'js_classes/SBK.Class.SongLyricsDisplay.Book.js',
             //'js_classes/SBK.Class.SongLyricsEdit.js',
             'index.js'
-        ),
-        'css_library' => array(
+        ],
+        'css_library' => [
         	'../js/js_dependencies/select2-4.0.3/dist/css/select2.min.css',
             'common.css',
             'playlists-list.css',
@@ -97,10 +97,37 @@ Cake\Core\Configure::write(
             'baked_ui.css',
             'chord_editor.css',
             'printable.css'
-        )
-    )
+        ],
+        'print_page' => [
+            'A4' => [
+                "page_height" => 1000, //px
+                "page_width" => 690, //px
+            ],
+        ],
+        'print_size' => [
+            'default' => [
+                "font_sizes" => [
+                    "lyrics" => 16, //px
+                    "chords" => 12, //px
+                    "title" => 27, //px
+                    "attributions" =>  10 //px
+                ],
+                "lyric_width_per_100_characters" => 670, //px
+                "content_padding" => 10, //px
+                "lyric_line_top_margin" => 8, //px
+                "font_family" => 'verdana',
+                "column_width" => [
+                    "1_column" => 100, //characters
+                    "2_column" => 45 //characters
+                ]
+            ]
+         ]
+    ]
 );
 /* end Songbook configuration */
+/**
+ * Printout Page configurations
+ */
 
 
 
