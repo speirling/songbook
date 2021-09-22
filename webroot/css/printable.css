@@ -19,7 +19,7 @@ body.printable {
  }
 .printable table.page,
 table.page.printable  {
-     border: 1px solid gray;
+     /*border: 1px solid gray;*/
      table-layout:fixed;
  }
 .printable table.page.single-song,

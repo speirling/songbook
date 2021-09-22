@@ -224,6 +224,10 @@ class StaticFunctionController extends AppController
         // I had a problem with one song with :: <div class="line">    [A]You're</span> :: ... i.e whitespace before [ at the start of the line. So allow variable no. of whitespace before each of the non-word charaters at the start of line
         $contentHTML = preg_replace('/^\s*?([' . $exception_string . '])/mu', '</span><span class="word">$1', $contentHTML);
 		$contentHTML = preg_replace('/([' . $exception_string . '])\s*?$/mu', '$1</span><span class="word">', $contentHTML);
+		
+		/*
+		 * @todo: a song starting with a line of chords, no spaces between them - is counted as a line without chords.
+		 */
 
 		//the above regex misses apostrophe at the end of a line of a line ("...'")
 		$contentHTML = preg_replace('/\'$/m', '\'</span><span class="word">', $contentHTML);
