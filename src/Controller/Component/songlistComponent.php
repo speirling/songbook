@@ -99,7 +99,7 @@ class songlistComponent extends Component {
 			 *              songbook/dashboard?sort=title
 			 * etc.
 			 */ 
-			if($query_parameters['sort'] === 'title') {
+			if(array_key_exists('sort', $query_parameters) && $query_parameters['sort'] === 'title') {
 			    $filtered_list_query->order(['title' => 'ASC']);
 			}
 			    
