@@ -125,17 +125,17 @@ class StaticFunctionController extends AppController
 
 	public static function score_replace_callback($score_params) {
 		$score_path_info = pathinfo($score_params[1]);
-				
+
 		if(array_key_exists('display_key', StaticFunctionController::$key_transpose_parameters)) { //if no key has been chosen - and the default key is used - then this is not set.
 			$score_filename = $score_path_info['filename'] . "_" . StaticFunctionController::$key_transpose_parameters['display_key'] . "." . $score_path_info['extension'];
-	
+
 			if(!file_exists("/fileserver/data/songbook_images/" . $score_filename)) {
 				$score_filename = $score_path_info['filename'] . "." . $score_path_info['extension'];
 			}
 		} else {
 			$score_filename = $score_path_info['filename'] . "." . $score_path_info['extension'];
 		}
-		
+
 		return '<img src="/songbook/score/' . $score_filename . '" />';
 	}
 	
@@ -302,14 +302,12 @@ class StaticFunctionController extends AppController
         $height_of_wrapped_line_with_chords = $size_config_values['font_sizes']['lyrics'] * 1.125 * 2
                                             + $size_config_values['font_sizes']['chords'] * 1.125 * 2
                                             + $size_config_values['lyric_line_top_margin'];
-                                    
-        $characters_per_column_1_column = ($page_config_values['page_width'] - $size_config_values['content_padding'] * 2)
-                                          / $size_config_values['lyric_width_per_100_characters']
-                                          * 100;
-                                    
-        $characters_per_column_2_column = ($page_config_values['page_width'] /2 - $size_config_values['content_padding'] * 2)
-                                          / $size_config_values['lyric_width_per_100_characters']
-                                          * 100;
+        
+        $px_per_column_1_column = ($page_config_values['page_width'] - $size_config_values['content_padding'] * 2);
+        $characters_per_column_1_column = $px_per_column_1_column / $size_config_values['lyric_width_per_100_characters'] * 100;
+        
+        $px_per_column_2_column = ($page_config_values['page_width'] / 2 - $size_config_values['content_padding'] * 2);
+        $characters_per_column_2_column = $px_per_column_2_column / $size_config_values['lyric_width_per_100_characters'] * 100;
                                     
 	    //$print_page_configuration[$page_size]
 	    $page_parameters = [
@@ -404,8 +402,10 @@ class StaticFunctionController extends AppController
 		$line_no = 0;
 		if ($line_stats['no_of_columns'] === 1) {
 		    $column_width = $page_parameters["column_width"]["1_column"];
+		    $px_per_column = $px_per_column_1_column;
 		} else {
 		    $column_width = $page_parameters["column_width"]["2_column"];
+		    $px_per_column = $px_per_column_2_column;
 		}
 		//debug($page_height);
 		//debug($column_width);
@@ -417,23 +417,30 @@ class StaticFunctionController extends AppController
 			$line_contains_chords     = $xpath->query(".//span[@class='chord']"      , $line)->length;
 			
 			$line_with_chords_removed = $xpath->query("span[not (@class='chord')]", $line);
+			
+			//does this line have an image?
+			$image = $xpath->query(".//img/@src", $line);
+			if($image->length) {
+			    $imagesize = getimagesize(str_replace('/songbook/score/', WWW_ROOT . 'score/', $image[0]->textContent));
+			    $line_height_px = ($px_per_column/$imagesize[0]) * $imagesize[1];
+			} else {
+			    if ($line_contains_chords > 0){
+			        $line_height_px = $page_parameters["height_of_line_with_chords"];
+			    } else {
+			        $line_height_px = $page_parameters["height_of_line_without_chords"];
+			    }
+			}
+
 			$this_line_length = 0;
 			foreach($line_with_chords_removed as $this_node) {
 			    $this_line_length = $this_line_length + strlen($this_node->textContent) + 1; //the spans found are word spans, the spaces in between them are omitted. Add 1 to allow for one space per span.
 			}
-			
-			if ($line_contains_chords > 0){
-			    $line_height_px = $page_parameters["height_of_line_with_chords"];
-			} else {
-			    $line_height_px = $page_parameters["height_of_line_without_chords"];
-			}
-			
+
 			if($this_line_length === 0) {
 			    $wrap = 1;
 			} else {
 			    $wrap = ceil($this_line_length / $column_width);
 			}
-			
 			
 			$content_height_px = $content_height_px + $line_height_px * $wrap + $page_parameters["lyric_line_top_margin"];
 			
