@@ -75,6 +75,10 @@
     margin-left: 1em;
     margin-right: 1em;
 }
+.chord.full-width .chord-symbol-align {
+	position: relative;
+	bottom: 15px;
+}
 .chord .bass_note_modifier {
     color: gray;
     font-weight: normal;
