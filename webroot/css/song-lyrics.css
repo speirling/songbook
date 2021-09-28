@@ -74,7 +74,9 @@
 	width: auto;
     margin-left: 1em;
     margin-right: 1em;
+    padding-bottom: 0;
 }
+
 .chord.full-width .chord-symbol-align {
 	position: relative;
 	bottom: 15px;

@@ -413,10 +413,9 @@ class StaticFunctionController extends AppController
 		    $line_no = $line_no + 1;
 			//set the font size
 		    $line->setAttribute("style", "font-size: " . $page_parameters["font_size_in_pixels"] . "px;"); //maybe done now by css staement generated in HTML HEAD?
-		
-			$line_contains_chords     = $xpath->query(".//span[@class='chord']"      , $line)->length;
-			
-			$line_with_chords_removed = $xpath->query("span[not (@class='chord')]", $line);
+		    
+            $line_contains_chords     = $xpath->query(".//span[contains(@class, 'chord')]"      , $line)->length;
+            $line_with_chords_removed = $xpath->query("span[not (@class='chord')]", $line);
 			
 			//does this line have an image?
 			$image = $xpath->query(".//img/@src", $line);
