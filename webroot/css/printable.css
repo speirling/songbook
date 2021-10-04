@@ -76,14 +76,29 @@ table.page.printable.multiple-songs  {
 	width: 180px;
 }
 .printable .performed-by.written-by th.key {
-	width: 50px;
+	width: 20px;
 }
 .printable .performed-by.written-by td.key {
 	
 }
 .printable .performed-by.written-by th.capo {
-	width: 50px;
+	width: 20px;
 }
 .printable .performed-by.written-by td.capo {
 	
+}
+
+td.song-title .key .capo {
+	display: inline-block;
+}
+td.song-title .key .capo.value {
+	margin: 0;
+}
+td.song-title td.key {
+	width: auto;
+}
+
+td.song-title .key .transpose {
+	color: gray;
+	font-size: 0.8em;
 }
