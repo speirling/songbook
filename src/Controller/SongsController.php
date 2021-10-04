@@ -119,11 +119,11 @@ class SongsController extends AppController
 		$this->set('songTag', new SongTag());
 		$this->set('_serialize', ['song']);
 		$this->set('performers', $this->Songs->SetSongs->Performers->find('list', [
-				'keyField' => 'id',
-				'valueField' => 'nickname'
-		]
-				)
-				);
+				    'keyField' => 'id',
+				    'valueField' => 'nickname'
+		        ]
+		    )
+		);
 	}
 
 	/**
@@ -153,8 +153,8 @@ class SongsController extends AppController
 		$song_parameters["title"] = $song["title"];
 		$song_parameters["written_by"] = $song["written_by"];
 		$song_parameters["performed_by"] = $song["performed_by"];
-		$song_parameters["current_key"] = $song["current_key"];
-		$song_parameters["capo"] = $song["capo"];
+		$song_parameters["current_key"] = $key;
+		$song_parameters["capo"] = $capo;
 		$song_parameters["id"] = $song["id"];
 		$song_parameters["style_set_or_song"] = "single-songs";
 		$print_page = "A4";

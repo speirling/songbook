@@ -111,7 +111,14 @@ class StaticFunctionController extends AppController
 			$replaced_chord = str_replace('!', '', $replaced_chord);
 		}
 		if(StaticFunctionController::$key_transpose_parameters['transpose']) {
+		    /*
+		    debug(StaticFunctionController::$key_transpose_parameters);
+		    debug($replaced_chord);
+		    // */
 			$replaced_chord = StaticFunctionController::transpose_chord($replaced_chord, StaticFunctionController::$key_transpose_parameters['base_key'], StaticFunctionController::$key_transpose_parameters['display_key']);
+			/*
+			debug($replaced_chord);
+			// */
 		}
 		//if there's a bass modifier, give it its own html
 	
@@ -156,7 +163,9 @@ class StaticFunctionController extends AppController
 			    'capo' => $capo
 			);
 		}
-	
+		/*
+		debug(StaticFunctionController::$key_transpose_parameters);
+		// */
 		$contentHTML = $content;
 		//if special characters have found their way into  lyrics in the database, get rid of them
 		$contentHTML = preg_replace('/&nbsp;/', ' ', $contentHTML);
@@ -364,7 +373,7 @@ class StaticFunctionController extends AppController
 		$row_header->appendChild($td_header);
 		
 		$title_heading = $doc->createDocumentFragment();
-		
+
 		$title_heading_html = "";
 		$title_heading_html = $title_heading_html . "<h3>" . htmlspecialchars($song_parameters["title"]) .                                       "</h3>"   . "\n" ;
 		$title_heading_html = $title_heading_html . "<table class=\"vertical-table attribution\">"                             . "\n" ;
@@ -378,13 +387,18 @@ class StaticFunctionController extends AppController
 		    $title_heading_html = $title_heading_html .   		"<td class=\"performed-by\">" . htmlspecialchars($song_parameters["performed_by"]) .                         "</td>"  . "\n" ;
 		}
 		if(trim($song_parameters["current_key"]) !== "") {
-		    $title_heading_html = $title_heading_html .   		"<th class=\"key\">" . '&#160;&#160;&#160;&#160;|&#160;&#160;&#160;&#160; Key' .  "</th>"  . "\n" ;
-		    $title_heading_html = $title_heading_html .   		"<td class=\"key\">" . htmlspecialchars($song_parameters["current_key"]) .                          "</td>"  . "\n" ;
+		    $title_heading_html = $title_heading_html .   		"<th class=\"key\">" . 'Key' .  "</th>"  . "\n" ;
+		    $title_heading_html = $title_heading_html .   		"<td class=\"key\">" . htmlspecialchars($song_parameters["current_key"]) ;                       
 		}
 		if(trim($song_parameters["capo"]) !== "") {
-		    $title_heading_html = $title_heading_html .   		"<th class=\"capo\">" . 'Capo' .                                                   "</th>"  . "\n" ;
-		    $title_heading_html = $title_heading_html .   		"<td class=\"capo\">" . htmlspecialchars($song_parameters["capo"]) .                                 "</td>"  . "\n" ;
+		    $title_heading_html = $title_heading_html .   		"<span class=\"capo heading\">" . 'capo' .                                                   "</span>"  . "\n" ;
+		    $title_heading_html = $title_heading_html .   		"<span class=\"capo value\">" . htmlspecialchars($song_parameters["capo"]) .                                 "</span>"  . "\n" ;
+		    $title_heading_html = $title_heading_html .   		"<span class=\"transpose heading\">" . ": chords shown in " .         "</span>"  . "\n" ;
+		    $title_heading_html = $title_heading_html .   		"<span class=\"transpose value\">" . StaticFunctionController::shift_note($song_parameters["current_key"], $song_parameters["capo"]) .         "</span>"  . "\n" ;
+		    $title_heading_html = $title_heading_html .   		"<span class=\"transpose heading\">" . "" .         "</span>"  . "\n" ;
 		}
+		
+		$title_heading_html = $title_heading_html .    "</td>"  . "\n" ;
 		
 		$title_heading_html = $title_heading_html .    "</tr>" . "\n" ;
 		$title_heading_html = $title_heading_html . "</table>";
@@ -686,7 +700,9 @@ class StaticFunctionController extends AppController
 	}
 	
 	public static function transpose_chord($chord, $base_key, $target_key, $capo = NULL) {
-		
+		/*
+		debug([ 'chord' => $chord, 'base_key' => $base_key, 'target_key' => $target_key, 'capo' => $capo ]);
+		//*/
 		$chord_note = substr($chord, 0, 1);
 		$second_char = substr($chord, 1, 1);
 		$modifier_start = 1;
@@ -698,16 +714,46 @@ class StaticFunctionController extends AppController
 			$chord_note = '';
 		}
 		$chord_modifier = substr($chord, $modifier_start);
+		// If a key is given as minor it isn't in the key array! Remove the m, replace it later
+		if(substr($target_key, -1) == 'm') {
+		    $target_key_mode = 'm';
+		    $target_key = str_replace('m', '', $target_key);
+		} else {
+		    $target_key_mode = '';
+		}
+		if(substr($base_key, -1) == 'm') {
+		    $base_key_mode = 'm';
+		    $base_key = str_replace('m', '', $base_key);
+		} else {
+		    $base_key_mode = '';
+		}
+		/*
+		debug(['target_key_note_value' => self::$NOTE_VALUE_ARRAY[$target_key],'base_key_note_value' => self::$NOTE_VALUE_ARRAY[$base_key]]);
+		//*/
+		
         if(array_key_exists($target_key, self::$NOTE_VALUE_ARRAY) && array_key_exists($base_key, self::$NOTE_VALUE_ARRAY)) {
-            $key_conversion_value = self::$NOTE_VALUE_ARRAY[$target_key] - self::$NOTE_VALUE_ARRAY[$base_key];			
+            $target_key_note_value = self::$NOTE_VALUE_ARRAY[$target_key];
+            $base_key_note_value = self::$NOTE_VALUE_ARRAY[$base_key];
+            $key_conversion_value = $target_key_note_value - $base_key_note_value;			
         } else {
             $key_conversion_value = 0;
+            $target_key_note_value = null;
+            $base_key_note_value = null;
         }
 		if(self::$key_transpose_parameters['capo']) {
 			$key_conversion_value = $key_conversion_value - self::$key_transpose_parameters['capo'];
 		}
 		$new_chord = self::shift_note($chord_note, $key_conversion_value);
-
+		/*
+		debug([
+		    'base_key' => $base_key, 'target_key' => $target_key, 'capo' => $capo,
+		    'base_key_note_value' => $base_key_note_value, 'target_key_note_value' => $target_key_note_value,
+		    'key_conversion_value' => $key_conversion_value,
+		    'chord' => $chord,
+		    'chord_note' => $chord_note,
+		    'new_chord' => $new_chord
+		]);
+		//*/
 		$bass_key = '';
 		$slash_position = strpos($chord_modifier, '/');
 		if($slash_position !== false) {
