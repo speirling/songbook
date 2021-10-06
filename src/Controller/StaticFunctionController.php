@@ -388,17 +388,18 @@ class StaticFunctionController extends AppController
 		}
 		if(trim($song_parameters["current_key"]) !== "") {
 		    $title_heading_html = $title_heading_html .   		"<th class=\"key\">" . 'Key' .  "</th>"  . "\n" ;
-		    $title_heading_html = $title_heading_html .   		"<td class=\"key\">" . htmlspecialchars($song_parameters["current_key"]) ;                       
+		    $title_heading_html = $title_heading_html .   		"<td class=\"key\">" . htmlspecialchars($song_parameters["current_key"]) ;
+		    
+		    if(trim($song_parameters["capo"]) !== "") {
+		        $title_heading_html = $title_heading_html .   		"<span class=\"capo heading\">" . 'capo' .                                                   "</span>"  . "\n" ;
+		        $title_heading_html = $title_heading_html .   		"<span class=\"capo value\">" . htmlspecialchars($song_parameters["capo"]) .                                 "</span>"  . "\n" ;
+		        $title_heading_html = $title_heading_html .   		"<span class=\"transpose heading\">" . ": chords shown in " .         "</span>"  . "\n" ;
+		        $title_heading_html = $title_heading_html .   		"<span class=\"transpose value\">" . StaticFunctionController::shift_note($song_parameters["current_key"], $song_parameters["capo"]) .         "</span>"  . "\n" ;
+		        $title_heading_html = $title_heading_html .   		"<span class=\"transpose heading\">" . "" .         "</span>"  . "\n" ;
+		    }
+		    
+		    $title_heading_html = $title_heading_html .    "</td>"  . "\n" ;
 		}
-		if(trim($song_parameters["capo"]) !== "") {
-		    $title_heading_html = $title_heading_html .   		"<span class=\"capo heading\">" . 'capo' .                                                   "</span>"  . "\n" ;
-		    $title_heading_html = $title_heading_html .   		"<span class=\"capo value\">" . htmlspecialchars($song_parameters["capo"]) .                                 "</span>"  . "\n" ;
-		    $title_heading_html = $title_heading_html .   		"<span class=\"transpose heading\">" . ": chords shown in " .         "</span>"  . "\n" ;
-		    $title_heading_html = $title_heading_html .   		"<span class=\"transpose value\">" . StaticFunctionController::shift_note($song_parameters["current_key"], $song_parameters["capo"]) .         "</span>"  . "\n" ;
-		    $title_heading_html = $title_heading_html .   		"<span class=\"transpose heading\">" . "" .         "</span>"  . "\n" ;
-		}
-		
-		$title_heading_html = $title_heading_html .    "</td>"  . "\n" ;
 		
 		$title_heading_html = $title_heading_html .    "</tr>" . "\n" ;
 		$title_heading_html = $title_heading_html . "</table>";
