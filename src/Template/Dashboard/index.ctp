@@ -56,6 +56,7 @@
         <li><?= $this->Html->link(__('E-Irish'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'1', 'filter_tag_id'=>[2]]], ['target'=>'_blank']) ?></li>
         <li><?= $this->Html->link(__('E-Lively-AMU'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'1', 'filter_tag_id'=>[13, 15]]], ['target'=>'_blank']) ?></li>
         <li><?= $this->Html->link(__('Christmas-AMU'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'filter_tag_id'=>[15, 21]]], ['target'=>'_blank']) ?></li>
+        <li><?= $this->Html->link(__('Piano'), ['controller' => 'dashboard', 'action' => 'index', '?'=>['text_search'=>'', 'filter_tag_id'=>[1]]], ['target'=>'_blank']) ?></li>
         <li><?= $this->Html->link(__('Keys'), ['controller' => 'SetSongs', 'action' => 'index']) ?></li>
     </ul>
     
