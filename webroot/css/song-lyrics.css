@@ -67,8 +67,8 @@
 }
 .chord .chord-symbol-align {
     position: absolute;
-    transform: translate(-50%, -80%);
     -webkit-transform: translate(-0%, -80%);
+    transform: translate(-50%, -80%);
 }
 
 .chord.full-width {
