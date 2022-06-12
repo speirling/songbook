@@ -67,13 +67,13 @@ table.page.printable.multiple-songs  {
 	width: 50px;
 }
 .printable .performed-by.written-by td.written-by {
-	width: 180px;
+	width: 150px;
 }
 .printable .performed-by.written-by th.performed-by {
 	width: 70px;
 }
 .printable .performed-by.written-by td.performed-by {
-	width: 180px;
+	width: 150px;
 }
 .printable .performed-by.written-by th.key {
 	width: 20px;
@@ -86,6 +86,77 @@ table.page.printable.multiple-songs  {
 }
 .printable .performed-by.written-by td.capo {
 	
+}
+
+td.title-table {
+	
+}
+
+.printable table.page td.key-capo {
+	border: 1px solid gray;
+	line-height: normal;
+	width:30%;
+	vertical-align: middle;
+    padding-left: 1em;
+}
+
+td.key-capo .key-layout-holder {
+	display: inline-block;
+}
+
+td.key-capo .capo-transpose-layout-holder {
+	display: inline-block;
+	text-align: right;
+}
+
+td.key-capo .layout-holder {
+	/*border: 1px solid #333399;*/
+}
+
+td.key-capo .key.layout-holder {
+}
+
+td.key-capo .key {
+	width: auto;
+}
+
+td.key-capo .capo.layout-holder {
+	line-height: 0.5;
+    font-size: 1em;
+	margin: 0;
+}
+
+td.key-capo .transpose.layout-holder {
+    font-size: 0.7em;
+    color: gray;
+}
+
+td.key-capo .key .heading {
+    display: none;
+}
+
+td.key-capo .key .value {
+    display: inline-block;
+    font-size: 2.2em;
+    color: gray;
+    font-weight: bold;
+}
+
+td.key-capo .capo {
+    display: block;
+	margin: 0;
+}
+
+td.key-capo .capo .value {
+    font-weight: bold;
+}
+
+td.key-capo .transpose .heading {
+    
+}
+
+td.key-capo .transpose .value {
+    font-weight: bold;
 }
 
 td.song-title .key .capo {
