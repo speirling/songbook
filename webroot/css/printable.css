@@ -89,15 +89,25 @@ table.page.printable.multiple-songs  {
 }
 
 td.title-table {
-	
+	overflow:hidden;
 }
 
 .printable table.page td.key-capo {
-	border: 1px solid gray;
+	/*border: 1px solid red;*/
 	line-height: normal;
-	width:30%;
+	width:25%;
 	vertical-align: middle;
+    text-align: right;
+}
+.printable table.page td.key-capo.capo-shown {
+	width:40%;
+}
+
+.capo-transpose-border {
+	display:inline-block;
+	border:1px solid gray;
     padding-left: 1em;
+    padding-right: 1em;
 }
 
 td.key-capo .key-layout-holder {

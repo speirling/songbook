@@ -138,7 +138,8 @@
          -webkit-column-fill: auto;
 }
 .lyrics-display h3 {
-    white-space: nowrap;
+    /*white-space: nowrap;*/
+    line-height:0.85;
 }
 .lyrics-display.zoom-1 .lyrics-panel { font-size: 0.75em; }
 .lyrics-display.zoom-2 .lyrics-panel { font-size: 1em;    }

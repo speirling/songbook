@@ -395,12 +395,12 @@ class StaticFunctionController extends AppController
 		$title_heading_html = $title_heading_html . "</table>" . "\n" ;
 		
 		$title_heading_html = $title_heading_html .    "</td>"  . "\n" ;
-		$title_heading_html = $title_heading_html . "<td class= \"key-capo\">"  . "\n" ;
-		
-
 		if(trim($song_parameters["current_key"]) !== "") {
 		    
 		    if(trim($song_parameters["capo"]) !== "") {
+        		$title_heading_html = $title_heading_html . "<td class= \"key-capo capo-shown\">"  . "\n" ;
+        		$title_heading_html = $title_heading_html .   		"<span class=\"capo-transpose-border\">" . "\n" ;
+		        
 		        $title_heading_html = $title_heading_html .   		"<span class=\"capo-transpose-layout-holder layout-holder\">" . "\n" ;
 		        
 		        $title_heading_html = $title_heading_html .   		"<span class=\"capo layout-holder\">" . "\n" ;
@@ -414,16 +414,25 @@ class StaticFunctionController extends AppController
 		        $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
 		        
 		        $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
+		    } else {
+        		$title_heading_html = $title_heading_html . "<td class= \"key-capo\">"  . "\n" ;
+        		$title_heading_html = $title_heading_html .   		"<span class=\"capo-transpose-border\">" . "\n" ;
+		        
+		        
 		    }
 		    
 		    $title_heading_html = $title_heading_html .   		"<span class=\"key layout-holder key-layout-holder\">" . "\n" ;
 		    $title_heading_html = $title_heading_html .   		"<span class=\"heading\">" . 'Key' .  "</span>"  . "\n" ;
 		    $title_heading_html = $title_heading_html .   		"<span class=\"value\">" . htmlspecialchars($song_parameters["current_key"]) . "</span>"  . "\n" ;
 		    $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
+		    
+		    $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
+		    $title_heading_html = $title_heading_html .    "</td>"  . "\n" ;
+		} else {
+    		
 		}
 
-		
-		$title_heading_html = $title_heading_html .    "</td>"  . "\n" ;
+
 		$title_heading_html = $title_heading_html .    "</tr>" . "\n" ;
 		$title_heading_html = $title_heading_html . "</table>";
 
