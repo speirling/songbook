@@ -144,6 +144,8 @@ class SongsController extends AppController
 		$capo = null;
 		if(array_key_exists('key', $_GET)) {
 			$key = $_GET['key'];
+		} else {
+		    $key = $song['base_key'];
 		}
 		if(array_key_exists('capo', $_GET)) {
 			$capo = $_GET['capo'];
