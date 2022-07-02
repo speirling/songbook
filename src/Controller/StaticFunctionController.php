@@ -134,13 +134,24 @@ class StaticFunctionController extends AppController
 		$score_path_info = pathinfo($score_params[1]);
 
 		if(array_key_exists('display_key', StaticFunctionController::$key_transpose_parameters)) { //if no key has been chosen - and the default key is used - then this is not set.
-			$score_filename = $score_path_info['filename'] . "_" . StaticFunctionController::$key_transpose_parameters['display_key'] . "." . $score_path_info['extension'];
+		    if(array_key_exists('capo', StaticFunctionController::$key_transpose_parameters)) {
+		        //if there's a capo, the score should if possible match the key of the chords
+		        $score_filename = $score_path_info['filename'] . "_" .
+		            StaticFunctionController::shift_note(
+		                StaticFunctionController::$key_transpose_parameters['display_key'],
+		                -1 * StaticFunctionController::$key_transpose_parameters["capo"]
+		            ) .
+		            "." . $score_path_info['extension'];
 
-			if(!file_exists("/fileserver/data/songbook_images/" . $score_filename)) {
+		    } else {
+ 		        $score_filename = $score_path_info['filename'] . "_" . StaticFunctionController::$key_transpose_parameters['display_key'] . "." . $score_path_info['extension'];
+		    }
+
+		    if(!file_exists(dirname(__FILE__)."/../../webroot/score/" . $score_filename)) {
 				$score_filename = $score_path_info['filename'] . "." . $score_path_info['extension'];
 			}
 		} else {
-			$score_filename = $score_path_info['filename'] . "." . $score_path_info['extension'];
+            $score_filename = $score_path_info['filename'] . "." . $score_path_info['extension'];
 		}
 
 		return '<img src="/songbook/score/' . $score_filename . '" />';
