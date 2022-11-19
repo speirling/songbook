@@ -1,5 +1,15 @@
 <?php /* Template/Songs/view.php */ ?>
 
+<? /* ------------------------
+    Get viewport size, check if it matches what was sent to the Server               */ ?>
+               
+    <script>
+        $(document).ready(function(){
+            console.log(SBK.StaticFunctions);
+            SBK.StaticFunctions.set_window_size_in_URL();
+        });
+    </script>
+<? /* ----------------------*/ ?>
 <div class="songs view content lyrics-display song-row"> <?php /* .song-row required for ajax callbacks for played and vote to work. */?>
     <span class="button float-right top-button-set"><?= $this->Html->link(__('Dashboard'), ['controller' => 'Dashboard', 'action' => 'index']) ?></span>
     <span class="search-form float-right top-button-set">
