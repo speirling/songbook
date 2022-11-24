@@ -109,6 +109,26 @@ class SongsController extends AppController
 			debug("Cannot transpose this song because the given base key contains a space!!");
 		}
 		$song['content'] = StaticFunctionController::convert_song_content_to_HTML($song['content'], $song['base_key'], $key, $capo);
+		
+		$song_parameters["title"] = $song["title"];
+		$song_parameters["written_by"] = $song["written_by"];
+		$song_parameters["performed_by"] = $song["performed_by"];
+		$song_parameters["current_key"] = $key;
+		$song_parameters["capo"] = $capo;
+		$song_parameters["id"] = $song["id"];
+		$song_parameters["style_set_or_song"] = "single-songs";
+		$print_size = "default";
+		
+		$song['printable_content'] = StaticFunctionController::convert_content_HTML_to_columns(
+		    $song['content'], 
+		    $song_parameters, 
+		    [
+		        "page_height" => $_GET['vw'], //px
+		        "page_width" => $_GET['vh'], //px
+		    ], 
+		    $print_size
+		);
+		
 		$setSong = new SetSong();
 		$this->set('song', $song);
 		$this->set('setSong', $setSong);
@@ -162,7 +182,10 @@ class SongsController extends AppController
 		$print_page = "A4";
 		$print_size = "default";
 		
-		$song['printable_content'] = StaticFunctionController::convert_content_HTML_to_columns($song['content'], $song_parameters, $print_page, $print_size);
+		$page_config_values = \Cake\Core\Configure::read('Songbook.print_page');
+		$print_page_configuration= $page_config_values[$print_page];
+		
+		$song['printable_content'] = StaticFunctionController::convert_content_HTML_to_columns($song['content'], $song_parameters, $print_page_configuration, $print_size);
 
 		$setSong = new SetSong();
 		$this->set('song', $song);

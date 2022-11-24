@@ -289,14 +289,16 @@ class StaticFunctionController extends AppController
 	public static function convert_content_HTML_to_columns(
 	        $contentHTML, 
 	        $song_parameters, 
-	        $print_page = 'A4',
+    	    $print_page_configuration = [
+    	        "page_height" => 1000, //px
+    	        "page_width" => 690, //px
+    	    ],
 	        $print_size = 'default'
 	    ) {
         //this is called from SongsController -> printable() with $contentHTML set to the output from convert_song_content_to_HTML
         //debug($contentHTML);
         
-        $print_page_configuration = \Cake\Core\Configure::read('Songbook.print_page');
-        $page_config_values = $print_page_configuration[$print_page];
+        
         $print_size_configuration = \Cake\Core\Configure::read('Songbook.print_size');
         $size_config_values = $print_size_configuration[$print_size];
         
@@ -304,11 +306,11 @@ class StaticFunctionController extends AppController
                       + $size_config_values['font_sizes']['attributions'] * 1.5 
                       + $size_config_values['content_padding'] * 2;
                       
-        $p1_content_height = $page_config_values['page_height']
+        $p1_content_height = $print_page_configuration['page_height']
                            - $title_height
                            - $size_config_values['content_padding'] * 2;
                       
-        $p2_content_height = $page_config_values['page_height']
+        $p2_content_height = $print_page_configuration['page_height']
                            - $size_config_values['content_padding'] * 2;
                       
         $height_of_line_without_chords = $size_config_values['font_sizes']['lyrics'] * 1.125;
@@ -323,16 +325,22 @@ class StaticFunctionController extends AppController
                                             + $size_config_values['font_sizes']['chords'] * 1.125 * 2
                                             + $size_config_values['lyric_line_top_margin'];
         
-        $px_per_column_1_column = ($page_config_values['page_width'] - $size_config_values['content_padding'] * 2);
+        $px_per_column_1_column = ($print_page_configuration['page_width'] / 1 - $size_config_values['content_padding'] * 2);
         $characters_per_column_1_column = $px_per_column_1_column / $size_config_values['lyric_width_per_100_characters'] * 100;
         
-        $px_per_column_2_column = ($page_config_values['page_width'] / 2 - $size_config_values['content_padding'] * 2);
+        $px_per_column_2_column = ($print_page_configuration['page_width'] / 2 - $size_config_values['content_padding'] * 2);
         $characters_per_column_2_column = $px_per_column_2_column / $size_config_values['lyric_width_per_100_characters'] * 100;
+        
+        $px_per_column_3_column = ($print_page_configuration['page_width'] / 3 - $size_config_values['content_padding'] * 2);
+        $characters_per_column_3_column = $px_per_column_3_column / $size_config_values['lyric_width_per_100_characters'] * 100;
+        
+        $px_per_column_4_column = ($print_page_configuration['page_width'] / 4 - $size_config_values['content_padding'] * 2);
+        $characters_per_column_4_column = $px_per_column_4_column / $size_config_values['lyric_width_per_100_characters'] * 100;
                                     
 	    //$print_page_configuration[$page_size]
 	    $page_parameters = [
-	        "page_height" => $page_config_values['page_height'],
-	        "page_width" => $page_config_values['page_width'],
+	        "page_height" => $print_page_configuration['page_height'],
+	        "page_width" => $print_page_configuration['page_width'],
 	        "font_size_in_pixels" => $size_config_values['font_sizes']['lyrics'], //px
 	        "height_of_page_1_lines" => $p1_content_height / $height_of_line_without_chords, //lines
 	        "height_of_page_2_lines" => $p2_content_height / $height_of_line_without_chords, //lines;
@@ -345,9 +353,11 @@ class StaticFunctionController extends AppController
 	        "height_of_wrapped_line_with_chords" => $height_of_wrapped_line_with_chords,
 	        "line_multiplier_wrapped" => $height_of_wrapped_line_without_chords / $height_of_line_without_chords,
 	        "line_multiplier_chords" => $height_of_wrapped_line_with_chords / $height_of_wrapped_line_with_chords,
-    	    "column_width" => [
-    	        "1_column" => $characters_per_column_1_column, //characters
-    	        "2_column" => $characters_per_column_2_column //characters
+	        "column_width" => [
+	            "1_column" => $characters_per_column_1_column, //characters
+	            "2_column" => $characters_per_column_2_column, //characters
+	            "3_column" => $characters_per_column_3_column, //characters
+	            "4_column" => $characters_per_column_4_column //characters
     	    ]
 	    ];
 	    
