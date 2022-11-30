@@ -5,7 +5,6 @@
                
     <script>
         $(document).ready(function(){
-            console.log(SBK.StaticFunctions);
             SBK.StaticFunctions.set_window_size_in_URL();
         });
     </script>

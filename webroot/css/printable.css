@@ -22,6 +22,10 @@ table.page.printable  {
      /*border: 1px solid gray;*/
      table-layout:fixed;
  }
+.printable table.page td,
+table.page.printable td {
+     vertical-align: text-top;
+ }
 .printable table.page.single-song,
 table.page.printable.single-song  {
      page-break-before: never;

@@ -289,6 +289,8 @@ class StaticFunctionController extends AppController
 	/***
 	 * Returns HTML text, consisting of a series of tables, each one 
 	 * representing a page.
+	 * Called from SongsController -> printable() with $song['content'] set to the output from convert_song_content_to_HTML()
+	 * 
 	 * The $song array must include:
 	 * $song['content'], a string containing HTML representing the song with chord tags etc.
 	 * $song["title"]
@@ -299,45 +301,57 @@ class StaticFunctionController extends AppController
 	 * $song['base_key']
 	 * $song["id"]
 	 * 
+	 * $page_parameters os like:
+	 * [
+     *   	'page_height' => '1760',
+     *   	'page_width' => '1250',
+     *   	'font_size_in_pixels' => (int) 16,
+     *   	'height_of_page_1_lines' => (float) 92.472222222222,
+     *   	'height_of_page_2_lines' => (float) 96.666666666667,
+     *   	'p1_content_height' => (float) 1664.5,
+     *   	'p2_content_height' => (int) 1740,
+     *   	'height_of_line_with_chords' => (float) 31.5,
+     *   	'height_of_line_without_chords' => (float) 18,
+     *   	'lyric_line_top_margin' => (int) 8,
+     *   	'height_of_wrapped_line_without_chords' => (float) 44,
+     *   	'height_of_wrapped_line_with_chords' => (float) 71,
+     *   	'line_multiplier_wrapped' => (float) 2.4444444444444,
+     *   	'line_multiplier_chords' => (float) 1,
+     *   	'column_width' => [
+     *   		'1_column' => (float) 183.58208955224,
+     *   		'2_column' => (float) 90.298507462687,
+     *   		'3_column' => (float) 59.203980099502,
+     *   		'4_column' => (float) 43.65671641791
+     *   	],
+     *   	'px_per_column' => [
+     *   		'1_column' => (int) 1230,
+     *   		'2_column' => (int) 605,
+     *   		'3_column' => (float) 396.66666666667,
+     *   		'4_column' => (float) 292.5
+     *   	]
+     *  ]
 	 * 
 	 * @param array $song
-	 * @param array $print_page_configuration
-	 * @param string $print_size
+	 * @param array $page_parameters
 	 * @return string
 	 */
 	public static function convert_content_HTML_to_columns(
 	        $song, 
 	        $page_parameters
 	    ) {
-        //this is called from SongsController -> printable() with $song['content'] set to the output from convert_song_content_to_HTML
-        //debug($song['content']);
 	    
-	    $current_page = 1;
-				
 		$doc = new \DOMDocument('1.0', 'UTF-8');
 		$doc->loadHTML(mb_convert_encoding($song['content'], 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 		$xpath = new \DOMXPath($doc);
 		$lines = $xpath->query("//div[@class='line']");
-		
 		$line_stats = self::get_line_stats( $lines, $page_parameters);
 		
-		$current_column = 1;
-		
-		list($pages[$current_page], $tbody, $row, $td) = self::create_printable_page($doc, $current_page, $page_parameters, $song["id"]);
+		list($pages[$current_page], $page_height, $tbody, $row, $td) = self::create_printable_page($doc, $current_page = 1, $page_parameters, $song["id"]);
 
-		//Set the lyrics table on the first page to take account of the header
-		$page_height = $page_parameters["p1_content_height"];
 		$content_height_px = 0; 
 		$line_no = 0;
-		if ($line_stats['no_of_columns'] === 1) {
-		    $column_width = $page_parameters["column_width"]["1_column"];
-		    $px_per_column = $page_parameters["px_per_column"]["1_column"];
-		} else {
-		    $column_width = $page_parameters["column_width"]["2_column"];
-		    $px_per_column = $page_parameters["px_per_column"]["2_column"];
-		}
-		//debug($page_height);
-		//debug($column_width);
+		$current_column = 1;
+
 		foreach($lines as $line) {
 		    $line_no = $line_no + 1;
 			//set the font size
@@ -350,7 +364,7 @@ class StaticFunctionController extends AppController
 			$image = $xpath->query(".//img/@src", $line);
 			if($image->length) {
 			    $imagesize = getimagesize(str_replace('/songbook/score/', WWW_ROOT . 'score/', $image[0]->textContent));
-			    $line_height_px = ($px_per_column/$imagesize[0]) * $imagesize[1];
+			    $line_height_px = ($line_stats['px_per_column']/$imagesize[0]) * $imagesize[1];
 			} else {
 			    if ($line_contains_chords > 0){
 			        $line_height_px = $page_parameters["height_of_line_with_chords"];
@@ -367,7 +381,7 @@ class StaticFunctionController extends AppController
 			if($this_line_length === 0) {
 			    $wrap = 1;
 			} else {
-			    $wrap = ceil($this_line_length / $column_width);
+			    $wrap = ceil($this_line_length / $line_stats['column_width']);
 			}
 			
 			$content_height_px = $content_height_px + $line_height_px * $wrap + $page_parameters["lyric_line_top_margin"];
@@ -381,7 +395,7 @@ class StaticFunctionController extends AppController
 					$content_height_px = $line_height_px * $wrap + $page_parameters["lyric_line_top_margin"];
 					$line_no = 1;
 					$page_height = $page_parameters["p2_content_height"];
-					list($pages[$current_page], $tbody, $row, $td) = self::create_printable_page($doc, $current_page, $page_parameters, $song["id"]);
+					list($pages[$current_page], $page_height, $tbody, $row, $td) = self::create_printable_page($doc, $current_page, $page_parameters, $song["id"]);
 				} else {
 				   //new column
 				    $content_height_px = $line_height_px * $wrap + $page_parameters["lyric_line_top_margin"];
@@ -651,6 +665,15 @@ class StaticFunctionController extends AppController
 	       $average_line_length = ceil($non_zero_length_lines_total / $non_zero_length_lines_count);
 	    }
 	    
+	    if ($no_of_columns === 1) {
+	        $column_width = $page_parameters["column_width"]["1_column"];
+	        $px_per_column = $page_parameters["px_per_column"]["1_column"];
+	    } else {
+	        $column_width = $page_parameters["column_width"]["2_column"];
+	        $px_per_column = $page_parameters["px_per_column"]["2_column"];
+	    }
+	    
+	    
 	    return array(
 	        'maximum_line_length' => $max_length,
 	        'total_height_1_column_lines' => $total_height_1_column_lines,
@@ -662,7 +685,9 @@ class StaticFunctionController extends AppController
 	        'total_number_of_lines' => $number_of_lines,
 	        'non_zero_length_lines_count' => $non_zero_length_lines_count,
 	        'no_of_columns' => $no_of_columns,
-	        'no_of_pages' => $no_of_pages
+	        'no_of_pages' => $no_of_pages,
+	        'column_width' => $column_width,
+	        'px_per_column' => $px_per_column
 	        
 	    );
 	}
@@ -674,7 +699,12 @@ class StaticFunctionController extends AppController
 	    }
 		$page = $doc->createElement('table');
 		$page->setAttribute('class', 'printable lyrics-display page song-' . $song_id . ' page-' . $page_no . ' ' );
-		$page->setAttribute('style', 'width: ' . $page_parameters["page_width"] . 'px; height: ' . $page_parameters["page_height"] . 'px; font-size:' . $page_parameters["font_size_in_pixels"] . "px;");
+		if ($page_no === 1) {
+		    $page_height =  $page_parameters["p1_content_height"];
+		} else {
+		    $page_height =  $page_parameters["p2_content_height"];
+		}
+		$page->setAttribute('style', 'width: ' . $page_parameters["page_width"] . 'px; height: ' . $page_height . 'px; font-size:' . $page_parameters["font_size_in_pixels"] . "px;");
 		
 		$tbody = $doc->createElement('tbody');
 		
@@ -688,7 +718,7 @@ class StaticFunctionController extends AppController
 		
 		$container->appendChild($page);
 		
-		return [$page, $tbody, $row, $td];
+		return [$page, $page_height, $tbody, $row, $td];
 	}
 	
 	public static function output_pdf($display, $title = '', $orientation = 'portrait') {
