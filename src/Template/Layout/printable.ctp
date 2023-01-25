@@ -66,9 +66,6 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->fetch('script') ?>
 </head>
 <body class="printable">
-    <?php
-      echo $title_block_html;
-    ?>
     <?= $this->fetch('content') ?>
 </body>
 </html>

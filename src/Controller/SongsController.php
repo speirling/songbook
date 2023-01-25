@@ -99,16 +99,14 @@ class SongsController extends AppController
 				}, 'SetSongs.Performers']]);
 
 		$print_page_configuration = [
-		    "page_height" => isset($_GET['vw']) ? $_GET['vw'] : null, //px
-		    "page_width"  => isset($_GET['vh']) ? $_GET['vh'] : null, //px
+		    "page_width" => isset($_GET['vw']) ? $_GET['vw'] : null, //px
+		    "page_height"  => isset($_GET['vh']) ? $_GET['vh'] : null, //px
 		];
 
 	    $song["current_key"] = isset($_GET['key']) ? $_GET['key'] : null;
 	    $song["capo"] = isset($_GET['capo']) ? $_GET['capo'] : null;
 
-		if(strpos($song['base_key'], " ") > 0) {
-			debug("Cannot transpose this song because the given base key contains a space!!");
-		}
+		if(strpos($song['base_key'], " ") > 0) { debug("Cannot transpose this song because the given base key contains a space!!");}
 		$song['content'] = StaticFunctionController::convert_song_content_to_HTML(
 		    $song['content'], 
 		    $song['base_key'], 
@@ -158,8 +156,8 @@ class SongsController extends AppController
 		$print_page = "A4";
 		$print_page_configuration = \Cake\Core\Configure::read('Songbook.print_page.' . $print_page);
 		
-		$song["current_key"] = null;
-		$song["capo"] = null;
+		$song["current_key"] = isset($_GET['key']) ? $_GET['key'] : null;
+		$song["capo"] = isset($_GET['capo']) ? $_GET['capo'] : null;
 
 		if(array_key_exists('key', $_GET)) {
 		    $song["current_key"] = $_GET['key'];
@@ -178,7 +176,7 @@ class SongsController extends AppController
 		    $song['base_key'],
 		    $song["current_key"],
 		    $song["capo"]
-		);
+	    );
 
 		$song['printable_content'] = StaticFunctionController::convert_content_HTML_to_columns(
 		    $song,
@@ -199,7 +197,7 @@ class SongsController extends AppController
 		        ]
 		    )
 		);
-
+		
 		$this->set('print_size', $print_size);
 		$this->set('title_block_html', StaticFunctionController::generate_title_html($song));
 		//after CakePHP 3.4
