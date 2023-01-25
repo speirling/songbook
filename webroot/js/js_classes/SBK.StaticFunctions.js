@@ -368,11 +368,26 @@ SBK.StaticFunctions = {
     },
 
     getUrlParam: function(strParamName) {
-	  strParamName = escape(unescape(strParamName));
-      var url = new URL(document.location);
+	 strParamName = escape(unescape(strParamName));
+	 //iPad1 doesn't like URL object nor URLSearchParams objects.
+	 //nor decodeURIComponent
+	 
+     //var url = new URL(document.location);
+     //alert(window.location.search.substring(1));
+     var query = window.location.search.substring(1);
+	 var vars = query.split('&');
+	 var paramsJSON = {};
+	 for (var i = 0; i < vars.length; i++) {
+	    var pair = vars[i].split('=');
+	    if(pair[0] == strParamName) {
+	    return pair[1];
+	    }
+	 }
+	 return null;
 
-      if(typeof(url.searchParams.get(strParamName)) != "undefined") {
-        	return url.searchParams.get(strParamName);
+/*
+      if(typeof(paramsJSON[strParamName])) != "undefined") {
+        	return paramsJSON[strParamName];
       } else if (window.attr("nodeName")=="#document") {
 	  	//document-handler
 		if (window.location.search.search(strParamName) > -1 ){	
@@ -407,13 +422,44 @@ SBK.StaticFunctions = {
 	  if (returnVal.length==0) return null;
 	  else if (returnVal.length==1) return returnVal[0];
 	  else return returnVal;
+	  */
 	 },
 
-	 setUrlParam: function(strParamName, value) {
-		  strParamName = escape(unescape(strParamName));
-	      var url = new URL(document.location);
-	      
-          url.searchParams.set(strParamName, value);
+	 setUrlParam: function(windowLocationSearchString, strParamName, value) {
+								      /*
+									  strParamName = escape(unescape(strParamName));
+								      var url = new URL(document.location);
+								      
+							          url.searchParams.set(strParamName, value);
+							          */
+         //The following works with iPad 1							          
+							          
+         var parameter_is_used = false;
+         if(windowLocationSearchString.length > 0)  {
+	         var outPutWindowsLocationSearchString = "";
+	         var query = windowLocationSearchString.substring(1); //querystring without the ?
+		     var vars = query.split('&');
+			 for (var i = 0; i < vars.length; i++) {
+			    if (i > 0) {
+			        outPutWindowsLocationSearchString = outPutWindowsLocationSearchString + "&";
+			    }
+			    var pair = vars[i].split('=');
+			    if(pair[0] == strParamName) {
+			        parameter_is_used = true;
+			        outPutWindowsLocationSearchString = outPutWindowsLocationSearchString + pair[0] + "=" + value;
+			    } else {
+			        outPutWindowsLocationSearchString = outPutWindowsLocationSearchString + pair[0] + "=" + pair[1];
+			    }
+			 }
+			 if(parameter_is_used === false) {
+	             outPutWindowsLocationSearchString = outPutWindowsLocationSearchString + "&" + strParamName + "=" + value;
+	         }
+	     } else {
+	         var outPutWindowsLocationSearchString = strParamName + "=" + value;
+	     }
+	     
+		 return "?" + outPutWindowsLocationSearchString;
+	          
 	 },
 	 
 	 rounded_window_size: function(rounding_limit) {
@@ -429,10 +475,10 @@ SBK.StaticFunctions = {
 	 
 	 set_window_size_in_URL: function (current_window) {
         var self = this;
-	 
+ 
 		cw = self.rounded_window_size(10).width;
 		ch = self.rounded_window_size(10).height;
-		 
+		
 		var vw = self.getUrlParam("vw");
 		var vh = self.getUrlParam("vh");
 		var changed_dimensions = false;
@@ -443,7 +489,7 @@ SBK.StaticFunctions = {
 		    new_vw = cw;
 		    new_vh = ch;
 		    changed_dimensions = true;
-		} else {
+		}  else {
 		    if (cw !== Math.round(vw / 10) * 10) {
 		        new_vw = cw;
 		        changed_dimensions = true;
@@ -453,18 +499,24 @@ SBK.StaticFunctions = {
 		        changed_dimensions = true;
 		     }
 		}
-		  
+	  
 		if (changed_dimensions === true) {
-		    var url = new URL(document.location);
+		    //var url = new URL(document.location);
 		    
-		    url.searchParams.set('vw', new_vw);
-		    url.searchParams.set('vh', new_vh);
-		    document.location = url;
-
+		    //url.searchParams.set('vw', new_vw);
+		    //url.searchParams.set('vh', new_vh);
+		    //document.location = url;
+		    
+		    var windowLocationSearchString = window.location.search;
+		    console.log(windowLocationSearchString);
+		    windowLocationSearchString = self.setUrlParam(windowLocationSearchString, 'vw', new_vw);
+		    windowLocationSearchString = self.setUrlParam(windowLocationSearchString, 'vh', new_vh);
+ 
+			window.location.href = windowLocationSearchString;
 		    return true;
 		} else {
 		    return false;
 		}
-                     
+                
     }
 };
