@@ -179,6 +179,48 @@ table.song-header td,
     padding: 0;
     text-align: left;
 }
+
+table.song-header td.capo-shown,
+table.song-header td.key-capo {
+  vertical-align: top;
+  font-size: 20px;
+  border: 0px;
+  width: 190px;
+}
+.key-capo .capo.layout-holder {
+  line-height: 1;
+  font-size: 1em;
+}
+.capo-transpose-border {
+  display: inline-block;
+  border: 1px solid gray;
+  padding: 0.5em;
+  margin-right: 5px;
+}
+
+
+.title-table .performed-by.written-by {
+    line-height: 0.8;
+    border: 0px;
+    display: block;
+}
+.title-table .performed-by.written-by label,
+.title-table .performed-by.written-by span  {
+	font-size: 0.9em;
+    line-height: 1;
+    margin-left: 0;
+    margin-right: 10px;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+.title-table .performed-by.written-by label {
+	font-weight: bold;
+    margin-right: 5px;
+}
+
+
 .lyrics-display .performed-by,
 .lyrics-display .written-by,
 .lyrics-display .base-key,
@@ -186,6 +228,36 @@ table.song-header td,
 .lyrics-display .meta-tags {
     margin-left: 0.8em;
     font-size: 0.8em;
+}
+
+.title-table h3 {
+	display: inline-block;
+}
+.button.show-song-properties {
+	float: right;
+}
+
+
+.hideable-dashboard label,
+.hideable-dashboard .tags {
+	display: inline-block;
+}
+
+.hideable-dashboard .button {
+	vertical-align: middle;
+}
+
+.hideable-dashboard .performed-by,
+.hideable-dashboard .written-by,
+.hideable-dashboard .base-key,
+.hideable-dashboard .songnumber,
+.hideable-dashboard .meta-tags {
+    margin-left: 0.8em;
+    font-size: 0.8em;
+}
+
+.hideable-dashboard .tag-id .select2-selection {
+	height: 3.5em;
 }
 
 .base-key .label,
@@ -220,9 +292,14 @@ table.song-header td,
 	margin-left: 1em;
 }
 
-.base-key .key .target-key .data {
-    width: 4em;
+
+.key-capo-selectors span.target-key {
+	display: inline-block;
 }
+.base-key .key .target-key .data,
+.key-capo-selectors .target-key .data  {
+    width: 4em;
+}	
 
 .base-key .key  .target-key.no-base-key .data {
     display: inline-block;
@@ -244,7 +321,7 @@ table.song-header td,
 	margin-right: 0.2em;
 }
 
-.base-key .key-capo-selectors {
+.hideable-dashboard .key-capo-selectors {
     display: inline-block;
     margin-left: 1em;
     width: 16em;
@@ -252,10 +329,21 @@ table.song-header td,
 
 
         /* Song View performer select - as horizontal list */
-        .songs.view .performers {
-            width: auto;
+        .songs.view .performers,
+        .hideable-dashboard .performers {
+            width: auto !important;
+            border: 1px solid blue;
+            display: inline-block;
         }
-        .songs.view .performers .performer {
+        
+        
+        .hideable-dashboard .performers .known-keys, 
+        .hideable-dashboard .performers .add-known-key {
+        display: block;
+        }
+        
+        .songs.view .performers .performer,
+        .hideable-dashboard .performers .performer {
             font-size: 1em;
             border: 1px solid silver;
             white-space: nowrap;
@@ -265,63 +353,78 @@ table.song-header td,
             padding-bottom: 0.2em;
             cursor: pointer;
         }
-        .songs.view .performers .nickname {
+        .songs.view .performers .nickname,
+        .hideable-dashboard .performers .nickname {
             font-size: 1em;
             width: auto;
         }
-        .songs.view .performers .key {
+        .songs.view .performers .key,
+        .hideable-dashboard .performers .key {
             display: inline-block;
             width: auto;
         }
-        .songs.view .performers .capo {
+        .songs.view .performers .capo,
+        .hideable-dashboard .performers .capo {
             display: inline-block;
         }
         
         .songs.view .performers form ,
-        .songs.view .performers fieldset {
+        .songs.view .performers fieldset,
+        .hideable-dashboard .performers form,
+        .hideable-dashboard .performers fieldset {
             display: inline-block;
-            vertical-align: top;
+            vertical-align: middle;
             width: auto;
             margin: 0;
             padding: 0;
         }
+        
+        .hideable-dashboard .performers form {
+            width: 40em;
+        }
 
-        .songs.view .performers fieldset .select2 {
+        .songs.view .performers fieldset .select2,
+        .hideable-dashboard .performers fieldset .select2{
             font-size:  1em; /* to counteract baked_ui.css line 430 (0.7em)*/
         }
         
-        .songs.view .performers .input  {
+        .songs.view .performers .input,
+        .hideable-dashboard .performers .input  {
             display: inline-block;
         }
-        .songs.view .performers input  {
+        .songs.view .performers input,
+        .hideable-dashboard .performers input  {
             display: inline-block;
             margin-bottom: 0;
             height: 2em;
             padding-left: 0;
             padding-right: 0;
         }
-        .songs.view .performers input#key  {
+        .songs.view .performers input#key,
+        .hideable-dashboard .performers input#key  {
             width: 2.5em;
         }
-        .lyrics-display .performers input#capo  {
+        .lyrics-display .performers input#capo,
+        .hideable-dashboard .performers input#capo  {
             text-align: center;
             width: 1em;
         }
-        .lyrics-display .performers label[for="performer-id"] {
+        .lyrics-display .performers label[for="performer-id"],
+        .hideable-dashboard .performers label[for="performer-id"] {
             display: none;
         }
         
         /* key for each performer */
-        #container .container .lyrics-display .base-key .key-capo-selectors .data {
+        #container .container .key-capo-selectors .data {
             width: 4em;
         }
-        #container .container .lyrics-display .base-key .performers .data {
+        #container .container .performers .data {
             width: 9em;
         }
              
              
         /* Tag editor ajax form */
-        .lyrics-display .ajax-button-form {
+        .ajax-button-form {
             float: right;
         }
         #container .container .lyrics-display tr.tags fieldset {
@@ -348,3 +451,19 @@ table.song-header td,
             border: 0;
         }
                         
+.hideable-visible {
+	display: block;
+}
+
+.hideable-hidden {
+	display: none;
+}
+
+.hideable-dashboard {
+	border: 1px solid gray;
+	background-color: #ffffcc;
+}
+.hideable-dashboard.ui-selected {
+	border: 1px solid red;
+	background-color: #ccffff;
+}
