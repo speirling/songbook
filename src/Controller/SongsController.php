@@ -98,9 +98,10 @@ class SongsController extends AppController
 				     return $query->find('all')->distinct(['performer_id', 'key']);
 				}, 'SetSongs.Performers']]);
 
+		$default_print_page_configuration = \Cake\Core\Configure::read('Songbook.print_page.A4');
 		$print_page_configuration = [
-		    "page_width" => isset($_GET['vw']) ? $_GET['vw'] : null, //px
-		    "page_height"  => isset($_GET['vh']) ? $_GET['vh'] : null, //px
+		    "page_width" => isset($_GET['vw']) ? $_GET['vw'] : $default_print_page_configuration['page_width'], //px
+		    "page_height"  => isset($_GET['vh']) ? $_GET['vh'] : $default_print_page_configuration['page_height'], //px
 		];
 
 	    $song["current_key"] = isset($_GET['key']) ? $_GET['key'] : null;
