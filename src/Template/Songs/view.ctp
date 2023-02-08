@@ -1,7 +1,7 @@
 <?php /* Template/Songs/view.php */ ?>
 
 <? /* ------------------------
-    Get viewport size, check if it matches what was sent to the Server               */ ?>
+    Get viewport size, make it available to the PHP system               */ ?>
                
     <script>
         $(document).ready(function(){
@@ -33,6 +33,10 @@
             'action' => 'edit', 
             $song->id
         ]) ?></span>  
+        
+        
+        
+        
     <h3><?= h($song->title) ?></h3>
     <table class="vertical-table">
         <tr class="written-by performed-by">
@@ -123,5 +127,5 @@
             </td>
         </tr>
     </table>
-    <?= $song->content; ?>
+    <?= $song->printable_content; ?>
 </div>

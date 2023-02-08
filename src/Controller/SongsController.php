@@ -95,46 +95,40 @@ class SongsController extends AppController
 	{
 		$song = $this->Songs->get($id, [
 				'contain' => ['SongTags'=>['Tags'], 'SetSongs'=>function($query){
-				return $query->find('all')->distinct(['performer_id', 'key']);
+				     return $query->find('all')->distinct(['performer_id', 'key']);
 				}, 'SetSongs.Performers']]);
-		$key = null;
-		$capo = null;
+		$song["current_key"] = null;
+		$song["capo"] = null;
 		if(array_key_exists('key', $_GET)) {
-			$key = $_GET['key'];
+		    $song["current_key"] = $_GET['key'];
 		}
 		if(array_key_exists('capo', $_GET)) {
-			$capo = $_GET['capo'];
+		    $song["capo"] = $_GET['capo'];
 		}
 		if(strpos($song['base_key'], " ") > 0) {
 			debug("Cannot transpose this song because the given base key contains a space!!");
 		}
-		$song['content'] = StaticFunctionController::convert_song_content_to_HTML($song['content'], $song['base_key'], $key, $capo);
-		
-		$song_parameters["title"] = $song["title"];
-		$song_parameters["written_by"] = $song["written_by"];
-		$song_parameters["performed_by"] = $song["performed_by"];
-		$song_parameters["current_key"] = $key;
-		$song_parameters["capo"] = $capo;
-		$song_parameters["id"] = $song["id"];
-		$song_parameters["style_set_or_song"] = "single-songs";
-		$print_size = "default";
-		
-		$song['printable_content'] = StaticFunctionController::convert_content_HTML_to_columns(
+		$song['content'] = StaticFunctionController::convert_song_content_to_HTML(
 		    $song['content'], 
-		    $song_parameters, 
+		    $song['base_key'], 
+		    $song["current_key"], 
+		    $song["capo"]
+		);
+		
+	    $song['printable_content'] = StaticFunctionController::convert_content_HTML_to_columns(
+		    $song,  
 		    [
 		        "page_height" => $_GET['vw'], //px
 		        "page_width" => $_GET['vh'], //px
 		    ], 
-		    $print_size
+		    $print_size = "default"
 		);
 		
-		$setSong = new SetSong();
 		$this->set('song', $song);
-		$this->set('setSong', $setSong);
+		$this->set('setSong', new SetSong());
 		$this->set('title', $song['title']);
-		$this->set('current_key', $key);
-		$this->set('capo', $capo);
+		$this->set('current_key', $song['key']);
+		$this->set('capo', $song['capo']);
 		$this->set('tags', $this->Songs->SongTags->Tags->find('list'));
 		$this->set('songTag', new SongTag());
 		$this->set('_serialize', ['song']);
@@ -160,46 +154,50 @@ class SongsController extends AppController
 				'contain' => ['SongTags'=>['Tags'], 'SetSongs'=>function($query){
 				return $query->find('all')->distinct(['performer_id', 'key']);
 				}, 'SetSongs.Performers']]);
-		$key = null;
-		$capo = null;
+		$song["current_key"] = null;
+		$song["capo"] = null;
 		if(array_key_exists('key', $_GET)) {
-			$key = $_GET['key'];
+		    $song["current_key"] = $_GET['key'];
 		} else {
-		    $key = $song['base_key'];
+		    $song["current_key"] = $song['base_key'];
 		}
 		if(array_key_exists('capo', $_GET)) {
-			$capo = $_GET['capo'];
+		    $song["capo"] = $_GET['capo'];
 		}
-		$song['content'] = StaticFunctionController::convert_song_content_to_HTML($song['content'], $song['base_key'], $key, $capo);
-
-		$song_parameters["title"] = $song["title"];
-		$song_parameters["written_by"] = $song["written_by"];
-		$song_parameters["performed_by"] = $song["performed_by"];
-		$song_parameters["current_key"] = $key;
-		$song_parameters["capo"] = $capo;
-		$song_parameters["id"] = $song["id"];
-		$song_parameters["style_set_or_song"] = "single-songs";
-		$print_page = "A4";
-		$print_size = "default";
+		if(strpos($song['base_key'], " ") > 0) {
+		    debug("Cannot transpose this song because the given base key contains a space!!");
+		}
+		$song['content'] = StaticFunctionController::convert_song_content_to_HTML(
+		    $song['content'],
+		    $song['base_key'],
+		    $song["current_key"],
+		    $song["capo"]
+		    );
 		
+		$print_page = "A4";
 		$page_config_values = \Cake\Core\Configure::read('Songbook.print_page');
 		$print_page_configuration= $page_config_values[$print_page];
 		
-		$song['printable_content'] = StaticFunctionController::convert_content_HTML_to_columns($song['content'], $song_parameters, $print_page_configuration, $print_size);
-
-		$setSong = new SetSong();
+		$song['printable_content'] = StaticFunctionController::convert_content_HTML_to_columns(
+		    $song,
+		    $print_page_configuration,
+		    $print_size = "default"
+		    );
+		
 		$this->set('song', $song);
-		$this->set('setSong', $setSong);
+		$this->set('setSong', new SetSong());
 		$this->set('title', $song['title']);
-		$this->set('current_key', $key);
-		$this->set('capo', $capo);
+		$this->set('current_key', $song['key']);
+		$this->set('capo', $song['capo']);
 		$this->set('tags', $this->Songs->SongTags->Tags->find('list'));
 		$this->set('songTag', new SongTag());
 		$this->set('_serialize', ['song']);
 		$this->set('performers', $this->Songs->SetSongs->Performers->find('list', [
-				'keyField' => 'id',
-				'valueField' => 'nickname'
-		]));
+        		    'keyField' => 'id',
+        		    'valueField' => 'nickname'
+		        ]
+		    )
+		);
 		$this->set('print_page', $print_page);
 		$this->set('print_size', $print_size);
 		//after CakePHP 3.4
