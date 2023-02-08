@@ -172,6 +172,7 @@
     width: 8em;
 }
 
+table.song-header td,
 .lyrics-display table.vertical-table td,
 .lyrics-display table.vertical-table th {
     font-size: 0.8em;

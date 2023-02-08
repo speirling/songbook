@@ -307,16 +307,10 @@ class StaticFunctionController extends AppController
 	 */
 	public static function convert_content_HTML_to_columns(
 	        $song, 
-    	    $print_page_configuration = [
-    	        "page_height" => 1000, //px
-    	        "page_width" => 690, //px
-    	    ],
-	        $print_size = 'default'
+	        $page_parameters
 	    ) {
         //this is called from SongsController -> printable() with $song['content'] set to the output from convert_song_content_to_HTML
         //debug($song['content']);
-
-	    $page_parameters = self::derive_page_parameters($print_page_configuration, $print_size);
 	    
 	    $current_page = 1;
 				
@@ -330,24 +324,7 @@ class StaticFunctionController extends AppController
 		$current_column = 1;
 		
 		list($pages[$current_page], $tbody, $row, $td) = self::create_printable_page($doc, $current_page, $page_parameters, $song["id"]);
-		
-		//At the top of the first page put the song heading
-		//==========================================================
-		$row_header = $doc->createElement('tr');
-		$tbody->insertBefore($row_header, $row);
-		
-		$td_header = $doc->createElement('td');
-		$row_header->appendChild($td_header);
-		
-		$title_heading = $doc->createDocumentFragment();
-		$title_heading->appendXML(self::generate_title_html($song));
-		$row_header->setAttribute("class", "title-block");
-		$td_header->setAttribute("class", "song-title");
-		$td_header->setAttribute("colspan", $line_stats['no_of_columns']);
-		$td_header->appendChild($title_heading);
-		
-		//==========================================================
-		
+
 		//Set the lyrics table on the first page to take account of the header
 		$page_height = $page_parameters["p1_content_height"];
 		$content_height_px = 0; 
@@ -443,7 +420,7 @@ class StaticFunctionController extends AppController
 		return $return;
 	}
 	
-	private static function derive_page_parameters (
+	public static function derive_page_parameters (
     	    $print_page_configuration = [
     	        "page_height" => 1000, //px
     	        "page_width" => 690, //px
@@ -520,7 +497,7 @@ class StaticFunctionController extends AppController
 	    ];
 	}
 	
-	private static function generate_title_html ($song) {
+	public static function generate_title_html ($song) {
 	    
 	    $title_heading_html = "";
 	    $title_heading_html = $title_heading_html . "<table class=\"vertical-table attribution song-header\">"                             . "\n" ;
