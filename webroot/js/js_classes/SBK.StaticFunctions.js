@@ -365,5 +365,158 @@ SBK.StaticFunctions = {
             }
             false;
         }
+    },
+
+    getUrlParam: function(strParamName) {
+	 strParamName = escape(unescape(strParamName));
+	 //iPad1 doesn't like URL object nor URLSearchParams objects.
+	 //nor decodeURIComponent
+	 
+     //var url = new URL(document.location);
+     //alert(window.location.search.substring(1));
+     var query = window.location.search.substring(1);
+	 var vars = query.split('&');
+	 var paramsJSON = {};
+	 for (var i = 0; i < vars.length; i++) {
+	    var pair = vars[i].split('=');
+	    if(pair[0] == strParamName) {
+	    return pair[1];
+	    }
+	 }
+	 return null;
+
+/*
+      if(typeof(paramsJSON[strParamName])) != "undefined") {
+        	return paramsJSON[strParamName];
+      } else if (window.attr("nodeName")=="#document") {
+	  	//document-handler
+		if (window.location.search.search(strParamName) > -1 ){	
+			qString = window.location.search.substr(1,window.location.search.length).split("&");
+		}
+			
+	  } else if (typeof(window.attr("src")) != "undefined") {
+	  	var strHref = window.attr("src")
+	  	if ( strHref.indexOf("?") > -1 ){
+	    	var strQueryString = strHref.substr(strHref.indexOf("?")+1);
+	  		qString = strQueryString.split("&");
+	  	}
+	  } else if (typeof(window.attr("href")) != "undefined") {
+	  	var strHref = window.attr("href")
+	  	if ( strHref.indexOf("?") > -1 ){
+	    	var strQueryString = strHref.substr(strHref.indexOf("?")+1);
+	  		qString = strQueryString.split("&");
+	  	}
+	  } else {
+	  	return null;
+	  }
+	  
+	  if (qString==null) return null;
+	  
+	  for (var i=0;i<qString.length; i++){
+			if (escape(unescape(qString[i].split("=")[0])) == strParamName){
+				returnVal.push(qString[i].split("=")[1]);
+			}
+			
+	  }
+	  
+	  if (returnVal.length==0) return null;
+	  else if (returnVal.length==1) return returnVal[0];
+	  else return returnVal;
+	  */
+	 },
+
+	 setUrlParam: function(windowLocationSearchString, strParamName, value) {
+								      /*
+									  strParamName = escape(unescape(strParamName));
+								      var url = new URL(document.location);
+								      
+							          url.searchParams.set(strParamName, value);
+							          */
+         //The following works with iPad 1							          
+							          
+         var parameter_is_used = false;
+         if(windowLocationSearchString.length > 0)  {
+	         var outPutWindowsLocationSearchString = "";
+	         var query = windowLocationSearchString.substring(1); //querystring without the ?
+		     var vars = query.split('&');
+			 for (var i = 0; i < vars.length; i++) {
+			    if (i > 0) {
+			        outPutWindowsLocationSearchString = outPutWindowsLocationSearchString + "&";
+			    }
+			    var pair = vars[i].split('=');
+			    if(pair[0] == strParamName) {
+			        parameter_is_used = true;
+			        outPutWindowsLocationSearchString = outPutWindowsLocationSearchString + pair[0] + "=" + value;
+			    } else {
+			        outPutWindowsLocationSearchString = outPutWindowsLocationSearchString + pair[0] + "=" + pair[1];
+			    }
+			 }
+			 if(parameter_is_used === false) {
+	             outPutWindowsLocationSearchString = outPutWindowsLocationSearchString + "&" + strParamName + "=" + value;
+	         }
+	     } else {
+	         var outPutWindowsLocationSearchString = strParamName + "=" + value;
+	     }
+	     
+		 return "?" + outPutWindowsLocationSearchString;
+	          
+	 },
+	 
+	 rounded_window_size: function(rounding_limit) {
+	    if (typeof(rounding_limit) == null) {
+	        rounding_limit = 10;
+	    }
+	    return {
+	       "width" : Math.round($(window).width() / rounding_limit) * rounding_limit,
+           "height" : Math.round($(window).height() / rounding_limit) * rounding_limit
+        }
+	 },
+	 
+	 
+	 set_window_size_in_URL: function (current_window) {
+        var self = this;
+ 
+		cw = self.rounded_window_size(10).width;
+		ch = self.rounded_window_size(10).height;
+		
+		var vw = self.getUrlParam("vw");
+		var vh = self.getUrlParam("vh");
+		var changed_dimensions = false;
+		var new_vw = vw;
+		var new_vh = vh;
+
+		if (vw === null || vh === null) {
+		    new_vw = cw;
+		    new_vh = ch;
+		    changed_dimensions = true;
+		}  else {
+		    if (cw !== Math.round(vw / 10) * 10) {
+		        new_vw = cw;
+		        changed_dimensions = true;
+		    }
+		    if (ch !== Math.round(vh / 10) * 10) {
+		        new_vh = ch;
+		        changed_dimensions = true;
+		     }
+		}
+	  
+		if (changed_dimensions === true) {
+		    //var url = new URL(document.location);
+		    
+		    //url.searchParams.set('vw', new_vw);
+		    //url.searchParams.set('vh', new_vh);
+		    //document.location = url;
+		    
+		    var windowLocationSearchString = window.location.search;
+		    console.log(windowLocationSearchString);
+		    windowLocationSearchString = self.setUrlParam(windowLocationSearchString, 'vw', new_vw);
+		    windowLocationSearchString = self.setUrlParam(windowLocationSearchString, 'vh', new_vh);
+ 
+			window.location.href = windowLocationSearchString;
+		    return true;
+		} else {
+		    return false;
+		}
+                
     }
 };

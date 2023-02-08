@@ -286,241 +286,142 @@ class StaticFunctionController extends AppController
 		return $contentHTML;
 	}
 	
+	/***
+	 * Returns HTML text, consisting of a series of tables, each one 
+	 * representing a page.
+	 * Called from SongsController -> printable() with $song['content'] set to the output from convert_song_content_to_HTML()
+	 * 
+	 * The $song array must include:
+	 * $song['content'], a string containing HTML representing the song with chord tags etc.
+	 * $song["title"]
+	 * $song["written_by"]
+	 * $song["performed_by"]
+	 * $song["current_key"]
+	 * $song["capo"]
+	 * $song['base_key']
+	 * $song["id"]
+	 * 
+	 * $page_parameters (from StaticFunctionController::derive_page_parameters($print_page_configuration)) look like:
+	 * [
+     *   	'page_height' => '1760',
+     *   	'page_width' => '1250',
+     *   	'font_size_in_pixels' => (int) 16,
+     *   	'height_of_page_1_lines' => (float) 92.472222222222,
+     *   	'height_of_page_2_lines' => (float) 96.666666666667,
+     *   	'p1_content_height' => (float) 1664.5,
+     *   	'p2_content_height' => (int) 1740,
+     *   	'height_of_line_with_chords' => (float) 31.5,
+     *   	'height_of_line_without_chords' => (float) 18,
+     *   	'lyric_line_top_margin' => (int) 8,
+     *   	'height_of_wrapped_line_without_chords' => (float) 44,
+     *   	'height_of_wrapped_line_with_chords' => (float) 71,
+     *   	'line_multiplier_wrapped' => (float) 2.4444444444444,
+     *   	'line_multiplier_chords' => (float) 1,
+     *   	'column_width' => [
+     *   		'1_column' => (float) 183.58208955224,
+     *   		'2_column' => (float) 90.298507462687,
+     *   		'3_column' => (float) 59.203980099502,
+     *   		'4_column' => (float) 43.65671641791
+     *   	],
+     *   	'px_per_column' => [
+     *   		'1_column' => (int) 1230,
+     *   		'2_column' => (int) 605,
+     *   		'3_column' => (float) 396.66666666667,
+     *   		'4_column' => (float) 292.5
+     *   	]
+     *  ]
+	 * 
+	 * @param array $song
+	 * @param array $page_parameters
+	 * @return string
+	 */
 	public static function convert_content_HTML_to_columns(
-	        $contentHTML, 
-	        $song_parameters, 
-	        $print_page = 'A4',
-	        $print_size = 'default'
+	        $song, 
+	        $page_parameters
 	    ) {
-        //this is called from SongsController -> printable() with $contentHTML set to the output from convert_song_content_to_HTML
-        //debug($contentHTML);
-        
-        $print_page_configuration = \Cake\Core\Configure::read('Songbook.print_page');
-        $page_config_values = $print_page_configuration[$print_page];
-        $print_size_configuration = \Cake\Core\Configure::read('Songbook.print_size');
-        $size_config_values = $print_size_configuration[$print_size];
-        
-        $title_height = $size_config_values['font_sizes']['title'] * 1.5 
-                      + $size_config_values['font_sizes']['attributions'] * 1.5 
-                      + $size_config_values['content_padding'] * 2;
-                      
-        $p1_content_height = $page_config_values['page_height']
-                           - $title_height
-                           - $size_config_values['content_padding'] * 2;
-                      
-        $p2_content_height = $page_config_values['page_height']
-                           - $size_config_values['content_padding'] * 2;
-                      
-        $height_of_line_without_chords = $size_config_values['font_sizes']['lyrics'] * 1.125;
-        
-        $height_of_line_with_chords = $size_config_values['font_sizes']['lyrics'] * 1.125 
-                                    + $size_config_values['font_sizes']['chords'] * 1.125;
-                                    
-        $height_of_wrapped_line_without_chords = $size_config_values['font_sizes']['lyrics'] * 1.125 * 2
-                                               + $size_config_values['lyric_line_top_margin'];
-                                    
-        $height_of_wrapped_line_with_chords = $size_config_values['font_sizes']['lyrics'] * 1.125 * 2
-                                            + $size_config_values['font_sizes']['chords'] * 1.125 * 2
-                                            + $size_config_values['lyric_line_top_margin'];
-        
-        $px_per_column_1_column = ($page_config_values['page_width'] - $size_config_values['content_padding'] * 2);
-        $characters_per_column_1_column = $px_per_column_1_column / $size_config_values['lyric_width_per_100_characters'] * 100;
-        
-        $px_per_column_2_column = ($page_config_values['page_width'] / 2 - $size_config_values['content_padding'] * 2);
-        $characters_per_column_2_column = $px_per_column_2_column / $size_config_values['lyric_width_per_100_characters'] * 100;
-                                    
-	    //$print_page_configuration[$page_size]
-	    $page_parameters = [
-	        "page_height" => $page_config_values['page_height'],
-	        "page_width" => $page_config_values['page_width'],
-	        "font_size_in_pixels" => $size_config_values['font_sizes']['lyrics'], //px
-	        "height_of_page_1_lines" => $p1_content_height / $height_of_line_without_chords, //lines
-	        "height_of_page_2_lines" => $p2_content_height / $height_of_line_without_chords, //lines;
-	        "p1_content_height" => $p1_content_height,
-	        "p2_content_height" => $p2_content_height,
-	        "height_of_line_with_chords" => $height_of_line_with_chords, 
-	        "height_of_line_without_chords" => $height_of_line_without_chords, // font_size_in_pixels * 1.8,
-	        "lyric_line_top_margin" => $size_config_values['lyric_line_top_margin'],
-	        "height_of_wrapped_line_without_chords" => $height_of_wrapped_line_without_chords,
-	        "height_of_wrapped_line_with_chords" => $height_of_wrapped_line_with_chords,
-	        "line_multiplier_wrapped" => $height_of_wrapped_line_without_chords / $height_of_line_without_chords,
-	        "line_multiplier_chords" => $height_of_wrapped_line_with_chords / $height_of_wrapped_line_with_chords,
-    	    "column_width" => [
-    	        "1_column" => $characters_per_column_1_column, //characters
-    	        "2_column" => $characters_per_column_2_column //characters
-    	    ]
-	    ];
 	    
-	    $page_parameters["style_set_or_song"] = $song_parameters["style_set_or_song"]; //there's got to be a more elegant way of passing this from Controller to page creator
-	    $current_page = 1;
-				
 		$doc = new \DOMDocument('1.0', 'UTF-8');
-		/*
-		$contentHTML = preg_replace('/<\/span>/', "</span>
-", $contentHTML); 
-		debug($contentHTML);
-		// */
-		$doc->loadHTML(mb_convert_encoding($contentHTML, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-		
+		$doc->loadHTML(mb_convert_encoding($song['content'], 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 		$xpath = new \DOMXPath($doc);
-		$lines = $xpath->query("//div[@class='line']");
+		$array_of_html_lyric_lines = $xpath->query("//div[@class='line']");
+		$line_stats = self::get_line_stats( $array_of_html_lyric_lines, $page_parameters);
 		
+		//debug('$line_stats : '); debug($line_stats); 		debug('$page_parameters : '); debug($page_parameters);
+		
+		list($pages[$current_page], $page_height, $tbody, $row, $td) = self::create_printable_page($doc, $current_page = 1, $page_parameters, $song["id"]);
 
-		$line_stats = self::get_line_stats( $lines, $page_parameters);
-		//debug(  $song_parameters["title"]);//debug($line_stats);
-		
-		$current_column = 1;
-		
-
-		list($pages[$current_page], $tbody, $row, $td) = self::create_printable_page($doc, $current_page, $page_parameters, $song_parameters["id"]);
-		
-		
-		//At the top of the first page put the song heading
-		//==========================================================
-		$row_header = $doc->createElement('tr');
-		$tbody->insertBefore($row_header, $row);
-		
-		$td_header = $doc->createElement('td');
-		$row_header->appendChild($td_header);
-		
-		$title_heading = $doc->createDocumentFragment();
-
-		$title_heading_html = "";
-		$title_heading_html = $title_heading_html . "<table class=\"vertical-table attribution song-header\">"                             . "\n" ;
-		$title_heading_html = $title_heading_html . "<tr>"                             . "\n" ;
-		$title_heading_html = $title_heading_html . "<td class= \"title-table\">"                              . "\n" ;
-		$title_heading_html = $title_heading_html . "<h3>" . htmlspecialchars($song_parameters["title"]) .                                       "</h3>"   . "\n" ;
-		
-		$title_heading_html = $title_heading_html . "<table class=\"vertical-table attribution\">"                             . "\n" ;
-		$title_heading_html = $title_heading_html .     "<tr class=\"written-by performed-by\">"                                         . "\n" ;
-		if(trim($song_parameters["written_by"]) !== "") {
-		    $title_heading_html = $title_heading_html .         "<th class=\"written-by\">" . 'Written By' .                                             "</th>"  . "\n" ;
-		    $title_heading_html = $title_heading_html .         "<td class=\"written-by\">" . htmlspecialchars($song_parameters["written_by"]) .                           "</td>"  . "\n" ;
-		}
-		if(trim($song_parameters["performed_by"]) !== "") {
-		    $title_heading_html = $title_heading_html .   		"<th class=\"performed-by\">" . 'Performed By' .                                           "</th>"  . "\n" ;
-		    $title_heading_html = $title_heading_html .   		"<td class=\"performed-by\">" . htmlspecialchars($song_parameters["performed_by"]) .                         "</td>"  . "\n" ;
-		}
-		
-		$title_heading_html = $title_heading_html .    "</tr>" . "\n" ;
-		$title_heading_html = $title_heading_html . "</table>" . "\n" ;
-		
-		$title_heading_html = $title_heading_html .    "</td>"  . "\n" ;
-		if(trim($song_parameters["current_key"]) !== "") {
-		    
-		    if(trim($song_parameters["capo"]) !== "") {
-        		$title_heading_html = $title_heading_html . "<td class= \"key-capo capo-shown\">"  . "\n" ;
-        		$title_heading_html = $title_heading_html .   		"<span class=\"capo-transpose-border\">" . "\n" ;
-		        
-		        $title_heading_html = $title_heading_html .   		"<span class=\"capo-transpose-layout-holder layout-holder\">" . "\n" ;
-		        
-		        $title_heading_html = $title_heading_html .   		"<span class=\"capo layout-holder\">" . "\n" ;
-		        $title_heading_html = $title_heading_html .   		"<span class=\"heading\">" . 'capo' . "</span>"  . "\n" ;
-		        $title_heading_html = $title_heading_html .   		"<span class=\"value\">" . htmlspecialchars($song_parameters["capo"]) . "</span>"  . "\n" ;
-		        $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
-		        
-		        $title_heading_html = $title_heading_html .   		"<span class=\"transpose layout-holder\">" . "\n" ;
-		        $title_heading_html = $title_heading_html .   		"<span class=\"heading\">" . "chords shown in " . "</span>"  . "\n" ;
-		        $title_heading_html = $title_heading_html .   		"<span class=\"value\">" . StaticFunctionController::shift_note($song_parameters["current_key"], -1*$song_parameters["capo"]) .         "</span>"  . "\n" ;
-		        $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
-		        
-		        $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
-		    } else {
-        		$title_heading_html = $title_heading_html . "<td class= \"key-capo\">"  . "\n" ;
-        		$title_heading_html = $title_heading_html .   		"<span class=\"capo-transpose-border\">" . "\n" ;
-		        
-		        
-		    }
-		    
-		    $title_heading_html = $title_heading_html .   		"<span class=\"key layout-holder key-layout-holder\">" . "\n" ;
-		    $title_heading_html = $title_heading_html .   		"<span class=\"heading\">" . 'Key' .  "</span>"  . "\n" ;
-		    $title_heading_html = $title_heading_html .   		"<span class=\"value\">" . htmlspecialchars($song_parameters["current_key"]) . "</span>"  . "\n" ;
-		    $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
-		    
-		    $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
-		    $title_heading_html = $title_heading_html .    "</td>"  . "\n" ;
-		} else {
-    		
-		}
-
-
-		$title_heading_html = $title_heading_html .    "</tr>" . "\n" ;
-		$title_heading_html = $title_heading_html . "</table>";
-
-		$title_heading->appendXML($title_heading_html);
-		$row_header->setAttribute("class", "title-block");
-		$td_header->setAttribute("class", "song-title");
-		$td_header->setAttribute("colspan", $line_stats['no_of_columns']);
-		$td_header->appendChild($title_heading);
-		
-		
-		
-		//==========================================================
-		
-		//Set the lyrics table on the first page to take account of the header
-		$page_height = $page_parameters["p1_content_height"];
 		$content_height_px = 0; 
 		$line_no = 0;
-		if ($line_stats['no_of_columns'] === 1) {
-		    $column_width = $page_parameters["column_width"]["1_column"];
-		    $px_per_column = $px_per_column_1_column;
-		} else {
-		    $column_width = $page_parameters["column_width"]["2_column"];
-		    $px_per_column = $px_per_column_2_column;
-		}
-		//debug($page_height);
-		//debug($column_width);
-		foreach($lines as $line) {
-		    $line_no = $line_no + 1;
-			//set the font size
-		    $line->setAttribute("style", "font-size: " . $page_parameters["font_size_in_pixels"] . "px;"); //maybe done now by css staement generated in HTML HEAD?
+		$number_of_lines = 0;
+		$current_column = 1;
+
+		foreach($array_of_html_lyric_lines as $this_line) {
+		    $number_of_lines = $number_of_lines + 1; // this counts the total number of lines
+		    $line_height_px = 0;
+		    $this_line_length = 0;
 		    
-            $line_contains_chords     = $xpath->query(".//span[contains(@class, 'chord')]"      , $line)->length;
-            $line_with_chords_removed = $xpath->query("span[not (@class='chord')]", $line);
+		    //Does this line have chords?
+            $line_contains_chords     = $xpath->query(".//span[contains(@class, 'chord')]", $this_line)->length;
+            $line_with_chords_removed = $xpath->query("span[not (@class='chord')]",         $this_line);
 			
 			//does this line have an image?
-			$image = $xpath->query(".//img/@src", $line);
+			$image = $xpath->query(".//img/@src", $this_line);
 			if($image->length) {
 			    $imagesize = getimagesize(str_replace('/songbook/score/', WWW_ROOT . 'score/', $image[0]->textContent));
-			    $line_height_px = ($px_per_column/$imagesize[0]) * $imagesize[1];
+			    $line_height_px = ($line_stats['px_per_column']/$imagesize[0]) * $imagesize[1];
 			} else {
 			    if ($line_contains_chords > 0){
 			        $line_height_px = $page_parameters["height_of_line_with_chords"];
+			        $line_height_lines = $page_parameters["line_multiplier_chords"];
 			    } else {
 			        $line_height_px = $page_parameters["height_of_line_without_chords"];
+			        $line_height_lines = 1;
 			    }
 			}
 
-			$this_line_length = 0;
 			foreach($line_with_chords_removed as $this_node) {
 			    $this_line_length = $this_line_length + strlen($this_node->textContent) + 1; //the spans found are word spans, the spaces in between them are omitted. Add 1 to allow for one space per span.
 			}
-
+			//==================================
+			
+					
+			//set the font size
+			$this_line->setAttribute("style", "font-size: " . $page_parameters["font_size_in_pixels"] . "px;"); //maybe done now by css staement generated in HTML HEAD?
+			
+			
+			
 			if($this_line_length === 0) {
-			    $wrap = 1;
+			    $line_wrap = 1;
 			} else {
-			    $wrap = ceil($this_line_length / $column_width);
+			    $line_wrap = ceil($this_line_length / $line_stats['column_width']);
 			}
 			
-			$content_height_px = $content_height_px + $line_height_px * $wrap + $page_parameters["lyric_line_top_margin"];
+			
+			
+			
+			
+			
 			
 			if ($content_height_px > $page_height) {
+			    //debug("content_height_px ($content_height_px) > page_height ($page_height). current_column ($current_column) line_stats['no_of_columns'] (" . $line_stats['no_of_columns'] . ")");
 				$current_column = $current_column + 1;
 				if($current_column > $line_stats['no_of_columns']) {
 					//new page
 					$current_page = $current_page + 1;
 					$current_column = 1;
-					$content_height_px = $line_height_px * $wrap + $page_parameters["lyric_line_top_margin"];
+					$content_height_px = $line_height_px * $line_wrap + $page_parameters["lyric_line_top_margin"];
 					$line_no = 1;
-					$page_height = $page_parameters["p2_content_height"];
-					list($pages[$current_page], $tbody, $row, $td) = self::create_printable_page($doc, $current_page, $page_parameters, $song_parameters["id"]);
+					list($pages[$current_page], $page_height, $tbody, $row, $td) = self::create_printable_page($doc, $current_page, $page_parameters, $song["id"]);
 				} else {
 				   //new column
-				    $content_height_px = $line_height_px * $wrap + $page_parameters["lyric_line_top_margin"];
+				    $content_height_px = $line_height_px * $line_wrap + $page_parameters["lyric_line_top_margin"];
 				    $line_no = 1;
 					$td = $doc->createElement('td');
 					$row->appendChild($td);
 				}
+			} else {
+			    $content_height_px = $content_height_px + $line_height_px * $line_wrap + $page_parameters["lyric_line_top_margin"];
+			    $line_no = $line_no + 1; // this gets reset on each page
 			}
 			/*
 			debug(
@@ -529,16 +430,15 @@ class StaticFunctionController extends AppController
 			    " line " .              $line_no .
 			    " line length " .       $this_line_length .
 			    " has chords? " .       $line_contains_chords . 
-			    " wrap : " .            $wrap . 
+			    " wrap : " .            $line_wrap . 
 			    " content_height_px " . $content_height_px . 
 			    " page_height " .       $page_height . 
 			    " line: \"" .           $line->textContent . "\""
 			);
 			// */
 			
-			$td->appendChild($line);
+			$td->appendChild($this_line);
 		}
-		
 		
 		$lines_with_chords = $xpath->query("//div[span[@class='chord']]");
 		
@@ -549,111 +449,314 @@ class StaticFunctionController extends AppController
 		
 		//$doc->formatOutput = true;
 		$return = str_replace("<?xml version=\"1.0\" standalone=\"yes\"?>", "", $doc->saveXML());
-
+		
 		return $return;
+	}
+	
+	public static function derive_page_parameters (
+    	    $print_page_configuration = [
+    	        "page_height" => 1000, //px
+    	        "page_width" => 690, //px
+    	    ],
+    	    $print_size = 'default'
+	    ) {
+	    
+	    $print_size_configuration = \Cake\Core\Configure::read('Songbook.print_size');
+	    $size_config_values = $print_size_configuration[$print_size];
+	    
+	    $title_height = $size_config_values['font_sizes']['title'] * 1.5
+	                    + $size_config_values['font_sizes']['attributions'] * 1.5
+	                    + $size_config_values['content_padding'] * 2;
+	    
+	    $page_available_height = $print_page_configuration['page_height']
+	                           - $size_config_values['content_padding'] * 2;
+	                           
+	    $page_available_width = $print_page_configuration['page_width']
+	                           - $size_config_values['content_padding'] * 2;
+	                           
+	    /*$height_of_line_without_chords = $size_config_values['font_sizes']['lyrics'] * 1.125;
+	    
+	    $height_of_line_with_chords = $size_config_values['font_sizes']['lyrics'] * 1.125
+	                                  + $size_config_values['font_sizes']['chords'] * 1.125;*/
+	    
+	    $height_of_line_without_chords = $size_config_values['font_sizes']['lyrics'] * 1.15;
+	    $height_of_line_with_chords = $height_of_line_without_chords
+	                                  + $size_config_values['font_sizes']['chords'] * 1.15;
+	    
+	    $height_of_wrapped_line_without_chords = $size_config_values['font_sizes']['lyrics'] * 1.125 * 2
+	                                             + $size_config_values['lyric_line_top_margin'];
+	    
+	    $height_of_wrapped_line_with_chords = $size_config_values['font_sizes']['lyrics'] * 1.125 * 2
+	                                          + $size_config_values['font_sizes']['chords'] * 1.125 * 2
+	                                          + $size_config_values['lyric_line_top_margin'];
+
+	    return [
+	        "page_height" => $print_page_configuration['page_height'],
+	        "page_width" => $print_page_configuration['page_width'],
+	        "font_size_in_pixels" => $size_config_values['font_sizes']['lyrics'], //px
+	        'page_available_height' => $page_available_height,
+	        'page_available_width' => $page_available_width,
+	        "height_of_line_with_chords" => $height_of_line_with_chords,
+	        "height_of_line_without_chords" => $height_of_line_without_chords, // font_size_in_pixels * 1.8,
+	        "lyric_line_top_margin" => $size_config_values['lyric_line_top_margin'],
+	        "height_of_wrapped_line_without_chords" => $height_of_wrapped_line_without_chords,
+	        "height_of_wrapped_line_with_chords" => $height_of_wrapped_line_with_chords,
+	        "line_multiplier_wrapped" => $height_of_wrapped_line_without_chords / $height_of_line_without_chords,
+	        "line_multiplier_chords" => $height_of_wrapped_line_with_chords / $height_of_wrapped_line_with_chords,
+	        'title_height' => $title_height
+	    ];
+	}
+	
+	public static function generate_title_html ($song) {
+	    
+	    $title_heading_html = "";
+	    $title_heading_html = $title_heading_html . "<table class=\"vertical-table attribution song-header\">". "\n" ;
+	    $title_heading_html = $title_heading_html . "<tr>"                                                    . "\n" ;
+	    $title_heading_html = $title_heading_html . "<td class= \"title-table\">"                             . "\n" ;
+	    $title_heading_html = $title_heading_html . "<h3>" . htmlspecialchars($song["title"]) .     "</h3>"   . "\n" ;
+	    
+	    //itle_heading_html = $title_heading_html .    "<span class=\"button show-menu show-song-properties\" showtext=\"Song Properties\" hidetext\"Hide Properties\" style=\"display: hidden\">Song Properties</span>" . "\n" ;
+	    
+	    $title_heading_html = $title_heading_html .     "<span class=\"written-by performed-by\">"              . "\n" ;
+	    if(trim($song["written_by"]) !== "") {
+	        $title_heading_html = $title_heading_html .         "<label class=\"written-by\">" . 'Written By' . "</label>"                               . "\n" ;
+	        $title_heading_html = $title_heading_html .         "<span class=\"written-by\">" . htmlspecialchars($song["written_by"]) . "</span>"      . "\n" ;
+	    }
+	    if(trim($song["performed_by"]) !== "") {
+	        $title_heading_html = $title_heading_html .   		"<label class=\"performed-by\">" . 'Performed By' . "</label>"  . "\n" ;
+	        $title_heading_html = $title_heading_html .   		"<span class=\"performed-by\">" . htmlspecialchars($song["performed_by"]) . "</span>"  . "\n" ;
+	    }
+	    
+	    $title_heading_html = $title_heading_html .    "</span>" . "\n" ;
+	   	    
+	    $title_heading_html = $title_heading_html .    "</td>" . "\n" ;
+	    if(trim($song["current_key"]) !== "") {
+	        
+	        if(trim($song["capo"]) !== "") {
+	            $title_heading_html = $title_heading_html . "<td class= \"key-capo capo-shown\">"                                 . "\n" ;
+	            $title_heading_html = $title_heading_html .   		"<span class=\"capo-transpose-border\">"                      . "\n" ;
+	            
+	            $title_heading_html = $title_heading_html .   		"<span class=\"capo-transpose-layout-holder layout-holder\">" . "\n" ;
+	            
+	            $title_heading_html = $title_heading_html .   		"<span class=\"capo layout-holder\">"                         . "\n" ;
+	            $title_heading_html = $title_heading_html .   		"<span class=\"heading\">" . 'capo' . "</span>"               . "\n" ;
+	            $title_heading_html = $title_heading_html .   		"<span class=\"value\">" . htmlspecialchars($song["capo"]) . "</span>"  . "\n" ;
+	            $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
+	            
+	            $title_heading_html = $title_heading_html .   		"<span class=\"transpose layout-holder\">" . "\n" ;
+	            $title_heading_html = $title_heading_html .   		"<span class=\"heading\">" . "chords shown in " . "</span>"  . "\n" ;
+	            $title_heading_html = $title_heading_html .   		"<span class=\"value\">" . StaticFunctionController::shift_note($song["current_key"], -1 * $song["capo"]) .         "</span>"  . "\n" ;
+	            $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
+	            
+	            $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
+	        } else {
+	            $title_heading_html = $title_heading_html . "<td class= \"key-capo\">"  . "\n" ;
+	            $title_heading_html = $title_heading_html .   		"<span class=\"capo-transpose-border\">" . "\n" ;
+	            
+	            
+	        }
+	        
+	        $title_heading_html = $title_heading_html .   		"<span class=\"key layout-holder key-layout-holder\">" . "\n" ;
+	        $title_heading_html = $title_heading_html .   		"<span class=\"heading\">" . 'Key' .  "</span>"  . "\n" ;
+	        $title_heading_html = $title_heading_html .   		"<span class=\"value\">" .  StaticFunctionController::shift_note($song["current_key"], -1*$song["capo"]) . "</span>"  . "\n" ;
+	        $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
+	        
+	        $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
+	        $title_heading_html = $title_heading_html .    "</td>"  . "\n" ;
+	    } else {
+	        
+	    }
+	    
+	    
+	    $title_heading_html = $title_heading_html .  "</tr>" . "\n" ;
+	    
+	    $title_heading_html = $title_heading_html . "</table>" . "\n" ;
+	    
+	    return $title_heading_html;
 	}
 	
 	private static function get_line_stats(
     	    $array_of_html_lyric_lines,
     	    $page_parameters = array ()
 	    ) {
-	        
-        $total_height_1_column_lines = 0;
-        $total_height_2_column_lines = 0;
-        $total_height_1_column_px = 0;
-        $total_height_2_column_px = 0;
 	    
+	    /* Page width is $page_parameters['page_width']
+	     * if there's 2 columns, column width = $page_parameters['page_width']/2 etc.
+	     * In theory number_of_columns = total_height / $page_parameters['page_height']
+	     * But then what if the max line width is greater than $page_parameters['page_width'] / number_of_columns?
+	     * Either you wrap or you restrict the number of columns
+	     * If the lyric content height is greaterthan  $page_parameters['page_height'] x number_of_columns then
+	     * paginate.
+	     * 
+	     * Different column widths mean different numbers of lines, due to wrapping.
+	     * So if a line length is greater than the width of a line, that line counts as two
+	     * 
+	     * I suppose you'd have to compare the line width to the potential widths of up to...5? columns
+	     * 
+	     */
+	        
+        $column_params = array ();
+        $max_columns = 5;
+        $pixels_per_letter = 7; //needed to compare line length in characters to column width
+        
+        for ($column_count = 1; $column_count <= $max_columns; $column_count = $column_count + 1){
+            $column_params[$column_count] = [
+                "width (px)" => floor($page_parameters['page_width'] / $column_count),
+                "width (characters)" => floor(($page_parameters['page_available_width'] / $column_count)/$pixels_per_letter),
+                "total height available" => $page_parameters['page_available_height']  * $column_count,
+                "number of wrapped lines" => 0,
+                "total height (lines)" => 0,
+                "total height (px)" => 0
+	        ];
+        }
+
+        $additional_line = array();
+        
 	    $non_zero_length_lines_count = 0;
 	    $non_zero_length_lines_total = 0;
 	    
 	    $number_of_lines = 0;
+	    $content_height_px = 0;
 	    $number_of_wrapped_lines_2_column = 0;
 	    
-	    $max_length = 0;
-
+	    $max_line_length = 0; //characters
+	    
+	    $xpath = new \DOMXPath($array_of_html_lyric_lines[0]->ownerDocument);
+	    
 	    foreach ($array_of_html_lyric_lines as $this_line) {
-	        $number_of_lines = $number_of_lines + 1;
-	        //debug($this_line);
-	        $xpath = new \DOMXPath($this_line->ownerDocument);
-	        $line_with_chords_removed = $xpath->query("span[not (@class='chord')]", $this_line);
-	        //Does this line have chords?
-	        $line_contains_chords = $xpath->query("span[@class='chord']", $this_line)->length;
-	        
-	        if ($line_contains_chords > 0){
-	            $line_height_px = $page_parameters["height_of_line_with_chords"];
-	            $line_height_lines = $page_parameters["line_multiplier_chords"];
-	            
-	        } else {
-	            $line_height_px = $page_parameters["height_of_line_without_chords"];
-	            $line_height_lines = 1;
-	        }
+	        $number_of_lines = $number_of_lines + 1; // this counts the total number of lines        
+	        $line_height_px = 0;
 	        $this_line_length = 0;
-	        foreach($line_with_chords_removed as $this_node) {
-	            //debug($this_node->textContent);
-	            $this_line_length = $this_line_length + strlen($this_node->textContent);
+	      
+	        //Does this line have chords?
+	        $line_contains_chords     = $xpath->query(".//span[contains(@class, 'chord')]", $this_line)->length;
+	        $line_with_chords_removed = $xpath->query("span[not(contains(@class, 'chord'))]", $this_line);
+	        
+	        //does this line have an image?
+	        $image = $xpath->query(".//img/@src", $this_line);
+	        if($image->length) {
+	            $imagesize = getimagesize(str_replace('/songbook/score/', WWW_ROOT . 'score/', $image[0]->textContent));
+	            $line_height_px = ($line_stats['px_per_column']/$imagesize[0]) * $imagesize[1];
+	        } else {
+	            if ($line_contains_chords > 0){ 
+	                $line_height_px = $page_parameters["height_of_line_with_chords"];
+	                $line_height_lines = $page_parameters["line_multiplier_chords"];
+	            } else {
+	                $line_height_px = $page_parameters["height_of_line_without_chords"];
+	                $line_height_lines = 1;
+	            }
 	        }
 	        
-	        if ($this_line_length > $max_length) {
-	            $max_length = $this_line_length;
+	        foreach($line_with_chords_removed as $this_node) {
+	            $this_line_length = $this_line_length + strlen($this_node->textContent) + 1; //the spans found are word spans, the spaces in between them are omitted. Add 1 to allow for one space per span.
+	        }
+	       //==================================
+	        
+	        
+	        if ($this_line_length > $max_line_length) {
+	            $max_line_length = $this_line_length;
 	        }
 	        if($this_line_length > 0) {
 	            $non_zero_length_lines_count = $non_zero_length_lines_count + 1;
-	            $non_zero_length_lines_total = $non_zero_length_lines_total + $this_line_length;
+	            $non_zero_length_lines_total = $non_zero_length_lines_total + $this_line_length; //characters - needed for average line length
 	        }
 	        
-	        $additional_line_1_column = ceil($this_line_length / $page_parameters["column_width"]["1_column"]) - 1; 
-	        $additional_line_2_column = ceil($this_line_length / $page_parameters["column_width"]["2_column"]) - 1;
-	        
-	        $total_height_1_column_lines = $total_height_1_column_lines + (1 + $additional_line_1_column * ($page_parameters["line_multiplier_wrapped"] - 1)) * $line_height_lines; //number of lines
-	        $total_height_2_column_lines = $total_height_2_column_lines + (1 + $additional_line_2_column * ($page_parameters["line_multiplier_wrapped"] - 1)) * $line_height_lines; //number of lines
-	        
-	        $total_height_1_column_px = $total_height_1_column_px + $line_height_px * ceil($this_line_length / $page_parameters["column_width"]["1_column"]) + $page_parameters["lyric_line_top_margin"];
-	        $total_height_2_column_px = $total_height_2_column_px + $line_height_px * ceil($this_line_length / $page_parameters["column_width"]["2_column"]) + $page_parameters["lyric_line_top_margin"];
-	        
-	        if($this_line_length > $page_parameters["column_width"]["2_column"]) {
-	            $number_of_wrapped_lines_2_column = $number_of_wrapped_lines_2_column + 1;
+	        for ($column_count = 1; $column_count < $max_columns + 1; $column_count = $column_count + 1) {
+	            
+	            if ($this_line_length === 0) {
+	                $line_wrap = 1;
+	            } else {
+	                $line_wrap = ceil($this_line_length / $column_params[$column_count]["width (characters)"]); 
+	            }
+	            
+	            $content_height_px = $content_height_px + $line_height_px * $line_wrap + $page_parameters["lyric_line_top_margin"];
+	            
+	            $column_params[$column_count]["total height (lines)"] = 
+	                ceil(
+	                    $column_params[$column_count]["total height (lines)"] + 
+	                    $line_wrap * $line_height_lines
+	                );
+	            
+	            
+	            $column_params[$column_count]["total height (px)"] = 
+	                $column_params[$column_count]["total height (px)"] + 
+	                $line_height_px * $line_wrap + 
+	                $page_parameters["lyric_line_top_margin"];
+	
+	            if($line_wrap > 1) {
+    	            $column_params[$column_count]["number of wrapped lines"] = $column_params[$column_count]["number of wrapped lines"] + 1;
+    	        }
+    	        //debug ("line no. " . $number_of_lines. " column " . $column_count ." Line length " . ($this_line_length) . " characters, column width " . $column_params[$column_count]["width (characters)"] . " characters, Total Content height so far " . $column_params[$column_count]["total height (px)"]);
+	        }
+	    }
+	    /*debug('Total number of lines : ' . $number_of_lines . "\n" . 
+	        ' Total content height : ' . $total_content_height_px . "\n" .  
+	        ' Line height with chords : ' . $page_parameters["height_of_line_with_chords"] . "\n" .  
+	        ' Height without : ' . $page_parameters["height_of_line_without_chords"]);
+*/
+	    //how many pages?
+	    //first page each column is $page_parameters['page_available_height'] - $page_parameters["title_height"]
+	    //every other page is $page_parameters['page_available_height']
+	    //so 1 page if:
+	    //$column_params[$column_count]["total height (px)"] / ($page_parameters['page_available_height'] - $page_parameters["title_height"]) * $column_count
+	    //is less than one
+	    // number of additional pages = 
+	    //Ceil((($column_params[$column_count]["total height (px)"] / ($page_parameters['page_available_height'] - $page_parameters["title_height"]) * $column_count) - 1) / ($page_parameters['page_available_height'])
+	    
+	    
+	    for ($column_count = 1; $column_count <= $max_columns; $column_count = $column_count + 1) {
+	        $available_height_firstpage_px = ($page_parameters['page_available_height'] - $page_parameters["title_height"]) * $column_count;
+	        $remainder = $column_params[$column_count]["total height (px)"] - $available_height_firstpage_px;
+	        //debug(' ' . $column_count . " Columns: Total content height height : " . $column_params[$column_count]["total height (px)"] . " px   available_height_firstpage_px :" . $available_height_firstpage_px . "    remainder : ". $remainder);
+	        if($remainder > 0) {
+	            //Calculate the number of pages that you would end up with if you used this number of columns
+	            $column_params[$column_count]['total_number_of_pages_if_we_use_this_number_of_columns'] = 1 +  //store this value in the $column_params array just so I can examine it later and use it for troubleshooting
+	            ceil($remainder / ($page_parameters['page_available_height'] * $column_count));
+	        } else {
+	            $column_params[$column_count]['total_number_of_pages_if_we_use_this_number_of_columns'] = 1;
+	        }
+	    }
+	    //debug($column_params);
+	    //how do you decide which is the best no. of columns?
+	    //the smallest number that equates to one page!
+	    // or the smnallest number that equates to the smallest number of pages if no columns gives one page.
+	    
+	    $no_of_pages = 1000;
+	    $no_of_columns = 1000;
+	    for ($column_count = 1; $column_count <= $max_columns; $column_count = $column_count + 1) {
+	        if($column_params[$column_count]['total_number_of_pages_if_we_use_this_number_of_columns'] < $no_of_pages) { //the number of pages that you would end up with if you used this number of columns
+	            $no_of_pages = $column_params[$column_count]['total_number_of_pages_if_we_use_this_number_of_columns'];
+	            $no_of_columns = 1000;
+	        }
+	        if($column_count < $no_of_columns) {
+	            $no_of_columns = $column_count;
 	        }
 	    }
 	    
-	    if ($total_height_1_column_px < $page_parameters["p1_content_height"]) {
-	        // 1 column on one page
-	        $no_of_columns = 1;
-	        $no_of_pages = 1;
-	    } elseif ($total_height_2_column_px < ($page_parameters["p1_content_height"] * 2)) {
-	        // 2 columns on one page
-	        $no_of_columns = 2;
-	        $no_of_pages = 1;
-	    } elseif ($total_height_1_column_px < ($page_parameters["p1_content_height"] + $page_parameters["p2_content_height"])) {
-	        // 1 column on 2 pages
-	        $no_of_columns = 1;
-	        $no_of_pages = 2;
-	    } else {
-	        // 2 columns, multiple pages
-	        $no_of_columns = 2;
-	        $no_of_pages = 1 + ceil(($total_height_1_column_px - $page_parameters["p1_content_height"]) / $page_parameters["p2_content_height"]);
-	    }
-	    
-	    
-	    if($non_zero_length_lines_count ===0) {
+	    if($non_zero_length_lines_count === 0) {
 	        $average_line_length = 0;
 	    } else {
 	       $average_line_length = ceil($non_zero_length_lines_total / $non_zero_length_lines_count);
 	    }
 	    
-	    return array(
-	        'maximum_line_length' => $max_length,
-	        'total_height_1_column_lines' => $total_height_1_column_lines,
-	        'total_height_2_column_lines' => $total_height_2_column_lines,
-	        'total_height_1_column_px' => $total_height_1_column_px,
-	        'total_height_2_column_px' => $total_height_2_column_px, 
+	    //debug($column_params);debug($page_parameters);
+	    
+	    $line_stats = array(
+	        'column_params' => $column_params,
+	        'maximum_line_length' => $max_line_length,
 	        'average_line_length' => $average_line_length,
 	        'number_of_wrapped_lines_2_column' => $number_of_wrapped_lines_2_column,
 	        'total_number_of_lines' => $number_of_lines,
+	        'total_content_height_px' => $content_height_px,
 	        'non_zero_length_lines_count' => $non_zero_length_lines_count,
 	        'no_of_columns' => $no_of_columns,
-	        'no_of_pages' => $no_of_pages
+	        'no_of_pages' => $no_of_pages,
+	        'column_width' => $column_params[$no_of_columns]["width (characters)"],
+	        'px_per_column' => $column_params[$no_of_columns]["width (px)"]
 	        
 	    );
+	    
+	    return $line_stats;
 	}
 	
 	public static function create_printable_page ($container, $page_no, $page_parameters, $song_id = 0) {
@@ -662,8 +765,12 @@ class StaticFunctionController extends AppController
 	        $doc = $container;
 	    }
 		$page = $doc->createElement('table');
-		$page->setAttribute('class', 'printable lyrics-display page song-' . $song_id . ' page-' . $page_no . ' ' . $page_parameters["style_set_or_song"] );
-		$page->setAttribute('style', 'width: ' . $page_parameters["page_width"] . 'px; height: ' . $page_parameters["page_height"] . 'px; font-size:' . $page_parameters["font_size_in_pixels"] . "px;");
+		$page->setAttribute('class', 'printable lyrics-display page song-' . $song_id . ' page-' . $page_no . ' ' );
+		$page_height =  $page_parameters['page_available_height'];
+		if ($page_no === 1) {
+		    $page_height =  $page_height - $page_parameters["title_height"];
+		}
+		$page->setAttribute('style', 'width: ' . $page_parameters['page_available_width'] . 'px; height: ' . $page_height . 'px; font-size:' . $page_parameters["font_size_in_pixels"] . "px;");
 		
 		$tbody = $doc->createElement('tbody');
 		
@@ -677,7 +784,7 @@ class StaticFunctionController extends AppController
 		
 		$container->appendChild($page);
 		
-		return [$page, $tbody, $row, $td];
+		return [$page, $page_height, $tbody, $row, $td];
 	}
 	
 	public static function output_pdf($display, $title = '', $orientation = 'portrait') {

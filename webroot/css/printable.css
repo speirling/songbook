@@ -22,6 +22,10 @@ table.page.printable  {
      /*border: 1px solid gray;*/
      table-layout:fixed;
  }
+.printable table.page td,
+table.page.printable td {
+     vertical-align: text-top;
+ }
 .printable table.page.single-song,
 table.page.printable.single-song  {
      page-break-before: never;
@@ -103,12 +107,6 @@ td.title-table {
 	width:40%;
 }
 
-.capo-transpose-border {
-	display:inline-block;
-	border:1px solid gray;
-    padding-left: 1em;
-    padding-right: 1em;
-}
 
 td.key-capo .key-layout-holder {
 	display: inline-block;
@@ -119,21 +117,8 @@ td.key-capo .capo-transpose-layout-holder {
 	text-align: right;
 }
 
-td.key-capo .layout-holder {
-	/*border: 1px solid #333399;*/
-}
-
-td.key-capo .key.layout-holder {
-}
-
 td.key-capo .key {
 	width: auto;
-}
-
-td.key-capo .capo.layout-holder {
-	line-height: 0.5;
-    font-size: 1em;
-	margin: 0;
 }
 
 td.key-capo .transpose.layout-holder {

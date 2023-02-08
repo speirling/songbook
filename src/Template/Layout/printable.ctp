@@ -35,8 +35,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->Html->css('cake.css') ?>
     <?= $this->Html->css(Cake\Core\Configure::read('Songbook.css_library')); ?>
     <?php
-    $print_size_configuration = \Cake\Core\Configure::read('Songbook.print_size');
-    $size_config_values = $print_size_configuration[$print_size];
+    $size_config_values = \Cake\Core\Configure::read('Songbook.print_size.'.$print_size);
     $local_css_statement = "\n" . 
 	   	    ".line {\n" .
 	   	    "    margin-top: " . $size_config_values['lyric_line_top_margin'] .  "px; \n" .
