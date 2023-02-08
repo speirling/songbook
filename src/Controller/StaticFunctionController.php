@@ -515,7 +515,7 @@ class StaticFunctionController extends AppController
 	    $title_heading_html = $title_heading_html . "<td class= \"title-table\">"                             . "\n" ;
 	    $title_heading_html = $title_heading_html . "<h3>" . htmlspecialchars($song["title"]) .     "</h3>"   . "\n" ;
 	    
-	    $title_heading_html = $title_heading_html .    "<span class=\"button show-menu show-song-properties\" showtext=\"Song Properties\" hidetext\"Hide Properties\" style=\"display: hidden\">Song Properties</span>" . "\n" ;
+	    //itle_heading_html = $title_heading_html .    "<span class=\"button show-menu show-song-properties\" showtext=\"Song Properties\" hidetext\"Hide Properties\" style=\"display: hidden\">Song Properties</span>" . "\n" ;
 	    
 	    $title_heading_html = $title_heading_html .     "<span class=\"written-by performed-by\">"              . "\n" ;
 	    if(trim($song["written_by"]) !== "") {

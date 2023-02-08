@@ -7,7 +7,7 @@
         $(document).ready(function(){
             SBK.StaticFunctions.set_window_size_in_URL();
             
-            jQuery('.show-menu').click(function(){
+            jQuery('td.title-table').prepend('<span class="button show-menu show-song-properties" showtext="Song Properties" hidetext"Hide Properties" style="display: hidden">Song Properties</span>').click(function(){
             	var button = jQuery(this);
             	var panel = jQuery('.hideable-dashboard');
 
