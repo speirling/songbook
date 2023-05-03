@@ -66,7 +66,7 @@ class SongsController extends AppController
 			$this->Songs = $this->Songs->find()
 			->where(['title LIKE' => '%'.$search_string.'%'])
 			->order(['id' =>'DESC'])->contain(['SetSongs'=>function($query){
-                return $query->find('all')->distinct(['performer_id', 'key']);
+                return $query->find('all')->distinct(['Performers__id', 'SetSongs__key']);
         }])->contain('SetSongs.Performers');
         $setSong = new SetSong();
         $this->set('setSong', $setSong);
@@ -95,7 +95,7 @@ class SongsController extends AppController
 	{
 		$song = $this->Songs->get($id, [
 				'contain' => ['SongTags'=>['Tags'], 'SetSongs'=>function($query){
-				     return $query->find('all')->distinct(['performer_id', 'key']);
+				return $query->find('all')->distinct(['Performers__id', 'SetSongs__key']);
 				}, 'SetSongs.Performers']]);
 
 		$default_print_page_configuration = \Cake\Core\Configure::read('Songbook.print_page.A4');
@@ -150,7 +150,7 @@ class SongsController extends AppController
 	{
 		$song = $this->Songs->get($id, [
 				'contain' => ['SongTags'=>['Tags'], 'SetSongs'=>function($query){
-				return $query->find('all')->distinct(['performer_id', 'key']);
+				return $query->find('all')->distinct(['Performers__id', 'SetSongs__key']);
 				}, 'SetSongs.Performers']]);
 		
 		$print_size = "default";
@@ -235,7 +235,7 @@ class SongsController extends AppController
      */
     public function add_base()
     {
-        $song = $this->Songs->newEntity();
+        $song = $this->Songs->newEntity([]);
         if ($this->request->is('post')) {
             $song = $this->Songs->patchEntity($song, $this->request->data);
             if ($result = $this->Songs->save($song)) {
@@ -270,7 +270,7 @@ class SongsController extends AppController
     {
         $song = $this->Songs->get($id, [
             'contain' => ['SongTags'=>['Tags'], 'SetSongs'=>function($query){
-                return $query->find('all')->distinct(['performer_id', 'key']);
+            return $query->find('all')->distinct(['Performers__id', 'SetSongs__key']);
         }, 'SetSongs.Performers']]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $song = $this->Songs->patchEntity($song, $this->request->data);
@@ -298,7 +298,7 @@ class SongsController extends AppController
      * @return void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Network\Exception\NotFoundException When record not found.
      */
-    public function editret($id = null, $ret_controller, $ret_action, $ret_id)
+    public function editret($id = null, $ret_controller = null, $ret_action = null, $ret_id = null)
     {
     	$this->edit($id, ['controller' => $ret_controller, 'action' => $ret_action, $ret_id]);
     }

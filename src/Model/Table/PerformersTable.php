@@ -22,13 +22,13 @@ class PerformersTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
-        $this->table('performers');
-        $this->displayField('name');
-        $this->primaryKey('id');
+        $this->setTable('performers');
+        $this->setDisplayField('name');
+        $this->setPrimaryKey('id');
 
         $this->hasMany('SetSongs', [
             'foreignKey' => 'performer_id'
@@ -47,7 +47,7 @@ class PerformersTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])

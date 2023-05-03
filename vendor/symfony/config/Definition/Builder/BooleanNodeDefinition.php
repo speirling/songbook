@@ -12,6 +12,7 @@
 namespace Symfony\Component\Config\Definition\Builder;
 
 use Symfony\Component\Config\Definition\BooleanNode;
+use Symfony\Component\Config\Definition\Exception\InvalidDefinitionException;
 
 /**
  * This class provides a fluent interface for defining a node.
@@ -23,7 +24,7 @@ class BooleanNodeDefinition extends ScalarNodeDefinition
     /**
      * {@inheritdoc}
      */
-    public function __construct($name, NodeParentInterface $parent = null)
+    public function __construct(?string $name, NodeParentInterface $parent = null)
     {
         parent::__construct($name, $parent);
 
@@ -32,11 +33,19 @@ class BooleanNodeDefinition extends ScalarNodeDefinition
 
     /**
      * Instantiate a Node.
-     *
-     * @return BooleanNode The node
      */
-    protected function instantiateNode()
+    protected function instantiateNode(): BooleanNode
     {
-        return new BooleanNode($this->name, $this->parent);
+        return new BooleanNode($this->name, $this->parent, $this->pathSeparator);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws InvalidDefinitionException
+     */
+    public function cannotBeEmpty(): static
+    {
+        throw new InvalidDefinitionException('->cannotBeEmpty() is not applicable to BooleanNodeDefinition.');
     }
 }

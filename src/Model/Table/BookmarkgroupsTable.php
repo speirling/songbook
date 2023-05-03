@@ -21,13 +21,13 @@ class BookmarkgroupsTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
-        $this->table('bookmarkgroups');
-        $this->displayField('title');
-        $this->primaryKey('id');
+        $this->setTable('bookmarkgroups');
+        $this->setDisplayField('title');
+        $this->setPrimaryKey('id');
 
         $this->belongsToMany('Bookmarkurls', [
             'foreignKey' => 'bookmarkgroup_id',
@@ -42,7 +42,7 @@ class BookmarkgroupsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])

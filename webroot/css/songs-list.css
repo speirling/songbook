@@ -26,3 +26,36 @@
 .full-text-search label {
 	display: none;
 }
+
+
+
+
+div.dashboard.index  {
+	width: 80%;
+	float: left;
+}
+
+nav#actions-sidebar {
+	width: 16%;
+	float: left;
+	padding-left: 1rem;
+	padding-right: 1rem;
+}
+
+div.dashboard table tr td {
+	font-size: 1.4rem;
+} 
+
+
+
+nav#actions-sidebar button,
+nav#actions-sidebar .button,
+tr.song-row span.actions button,
+tr.song-row span.actions .button {
+	height: auto;
+}
+
+nav#actions-sidebar input {
+	background-color: white;
+	border-color: rgb(170, 170, 170);
+}

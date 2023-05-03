@@ -23,10 +23,10 @@ class IntegerNode extends NumericNode
     /**
      * {@inheritdoc}
      */
-    protected function validateType($value)
+    protected function validateType(mixed $value)
     {
-        if (!is_int($value)) {
-            $ex = new InvalidTypeException(sprintf('Invalid type for path "%s". Expected int, but got %s.', $this->getPath(), gettype($value)));
+        if (!\is_int($value)) {
+            $ex = new InvalidTypeException(sprintf('Invalid type for path "%s". Expected "int", but got "%s".', $this->getPath(), get_debug_type($value)));
             if ($hint = $this->getInfo()) {
                 $ex->addHint($hint);
             }
@@ -34,5 +34,13 @@ class IntegerNode extends NumericNode
 
             throw $ex;
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getValidPlaceholderTypes(): array
+    {
+        return ['int'];
     }
 }

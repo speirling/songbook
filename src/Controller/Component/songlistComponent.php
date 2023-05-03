@@ -15,7 +15,7 @@ class songlistComponent extends Component {
 	public function filterAllSongs($event = Null) {
 	
 		$controller = $this->_registry->getController();
-	
+		
 		$controller->loadModel('Songs');
 		$controller->loadModel('Events');
 		$controller->loadModel('SongPerformances');
@@ -86,11 +86,11 @@ class songlistComponent extends Component {
 		// end song votes -------------------
 
 		$filter_on = false;
-		if ($controller->request->is(array('post', 'put', 'get'))) {
-			if ($controller->request->is(array('get'))) {
-				$query_parameters = $controller->request->query;
+		if ($controller->getRequest()->is(array('post', 'put', 'get'))) {
+		    if ($controller->getRequest()->is(array('get'))) {
+			    $query_parameters = $controller->getRequest()->getQuery();
 			} else {
-				$query_parameters = $controller->request->data;
+			    $query_parameters = $controller->getRequest()->getData();
 			}
 			
 			/*

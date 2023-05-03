@@ -1,29 +1,31 @@
 <?php
+declare(strict_types=1);
+
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\ORM;
 
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\EntityTrait;
+use Cake\Datasource\InvalidPropertyInterface;
 
 /**
  * An entity represents a single result row from a repository. It exposes the
  * methods for retrieving and storing properties associated in this row.
  */
-class Entity implements EntityInterface
+class Entity implements EntityInterface, InvalidPropertyInterface
 {
-
     use EntityTrait;
 
     /**
@@ -42,8 +44,8 @@ class Entity implements EntityInterface
      *  $entity = new Entity(['id' => 1, 'name' => 'Andrew'])
      * ```
      *
-     * @param array $properties hash of properties to set in this entity
-     * @param array $options list of options to use when creating this entity
+     * @param array<string, mixed> $properties hash of properties to set in this entity
+     * @param array<string, mixed> $options list of options to use when creating this entity
      */
     public function __construct(array $properties = [], array $options = [])
     {
@@ -52,27 +54,27 @@ class Entity implements EntityInterface
             'markClean' => false,
             'markNew' => null,
             'guard' => false,
-            'source' => null
+            'source' => null,
         ];
-        $this->_className = get_class($this);
 
         if (!empty($options['source'])) {
-            $this->source($options['source']);
+            $this->setSource($options['source']);
         }
 
         if ($options['markNew'] !== null) {
-            $this->isNew($options['markNew']);
+            $this->setNew($options['markNew']);
         }
 
         if (!empty($properties) && $options['markClean'] && !$options['useSetters']) {
-            $this->_properties = $properties;
+            $this->_fields = $properties;
+
             return;
         }
 
         if (!empty($properties)) {
             $this->set($properties, [
                 'setter' => $options['useSetters'],
-                'guard' => $options['guard']
+                'guard' => $options['guard'],
             ]);
         }
 

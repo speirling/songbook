@@ -23,26 +23,29 @@ class SetSongsTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
-        $this->table('set_songs');
-        $this->displayField('id');
-        $this->primaryKey('id');
+        $this->setTable('set_songs');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
-        $this->belongsTo('Sets', [
-            'foreignKey' => 'set_id',
-            'joinType' => 'INNER'
-        ]);
-        $this->belongsTo('Songs', [
-            'foreignKey' => 'song_id',
-            'joinType' => 'INNER'
-        ]);
-        $this->belongsTo('Performers', [
-            'foreignKey' => 'performer_id',
-            'joinType' => 'INNER'
-        ]);
+        $this->belongsTo('Sets', [])
+        ->setForeignKey('set_id')
+        ->setJoinType('INNER')
+        ;
+        
+        $this->belongsTo('Songs', [])
+        ->setForeignKey('song_id')
+        ->setJoinType('INNER')
+        ;
+        
+        $this->belongsTo('Performers')
+        ->setForeignKey('performer_id')
+        ->setJoinType('INNER')
+       ;
+        
     }
 
     /**
@@ -51,7 +54,7 @@ class SetSongsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])
@@ -78,7 +81,7 @@ class SetSongsTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['set_id'], 'Sets'));
         $rules->add($rules->existsIn(['song_id'], 'Songs'));

@@ -16,11 +16,34 @@ namespace Symfony\Component\Config\Definition\Builder;
  *
  * @author Victor Berchet <victor@suumit.com>
  */
-interface ParentNodeDefinitionInterface
+interface ParentNodeDefinitionInterface extends BuilderAwareInterface
 {
-    public function children();
+    /**
+     * Returns a builder to add children nodes.
+     */
+    public function children(): NodeBuilder;
 
-    public function append(NodeDefinition $node);
+    /**
+     * Appends a node definition.
+     *
+     * Usage:
+     *
+     *     $node = $parentNode
+     *         ->children()
+     *             ->scalarNode('foo')->end()
+     *             ->scalarNode('baz')->end()
+     *             ->append($this->getBarNodeDefinition())
+     *         ->end()
+     *     ;
+     *
+     * @return $this
+     */
+    public function append(NodeDefinition $node): static;
 
-    public function setBuilder(NodeBuilder $builder);
+    /**
+     * Gets the child node definitions.
+     *
+     * @return NodeDefinition[]
+     */
+    public function getChildNodeDefinitions(): array;
 }

@@ -22,13 +22,13 @@ class PlaylistSetsTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
-        $this->table('playlist_sets');
-        $this->displayField('id');
-        $this->primaryKey('id');
+        $this->setTable('playlist_sets');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
         $this->belongsTo('Sets', [
             'foreignKey' => 'set_id',
@@ -46,7 +46,7 @@ class PlaylistSetsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])
@@ -67,7 +67,7 @@ class PlaylistSetsTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['set_id'], 'Sets'));
         $rules->add($rules->existsIn(['playlist_id'], 'Playlists'));

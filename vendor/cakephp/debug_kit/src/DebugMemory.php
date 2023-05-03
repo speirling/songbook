@@ -1,15 +1,17 @@
 <?php
+declare(strict_types=1);
+
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         DebugKit 2.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace DebugKit;
 
@@ -17,11 +19,9 @@ use Cake\Error\Debugger;
 
 /**
  * Contains methods for Profiling memory usage.
- *
  */
 class DebugMemory
 {
-
     /**
      * An array of recorded memory use points.
      *
@@ -61,9 +61,8 @@ class DebugMemory
     {
         $memoryUse = self::getCurrent();
         if (!$message) {
-            $named = false;
             $trace = debug_backtrace();
-            $message = Debugger::trimpath($trace[0]['file']) . ' line ' . $trace[0]['line'];
+            $message = Debugger::trimPath($trace[0]['file']) . ' line ' . $trace[0]['line'];
         }
         if (isset(self::$_points[$message])) {
             $originalMessage = $message;
@@ -74,6 +73,7 @@ class DebugMemory
             }
         }
         self::$_points[$message] = $memoryUse;
+
         return true;
     }
 
@@ -89,6 +89,7 @@ class DebugMemory
         if ($clear) {
             self::$_points = [];
         }
+
         return $marks;
     }
 

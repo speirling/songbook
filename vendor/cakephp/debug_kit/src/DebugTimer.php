@@ -1,15 +1,17 @@
 <?php
+declare(strict_types=1);
+
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         DebugKit 0.1
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace DebugKit;
 
@@ -17,11 +19,9 @@ use Cake\Error\Debugger;
 
 /**
  * Contains methods for Profiling and creating timers.
- *
  */
 class DebugTimer
 {
-
     /**
      * Internal timers array
      *
@@ -43,7 +43,7 @@ class DebugTimer
         if (!$name) {
             $named = false;
             $calledFrom = debug_backtrace();
-            $_name = $name = Debugger::trimpath($calledFrom[0]['file']) . ' line ' . $calledFrom[0]['line'];
+            $name = Debugger::trimPath($calledFrom[0]['file']) . ' line ' . $calledFrom[0]['line'];
         } else {
             $named = true;
         }
@@ -66,8 +66,9 @@ class DebugTimer
         self::$_timers[$name] = [
             'start' => $start,
             'message' => $message,
-            'named' => $named
+            'named' => $named,
         ];
+
         return true;
     }
 
@@ -107,6 +108,7 @@ class DebugTimer
             return false;
         }
         self::$_timers[$name]['end'] = $end;
+
         return true;
     }
 
@@ -130,11 +132,11 @@ class DebugTimer
             $_end = $now;
         }
         $times['Core Processing (Derived from $_SERVER["REQUEST_TIME"])'] = [
-            'message' => __d('debug_kit', 'Core Processing (Derived from $_SERVER["REQUEST_TIME"])'),
+            'message' => 'Core Processing (Derived from $_SERVER["REQUEST_TIME"])',
             'start' => 0,
             'end' => $_end - $start,
             'time' => round($_end - $start, 6),
-            'named' => null
+            'named' => null,
         ];
         foreach (self::$_timers as $name => $timer) {
             if (!isset($timer['end'])) {
@@ -143,12 +145,13 @@ class DebugTimer
             $times[$name] = array_merge($timer, [
                 'start' => $timer['start'] - $start,
                 'end' => $timer['end'] - $start,
-                'time' => self::elapsedTime($name)
+                'time' => self::elapsedTime($name),
             ]);
         }
         if ($clear) {
             self::$_timers = [];
         }
+
         return $times;
     }
 
@@ -160,6 +163,7 @@ class DebugTimer
     public static function clear()
     {
         self::$_timers = [];
+
         return true;
     }
 
@@ -175,6 +179,7 @@ class DebugTimer
         if (!isset(self::$_timers[$name]['start']) || !isset(self::$_timers[$name]['end'])) {
             return 0;
         }
+
         return round(self::$_timers[$name]['end'] - self::$_timers[$name]['start'], $precision);
     }
 
@@ -187,7 +192,8 @@ class DebugTimer
     {
         $start = self::requestStartTime();
         $now = microtime(true);
-        return ($now - $start);
+
+        return $now - $start;
     }
 
     /**
@@ -204,6 +210,7 @@ class DebugTimer
         } else {
             $startTime = env('REQUEST_TIME');
         }
-        return $startTime;
+
+        return (float)$startTime;
     }
 }

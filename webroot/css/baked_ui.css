@@ -578,3 +578,53 @@ tr.song-row td.multi-select input {
 .set-song-edit span {
     font-size: 1em;
 }
+
+/* overwrite milligram ----------------------------------- */
+::after, ::before  {
+	box-sizing: unset;
+
+}
+.button, button, input[type="button"], input[type="reset"], input[type="submit"] {
+	background-color: #f3f3f3;
+	border-color: inherit;
+	color: black;
+	cursor: pointer;
+	font-size: 1.1rem;
+	font-weight: 700;
+	letter-spacing: normal;
+	line-height: auto;
+	text-align: center;
+	text-transform: none;
+	white-space: nowrap;
+	border-radius: unset;
+	height: auto;
+}
+
+.button { 
+	height: fit-content;
+	font-weight: 400;
+}
+.button:focus, .button:hover, button:focus, button:hover, input[type="button"]:focus, input[type="button"]:hover, input[type="reset"]:focus, input[type="reset"]:hover, input[type="submit"]:focus, input[type="submit"]:hover {
+	background-color: #e3e3e3;
+	border-color: inherit;
+	color: black;
+	outline: 0;
+}
+/* ----------------------------------------------------- */
+
+/* from cakePHP3 base.css */
+.large-10 {
+	width: 83.33333%;
+}
+.large-9 {
+	width: 75%;
+}
+.column, .columns {
+	position: relative;
+	padding-left: 0.9375rem;
+	padding-right: 0.9375rem;
+	float: left;
+}
+
+
+

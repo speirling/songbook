@@ -31,6 +31,15 @@ class DashboardController extends AppController
 		$this->songlist->filterAllSongs();
 		$this->set('title', $this->page_title);
 	}
+	/*
+	public function requestIs($type) {
+	    return $this->request->is($type);
+	}
+
+	public function requestQuery() {
+	    return $this->request->query;
+	}
+*/
 	public function printable()
 	{
 		$this->loadComponent('songlist');

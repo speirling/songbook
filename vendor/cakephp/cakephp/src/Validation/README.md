@@ -1,3 +1,6 @@
+[![Total Downloads](https://img.shields.io/packagist/dt/cakephp/validation.svg?style=flat-square)](https://packagist.org/packages/cakephp/validation)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.txt)
+
 # CakePHP Validation Library
 
 The validation library in CakePHP provides features to build validators that can validate arbitrary
@@ -19,11 +22,11 @@ $validator
         'message' => 'E-mail must be valid'
     ])
     ->requirePresence('name')
-    ->notEmpty('name', 'We need your name.')
+    ->notEmptyString('name', 'We need your name.')
     ->requirePresence('comment')
-    ->notEmpty('comment', 'You need to give a comment.');
+    ->notEmptyString('comment', 'You need to give a comment.');
 
-$errors = $validator->errors($_POST);
+$errors = $validator->validate($_POST);
 if (!empty($errors)) {
     // display errors.
 }
@@ -31,4 +34,4 @@ if (!empty($errors)) {
 
 ## Documentation
 
-Please make sure you check the [official documentation](http://book.cakephp.org/3.0/en/core-libraries/validation.html)
+Please make sure you check the [official documentation](https://book.cakephp.org/4/en/core-libraries/validation.html)

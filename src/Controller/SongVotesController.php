@@ -64,7 +64,7 @@ class SongVotesController extends AppController
      */
     private function addsave($data, $redirect_array)
     {
-    	$songVote = $this->SongVotes->newEntity();
+    	$songVote = $this->SongVotes->newEntity([]);
     	$songVote = $this->SongVotes->patchEntity($songVote, $data);
     	if ($this->SongVotes->save($songVote)) {
             $this->Flash->success(__('The song vote has been saved.'));
@@ -104,7 +104,7 @@ class SongVotesController extends AppController
         $data = [
             'song_id' => $request_data['song_id']
         ];
-        $songVote = $this->SongVotes->newEntity();
+        $songVote = $this->SongVotes->newEntity([]);
         $songVote = $this->SongVotes->patchEntity($songVote, $data);
         if ($this->SongVotes->save($songVote)) {
             $this->response->body(json_encode([

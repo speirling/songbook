@@ -1,30 +1,33 @@
 <?php
+declare(strict_types=1);
+
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
+ * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace DebugKit\Panel;
 
-use Cake\Controller\Controller;
+use Cake\Core\Configure;
+use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
-use Cake\Event\Event;
-use Cake\ORM\TableRegistry;
+use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\ORM\Table;
 use DebugKit\Database\Log\DebugLog;
 use DebugKit\DebugPanel;
 
 /**
  * Provides debug information on the SQL logs and provides links to an ajax explain interface.
- *
  */
 class SqlLogPanel extends DebugPanel
 {
+    use LocatorAwareTrait;
 
     /**
      * Loggers connected
@@ -39,28 +42,36 @@ class SqlLogPanel extends DebugPanel
      * This will unfortunately build all the connections, but they
      * won't connect until used.
      *
-     * @return array
+     * @return void
      */
     public function initialize()
     {
         $configs = ConnectionManager::configured();
+        $includeSchemaReflection = (bool)Configure::read('DebugKit.includeSchemaReflection');
+
         foreach ($configs as $name) {
             $connection = ConnectionManager::get($name);
-            if ($connection->configName() === 'debug_kit') {
+            if (
+                $connection->configName() === 'debug_kit'
+                || !$connection instanceof ConnectionInterface
+            ) {
                 continue;
             }
             $logger = null;
-            if ($connection->logQueries()) {
-                $logger = $connection->logger();
+            if ($connection->isQueryLoggingEnabled()) {
+                $logger = $connection->getLogger();
             }
 
             if ($logger instanceof DebugLog) {
+                $logger->setIncludeSchema($includeSchemaReflection);
+                $this->_loggers[] = $logger;
                 continue;
             }
-            $logger = new DebugLog($logger, $name);
+            $logger = new DebugLog($logger, $name, $includeSchemaReflection);
 
-            $connection->logQueries(true);
-            $connection->logger($logger);
+            $connection->enableQueryLogging(true);
+            $connection->setLogger($logger);
+
             $this->_loggers[] = $logger;
         }
     }
@@ -73,9 +84,9 @@ class SqlLogPanel extends DebugPanel
     public function data()
     {
         return [
-            'tables' => array_map(function ($table) {
-                return $table->alias();
-            }, TableRegistry::genericInstances()),
+            'tables' => array_map(function (Table $table) {
+                return $table->getAlias();
+            }, $this->getTableLocator()->genericInstances()),
             'loggers' => $this->_loggers,
         ];
     }
@@ -95,6 +106,7 @@ class SqlLogPanel extends DebugPanel
         if (!$count) {
             return '0';
         }
+
         return "$count / $time ms";
     }
 }

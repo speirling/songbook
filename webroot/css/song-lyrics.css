@@ -1,5 +1,5 @@
 /*@media print {
-	#container {
+	.container {
 	    padding: 2.5em;
 	}
 }*/
@@ -89,7 +89,7 @@
 .chord .separator {
     margin-left: 0.2em;
 }
-#container>section.container .lyrics-display {
+.container>section.container .lyrics-display {
     position: static ;
     top: 0;
     bottom: 0;
@@ -127,6 +127,10 @@
           column-width: auto;
         *//*
     -moz-column-rule: 0.1em solid silver;*/
+}
+.lyrics-display.page {
+	border: 1px solid black;
+	box-shadow: 10px 10px 5px lightblue;
 }
 .iPad .lyrics-display .lyrics-panel {
     height: 700px;
@@ -238,8 +242,8 @@ table.song-header td.key-capo {
 }
 
 
-.hideable-dashboard label,
-.hideable-dashboard .tags {
+div.container .hideable-dashboard label,
+div.container .hideable-dashboard .tags {
 	display: inline-block;
 }
 
@@ -259,6 +263,15 @@ table.song-header td.key-capo {
 .hideable-dashboard .tag-id .select2-selection {
 	height: 3.5em;
 }
+
+
+
+.hideable-dashboard button,
+.hideable-dashboard .button {
+	height: auto;
+}
+
+
 
 .base-key .label,
 .base-key label {
@@ -415,10 +428,10 @@ table.song-header td.key-capo {
         }
         
         /* key for each performer */
-        #container .container .key-capo-selectors .data {
+        .container .key-capo-selectors .data {
             width: 4em;
         }
-        #container .container .performers .data {
+        .container .performers .data {
             width: 9em;
         }
              
@@ -427,25 +440,25 @@ table.song-header td.key-capo {
         .ajax-button-form {
             float: right;
         }
-        #container .container .lyrics-display tr.tags fieldset {
+        .container .lyrics-display tr.tags fieldset {
             margin: 0;
             padding: 0;
         }
-        #container .container .lyrics-display tr.tags th {
+        .container .lyrics-display tr.tags th {
             font-size: 10px;
             white-space: nowrap;
         }
-        #container .container .lyrics-display tr.tags th form {
+        .container .lyrics-display tr.tags th form {
             display: inline-block;
         }
-        #container .container .lyrics-display tr.tags th span.button {
+        .container .lyrics-display tr.tags th span.button {
             margin: 0;
             font-size: 0.9em;
         }
-        #container .container .lyrics-display tr.tags fieldset .selection li {
+        .container .lyrics-display tr.tags fieldset .selection li {
             font-size: 0.7em;
         }
-        #container .container .lyrics-display tr.tags fieldset .selection span.select2-selection.select2-selection--multiple {
+        .container .lyrics-display tr.tags fieldset .selection span.select2-selection.select2-selection--multiple {
             min-height: auto;
             height: 2.5em;
             border: 0;
@@ -467,3 +480,5 @@ table.song-header td.key-capo {
 	border: 1px solid red;
 	background-color: #ccffff;
 }
+
+

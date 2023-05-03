@@ -1,12 +1,17 @@
 .chord-editor {
 	border: 1px solid gray;
-	width: 375px;
+	/*width: 375px;*/
 	margin: 0;
 	background-color: gray;
 	border: 5px solid gray;
 	position: fixed;
 	bottom: 0;
 	left: 0;
+	box-sizing: unset;
+	z-index: 1;
+}
+.chord-editor div.container {
+	padding: 0;
 }
 
 .chord-editor .container-modifiers .button {
@@ -16,7 +21,8 @@
 	font-size: 0.7em;
 }
 
-.button-note {
+.button-note,
+.button.button-note {
 	font-size: 10px;
 	width: 21px;
 	margin: 0;
@@ -37,13 +43,15 @@
 	display: inline-block;
 }
 
-.button-note-black {
+.button-note-black,
+.button.button-note.button-note-black {
     background-color: black;
     color: white;
     border-top: 1px solid #333333;
 }
 
-.button-note-white {
+.button-note-white,
+.button.button-note.button-note-white {
     border-top: 1px solid #eeeeee;
     color: black;
 }
@@ -133,8 +141,9 @@
 .button-note-bass:before {
 	content: '/';
 }
-.button-note-bass.button-note-white,
-.button-note-bass.button-note-black {
+.button.button-note.button-note-bass.button-note-white,
+.button.button-note.button-note-bass.button-note-black {
     background-color: #f0f0f0;
     color: gray;
 }
+

@@ -25,7 +25,9 @@ table.page.printable  {
 .printable table.page td,
 table.page.printable td {
      vertical-align: text-top;
+     padding-left: 16px;
  }
+
 .printable table.page.single-song,
 table.page.printable.single-song  {
      page-break-before: never;
@@ -135,6 +137,7 @@ td.key-capo .key .value {
     font-size: 2.2em;
     color: gray;
     font-weight: bold;
+    line-height: 1.8rem;
 }
 
 td.key-capo .capo {

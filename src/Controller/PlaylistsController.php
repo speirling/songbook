@@ -124,7 +124,7 @@ class PlaylistsController extends AppController
      */
     public function add()
     {
-        $playlist = $this->Playlists->newEntity();
+        $playlist = $this->Playlists->newEntity([]);
         if ($this->request->is('post')) {
             $playlist = $this->Playlists->patchEntity($playlist, $this->request->data);
             if ($this->Playlists->save($playlist)) {

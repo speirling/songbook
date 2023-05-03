@@ -22,11 +22,9 @@ class ScalarNodeDefinition extends VariableNodeDefinition
 {
     /**
      * Instantiate a Node.
-     *
-     * @return ScalarNode The node
      */
-    protected function instantiateNode()
+    protected function instantiateNode(): ScalarNode
     {
-        return new ScalarNode($this->name, $this->parent);
+        return new ScalarNode($this->name, $this->parent, $this->pathSeparator);
     }
 }

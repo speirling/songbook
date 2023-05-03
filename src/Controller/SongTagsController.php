@@ -48,7 +48,7 @@ class SongTagsController extends AppController
      */
     public function add()
     {
-        $songTag = $this->SongTags->newEntity();
+        $songTag = $this->SongTags->newEntity([]);
         if ($this->request->is('post')) {
             $songTag = $this->SongTags->patchEntity($songTag, $this->request->data);
             if ($this->SongTags->save($songTag)) {

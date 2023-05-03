@@ -69,7 +69,7 @@ class SetsController extends AppController
      */
     public function add_base()
     {
-        $set = $this->Sets->newEntity();
+        $set = $this->Sets->newEntity([]);
         if ($this->request->is('post')) {
             $set = $this->Sets->patchEntity($set, $this->request->data);
             if ($result = $this->Sets->save($set)) {

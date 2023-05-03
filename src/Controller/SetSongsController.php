@@ -52,7 +52,7 @@ class SetSongsController extends AppController
      */
     public function add($redirect_array = ['action' => 'index'])
     {
-	    $setSong = $this->SetSongs->newEntity();
+	    $setSong = $this->SetSongs->newEntity([]);
         if ($this->request->is('post')) {
 	    	$setSong = $this->SetSongs->patchEntity($setSong, $this->request->data);
 	        if ($this->SetSongs->save($setSong)) {
@@ -88,7 +88,7 @@ class SetSongsController extends AppController
         $this->autoRender = false;
         $request_data = $this->request->query;
 
-        $setSong = $this->SetSongs->newEntity();
+        $setSong = $this->SetSongs->newEntity([]);
 
         $setSong = $this->SetSongs->patchEntity($setSong, $request_data);
         if ($this->SetSongs->save($setSong)) {

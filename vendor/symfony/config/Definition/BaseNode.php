@@ -15,6 +15,7 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Config\Definition\Exception\ForbiddenOverwriteException;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
+use Symfony\Component\Config\Definition\Exception\UnsetKeyException;
 
 /**
  * The base node class.
@@ -23,49 +24,95 @@ use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
  */
 abstract class BaseNode implements NodeInterface
 {
+    public const DEFAULT_PATH_SEPARATOR = '.';
+
+    private static array $placeholderUniquePrefixes = [];
+    private static array $placeholders = [];
+
     protected $name;
     protected $parent;
-    protected $normalizationClosures = array();
-    protected $finalValidationClosures = array();
+    protected $normalizationClosures = [];
+    protected $finalValidationClosures = [];
     protected $allowOverwrite = true;
     protected $required = false;
-    protected $equivalentValues = array();
-    protected $attributes = array();
+    protected $deprecation = [];
+    protected $equivalentValues = [];
+    protected $attributes = [];
+    protected $pathSeparator;
+
+    private mixed $handlingPlaceholder = null;
 
     /**
-     * Constructor.
-     *
-     * @param string        $name   The name of the node
-     * @param NodeInterface $parent The parent of this node
-     *
-     * @throws \InvalidArgumentException if the name contains a period.
+     * @throws \InvalidArgumentException if the name contains a period
      */
-    public function __construct($name, NodeInterface $parent = null)
+    public function __construct(?string $name, NodeInterface $parent = null, string $pathSeparator = self::DEFAULT_PATH_SEPARATOR)
     {
-        if (false !== strpos($name, '.')) {
-            throw new \InvalidArgumentException('The name must not contain ".".');
+        if (str_contains($name = (string) $name, $pathSeparator)) {
+            throw new \InvalidArgumentException('The name must not contain ".'.$pathSeparator.'".');
         }
 
         $this->name = $name;
         $this->parent = $parent;
+        $this->pathSeparator = $pathSeparator;
     }
 
-    public function setAttribute($key, $value)
+    /**
+     * Register possible (dummy) values for a dynamic placeholder value.
+     *
+     * Matching configuration values will be processed with a provided value, one by one. After a provided value is
+     * successfully processed the configuration value is returned as is, thus preserving the placeholder.
+     *
+     * @internal
+     */
+    public static function setPlaceholder(string $placeholder, array $values): void
+    {
+        if (!$values) {
+            throw new \InvalidArgumentException('At least one value must be provided.');
+        }
+
+        self::$placeholders[$placeholder] = $values;
+    }
+
+    /**
+     * Adds a common prefix for dynamic placeholder values.
+     *
+     * Matching configuration values will be skipped from being processed and are returned as is, thus preserving the
+     * placeholder. An exact match provided by {@see setPlaceholder()} might take precedence.
+     *
+     * @internal
+     */
+    public static function setPlaceholderUniquePrefix(string $prefix): void
+    {
+        self::$placeholderUniquePrefixes[] = $prefix;
+    }
+
+    /**
+     * Resets all current placeholders available.
+     *
+     * @internal
+     */
+    public static function resetPlaceholders(): void
+    {
+        self::$placeholderUniquePrefixes = [];
+        self::$placeholders = [];
+    }
+
+    public function setAttribute(string $key, mixed $value)
     {
         $this->attributes[$key] = $value;
     }
 
-    public function getAttribute($key, $default = null)
+    public function getAttribute(string $key, mixed $default = null): mixed
     {
-        return isset($this->attributes[$key]) ? $this->attributes[$key] : $default;
+        return $this->attributes[$key] ?? $default;
     }
 
-    public function hasAttribute($key)
+    public function hasAttribute(string $key): bool
     {
         return isset($this->attributes[$key]);
     }
 
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
@@ -75,80 +122,84 @@ abstract class BaseNode implements NodeInterface
         $this->attributes = $attributes;
     }
 
-    public function removeAttribute($key)
+    public function removeAttribute(string $key)
     {
         unset($this->attributes[$key]);
     }
 
     /**
      * Sets an info message.
-     *
-     * @param string $info
      */
-    public function setInfo($info)
+    public function setInfo(string $info)
     {
         $this->setAttribute('info', $info);
     }
 
     /**
      * Returns info message.
-     *
-     * @return string The info text
      */
-    public function getInfo()
+    public function getInfo(): ?string
     {
         return $this->getAttribute('info');
     }
 
     /**
      * Sets the example configuration for this node.
-     *
-     * @param string|array $example
      */
-    public function setExample($example)
+    public function setExample(string|array $example)
     {
         $this->setAttribute('example', $example);
     }
 
     /**
      * Retrieves the example configuration for this node.
-     *
-     * @return string|array The example
      */
-    public function getExample()
+    public function getExample(): string|array|null
     {
         return $this->getAttribute('example');
     }
 
     /**
      * Adds an equivalent value.
-     *
-     * @param mixed $originalValue
-     * @param mixed $equivalentValue
      */
-    public function addEquivalentValue($originalValue, $equivalentValue)
+    public function addEquivalentValue(mixed $originalValue, mixed $equivalentValue)
     {
-        $this->equivalentValues[] = array($originalValue, $equivalentValue);
+        $this->equivalentValues[] = [$originalValue, $equivalentValue];
     }
 
     /**
      * Set this node as required.
-     *
-     * @param bool $boolean Required node
      */
-    public function setRequired($boolean)
+    public function setRequired(bool $boolean)
     {
-        $this->required = (bool) $boolean;
+        $this->required = $boolean;
+    }
+
+    /**
+     * Sets this node as deprecated.
+     *
+     * @param string $package The name of the composer package that is triggering the deprecation
+     * @param string $version The version of the package that introduced the deprecation
+     * @param string $message the deprecation message to use
+     *
+     * You can use %node% and %path% placeholders in your message to display,
+     * respectively, the node name and its complete path
+     */
+    public function setDeprecated(string $package, string $version, string $message = 'The child node "%node%" at path "%path%" is deprecated.')
+    {
+        $this->deprecation = [
+            'package' => $package,
+            'version' => $version,
+            'message' => $message,
+        ];
     }
 
     /**
      * Sets if this node can be overridden.
-     *
-     * @param bool $allow
      */
-    public function setAllowOverwrite($allow)
+    public function setAllowOverwrite(bool $allow)
     {
-        $this->allowOverwrite = (bool) $allow;
+        $this->allowOverwrite = $allow;
     }
 
     /**
@@ -172,82 +223,119 @@ abstract class BaseNode implements NodeInterface
     }
 
     /**
-     * Checks if this node is required.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
-    public function isRequired()
+    public function isRequired(): bool
     {
         return $this->required;
     }
 
     /**
-     * Returns the name of this node.
-     *
-     * @return string The Node's name.
+     * Checks if this node is deprecated.
      */
-    public function getName()
+    public function isDeprecated(): bool
+    {
+        return (bool) $this->deprecation;
+    }
+
+    /**
+     * @param string $node The configuration node name
+     * @param string $path The path of the node
+     */
+    public function getDeprecation(string $node, string $path): array
+    {
+        return [
+            'package' => $this->deprecation['package'],
+            'version' => $this->deprecation['version'],
+            'message' => strtr($this->deprecation['message'], ['%node%' => $node, '%path%' => $path]),
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName(): string
     {
         return $this->name;
     }
 
     /**
-     * Retrieves the path of this node.
-     *
-     * @return string The Node's path
+     * {@inheritdoc}
      */
-    public function getPath()
+    public function getPath(): string
     {
-        $path = $this->name;
-
         if (null !== $this->parent) {
-            $path = $this->parent->getPath().'.'.$path;
+            return $this->parent->getPath().$this->pathSeparator.$this->name;
         }
 
-        return $path;
+        return $this->name;
     }
 
     /**
-     * Merges two values together.
-     *
-     * @param mixed $leftSide
-     * @param mixed $rightSide
-     *
-     * @return mixed The merged value
-     *
-     * @throws ForbiddenOverwriteException
+     * {@inheritdoc}
      */
-    final public function merge($leftSide, $rightSide)
+    final public function merge(mixed $leftSide, mixed $rightSide): mixed
     {
         if (!$this->allowOverwrite) {
-            throw new ForbiddenOverwriteException(sprintf(
-                'Configuration path "%s" cannot be overwritten. You have to '
-               .'define all options for this path, and any of its sub-paths in '
-               .'one configuration section.',
-                $this->getPath()
-            ));
+            throw new ForbiddenOverwriteException(sprintf('Configuration path "%s" cannot be overwritten. You have to define all options for this path, and any of its sub-paths in one configuration section.', $this->getPath()));
         }
 
-        $this->validateType($leftSide);
-        $this->validateType($rightSide);
+        if ($leftSide !== $leftPlaceholders = self::resolvePlaceholderValue($leftSide)) {
+            foreach ($leftPlaceholders as $leftPlaceholder) {
+                $this->handlingPlaceholder = $leftSide;
+                try {
+                    $this->merge($leftPlaceholder, $rightSide);
+                } finally {
+                    $this->handlingPlaceholder = null;
+                }
+            }
+
+            return $rightSide;
+        }
+
+        if ($rightSide !== $rightPlaceholders = self::resolvePlaceholderValue($rightSide)) {
+            foreach ($rightPlaceholders as $rightPlaceholder) {
+                $this->handlingPlaceholder = $rightSide;
+                try {
+                    $this->merge($leftSide, $rightPlaceholder);
+                } finally {
+                    $this->handlingPlaceholder = null;
+                }
+            }
+
+            return $rightSide;
+        }
+
+        $this->doValidateType($leftSide);
+        $this->doValidateType($rightSide);
 
         return $this->mergeValues($leftSide, $rightSide);
     }
 
     /**
-     * Normalizes a value, applying all normalization closures.
-     *
-     * @param mixed $value Value to normalize.
-     *
-     * @return mixed The normalized value.
+     * {@inheritdoc}
      */
-    final public function normalize($value)
+    final public function normalize(mixed $value): mixed
     {
         $value = $this->preNormalize($value);
 
         // run custom normalization closures
         foreach ($this->normalizationClosures as $closure) {
             $value = $closure($value);
+        }
+
+        // resolve placeholder value
+        if ($value !== $placeholders = self::resolvePlaceholderValue($value)) {
+            foreach ($placeholders as $placeholder) {
+                $this->handlingPlaceholder = $value;
+                try {
+                    $this->normalize($placeholder);
+                } finally {
+                    $this->handlingPlaceholder = null;
+                }
+            }
+
+            return $value;
         }
 
         // replace value with their equivalent
@@ -258,7 +346,7 @@ abstract class BaseNode implements NodeInterface
         }
 
         // validate type
-        $this->validateType($value);
+        $this->doValidateType($value);
 
         // normalize value
         return $this->normalizeValue($value);
@@ -266,39 +354,39 @@ abstract class BaseNode implements NodeInterface
 
     /**
      * Normalizes the value before any other normalization is applied.
-     *
-     * @param $value
-     *
-     * @return $value The normalized array value
      */
-    protected function preNormalize($value)
+    protected function preNormalize(mixed $value): mixed
     {
         return $value;
     }
 
     /**
      * Returns parent node for this node.
-     *
-     * @return NodeInterface|null
      */
-    public function getParent()
+    public function getParent(): ?NodeInterface
     {
         return $this->parent;
     }
 
     /**
-     * Finalizes a value, applying all finalization closures.
-     *
-     * @param mixed $value The value to finalize
-     *
-     * @return mixed The finalized value
-     *
-     * @throws Exception
-     * @throws InvalidConfigurationException
+     * {@inheritdoc}
      */
-    final public function finalize($value)
+    final public function finalize(mixed $value): mixed
     {
-        $this->validateType($value);
+        if ($value !== $placeholders = self::resolvePlaceholderValue($value)) {
+            foreach ($placeholders as $placeholder) {
+                $this->handlingPlaceholder = $value;
+                try {
+                    $this->finalize($placeholder);
+                } finally {
+                    $this->handlingPlaceholder = null;
+                }
+            }
+
+            return $value;
+        }
+
+        $this->doValidateType($value);
 
         $value = $this->finalizeValue($value);
 
@@ -308,9 +396,13 @@ abstract class BaseNode implements NodeInterface
             try {
                 $value = $closure($value);
             } catch (Exception $e) {
+                if ($e instanceof UnsetKeyException && null !== $this->handlingPlaceholder) {
+                    continue;
+                }
+
                 throw $e;
             } catch (\Exception $e) {
-                throw new InvalidConfigurationException(sprintf('Invalid configuration for path "%s": %s', $this->getPath(), $e->getMessage()), $e->getCode(), $e);
+                throw new InvalidConfigurationException(sprintf('Invalid configuration for path "%s": ', $this->getPath()).$e->getMessage(), $e->getCode(), $e);
             }
         }
 
@@ -320,37 +412,99 @@ abstract class BaseNode implements NodeInterface
     /**
      * Validates the type of a Node.
      *
-     * @param mixed $value The value to validate
-     *
      * @throws InvalidTypeException when the value is invalid
      */
-    abstract protected function validateType($value);
+    abstract protected function validateType(mixed $value);
 
     /**
      * Normalizes the value.
-     *
-     * @param mixed $value The value to normalize.
-     *
-     * @return mixed The normalized value
      */
-    abstract protected function normalizeValue($value);
+    abstract protected function normalizeValue(mixed $value): mixed;
 
     /**
      * Merges two values together.
-     *
-     * @param mixed $leftSide
-     * @param mixed $rightSide
-     *
-     * @return mixed The merged value
      */
-    abstract protected function mergeValues($leftSide, $rightSide);
+    abstract protected function mergeValues(mixed $leftSide, mixed $rightSide): mixed;
 
     /**
      * Finalizes a value.
-     *
-     * @param mixed $value The value to finalize
-     *
-     * @return mixed The finalized value
      */
-    abstract protected function finalizeValue($value);
+    abstract protected function finalizeValue(mixed $value): mixed;
+
+    /**
+     * Tests if placeholder values are allowed for this node.
+     */
+    protected function allowPlaceholders(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Tests if a placeholder is being handled currently.
+     */
+    protected function isHandlingPlaceholder(): bool
+    {
+        return null !== $this->handlingPlaceholder;
+    }
+
+    /**
+     * Gets allowed dynamic types for this node.
+     */
+    protected function getValidPlaceholderTypes(): array
+    {
+        return [];
+    }
+
+    private static function resolvePlaceholderValue(mixed $value): mixed
+    {
+        if (\is_string($value)) {
+            if (isset(self::$placeholders[$value])) {
+                return self::$placeholders[$value];
+            }
+
+            foreach (self::$placeholderUniquePrefixes as $placeholderUniquePrefix) {
+                if (str_starts_with($value, $placeholderUniquePrefix)) {
+                    return [];
+                }
+            }
+        }
+
+        return $value;
+    }
+
+    private function doValidateType(mixed $value): void
+    {
+        if (null !== $this->handlingPlaceholder && !$this->allowPlaceholders()) {
+            $e = new InvalidTypeException(sprintf('A dynamic value is not compatible with a "%s" node type at path "%s".', static::class, $this->getPath()));
+            $e->setPath($this->getPath());
+
+            throw $e;
+        }
+
+        if (null === $this->handlingPlaceholder || null === $value) {
+            $this->validateType($value);
+
+            return;
+        }
+
+        $knownTypes = array_keys(self::$placeholders[$this->handlingPlaceholder]);
+        $validTypes = $this->getValidPlaceholderTypes();
+
+        if ($validTypes && array_diff($knownTypes, $validTypes)) {
+            $e = new InvalidTypeException(sprintf(
+                'Invalid type for path "%s". Expected %s, but got %s.',
+                $this->getPath(),
+                1 === \count($validTypes) ? '"'.reset($validTypes).'"' : 'one of "'.implode('", "', $validTypes).'"',
+                1 === \count($knownTypes) ? '"'.reset($knownTypes).'"' : 'one of "'.implode('", "', $knownTypes).'"'
+            ));
+            if ($hint = $this->getInfo()) {
+                $e->addHint($hint);
+            }
+            $e->setPath($this->getPath());
+
+            throw $e;
+        }
+
+        $this->validateType($value);
+    }
 }

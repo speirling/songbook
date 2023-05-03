@@ -1,33 +1,37 @@
 <?php
+declare(strict_types=1);
+
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @since         DebugKit 0.1
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
+ * @since         0.1
+ * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace DebugKit\View\Helper;
 
-use Cake\Cache\Cache;
-use Cake\Datasource\ConnectionManager;
-use Cake\Event\Event;
+use Cake\Error\Debug\ArrayItemNode;
+use Cake\Error\Debug\ArrayNode;
+use Cake\Error\Debug\HtmlFormatter;
+use Cake\Error\Debug\ScalarNode;
+use Cake\Error\Debugger;
 use Cake\View\Helper;
-use DebugKit\DebugKitDebugger;
 
 /**
  * Provides Base methods for content specific debug toolbar helpers.
  * Acts as a facade for other toolbars helpers as well.
  *
- * @since         DebugKit 0.1
+ * @property \Cake\View\Helper\HtmlHelper $Html
+ * @property \Cake\View\Helper\FormHelper $Form
+ * @property \Cake\View\Helper\UrlHelper $Url
  */
 class ToolbarHelper extends Helper
 {
-
     /**
      * helpers property
      *
@@ -46,6 +50,7 @@ class ToolbarHelper extends Helper
      * set sorting of values
      *
      * @param bool $sort Whether or not sort values by key
+     * @return void
      */
     public function setSort($sort)
     {
@@ -53,93 +58,62 @@ class ToolbarHelper extends Helper
     }
 
     /**
-     * Recursively goes through an array and makes neat HTML out of it.
+     * Dump an array of nodes
      *
-     * @param mixed $values Array to make pretty.
-     * @param int $openDepth Depth to add open class
-     * @param int $currentDepth current depth.
-     * @param bool $doubleEncode Whether or not to double encode.
-     * @param \SplObjectStorage $currentAncestors Object references found down
-     * the path.
-     * @return string
+     * @param \Cake\Error\Debug\NodeInterface[] $nodes An array of dumped variables.
+     *   Variables should be keyed by the name they had in the view.
+     * @return string Formatted HTML
      */
-    public function makeNeatArray($values, $openDepth = 0, $currentDepth = 0, $doubleEncode = false, \SplObjectStorage $currentAncestors = null)
+    public function dumpNodes(array $nodes): string
     {
-        if ($currentAncestors === null) {
-            $ancestors = new \SplObjectStorage();
-        } elseif (is_object($values)) {
-            $ancestors = new \SplObjectStorage();
-            $ancestors->addAll($currentAncestors);
-            $ancestors->attach($values);
-        } else {
-            $ancestors = $currentAncestors;
+        /** @psalm-suppress InternalMethod */
+        $formatter = new HtmlFormatter();
+        if ($this->sort) {
+            ksort($nodes);
         }
-        $className = "neat-array depth-$currentDepth";
-        if ($openDepth > $currentDepth) {
-            $className .= ' expanded';
+        $items = [];
+        foreach ($nodes as $key => $value) {
+            $items[] = new ArrayItemNode(new ScalarNode('string', $key), $value);
         }
-        $nextDepth = $currentDepth + 1;
-        $out = "<ul class=\"$className\">";
-        if (!is_array($values)) {
-            if (is_bool($values)) {
-                $values = [$values];
-            }
-            if ($values === null) {
-                $values = [null];
-            }
-            if (is_object($values) && method_exists($values, 'toArray')) {
-                $values = $values->toArray();
-            }
-        }
-        if (empty($values)) {
-            $values[] = '(empty)';
-        }
-        if ($this->sort && is_array($values) && $currentDepth === 0) {
-            ksort($values);
-        }
-        foreach ($values as $key => $value) {
-            $out .= '<li><strong>' . h($key, $doubleEncode) . '</strong>';
-            if (is_array($value) && count($value) > 0) {
-                $out .= '(array)';
-            } elseif (is_object($value)) {
-                $out .= '(object)';
-            }
-            if ($value === null) {
-                $value = '(null)';
-            }
-            if ($value === false) {
-                $value = '(false)';
-            }
-            if ($value === true) {
-                $value = '(true)';
-            }
-            if (empty($value) && $value != 0) {
-                $value = '(empty)';
-            }
-            if ($value instanceof Closure) {
-                $value = 'function';
-            }
+        $root = new ArrayNode($items);
 
-            $isObject = is_object($value);
-            if ($isObject && $ancestors->contains($value)) {
-                $isObject = false;
-                $value = ' - recursion';
-            }
+        return implode([
+            '<div class="cake-debug-output cake-debug" style="direction:ltr">',
+            $formatter->dump($root),
+            '</div>',
+        ]);
+    }
 
-            if ((
-                $value instanceof ArrayAccess ||
-                $value instanceof Iterator ||
-                is_array($value) ||
-                $isObject
-                ) && !empty($value)
-            ) {
-                $out .= $this->makeNeatArray($value, $openDepth, $nextDepth, $doubleEncode, $ancestors);
-            } else {
-                $out .= h($value, $doubleEncode);
-            }
-            $out .= '</li>';
+    /**
+     * Dump the value in $value into an interactive HTML output.
+     *
+     * @param mixed $value The value to output.
+     * @return string Formatted HTML
+     * @deprecated 4.4.0
+     */
+    public function dump($value)
+    {
+        $debugger = Debugger::getInstance();
+        $exportFormatter = $debugger->getConfig('exportFormatter');
+        $restore = false;
+        if ($exportFormatter !== HtmlFormatter::class) {
+            $restore = true;
+            $debugger->setConfig('exportFormatter', HtmlFormatter::class);
         }
-        $out .= '</ul>';
-        return $out;
+
+        if ($this->sort && is_array($value)) {
+            ksort($value);
+        }
+
+        $contents = Debugger::exportVar($value, 25);
+        if ($restore) {
+            $debugger->setConfig('exportFormatter', $exportFormatter);
+        }
+
+        return implode([
+            '<div class="cake-debug-output cake-debug" style="direction:ltr">',
+            $contents,
+            '</div>',
+        ]);
     }
 }
