@@ -51,15 +51,15 @@ class PerformersTable extends Table
     {
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $validator
             ->requirePresence('name', 'create')
-            ->notEmpty('name');
+            ->notEmptyString('name');
 
         $validator
             ->requirePresence('nickname', 'create')
-            ->notEmpty('nickname');
+            ->notEmptyString('nickname');
 
         return $validator;
     }

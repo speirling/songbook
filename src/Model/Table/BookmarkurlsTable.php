@@ -46,16 +46,16 @@ class BookmarkurlsTable extends Table
     {
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $validator
             ->requirePresence('title', 'create')
-            ->notEmpty('title')
+            ->notEmptyString('title')
             ->add('title', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         $validator
             ->requirePresence('query_string', 'create')
-            ->notEmpty('query_string');
+            ->notEmptyString('query_string');
 
         return $validator;
     }

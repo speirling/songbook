@@ -40,19 +40,19 @@ class EventsTable extends Table
     {
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $validator
-            ->allowEmpty('venue');
+            ->allowEmptyString('venue');
 
         $validator
-            ->allowEmpty('timestamp');
+            ->allowEmptyDateTime('timestamp');
 
         $validator
-            ->allowEmpty('duration_hours');
+            ->allowEmptyString('duration_hours');
 
         $validator
-            ->allowEmpty('notes');
+            ->allowEmptyString('notes');
 
         return $validator;
     }

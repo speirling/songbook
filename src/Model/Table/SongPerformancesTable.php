@@ -49,11 +49,11 @@ class SongPerformancesTable extends Table
     {
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $validator
             ->add('timestamp', 'create')
-            ->allowEmpty('timestamp');
+            ->allowEmptyString('timestamp');
 
         return $validator;
     }

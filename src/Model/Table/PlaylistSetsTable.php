@@ -50,12 +50,12 @@ class PlaylistSetsTable extends Table
     {
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $validator
             ->add('order', 'valid', ['rule' => 'numeric'])
             ->requirePresence('order', 'create')
-            ->allowEmpty('order');
+            ->allowEmptyString('order');
 
         return $validator;
     }

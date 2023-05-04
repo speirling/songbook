@@ -49,29 +49,29 @@ class SongsTable extends Table
     {
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $validator
             ->requirePresence('title', 'create')
-            ->notEmpty('title');
+            ->allowEmptyString('title');
 
         $validator
-            ->allowEmpty('written_by');
+            ->allowEmptyString('written_by');
 
         $validator
-            ->allowEmpty('performed_by');
+            ->allowEmptyString('performed_by');
 
         $validator
-            ->allowEmpty('base_key');
+            ->allowEmptyString('base_key');
 
         $validator
-            ->allowEmpty('content');
+            ->allowEmptyString('content');
 
         $validator
-            ->allowEmpty('original_filename');
+            ->allowEmptyString('original_filename');
 
         $validator
-            ->allowEmpty('meta_tags');
+            ->allowEmptyString('meta_tags');
 
         return $validator;
     }

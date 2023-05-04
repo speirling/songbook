@@ -49,15 +49,15 @@ class SetsTable extends Table
     {
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $validator
             ->requirePresence('title', 'create')
-            ->notEmpty('title');
+            ->notEmptyString('title');
 
         $validator
             ->add('Comment', 'create')
-            ->allowEmpty('Comment');
+            ->allowEmptyString('Comment');
 
         return $validator;
     }

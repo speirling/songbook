@@ -45,10 +45,10 @@ class SongVotesTable extends Table
     {
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $validator
-            ->allowEmpty('timestamp');
+            ->allowEmptyDateTime('timestamp');
 
         return $validator;
     }

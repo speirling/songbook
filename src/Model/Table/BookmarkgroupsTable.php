@@ -46,16 +46,16 @@ class BookmarkgroupsTable extends Table
     {
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $validator
             ->requirePresence('title', 'create')
-            ->notEmpty('title')
+            ->notEmptyString('title')
             ->add('title', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         $validator
             ->requirePresence('comment', 'create')
-            ->notEmpty('comment');
+            ->notEmptyString('comment');
 
         return $validator;
     }

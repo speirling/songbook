@@ -58,18 +58,18 @@ class SetSongsTable extends Table
     {
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $validator
             ->add('order', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('order');
+            ->allowEmptyString('order');
 
         $validator
-            ->allowEmpty('key');
+            ->allowEmptyString('key');
 
         $validator
             ->add('capo', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('capo');
+            ->allowEmptyString('capo');
 
         return $validator;
     }
