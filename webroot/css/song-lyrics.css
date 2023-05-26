@@ -236,6 +236,7 @@ table.song-header td.key-capo {
 
 .title-table h3 {
 	display: inline-block;
+	margin-bottom: 0;
 }
 .button.show-song-properties {
 	float: right;
@@ -481,4 +482,27 @@ div.container .hideable-dashboard .tags {
 	background-color: #ccffff;
 }
 
+
+/* override milligram ------------ */
+table.lyrics-display.page tbody {
+	white-space: normal;
+}
+*, ::after, ::before {
+	box-sizing: initial;
+}
+table {
+	border-spacing: initial;
+}
+table td {
+	display: table-cell;
+}
+
+body {
+	color: auto;;
+	font-family: 'Roboto', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+	font-size: unset;
+	font-weight: normal;
+	letter-spacing: normal;
+	line-height: 0.9;
+}
 

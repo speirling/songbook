@@ -138,6 +138,7 @@ td.key-capo .key .value {
     color: gray;
     font-weight: bold;
     line-height: 1.8rem;
+    vertical-align: middle;
 }
 
 td.key-capo .capo {
