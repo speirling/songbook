@@ -1,14 +1,16 @@
 <?php
+declare(strict_types=1);
+
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
+ * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace DebugKit\Log\Engine;
 
@@ -16,11 +18,9 @@ use Cake\Log\Engine\BaseLog;
 
 /**
  * A CakeLog listener which saves having to munge files or other configured loggers.
- *
  */
 class DebugKitLog extends BaseLog
 {
-
     /**
      * logs
      *
@@ -31,17 +31,17 @@ class DebugKitLog extends BaseLog
     /**
      * Captures log messages in memory
      *
-     * @param string $type The type of message being logged.
+     * @param mixed $level The type of message being logged.
      * @param string $message The message being logged.
      * @param array $context Additional context data
      * @return void
      */
-    public function log($type, $message, array $context = [])
+    public function log($level, $message, array $context = [])
     {
-        if (!isset($this->logs[$type])) {
-            $this->logs[$type] = [];
+        if (!isset($this->_logs[$level])) {
+            $this->_logs[$level] = [];
         }
-        $this->_logs[$type][] = [date('Y-m-d H:i:s'), $this->_format($message)];
+        $this->_logs[$level][] = [date('Y-m-d H:i:s'), $this->interpolate($message)];
     }
 
     /**
@@ -55,7 +55,7 @@ class DebugKitLog extends BaseLog
     }
 
     /**
-     * Get the number of log entires.
+     * Get the number of log entries.
      *
      * @return int
      */

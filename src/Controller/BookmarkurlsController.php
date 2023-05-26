@@ -45,7 +45,7 @@ class BookmarkurlsController extends AppController
      */
     public function add()
     {
-        $bookmarkurl = $this->Bookmarkurls->newEntity();
+        $bookmarkurl = $this->Bookmarkurls->newEntity([]);
         if ($this->request->is('post')) {
             $bookmarkurl = $this->Bookmarkurls->patchEntity($bookmarkurl, $this->request->data);
             if ($this->Bookmarkurls->save($bookmarkurl)) {
@@ -68,7 +68,7 @@ class BookmarkurlsController extends AppController
         $this->autoRender = false;
         $request_data = $this->request->query;
         
-        $bookmarkurl = $this->Bookmarkurls->newEntity();
+        $bookmarkurl = $this->Bookmarkurls->newEntity([]);
         
         $bookmarkurl = $this->Bookmarkurls->patchEntity($bookmarkurl, $request_data);
         

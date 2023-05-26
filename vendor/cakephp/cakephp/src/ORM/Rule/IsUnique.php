@@ -1,64 +1,86 @@
 <?php
+declare(strict_types=1);
+
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\ORM\Rule;
 
 use Cake\Datasource\EntityInterface;
+use Cake\Utility\Hash;
 
 /**
  * Checks that a list of fields from an entity are unique in the table
  */
 class IsUnique
 {
-
     /**
      * The list of fields to check
      *
-     * @var array
+     * @var array<string>
      */
     protected $_fields;
 
     /**
+     * The unique check options
+     *
+     * @var array<string, mixed>
+     */
+    protected $_options = [
+        'allowMultipleNulls' => false,
+    ];
+
+    /**
      * Constructor.
      *
-     * @param array $fields The list of fields to check uniqueness for
+     * ### Options
+     *
+     * - `allowMultipleNulls` Allows any field to have multiple null values. Defaults to false.
+     *
+     * @param array<string> $fields The list of fields to check uniqueness for
+     * @param array<string, mixed> $options The options for unique checks.
      */
-    public function __construct(array $fields)
+    public function __construct(array $fields, array $options = [])
     {
         $this->_fields = $fields;
+        $this->_options = $options + $this->_options;
     }
 
     /**
      * Performs the uniqueness check
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity from where to extract the fields
-     * @param array $options Options passed to the check,
-     * where the `repository` key is required.
+     *   where the `repository` key is required.
+     * @param array<string, mixed> $options Options passed to the check,
      * @return bool
      */
-    public function __invoke(EntityInterface $entity, array $options)
+    public function __invoke(EntityInterface $entity, array $options): bool
     {
         if (!$entity->extract($this->_fields, true)) {
             return true;
         }
 
-        $alias = $options['repository']->alias();
-        $conditions = $this->_alias($alias, $entity->extract($this->_fields));
+        $fields = $entity->extract($this->_fields);
+        if ($this->_options['allowMultipleNulls'] && array_filter($fields, 'is_null')) {
+            return true;
+        }
+
+        $alias = $options['repository']->getAlias();
+        $conditions = $this->_alias($alias, $fields);
         if ($entity->isNew() === false) {
-            $keys = (array)$options['repository']->primaryKey();
+            $keys = (array)$options['repository']->getPrimaryKey();
             $keys = $this->_alias($alias, $entity->extract($keys));
-            if (array_filter($keys, 'strlen')) {
+            if (Hash::filter($keys)) {
                 $conditions['NOT'] = $keys;
             }
         }
@@ -71,14 +93,15 @@ class IsUnique
      *
      * @param string $alias The alias to add.
      * @param array $conditions The conditions to alias.
-     * @return array
+     * @return array<string, mixed>
      */
-    protected function _alias($alias, $conditions)
+    protected function _alias(string $alias, array $conditions): array
     {
         $aliased = [];
         foreach ($conditions as $key => $value) {
-            $aliased["$alias.$key"] = $value;
+            $aliased["$alias.$key IS"] = $value;
         }
+
         return $aliased;
     }
 }

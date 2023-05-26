@@ -55,7 +55,7 @@ class EventsController extends AppController
      */
     public function add($redirect_array = ['action' => 'index'])
     {
-        $event = $this->Events->newEntity();
+        $event = $this->Events->newEntity([]);
         if ($this->request->is('post')) {
             $event = $this->Events->patchEntity($event, $this->request->data);
             if ($this->Events->save($event)) {

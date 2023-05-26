@@ -1,44 +1,42 @@
 <?php
+declare(strict_types=1);
+
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.1.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Auth\Storage;
-
-use Cake\Core\InstanceConfigTrait;
-use Cake\Network\Request;
 
 /**
  * Memory based non-persistent storage for authenticated user record.
  */
 class MemoryStorage implements StorageInterface
 {
-
     /**
      * User record.
      *
-     * @var array|null
+     * @var \ArrayAccess|array|null
      */
     protected $_user;
 
     /**
-     * Redirect url.
+     * Redirect URL.
      *
-     * @var string
+     * @var array|string|null
      */
     protected $_redirectUrl;
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function read()
     {
@@ -46,23 +44,23 @@ class MemoryStorage implements StorageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function write(array $user)
+    public function write($user): void
     {
         $this->_user = $user;
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function delete()
+    public function delete(): void
     {
         $this->_user = null;
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function redirectUrl($url = null)
     {
@@ -72,9 +70,12 @@ class MemoryStorage implements StorageInterface
 
         if ($url === false) {
             $this->_redirectUrl = null;
-            return;
+
+            return null;
         }
 
         $this->_redirectUrl = $url;
+
+        return null;
     }
 }

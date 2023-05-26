@@ -69,7 +69,7 @@ class SongPerformancesController extends AppController
      */
     private function addsave($data, $redirect_array)
     {
-    	$songPerformance = $this->SongPerformances->newEntity();
+    	$songPerformance = $this->SongPerformances->newEntity([]);
     	$songPerformance = $this->SongPerformances->patchEntity($songPerformance, $data);
     	if ($this->SongPerformances->save($songPerformance)) {
             $this->Flash->success(__('The song performance has been saved.'));
@@ -109,7 +109,7 @@ class SongPerformancesController extends AppController
         $data = [
             'song_id' => $request_data['song_id']
         ];
-        $songPerformance = $this->SongPerformances->newEntity();
+        $songPerformance = $this->SongPerformances->newEntity([]);
         $songPerformance = $this->SongPerformances->patchEntity($songPerformance, $data);
         if ($this->SongPerformances->save($songPerformance)) {
             $this->response->body(json_encode([

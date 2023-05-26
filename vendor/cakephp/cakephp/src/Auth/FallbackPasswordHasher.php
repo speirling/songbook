@@ -1,16 +1,18 @@
 <?php
+declare(strict_types=1);
+
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Auth;
 
@@ -18,42 +20,38 @@ namespace Cake\Auth;
  * A password hasher that can use multiple different hashes where only
  * one is the preferred one. This is useful when trying to migrate an
  * existing database of users from one password type to another.
- *
  */
 class FallbackPasswordHasher extends AbstractPasswordHasher
 {
-
     /**
      * Default config for this object.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected $_defaultConfig = [
-        'hashers' => []
+        'hashers' => [],
     ];
 
     /**
      * Holds the list of password hasher objects that will be used
      *
-     * @var array
+     * @var array<\Cake\Auth\AbstractPasswordHasher>
      */
     protected $_hashers = [];
 
     /**
      * Constructor
      *
-     * @param array $config configuration options for this object. Requires the
+     * @param array<string, mixed> $config configuration options for this object. Requires the
      * `hashers` key to be present in the array with a list of other hashers to be
-     * used
+     * used.
      */
     public function __construct(array $config = [])
     {
         parent::__construct($config);
         foreach ($this->_config['hashers'] as $key => $hasher) {
-            if (!is_string($hasher)) {
-                $hasher += [
-                    'className' => $key,
-                ];
+            if (is_array($hasher) && !isset($hasher['className'])) {
+                $hasher['className'] = $key;
             }
             $this->_hashers[] = PasswordHasherFactory::build($hasher);
         }
@@ -65,9 +63,9 @@ class FallbackPasswordHasher extends AbstractPasswordHasher
      * Uses the first password hasher in the list to generate the hash
      *
      * @param string $password Plain text password to hash.
-     * @return string Password hash
+     * @return string|false Password hash or false
      */
-    public function hash($password)
+    public function hash(string $password)
     {
         return $this->_hashers[0]->hash($password);
     }
@@ -82,13 +80,14 @@ class FallbackPasswordHasher extends AbstractPasswordHasher
      * @param string $hashedPassword Existing hashed password.
      * @return bool True if hashes match else false.
      */
-    public function check($password, $hashedPassword)
+    public function check(string $password, string $hashedPassword): bool
     {
         foreach ($this->_hashers as $hasher) {
             if ($hasher->check($password, $hashedPassword)) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -99,7 +98,7 @@ class FallbackPasswordHasher extends AbstractPasswordHasher
      * @param string $password The password to verify
      * @return bool
      */
-    public function needsRehash($password)
+    public function needsRehash(string $password): bool
     {
         return $this->_hashers[0]->needsRehash($password);
     }

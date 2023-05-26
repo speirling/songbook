@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Log\Log;
 
 /**
  *  StaticFunctions "Controller"
@@ -80,6 +81,18 @@ class StaticFunctionController extends AppController
 	);
 	
 	public static $key_transpose_parameters;
+	
+	public static function p(...$objects) {	    
+	    $trace = debug_backtrace();
+	    $line_number = $trace[0]['line'];
+	    $file_and_line_number = '[' . basename($trace[0]['file']) . ':' . $line_number . '] ';
+	    // $line_number = '[' . basename($trace[0]['file']) . ':' . $trace[0]['line'] . '] (from  ' . basename($trace[1]['file']) . ':' . $trace[1]['line'] . $object_name . " ";
+	    Log::debug($file_and_line_number . "--------------------------------------------");
+	    foreach ($objects as $count => $object) {
+	        Log::debug('line ' . $line_number . ':' . $count + 1 . "\n" . print_r($object, true));
+	    }
+	    Log::debug("============================");
+	}
 	
 	public static function duration_string_to_seconds($individual_duration_string) {
 		if($individual_duration_string !== '') {
@@ -346,8 +359,9 @@ class StaticFunctionController extends AppController
 		$array_of_html_lyric_lines = $xpath->query("//div[@class='line']");
 		$line_stats = self::get_line_stats( $array_of_html_lyric_lines, $page_parameters);
 		
-		//debug('$line_stats : '); debug($line_stats); 		debug('$page_parameters : '); debug($page_parameters);
-		
+		                               //self::p($line_stats, $page_parameters);//Log::debug('line_stats '.print_r($line_stats, true) ); 	Log::debug('page_parameters '.print_r($page_parameters, true) ); 	
+		                               //self::p("column_width (characters) :" . $line_stats['column_width'], ' px_per_column :' . $line_stats['px_per_column']," columns per page:" . $line_stats['no_of_columns'] ," number of pages:" . $line_stats['no_of_pages']);
+
 		list($pages[$current_page], $page_height, $tbody, $row, $td) = self::create_printable_page($doc, $current_page = 1, $page_parameters, $song["id"]);
 
 		$content_height_px = 0; 
@@ -402,10 +416,11 @@ class StaticFunctionController extends AppController
 			
 			
 			
-			if ($content_height_px > $page_height) {
-			    //debug("content_height_px ($content_height_px) > page_height ($page_height). current_column ($current_column) line_stats['no_of_columns'] (" . $line_stats['no_of_columns'] . ")");
+			if ($content_height_px > $page_height) { // $content_height_px is the accumulated height of content added in this for loop = this page so far
+			                            //self::p("content_height_px ($content_height_px) > page_height ($page_height). current_column ($current_column) line_stats['no_of_columns'] (" . $line_stats['no_of_columns'] . ") ----> new column needed");
 				$current_column = $current_column + 1;
 				if($current_column > $line_stats['no_of_columns']) {
+				                        //self::p("current_column number (" . $current_column . ') > number of columns per page (' . $line_stats['no_of_columns'] . ') ----> new page needed');
 					//new page
 					$current_page = $current_page + 1;
 					$current_column = 1;
@@ -413,13 +428,16 @@ class StaticFunctionController extends AppController
 					$line_no = 1;
 					list($pages[$current_page], $page_height, $tbody, $row, $td) = self::create_printable_page($doc, $current_page, $page_parameters, $song["id"]);
 				} else {
+				                         //self::p("current_column number (" . $current_column . ') < number of columns per page (' . $line_stats['no_of_columns'] . ') ----> stay on the same page');
 				   //new column
 				    $content_height_px = $line_height_px * $line_wrap + $page_parameters["lyric_line_top_margin"];
 				    $line_no = 1;
-					$td = $doc->createElement('td');
+				    $td = $doc->createElement('td');
+				    $td->setAttribute('class', 'page-' . $current_page . ' column-' . $current_column );
 					$row->appendChild($td);
 				}
 			} else {
+			                              //self::p('content_height_px (' . $content_height_px . ') < page_height (' . $page_height . ')');
 			    $content_height_px = $content_height_px + $line_height_px * $line_wrap + $page_parameters["lyric_line_top_margin"];
 			    $line_no = $line_no + 1; // this gets reset on each page
 			}
@@ -724,12 +742,16 @@ class StaticFunctionController extends AppController
 	    $no_of_pages = 1000;
 	    $no_of_columns = 1000;
 	    for ($column_count = 1; $column_count <= $max_columns; $column_count = $column_count + 1) {
-	        if($column_params[$column_count]['total_number_of_pages_if_we_use_this_number_of_columns'] < $no_of_pages) { //the number of pages that you would end up with if you used this number of columns
-	            $no_of_pages = $column_params[$column_count]['total_number_of_pages_if_we_use_this_number_of_columns'];
-	            $no_of_columns = 1000;
-	        }
-	        if($column_count < $no_of_columns) {
-	            $no_of_columns = $column_count;
+	        //the practical minimum width for a column is maybe 400px  30 characters?
+	        if($column_params[$column_count]["width (characters)"] > 30) {
+	        
+    	        if($column_params[$column_count]['total_number_of_pages_if_we_use_this_number_of_columns'] < $no_of_pages) { //the number of pages that you would end up with if you used this number of columns
+    	            $no_of_pages = $column_params[$column_count]['total_number_of_pages_if_we_use_this_number_of_columns'];
+    	            $no_of_columns = 1000;
+    	        }
+    	        if($column_count < $no_of_columns) {
+    	            $no_of_columns = $column_count;
+    	        }
 	        }
 	    }
 	    
@@ -778,6 +800,7 @@ class StaticFunctionController extends AppController
 		$tbody->appendChild($row);
 		
 		$td = $doc->createElement('td');
+		$td->setAttribute('class', 'page-' . $page_no . ' column-1' );
 		$row->appendChild($td);
 		
 		$page->appendChild($tbody);

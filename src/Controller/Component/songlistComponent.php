@@ -15,7 +15,7 @@ class songlistComponent extends Component {
 	public function filterAllSongs($event = Null) {
 	
 		$controller = $this->_registry->getController();
-	
+		
 		$controller->loadModel('Songs');
 		$controller->loadModel('Events');
 		$controller->loadModel('SongPerformances');
@@ -47,7 +47,7 @@ class songlistComponent extends Component {
 		$performance_query = $controller->SongPerformances->find();
 		$performance_query->Where("`SongPerformances`.`timestamp` BETWEEN \"" . date("Y-m-d H:i:s", $event_start)."\" AND \"".date("Y-m-d H:i:s", $event_end)."\"");
 		$performance_query->distinct('song_id');
-		$performance_list = $performance_query->extract('song_id');
+		$performance_list = $performance_query->all()->extract('song_id');
 		
 		$song_id_list = [];
 		foreach($performance_list as $id => $song_id) {
@@ -72,7 +72,7 @@ class songlistComponent extends Component {
 		$vote_query = $controller->SongVotes->find();
 		$vote_query->Where("`SongVotes`.`timestamp` BETWEEN \"" . date("Y-m-d H:i:s", $event_start)."\" AND \"".date("Y-m-d H:i:s", $event_end)."\"");
 		$vote_query->distinct('song_id');
-		$vote_list = $vote_query->extract('song_id');
+		$vote_list = $vote_query->all()->extract('song_id');
 	
 		$song_id_list = [];
 		foreach($vote_list as $id => $song_id) {
@@ -86,11 +86,11 @@ class songlistComponent extends Component {
 		// end song votes -------------------
 
 		$filter_on = false;
-		if ($controller->request->is(array('post', 'put', 'get'))) {
-			if ($controller->request->is(array('get'))) {
-				$query_parameters = $controller->request->query;
+		if ($controller->getRequest()->is(array('post', 'put', 'get'))) {
+		    if ($controller->getRequest()->is(array('get'))) {
+			    $query_parameters = $controller->getRequest()->getQuery();
 			} else {
-				$query_parameters = $controller->request->data;
+			    $query_parameters = $controller->getRequest()->getData();
 			}
 			
 			/*

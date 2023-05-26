@@ -43,7 +43,7 @@ class PerformersController extends AppController
      */
     public function add()
     {
-        $performer = $this->Performers->newEntity();
+        $performer = $this->Performers->newEntity([]);
         if ($this->request->is('post')) {
             $performer = $this->Performers->patchEntity($performer, $this->request->data);
             if ($this->Performers->save($performer)) {

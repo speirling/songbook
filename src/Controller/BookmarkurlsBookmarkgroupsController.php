@@ -48,7 +48,7 @@ class BookmarkurlsBookmarkgroupsController extends AppController
      */
     public function add()
     {
-        $bookmarkurlsBookmarkgroup = $this->BookmarkurlsBookmarkgroups->newEntity();
+        $bookmarkurlsBookmarkgroup = $this->BookmarkurlsBookmarkgroups->newEntity([]);
         if ($this->request->is('post')) {
             $bookmarkurlsBookmarkgroup = $this->BookmarkurlsBookmarkgroups->patchEntity($bookmarkurlsBookmarkgroup, $this->request->data);
             if ($this->BookmarkurlsBookmarkgroups->save($bookmarkurlsBookmarkgroup)) {

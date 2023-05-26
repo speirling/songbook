@@ -1,15 +1,17 @@
 <?php
+declare(strict_types=1);
+
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @since         DebugKit 1.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
+ * @since         1.0.0
+ * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace DebugKit\View\Helper;
 
@@ -24,7 +26,6 @@ use Cake\View\Helper;
  */
 class SimpleGraphHelper extends Helper
 {
-
     /**
      * Default settings to be applied to each Simple Graph
      *
@@ -48,28 +49,31 @@ class SimpleGraphHelper extends Helper
      *
      * @param float $value Value to be graphed
      * @param int $offset how much indentation
-     * @param array|\Graph $options Graph options
+     * @param array $options Graph options
      * @return string Html graph
      */
     public function bar($value, $offset, $options = [])
     {
         $settings = array_merge($this->_defaultSettings, $options);
-        extract($settings);
+        $max = $settings['max'];
+        $width = $settings['width'];
+        $valueType = $settings['valueType'];
 
-        $graphValue = ($value / $max) * $width;
+        $graphValue = $value / $max * $width;
         $graphValue = max(round($graphValue), 1);
 
         if ($valueType === 'percentage') {
             $graphOffset = 0;
         } else {
-            $graphOffset = ($offset / $max) * $width;
+            $graphOffset = $offset / $max * $width;
             $graphOffset = round($graphOffset);
         }
+
         return sprintf(
-            '<div class="graph-bar" style="%s"><div class="graph-bar-value" style="%s" title="%s"> </div></div>',
+            '<div class="c-graph-bar" style="%s"><div class="c-graph-bar__value" style="%s" title="%s"> </div></div>',
             "width: {$width}px",
             "margin-left: {$graphOffset}px; width: {$graphValue}px",
-            __d('debug_kit', "Starting {0}ms into the request, taking {1}ms", $offset, $value)
+            "Starting {$offset}ms into the request, taking {$value}ms"
         );
     }
 }

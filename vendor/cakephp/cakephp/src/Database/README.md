@@ -1,3 +1,6 @@
+[![Total Downloads](https://img.shields.io/packagist/dt/cakephp/database.svg?style=flat-square)](https://packagist.org/packages/cakephp/database)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.txt)
+
 # A flexible and lightweight Database Library for PHP
 
 This library abstracts and provides help with most aspects of dealing with relational
@@ -32,35 +35,29 @@ to use:
 ```php
 use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
+use Cake\Database\Driver\Sqlite;
 
-$driver = new Mysql([
+$connection = new Connection([
+	'driver' => Mysql::class,
 	'database' => 'test',
 	'username' => 'root',
-	'password' => 'secret'
+	'password' => 'secret',
 ]);
-$connection = new Connection([
-	'driver' => $driver
+
+$connection2 = new Connection([
+	'driver' => Sqlite::class,
+	'database' => '/path/to/file.db'
 ]);
 ```
 
 Drivers are classes responsible for actually executing the commands to the database and
-correctly building the SQL according to the database specific dialect. Drivers can also
-be specified by passing a class name. In that case, include all the connection details
-directly in the options array:
-
-```php
-use Cake\Database\Connection;
-
-$connection = new Connection([
-	'driver' => 'Cake\Database\Driver\Sqlite'
-	'database' => '/path/to/file.db'
-]);
-```
+correctly building the SQL according to the database specific dialect.
 
 ### Connection options
 
 This is a list of possible options that can be passed when creating a connection:
 
+* `driver`: Driver class name
 * `persistent`: Creates a persistent connection
 * `host`: The server host
 * `database`: The database name
@@ -237,9 +234,6 @@ $query->where(['id >' => 1, 'title' => 'My title']);
 It is possible to generate `OR` conditions as well
 
 ```php
-$query->where(['id >' => 1])->orWhere(['title' => 'My Title']);
-
-// Equivalent to
 $query->where(['OR' => ['id >' => 1, 'title' => 'My title']]);
 ```
 
@@ -270,7 +264,7 @@ Combining expressions is also possible:
 
 ```php
 $query->where(function ($exp) {
-        $orConditions = $exp->or_(['author_id' => 2])
+        $orConditions = $exp->or(['author_id' => 2])
             ->eq('author_id', 5);
         return $exp
             ->not($orConditions)
@@ -342,7 +336,7 @@ SELECT CONCAT(title, :c0) ...;
 
 ### Other SQL Clauses
 
-Read of all other SQL clases that the builder is capable of generating in the [official API docs](http://api.cakephp.org/3.0/class-Cake.Database.Query.html)
+Read of all other SQL clauses that the builder is capable of generating in the [official API docs](https://api.cakephp.org/4.x/class-Cake.Database.Query.html)
 
 ### Getting Results out of a Query
 
@@ -360,5 +354,5 @@ $results = $query->execute()->fetchAll('assoc');
 
 ## Official API
 
-You can read the official [official API docs](http://api.cakephp.org/3.0/namespace-Cake.Database.html) to learn more of what this library
+You can read the official [official API docs](https://api.cakephp.org/4.x/namespace-Cake.Database.html) to learn more of what this library
 has to offer.

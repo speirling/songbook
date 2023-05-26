@@ -75,7 +75,7 @@ class PlaylistSetsController extends AppController
      */
     private function addsave($data, $redirect_array)
     {
-        $playlistSet = $this->PlaylistSets->newEntity();
+        $playlistSet = $this->PlaylistSets->newEntity([]);
     	$playlistSet = $this->PlaylistSets->patchEntity($playlistSet, $data);
     	if ($this->PlaylistSets->save($playlistSet)) {
     		$this->Flash->success(__('The playlist set has been saved.'));

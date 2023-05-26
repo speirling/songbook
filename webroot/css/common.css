@@ -266,3 +266,29 @@ ol.songlist > li:before {
     text-align:center;
 }
 
+label,
+div.container label {
+	color: #4d4d4d;
+	cursor: pointer;
+	display: block;
+	font-size: 1.4rem;
+	font-weight: normal;
+	line-height: 1.5;
+	margin-bottom: 0;
+}
+
+div.container {
+	margin: 0;
+	padding: 10px;
+	max-width: none;
+}
+
+body {
+	margin:0;
+	padding: 0;
+	background-color: white;
+}
+
+hr {
+	border-color: silver;
+}

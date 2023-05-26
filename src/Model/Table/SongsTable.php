@@ -22,13 +22,13 @@ class SongsTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
-        $this->table('songs');
-        $this->displayField('title');
-        $this->primaryKey('id');
+        $this->setTable('songs'); //matches the default - no need to specify
+        $this->setDisplayField('title'); //matches default??
+        $this->setPrimaryKey('id'); //matches the default - no need to specify
 
         $this->hasMany('SetSongs', [
             'foreignKey' => 'song_id'
@@ -45,33 +45,33 @@ class SongsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $validator
             ->requirePresence('title', 'create')
-            ->notEmpty('title');
+            ->allowEmptyString('title');
 
         $validator
-            ->allowEmpty('written_by');
+            ->allowEmptyString('written_by');
 
         $validator
-            ->allowEmpty('performed_by');
+            ->allowEmptyString('performed_by');
 
         $validator
-            ->allowEmpty('base_key');
+            ->allowEmptyString('base_key');
 
         $validator
-            ->allowEmpty('content');
+            ->allowEmptyString('content');
 
         $validator
-            ->allowEmpty('original_filename');
+            ->allowEmptyString('original_filename');
 
         $validator
-            ->allowEmpty('meta_tags');
+            ->allowEmptyString('meta_tags');
 
         return $validator;
     }

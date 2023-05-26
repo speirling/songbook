@@ -17,97 +17,78 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
  * OutputInterface is the interface implemented by all Output classes.
  *
  * @author Fabien Potencier <fabien@symfony.com>
- *
- * @api
  */
 interface OutputInterface
 {
-    const VERBOSITY_QUIET = 0;
-    const VERBOSITY_NORMAL = 1;
-    const VERBOSITY_VERBOSE = 2;
-    const VERBOSITY_VERY_VERBOSE = 3;
-    const VERBOSITY_DEBUG = 4;
+    public const VERBOSITY_QUIET = 16;
+    public const VERBOSITY_NORMAL = 32;
+    public const VERBOSITY_VERBOSE = 64;
+    public const VERBOSITY_VERY_VERBOSE = 128;
+    public const VERBOSITY_DEBUG = 256;
 
-    const OUTPUT_NORMAL = 0;
-    const OUTPUT_RAW = 1;
-    const OUTPUT_PLAIN = 2;
+    public const OUTPUT_NORMAL = 1;
+    public const OUTPUT_RAW = 2;
+    public const OUTPUT_PLAIN = 4;
 
     /**
      * Writes a message to the output.
      *
-     * @param string|array $messages The message as an array of lines or a single string
-     * @param bool         $newline  Whether to add a newline
-     * @param int          $type     The type of output (one of the OUTPUT constants)
-     *
-     * @throws \InvalidArgumentException When unknown output type is given
-     *
-     * @api
+     * @param $newline Whether to add a newline
+     * @param $options A bitmask of options (one of the OUTPUT or VERBOSITY constants), 0 is considered the same as self::OUTPUT_NORMAL | self::VERBOSITY_NORMAL
      */
-    public function write($messages, $newline = false, $type = self::OUTPUT_NORMAL);
+    public function write(string|iterable $messages, bool $newline = false, int $options = 0);
 
     /**
      * Writes a message to the output and adds a newline at the end.
      *
-     * @param string|array $messages The message as an array of lines or a single string
-     * @param int          $type     The type of output (one of the OUTPUT constants)
-     *
-     * @throws \InvalidArgumentException When unknown output type is given
-     *
-     * @api
+     * @param $options A bitmask of options (one of the OUTPUT or VERBOSITY constants), 0 is considered the same as self::OUTPUT_NORMAL | self::VERBOSITY_NORMAL
      */
-    public function writeln($messages, $type = self::OUTPUT_NORMAL);
+    public function writeln(string|iterable $messages, int $options = 0);
 
     /**
      * Sets the verbosity of the output.
-     *
-     * @param int $level The level of verbosity (one of the VERBOSITY constants)
-     *
-     * @api
      */
-    public function setVerbosity($level);
+    public function setVerbosity(int $level);
 
     /**
      * Gets the current verbosity of the output.
-     *
-     * @return int The current level of verbosity (one of the VERBOSITY constants)
-     *
-     * @api
      */
-    public function getVerbosity();
+    public function getVerbosity(): int;
+
+    /**
+     * Returns whether verbosity is quiet (-q).
+     */
+    public function isQuiet(): bool;
+
+    /**
+     * Returns whether verbosity is verbose (-v).
+     */
+    public function isVerbose(): bool;
+
+    /**
+     * Returns whether verbosity is very verbose (-vv).
+     */
+    public function isVeryVerbose(): bool;
+
+    /**
+     * Returns whether verbosity is debug (-vvv).
+     */
+    public function isDebug(): bool;
 
     /**
      * Sets the decorated flag.
-     *
-     * @param bool $decorated Whether to decorate the messages
-     *
-     * @api
      */
-    public function setDecorated($decorated);
+    public function setDecorated(bool $decorated);
 
     /**
      * Gets the decorated flag.
-     *
-     * @return bool true if the output will decorate messages, false otherwise
-     *
-     * @api
      */
-    public function isDecorated();
+    public function isDecorated(): bool;
 
-    /**
-     * Sets output formatter.
-     *
-     * @param OutputFormatterInterface $formatter
-     *
-     * @api
-     */
     public function setFormatter(OutputFormatterInterface $formatter);
 
     /**
      * Returns current output formatter instance.
-     *
-     * @return OutputFormatterInterface
-     *
-     * @api
      */
-    public function getFormatter();
+    public function getFormatter(): OutputFormatterInterface;
 }

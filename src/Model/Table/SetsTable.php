@@ -22,13 +22,13 @@ class SetsTable extends Table
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
-        $this->table('sets');
-        $this->displayField('title');
-        $this->primaryKey('id');
+        $this->setTable('sets');
+        $this->setDisplayField('title');
+        $this->setPrimaryKey('id');
 
         $this->belongsTo('Performers', [
             'foreignKey' => 'performer_id',
@@ -45,19 +45,19 @@ class SetsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->add('id', 'valid', ['rule' => 'numeric'])
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', 'create');
 
         $validator
             ->requirePresence('title', 'create')
-            ->notEmpty('title');
+            ->notEmptyString('title');
 
         $validator
             ->add('Comment', 'create')
-            ->allowEmpty('Comment');
+            ->allowEmptyString('Comment');
 
         return $validator;
     }
@@ -69,7 +69,7 @@ class SetsTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['performer_id'], 'Performers'));
         return $rules;
