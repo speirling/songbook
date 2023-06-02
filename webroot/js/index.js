@@ -14,10 +14,12 @@ jQuery(document).ready(function() {
 	jQuery('select').not('.song-tags select').not('.tag-form select').select2();
 	jQuery('.song-tags select').select2({
 		  tags: true,
-		  tokenSeparators: [',', ' ']
+		  tokenSeparators: [',', ' '],
+		  width: 'element'
 		});
 	jQuery('.tag-form select').width('100%').select2({
-		  tags: true
+		  tags: true,
+		  width: 'element'
 		});
 	
 

@@ -22,6 +22,7 @@
 .content textarea,
 .content pre {
     font-size: 0.8em;
+    line-height: 1.3em;
 }
 
 .column + .column:last-child, .columns + .column:last-child, .column + .columns:last-child, .columns + .columns:last-child { /* from cakePHP3 base.css*/

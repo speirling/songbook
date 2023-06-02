@@ -176,6 +176,11 @@
     width: 8em;
 }
 
+table.song-header {
+	width: 100%;
+}
+
+
 table.song-header td,
 .lyrics-display table.vertical-table td,
 .lyrics-display table.vertical-table th {
@@ -200,6 +205,7 @@ table.song-header td.key-capo {
   border: 1px solid gray;
   padding: 0.5em;
   margin-right: 5px;
+  margin-top: 11px;
 }
 
 
@@ -348,6 +354,7 @@ div.container .hideable-dashboard .tags {
             width: auto !important;
             border: 1px solid blue;
             display: inline-block;
+            padding: 5px;
         }
         
         
@@ -476,6 +483,7 @@ div.container .hideable-dashboard .tags {
 .hideable-dashboard {
 	border: 1px solid gray;
 	background-color: #ffffcc;
+	padding: 5px;
 }
 .hideable-dashboard.ui-selected {
 	border: 1px solid red;
@@ -492,6 +500,10 @@ table.lyrics-display.page tbody {
 }
 table {
 	border-spacing: initial;
+}
+
+div.dashboard>table {
+	width:100%;
 }
 table td {
 	display: table-cell;

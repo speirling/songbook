@@ -31,8 +31,17 @@
 
 
 div.dashboard.index  {
-	width: 80%;
+	width: 70%;
 	float: left;
+}
+
+div.dashboard.index  td {
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+div.dashboard.index  td span {
+	vertical-align: middle;
 }
 
 nav#actions-sidebar {
