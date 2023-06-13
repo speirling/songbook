@@ -11,17 +11,20 @@ jQuery(document).ready(function() {
 	    new SBK.ChordEditor(jQuery('.sbk-lyrics-panel')).render();
 	}
 
-	jQuery('select').not('.song-tags select').not('.tag-form select').select2();
-	jQuery('.song-tags select').select2({
-		  tags: true,
-		  tokenSeparators: [',', ' '],
-		  width: 'element'
-		});
-	jQuery('.tag-form select').width('100%').select2({
-		  tags: true,
-		  width: 'element'
-		});
-	
+	jQuery('select').select2();
+			/* replace these with the above single select2 assignment
+			jQuery('select').not('.song-tags select').not('.tag-form select').select2(); //Intended for the left hand panel of the dashboard (not song lyrics page) - any select that's not tags'
+			jQuery('.song-tags select').select2({
+				  tags: true,
+				  tokenSeparators: [',', ' '],
+				  width: 'element'
+				});
+			jQuery('.tag-form select').width('100%').select2({
+				  tags: true,
+				  width: 'element'
+				});
+				
+				//*/
 
 	jQuery('table.sortable tbody tr').prepend('<td class="handle">');
 	jQuery('table.sortable.set-songs tbody').sortable({

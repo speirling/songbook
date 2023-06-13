@@ -38,10 +38,12 @@ Cake\Core\Configure::write(
     'Songbook', [
         'playlist_directory' => '/fileserver/data/playlists',
         'js_library' => [
-            'js_dependencies/jquery-1.10.2.js',
+            //'js_dependencies/jquery-1.10.2.js',
+            'js_dependencies/jquery-3.7.0.min.js',
             'js_dependencies/jquery-ui-1.10.4.custom.min.js',
             'js_dependencies/jsrender.min.js',
-            'js_dependencies/select2-4.0.3/dist/js/select2.min.js',
+            //'js_dependencies/select2-4.0.3/dist/js/select2.min.js',
+            'js_dependencies/select2-4.1.0/select2.min.js',
             'js_classes/SBK.Namespace.js',
             'js_classes/SBK.Constants.js',
             'js_classes/SBK.StaticFunctions.js',
@@ -87,7 +89,8 @@ Cake\Core\Configure::write(
             'index.js'
         ],
         'css_library' => [
-        	'../js/js_dependencies/select2-4.0.3/dist/css/select2.min.css',
+        	//'../js/js_dependencies/select2-4.0.3/dist/css/select2.min.css',
+            '../js/js_dependencies/select2-4.1.0/select2.min.css',
             'common.css',
             'playlists-list.css',
             'songs-list.css',
@@ -98,6 +101,7 @@ Cake\Core\Configure::write(
             'song-lyrics.css',
             'baked_ui.css',
             'chord_editor.css',
+            'viewer.css',
             'printable.css'
         ],
         'print_page' => [

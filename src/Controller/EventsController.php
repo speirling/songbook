@@ -40,7 +40,8 @@ class EventsController extends AppController
         ]);
         
         $this->loadComponent('songlist');
-        $this->songlist->filterAllSongs($event);
+        $this->songlist->setEvent($event);
+        $this->songlist->filterAllSongs();
         
         $this->set('event', $event);
         if($copyable == 'plain') {

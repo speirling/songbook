@@ -37,8 +37,8 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 
     <?= $this->Html->css('base.css') ?>
     <?= $this->Html->css('cake.css') ?>
-    <?= $this->Html->css(Cake\Core\Configure::read('Songbook.css_library')); ?>
-    <?= $this->Html->script(Cake\Core\Configure::read('Songbook.js_library')); ?>
+    <?= $this->Html->css(Cake\Core\Configure::read('Songbook.css_library')); // defined in webroot/index.php ?>
+    <?= $this->Html->script(Cake\Core\Configure::read('Songbook.js_library')); // defined in webroot/index.php ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
