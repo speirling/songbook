@@ -1,0 +1,76 @@
+
+html, body, div.container, table#viewer{
+	height: 100%;
+	width: 100%;
+}
+
+	
+#viewer-sidebar,
+#viewer-main {	
+	border: 1px solid gray;
+	vertical-align: top;
+	overflow: scroll;
+
+	position: absolute;
+	top:0;
+	bottom: 0;
+}
+	
+#viewer-sidebar {	
+	width: 300px;
+	left: 0;
+	padding-top: 75px;
+}
+#viewer-main {
+	left: 300px;
+	right: 0;
+}
+#viewer-main iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 99%;
+	height: 99%;
+}
+
+#filter_container {
+	display: block;
+	position: fixed;
+	top:0;
+	left: 0;
+	border: 1px solid green;
+	background-color: white;
+	width:300px;
+}
+#songlist_filter {
+	display: inline-block;
+	width: 150px;
+}
+#clear_filter_button,
+.button.show-menu {
+	
+	display: inline-block;
+	/*width: 50px;*/
+	/*padding: 0;*/
+}
+#songlist {
+	display: block;
+}
+
+.hideable-visible {
+    display:block;
+}
+
+span.container-hideable {
+	box-sizing: initial;
+}
+span.container-hideable select {
+	width: 240px;
+}
+
+.button  {
+	line-height: 1em;
+}
+.button button {
+	float: none;
+}
