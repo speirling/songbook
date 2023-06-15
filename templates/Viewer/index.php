@@ -8,7 +8,8 @@ $(document).ready(function(){
         this_li = jQuery(event.target);
         target_iframe = jQuery('#viewer-main>iframe');
 
-    	song_id = this_li.attr('data');
+    	song_id = this_li.attr('data-id');
+    	console.log('/songbook/songs/embedded/'+song_id+'?vw='+target_iframe.width()+'&vh'+target_iframe.height()+'');
     	target_iframe.attr('src', '/songbook/songs/embedded/'+song_id+'?vw='+target_iframe.width()+'&vh'+target_iframe.height()+'');
 		
     });
@@ -73,7 +74,7 @@ $(document).ready(function(){
     <?php
     foreach ($filtered_list as $song){
         /* $song: id, title, written_by, performed_by, base_key, content */
-        echo '<li data-id="' . $song['id'] . ' data-key="' . $song['base_key'] . '">' . $song['title'] . '</li>';
+        echo '<li data-id="' . $song['id'] . '" data-key="' . $song['base_key'] . '">' . $song['title'] . '</li>';
     }
     ?>
     </ul>

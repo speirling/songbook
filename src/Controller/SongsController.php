@@ -28,8 +28,8 @@ class SongsController extends AppController
 	{
 		$this->Songs = $this->Songs->find();
 		$this->Songs = $this->Songs->contain('SetSongs.Performers');
-		if ($this->request->is('post')) {
-			$search_string = $this->request->data['Search'];
+		if ($this->getRequest()->is('post')) {
+			$search_string = $this->getRequest()->getData()['Search'];
 			$this->Songs = $this->Songs->where(['title LIKE' => '%'.$search_string.'%']);
 		} else {
 			$search_string = '';
@@ -62,7 +62,7 @@ class SongsController extends AppController
      */
 	public function search()
 	{
-		$search_string = $this->request->pass[0];
+		$search_string = $this->getRequest()->pass[0];
 			$this->Songs = $this->Songs->find()
 			->where(['title LIKE' => '%'.$search_string.'%'])
 			->order(['id' =>'DESC'])->contain(['SetSongs'=>function($query){
@@ -328,8 +328,8 @@ class SongsController extends AppController
             'contain' => ['SongTags'=>['Tags'], 'SetSongs'=>function($query){
             return $query->find('all')->distinct(['Performers__id', 'SetSongs__key']);
         }, 'SetSongs.Performers']]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $song = $this->Songs->patchEntity($song, $this->request->data);
+        if ($this->getRequest()->is(['patch', 'post', 'put'])) {
+            $song = $this->Songs->patchEntity($song, $this->getRequest()->getData());
             if ($this->Songs->save($song)) {
                 $this->Flash->success(__('The song has been saved.'));
                 $redirect_array[] = $id;
@@ -368,7 +368,7 @@ class SongsController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->getRequest()->allowMethod(['post', 'delete']);
         $song = $this->Songs->get($id);
         if ($this->Songs->delete($song)) {
             $this->Flash->success(__('The song has been deleted.'));

@@ -12,7 +12,7 @@
     foreach ($current_song->song_tags as $this_tag) {
         array_push($selected_tags, $this_tag['tag_id']);
     }
-    echo $this->Form->create(null, ['url' => ['controller' => 'SongTags', 'action' => 'matchListAjax']]);
+    echo $this->Form->create(null, ['url' => ['controller' => 'SongTags', 'action' => 'MatchListAjax']]);
     ?>
     <fieldset>
         <?php

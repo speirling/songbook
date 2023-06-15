@@ -36,13 +36,15 @@
     <span class="button float-right top-button-set"><?= $this->Html->link(__('Print'), ['controller' => 'Songs', 'target' => '_blank', 'action' => 'printable', $song->id, '?' => ['key' => $current_key, 'capo' => $capo]]) ?></span>
     
     <?php /* -----||Button to open a edit page (in a different tab)   */ ?>
-    <span class="button edit float-right top-button-set"><?= 
+    <span class="button edit float-right top-button-set" ><?= 
         $this->Html->link(__(
             'edit'
         ), [
-            'controller' => 'songs', 
+            'controller' => 'songs',
             'action' => 'edit', 
             $song->id
+        ], [
+            'target'=>'new'
         ]) ?></span>  
         
     <?php /* -----||Key&Capo picker   */?>

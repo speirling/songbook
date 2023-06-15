@@ -49,8 +49,8 @@ class SongTagsController extends AppController
     public function add()
     {
         $songTag = $this->SongTags->newEntity([]);
-        if ($this->request->is('post')) {
-            $songTag = $this->SongTags->patchEntity($songTag, $this->request->data);
+        if ($this->getRequest()->is('post')) {
+            $songTag = $this->SongTags->patchEntity($songTag, $this->getRequest()->getData());
             if ($this->SongTags->save($songTag)) {
                 $this->Flash->success(__('The song tag has been saved.'));
                 return $this->redirect(['action' => 'index']);
@@ -72,28 +72,28 @@ class SongTagsController extends AppController
      * @param string $ret_action
      * @param integer $ret_id
      */
-    public function MatchList($ret_controller, $ret_action, $ret_id)
+    public function matchList($ret_controller, $ret_action, $ret_id)
     {
         $redirect_array = ['controller' => $ret_controller, 'action' => $ret_action, $ret_id];
 
         $previous_song_tags_query = $this->SongTags->find('all')
-        ->where(['song_id' => $this->request->data['song_id']]);
+        ->where(['song_id' => $this->getRequest()->getData()['song_id']]);
         $previous_song_tags = [];
         foreach($previous_song_tags_query as $this_previous_tag_song) {
             $previous_song_tags[] = $this_previous_tag_song;
         }
         $reused_tags = [];
-        if ($this->request->is('post')) {
-            foreach ($this->request->data['tag_id'] as $this_tag_id) {
+        if ($this->getRequest()->is('post')) {
+            foreach ($this->getRequest()->getData()['tag_id'] as $this_tag_id) {
                 if (is_numeric($this_tag_id)) {
                     $reused_tags[] = $this_tag_id;
                     $data = [
-                            'song_id' => $this->request->data['song_id'],
+                            'song_id' => $this->getRequest()->getData()['song_id'],
                             'tag_id' => $this_tag_id
                     ];
                 } else {
                     $data = [
-                            'song_id' => $this->request->data['song_id'],
+                            'song_id' => $this->getRequest()->getData()['song_id'],
                             'tag' => [
                                     'title' => $this_tag_id
                             ]
@@ -117,7 +117,7 @@ class SongTagsController extends AppController
             return $this->redirect($redirect_array);
 
         } else {
-            $this->Flash->error(__('The Tag could not be created - no post data '.serialize($this->request)));
+            $this->Flash->error(__('The Tag could not be created - no post data '.serialize($this->getRequest())));
         }
     }
 
@@ -125,16 +125,16 @@ class SongTagsController extends AppController
      * Based on (working) MatchList() above, but modified to accept ajax request
      * Creates a new tag entry or takes an existing tag and a links it to a specified song.
      */
-    public function MatchListAjax()
+    public function matchListAjax()
     {
         //as this function will only be called through Ajax, set the response type to json:
-        $this->response->type('json');
+        $this->response->withType('json');
         //and avoid rendering a CakePHP View:
         $this->autoRender = false;
 
         $report = [];
 
-        $request_data = $this->request->query;
+        $request_data = $this->getRequest()->getQuery();
         if (array_key_exists('song_id', $request_data)) {
             $previous_song_tags_query = $this->SongTags->find('all');
             $previous_song_tags_query->contain('Tags');
@@ -178,14 +178,14 @@ class SongTagsController extends AppController
                     }
                 }
             } else {
-                $this->response->body(json_encode([
+                $this->response->withStringBody(json_encode([
                         "success" => FALSE,
                         "report" => 'No Tags created - no [tag_ids] provided.'
                 ]));
                 return $this->response;
             }
         } else {
-            $this->response->body(json_encode([
+            $this->response->withStringBody(json_encode([
                     "success" => FALSE,
                     "report" => 'Tags could not be created - no [song_id] provided. '
             ]));
@@ -201,7 +201,7 @@ class SongTagsController extends AppController
             $resulting_tags[] = $this_tag->tag->title;
         }
 
-        $this->response->body(json_encode([
+        $this->response->withStringBody(json_encode([
             "success" => TRUE,
             "report" => $report,
             "tag_data" => $resulting_tags
@@ -213,7 +213,7 @@ class SongTagsController extends AppController
     /**
      * Add a list of tags to each of a list of songs
      */
-    public function AddTagMultiAjax()
+    public function addTagMultiAjax()
     {
         //as this function will only be called through Ajax, set the response type to json:
         $this->response->type('json');
@@ -223,7 +223,7 @@ class SongTagsController extends AppController
         $report = [];
         $resulting_tags = '';
 
-        $request_data = $this->request->query;
+        $request_data = $this->getRequest()->query;
 
         if (array_key_exists('song_id', $request_data)) {
             $report[] = 'song ids received';
@@ -263,7 +263,7 @@ class SongTagsController extends AppController
                 foreach($song_tags_query as $this_song_tag) {
                     $tag_names[] = $this_song_tag->title;
                 }
-                $this->response->body(json_encode([
+                $this->response->withStringBody(json_encode([
                         "success" => TRUE,
                         "report" => $report,
                         "tag_ids" => $tag_ids,
@@ -272,14 +272,14 @@ class SongTagsController extends AppController
                 ]));
                 return $this->response;
             } else {
-                $this->response->body(json_encode([
+                $this->response->withStringBody(json_encode([
                         "success" => False,
                         "report" => 'Tags could not be created - no [tag_ids] provided. '
                 ]));
                 return $this->response;
             }
         } else {
-            $this->response->body(json_encode([
+            $this->response->withStringBody(json_encode([
                     "success" => FALSE,
                     "report" => 'Tags could not be created - no [song_ids] provided. '
             ]));
@@ -298,8 +298,8 @@ class SongTagsController extends AppController
         $songTag = $this->SongTags->get($id, [
             'contain' => []
         ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $songTag = $this->SongTags->patchEntity($songTag, $this->request->data);
+        if ($this->getRequest()->is(['patch', 'post', 'put'])) {
+            $songTag = $this->SongTags->patchEntity($songTag, $this->getRequest()->getData());
             if ($this->SongTags->save($songTag)) {
                 $this->Flash->success(__('The song tag has been saved.'));
                 return $this->redirect(['action' => 'index']);
@@ -322,7 +322,7 @@ class SongTagsController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->getRequest()->allowMethod(['post', 'delete']);
         $songTag = $this->SongTags->get($id);
         if ($this->SongTags->delete($songTag)) {
             $this->Flash->success(__('The song tag has been deleted.'));
