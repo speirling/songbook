@@ -26,6 +26,8 @@ jQuery(document).ready(function() {
 				
 				//*/
 
+ //Sortable tables depends on jQueryUI, with seems abandoned so I've removed it 20230616
+/*
 	jQuery('table.sortable tbody tr').prepend('<td class="handle">');
 	jQuery('table.sortable.set-songs tbody').sortable({
 		handle: '.handle',
@@ -41,7 +43,7 @@ jQuery(document).ready(function() {
 		},
 		connectWith: 'table.sortable.sets tbody'
 	});
-
+*/
 	jQuery('.playlists.view .set-songs tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
 	jQuery('.dashboard.index tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);
 	jQuery('.songs.index tbody tr').on('click touch', SBK.CakeUI.select.clicked_row);

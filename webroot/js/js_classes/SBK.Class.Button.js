@@ -11,6 +11,8 @@ SBK.Button = SBK.Class.extend({
     position: function (params) {
         var self = this;
         
+        //this depends on jQueryUI. 
+        //20230616 I've disabled jQueryUI, so the parameters below don't work. They don't throw an error though.'
         self.container.position(params);
     },
     

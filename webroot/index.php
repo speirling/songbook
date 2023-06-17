@@ -40,7 +40,7 @@ Cake\Core\Configure::write(
         'js_library' => [
             //'js_dependencies/jquery-1.10.2.js',
             'js_dependencies/jquery-3.7.0.min.js',
-            'js_dependencies/jquery-ui-1.10.4.custom.min.js',
+            //'js_dependencies/jquery-ui-1.10.4.custom.min.js',
             'js_dependencies/jsrender.min.js',
             //'js_dependencies/select2-4.0.3/dist/js/select2.min.js',
             'js_dependencies/select2-4.1.0/select2.min.js',
