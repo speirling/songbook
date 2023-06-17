@@ -35,7 +35,7 @@ SBK.ChordEditor = SBK.Class.extend({
             self.open(self.target, event.pageX, event.pageY);
         });
         self.on_off_switch.set_text('exit chord mode');
-        self.on_off_switch.position({my: "right top", at: "right top", of: self.target});
+        //self.on_off_switch.position({my: "right top", at: "right top", of: self.target});
         self.on_off_switch.click(function () {self.exit_add_chords_mode();});
         self.on_off_switch.addClass('chord-mode-active');
     },
@@ -48,7 +48,7 @@ SBK.ChordEditor = SBK.Class.extend({
         }
         self.target.unbind('keypress').unbind('click');
         self.on_off_switch.set_text('Chord mode');
-        self.on_off_switch.position({my: "right top", at: "right top", of: self.target});
+        //self.on_off_switch.position({my: "right top", at: "right top", of: self.target});
         self.on_off_switch.click(function () {self.enter_add_chords_mode();});
         self.on_off_switch.removeClass('chord-mode-active');
     },
