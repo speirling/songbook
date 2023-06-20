@@ -194,7 +194,7 @@ table.song-header td.key-capo {
   vertical-align: top;
   font-size: 20px;
   border: 0px;
-  width: 190px;
+  width: 230px;
 }
 .key-capo .capo.layout-holder {
   line-height: 1;
@@ -204,8 +204,6 @@ table.song-header td.key-capo {
   display: inline-block;
   border: 1px solid gray;
   padding: 0.5em;
-  margin-right: 5px;
-  margin-top: 11px;
 }
 
 
@@ -243,6 +241,9 @@ table.song-header td.key-capo {
 .title-table h3 {
 	display: inline-block;
 	margin-bottom: 0;
+	font-size: 2em;
+	margin-top: 0;
+	margin-bottom: 0.3em;
 }
 .button.show-menu {
 	float: right;
@@ -518,3 +519,57 @@ body {
 	line-height: 0.9;
 }
 
+
+td.key-capo .key-layout-holder {
+	display: inline-block;
+}
+
+td.key-capo .capo-transpose-layout-holder {
+	display: inline-block;
+	text-align: right;
+	vertical-align: middle;
+}
+
+td.key-capo .key {
+	width: auto;
+}
+
+td.key-capo .transpose.layout-holder {
+    font-size: 0.7em;
+    color: gray;
+}
+
+td.key-capo .key .heading {
+    display: none;
+}
+
+td.key-capo .key .value {
+    display: inline-block;
+    font-size: 2.2em;
+    color: gray;
+    font-weight: bold;
+    line-height: 1.8rem;
+    vertical-align: middle;
+}
+
+td.key-capo .capo {
+    display: block;
+	margin: 0;
+}
+
+td.key-capo .capo .value {
+    font-weight: bold;
+}
+
+td.key-capo .transpose .heading {
+    
+}
+
+#hideable_dashboard_positioning_container {
+	position: absolute;
+    right:0;
+	z-index:10;
+}
+#embedded_lyrics_scrollable_container .song-row .tag-form form {
+	font-size: 1em;
+}

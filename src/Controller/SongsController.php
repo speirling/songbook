@@ -103,7 +103,6 @@ class SongsController extends AppController
 		    "page_width" => isset($_GET['vw']) ? $_GET['vw'] : $default_print_page_configuration['page_width'], //px
 		    "page_height"  => isset($_GET['vh']) ? $_GET['vh'] : $default_print_page_configuration['page_height'], //px
 		];
-
 	    $song["current_key"] = isset($_GET['key']) ? $_GET['key'] : null;
 	    $song["capo"] = isset($_GET['capo']) ? $_GET['capo'] : null;
 
@@ -159,7 +158,7 @@ class SongsController extends AppController
 	        "page_width" => isset($_GET['vw']) ? $_GET['vw'] : $default_print_page_configuration['page_width'], //px
 	        "page_height"  => isset($_GET['vh']) ? $_GET['vh'] : $default_print_page_configuration['page_height'], //px
 	    ];
-	    
+
 	    $song["current_key"] = isset($_GET['key']) ? $_GET['key'] : null;
 	    $song["capo"] = isset($_GET['capo']) ? $_GET['capo'] : null;
 	    

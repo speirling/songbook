@@ -13,6 +13,7 @@ jQuery(document).ready(function() {
 	}
 
 	//improve any visible select boxes
+	//console.log(jQuery('select'));
 	jQuery('select').select2();
 	
 	// Dashboard Songlist -----------------------------

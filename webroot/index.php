@@ -39,7 +39,7 @@ Cake\Core\Configure::write(
         'playlist_directory' => '/fileserver/data/playlists',
         'js_library' => [
             'js_dependencies/jquery-3.7.0.min.js',
-            'js_dependencies/jsrender.min.js',,
+            'js_dependencies/jsrender.min.js',
             'js_dependencies/select2-4.1.0/select2.min.js',
             'js_classes/SBK.Namespace.js',
             'js_classes/SBK.Constants.js',
@@ -62,7 +62,7 @@ Cake\Core\Configure::write(
             'chord_editor.css',
             'viewer.css',
             'printable.css'
-        ],
+        ], 
         'print_page' => [
             'A4' => [
                 "page_height" => 1000, //px
@@ -78,7 +78,7 @@ Cake\Core\Configure::write(
                     "attributions" =>  10 //px
                 ],
                 "lyric_width_per_100_characters" => 670, //px
-                "content_padding" => 30, //px  empirically this value makes the content appear on all browser sizes without scrolling. Sometimes too much of a border, but better than having to scroll to see something.
+                "content_padding" => 0, //px  empirically this value makes the content appear on all browser sizes without scrolling. Sometimes too much of a border, but better than having to scroll to see something.
                 "lyric_line_top_margin" => 8, //px
                 "font_family" => 'verdana',
                 "column_width" => [

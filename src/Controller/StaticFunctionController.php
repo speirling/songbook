@@ -488,9 +488,9 @@ class StaticFunctionController extends AppController
 	    
 	    $page_available_height = $print_page_configuration['page_height']
 	                           - $size_config_values['content_padding'] * 2;
-	                           
+
 	    $page_available_width = $print_page_configuration['page_width']
-	                           - $size_config_values['content_padding'] * 2;
+	                          - $size_config_values['content_padding'] * 2;
 	                           
 	    /*$height_of_line_without_chords = $size_config_values['font_sizes']['lyrics'] * 1.125;
 	    
