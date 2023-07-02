@@ -251,7 +251,7 @@ class Query implements ExpressionInterface, IteratorAggregate
      */
     public function execute(): StatementInterface
     {
-        $statement = $this->_connection->run($this);
+        $statement = $this->_connection->run($this); 
         $this->_iterator = $this->_decorateStatement($statement);
         $this->_dirty = false;
 

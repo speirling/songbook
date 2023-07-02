@@ -27,6 +27,7 @@
     <?= $this->Form->end() ?>
 
     <ul class="side-nav">
+        <li><?= $this->Html->link(__('Viewer'), ['controller' => 'viewer']) ?></li>
         <li><?= $this->Html->link(__('New Song'), ['controller' => 'Songs', 'action' => 'add']) ?></li>
         <li><?= $this->Html->link(__('New Event'), ['controller' => 'Events', 'action' => 'add']) ?></li>
         <li><?= $this->Html->link(__('Songs'), ['controller' => 'Songs', 'action' => 'index']) ?></li>

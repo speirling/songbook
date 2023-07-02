@@ -11,6 +11,7 @@ class ApiController extends AppController {
         parent::initialize();
         $this->loadComponent('RequestHandler');
         $this->loadModel('Songs');
+        debug(apiCOntroller);
     }
 
     public function getPlaylist() {

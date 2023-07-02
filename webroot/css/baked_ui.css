@@ -216,7 +216,7 @@ tr. .button {
 	border:0;
 	background-color: transparent;
 	color: inherit;
-	font-size: inherit;
+/*	font-size: inherit;*/
 	text-transform: none;
 	vertical-align: top;
 	line-height: normal; /* to match button */
@@ -323,7 +323,7 @@ tr.song-row .actions .button {
     vertical-align: middle;
     margin-top: 0.1em;
     margin-bottom: 0.1em;
-    font-size: 1.8em;
+   /* font-size: 1.8em;*/
 }
 tr.song-row .actions .arrow {
     width: 2.5em;
@@ -478,6 +478,7 @@ tr.song-row.ui-selected .song-title {
     font-size: 10px;
     color: gray;
     border-radius: 5px;
+    vertical-align: middle;
 }
 
 #actions-sidebar span.select2 {

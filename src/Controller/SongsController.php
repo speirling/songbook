@@ -28,8 +28,8 @@ class SongsController extends AppController
 	{
 		$this->Songs = $this->Songs->find();
 		$this->Songs = $this->Songs->contain('SetSongs.Performers');
-		if ($this->request->is('post')) {
-			$search_string = $this->request->data['Search'];
+		if ($this->getRequest()->is('post')) {
+			$search_string = $this->getRequest()->getData()['Search'];
 			$this->Songs = $this->Songs->where(['title LIKE' => '%'.$search_string.'%']);
 		} else {
 			$search_string = '';
@@ -62,7 +62,7 @@ class SongsController extends AppController
      */
 	public function search()
 	{
-		$search_string = $this->request->pass[0];
+		$search_string = $this->getRequest()->pass[0];
 			$this->Songs = $this->Songs->find()
 			->where(['title LIKE' => '%'.$search_string.'%'])
 			->order(['id' =>'DESC'])->contain(['SetSongs'=>function($query){
@@ -103,7 +103,6 @@ class SongsController extends AppController
 		    "page_width" => isset($_GET['vw']) ? $_GET['vw'] : $default_print_page_configuration['page_width'], //px
 		    "page_height"  => isset($_GET['vh']) ? $_GET['vh'] : $default_print_page_configuration['page_height'], //px
 		];
-
 	    $song["current_key"] = isset($_GET['key']) ? $_GET['key'] : null;
 	    $song["capo"] = isset($_GET['capo']) ? $_GET['capo'] : null;
 
@@ -136,6 +135,62 @@ class SongsController extends AppController
 		);
 		
 		$this->set('title_block_html', StaticFunctionController::generate_title_html($song));
+	}
+	
+	
+	
+	/**
+	 * View method adapted for use as an API, returning HTML string for embedding in an existing div (or iframe)
+	 *
+	 * @param string|null $id Song id.
+	 * @return void
+	 * @throws \Cake\Network\Exception\NotFoundException When record not found.
+	 */
+	public function embedded($id = null)
+	{
+	    $song = $this->Songs->get($id, [
+	        'contain' => ['SongTags'=>['Tags'], 'SetSongs'=>function($query){
+	        return $query->find('all')->distinct(['Performers__id', 'SetSongs__key']);
+	        }, 'SetSongs.Performers']]);
+	    
+	    $default_print_page_configuration = \Cake\Core\Configure::read('Songbook.print_page.A4');
+	    $print_page_configuration = [
+	        "page_width" => isset($_GET['vw']) ? $_GET['vw'] : $default_print_page_configuration['page_width'], //px
+	        "page_height"  => isset($_GET['vh']) ? $_GET['vh'] : $default_print_page_configuration['page_height'], //px
+	    ];
+
+	    $song["current_key"] = isset($_GET['key']) ? $_GET['key'] : null;
+	    $song["capo"] = isset($_GET['capo']) ? $_GET['capo'] : null;
+	    
+	    if(strpos($song['base_key'], " ") > 0) { debug("Cannot transpose this song because the given base key contains a space!!");}
+	    $song['content'] = StaticFunctionController::convert_song_content_to_HTML(
+	        $song['content'],
+	        $song['base_key'],
+	        $song["current_key"],
+	        $song["capo"]
+	        );
+	    
+	    $song['printable_content'] = StaticFunctionController::convert_content_HTML_to_columns(
+	        $song,
+	        StaticFunctionController::derive_page_parameters($print_page_configuration)
+	        );
+	    
+	    $this->set('song', $song);
+	    $this->set('setSong', new SetSong());
+	    $this->set('title', $song['title']);
+	    $this->set('current_key', $song["current_key"]);
+	    $this->set('capo', $song['capo']);
+	    $this->set('tags', $this->Songs->SongTags->Tags->find('list'));
+	    $this->set('songTag', new SongTag());
+	    $this->set('_serialize', ['song']);
+	    $this->set('performers', $this->Songs->SetSongs->Performers->find('list', [
+	        'keyField' => 'id',
+	        'valueField' => 'nickname'
+	    ]
+	        )
+	        );
+	    
+	    $this->set('title_block_html', StaticFunctionController::generate_title_html($song));
 	}
 
 	/**
@@ -236,8 +291,8 @@ class SongsController extends AppController
     public function add_base()
     {
         $song = $this->Songs->newEntity([]);
-        if ($this->request->is('post')) {
-            $song = $this->Songs->patchEntity($song, $this->request->data);
+        if ($this->getRequest()->is('post')) {
+            $song = $this->Songs->patchEntity($song, $this->getRequest()->getData());
             if ($result = $this->Songs->save($song)) {
                 $this->Flash->success(__('The song has been saved.'));
                 return $result->id;
@@ -272,8 +327,8 @@ class SongsController extends AppController
             'contain' => ['SongTags'=>['Tags'], 'SetSongs'=>function($query){
             return $query->find('all')->distinct(['Performers__id', 'SetSongs__key']);
         }, 'SetSongs.Performers']]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $song = $this->Songs->patchEntity($song, $this->request->data);
+        if ($this->getRequest()->is(['patch', 'post', 'put'])) {
+            $song = $this->Songs->patchEntity($song, $this->getRequest()->getData());
             if ($this->Songs->save($song)) {
                 $this->Flash->success(__('The song has been saved.'));
                 $redirect_array[] = $id;
@@ -312,7 +367,7 @@ class SongsController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->getRequest()->allowMethod(['post', 'delete']);
         $song = $this->Songs->get($id);
         if ($this->Songs->delete($song)) {
             $this->Flash->success(__('The song has been deleted.'));

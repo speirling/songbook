@@ -11,9 +11,31 @@ use App\Model\Entity\Performer;
 
 class songlistComponent extends Component {
     public $filtered_list = null;
+    private $event = null;
+    private $paginate = true;
+    private $sort_definition = null;
     
-	public function filterAllSongs($event = Null) {
-	
+    function setEvent($event) {
+        $this->event = $event;
+    }
+    
+    function setPagination($on_or_off) {
+        if($on_or_off == 'on') {
+            $this->paginate = true;
+        } else {
+            $this->paginate = false;
+        }
+    }
+    
+    function setSortBy($param = 'title', $direction = 'ASC') {
+        $this->sort_definition = [
+            'param' => $param, 
+            'direction' => $direction
+        ];
+    }
+    
+	public function filterAllSongs() {
+
 		$controller = $this->_registry->getController();
 		
 		$controller->loadModel('Songs');
@@ -21,71 +43,79 @@ class songlistComponent extends Component {
 		$controller->loadModel('SongPerformances');
 		$controller->loadModel('SongVotes');
 	
+		//basic query
 		$filtered_list_query = $controller->Songs->find();
 		
+		//Specify which fields to include in the Query, and join to tags and performers
 		$filtered_list_query->select(['id', 'title', 'written_by', 'performed_by', 'base_key', 'content'], false);
 		$filtered_list_query->contain(['SongTags'=>['Tags']]);
 		$filtered_list_query->contain(['SetSongs.Performers']);
 	
 		// start song performances -------------------
-		if (is_null($event)) {
-			//find all of the songs played in the last 3 hours (supposed to be current event) and add a parameter that identifies them as played
-			$event_start = strtotime('-3 hours');
-			$event_end = strtotime('-0 hours');
-		} else {
-			//find all of the songs played during the event - assume event time +/- event duration - and restrict the final list to just those songs
-			if(isset($event->duration_hours) && $event->duration_hours > 0) {
-				$event_duration_seconds = $event->duration_hours * 60 * 60;
-			} else {
-				$event_duration_seconds = 3 * 60 * 60;
-			}
-			$event_start = strtotime($event->timestamp) - $event_duration_seconds;
-			$event_end = strtotime($event->timestamp) + $event_duration_seconds;
-		}
-
-		$performance_conditions = [];
-		$performance_query = $controller->SongPerformances->find();
-		$performance_query->Where("`SongPerformances`.`timestamp` BETWEEN \"" . date("Y-m-d H:i:s", $event_start)."\" AND \"".date("Y-m-d H:i:s", $event_end)."\"");
-		$performance_query->distinct('song_id');
-		$performance_list = $performance_query->all()->extract('song_id');
-		
-		$song_id_list = [];
-		foreach($performance_list as $id => $song_id) {
-			array_push($song_id_list, $song_id);
-		}
-
-		if (sizeof($song_id_list) > 0) {
-			$song_id_string = str_replace(['[', ']'], ['(', ')'], json_encode($song_id_list));
-			if(is_null($event)) {
-				$filtered_list_query->select(['played' => '(`Songs`.`id` IN ' . $song_id_string . ')']); //mark matching songs as having been "played" during the event 
-			} else {
-				$filtered_list_query->andWhere(['`Songs`.`id` IN' => $song_id_list]); //restrict the results to only songs played during the event
-			}
-		}
+		//If an event has been specified, restrict the filtered list to songs played during that event.
+		//If an event is not specified, don't restrict the list - but mark recently played songs.
+            		if (is_null($this->event)) {
+            		    //if no specific event has been identified,
+            			//find all of the songs played in the last 3 hours (supposed to be current event) and add a parameter that identifies them as played
+            			$event_start = strtotime('-3 hours');
+            			$event_end = strtotime('-0 hours');
+            		} else {
+            		    //if a specific event has been identified,
+            			//find all of the songs played during the event - assume event time +/- event duration - and restrict the final list to just those songs
+            		    if(isset($this->event->duration_hours) && $this->event->duration_hours > 0) {
+            		        $event_duration_seconds = $this->event->duration_hours * 60 * 60;
+            			} else {
+            				$event_duration_seconds = 3 * 60 * 60;
+            			}
+            			$event_start = strtotime($this->event->timestamp) - $event_duration_seconds;
+            			$event_end = strtotime($this->event->timestamp) + $event_duration_seconds;
+            		}
+            
+            		//identify a list of song ids representing songs that were part of the perfomance identified by the specified event
+            		$performance_conditions = [];
+            		$performance_query = $controller->SongPerformances->find();
+            		$performance_query->Where("`SongPerformances`.`timestamp` BETWEEN \"" . date("Y-m-d H:i:s", $event_start)."\" AND \"".date("Y-m-d H:i:s", $event_end)."\"");
+            		$performance_query->distinct('song_id');
+            		$performance_list = $performance_query->all()->extract('song_id');
+            		
+            		$song_id_list = [];
+            		foreach($performance_list as $id => $song_id) {
+            			array_push($song_id_list, $song_id);
+            		}
+            
+            		if (sizeof($song_id_list) > 0) {
+            			$song_id_string = str_replace(['[', ']'], ['(', ')'], json_encode($song_id_list));
+            			if(is_null($this->event)) {
+            				$filtered_list_query->select(['played' => '(`Songs`.`id` IN ' . $song_id_string . ')']); //mark matching songs as having been "played" during the event 
+            			} else {
+            				$filtered_list_query->andWhere(['`Songs`.`id` IN' => $song_id_list]); //restrict the results to only songs played during the event
+            			}
+            		}
 		// end song performances -------------------
 	
 		// start song votes -------------------
 		//similary, find all of the songs voted in the last 3 hours (supposed to be current event) and add a parameter that identifies them as voted
-		$event_start = strtotime('-3 hours');
-		$event_end = strtotime('-0 hours');
-		$vote_conditions = [];
-		$vote_query = $controller->SongVotes->find();
-		$vote_query->Where("`SongVotes`.`timestamp` BETWEEN \"" . date("Y-m-d H:i:s", $event_start)."\" AND \"".date("Y-m-d H:i:s", $event_end)."\"");
-		$vote_query->distinct('song_id');
-		$vote_list = $vote_query->all()->extract('song_id');
-	
-		$song_id_list = [];
-		foreach($vote_list as $id => $song_id) {
-			array_push($song_id_list, $song_id);
-		}
-	
-		if(sizeof($song_id_list) > 0) {
-			$song_id_string = str_replace(['[', ']'], ['(', ')'], json_encode($song_id_list));
-			$filtered_list_query->select(['voted' => '(`Songs`.`id` IN ' . $song_id_string . ')']); //mark matching songs as having been "voted" during the event 
-		}
+            		$event_start = strtotime('-3 hours');
+            		$event_end = strtotime('-0 hours');
+            		$vote_conditions = [];
+            		$vote_query = $controller->SongVotes->find();
+            		$vote_query->Where("`SongVotes`.`timestamp` BETWEEN \"" . date("Y-m-d H:i:s", $event_start)."\" AND \"".date("Y-m-d H:i:s", $event_end)."\"");
+            		$vote_query->distinct('song_id');
+            		$vote_list = $vote_query->all()->extract('song_id');
+            	
+            		$song_id_list = [];
+            		foreach($vote_list as $id => $song_id) {
+            			array_push($song_id_list, $song_id);
+            		}
+            	
+            		if(sizeof($song_id_list) > 0) {
+            			$song_id_string = str_replace(['[', ']'], ['(', ')'], json_encode($song_id_list));
+            			$filtered_list_query->select(['voted' => '(`Songs`.`id` IN ' . $song_id_string . ')']); //mark matching songs as having been "voted" during the event 
+            		}
 		// end song votes -------------------
 
 		$filter_on = false;
+		// enable filtering by: title, tags, performer------------------------------------
 		if ($controller->getRequest()->is(array('post', 'put', 'get'))) {
 		    if ($controller->getRequest()->is(array('get'))) {
 			    $query_parameters = $controller->getRequest()->getQuery();
@@ -99,7 +129,9 @@ class songlistComponent extends Component {
 			 *              songbook/dashboard?sort=title
 			 * etc.
 			 */ 
-			if(array_key_exists('sort', $query_parameters) && $query_parameters['sort'] === 'title') {
+			if(is_array($this->sort_definition)) {
+			    $filtered_list_query->order([$this->sort_definition['param'] => $this->sort_definition['direction']]);
+			} else if(array_key_exists('sort', $query_parameters) && $query_parameters['sort'] === 'title') {
 			    $filtered_list_query->order(['title' => 'ASC']);
 			}
 			    
@@ -212,6 +244,9 @@ class songlistComponent extends Component {
 			$selected_venue = '';
 		}
 
+		//end of [title, tags, performer] filtering -------------------------
+		
+		
 		// Avoid multiples of a specific song
 		$filtered_list_query->distinct(['Songs.id']);
         if ($filter_on) {
@@ -220,6 +255,11 @@ class songlistComponent extends Component {
             $filtered_list_query->order(['Songs.id' =>'DESC']);
         }
         //echo debug($filtered_list_query); die();
+        
+        
+        //------------------------------------------------------------
+        //Pass data to the View, separate from the list
+        
 
 		//pass the list of all tags to the view
 		$controller->loadModel('Tags');
@@ -249,11 +289,31 @@ class songlistComponent extends Component {
 		$controller->set('search_string', $search_string);
 		$controller->set('selected_performer', $selected_performer);
 		$controller->set('selected_tags', $selected_tag_array);
-		$this->filtered_list = $filtered_list_query; //so that the calling class can access this list, not just the ctp template
-		if($filter_on) {
-			$controller->set('filtered_list', $filtered_list_query);
-			$controller->set('filter_on', TRUE);
+		
+		
+		//for the print title
+		$controller->set('exclude_all', $exclude_all);
+		$controller->set('selected_exclude_tags', $selected_exclude_tag_array);
+		
+		//for the print title
+		$controller->set('print_title', $this->print_title($search_string, $selected_performer, $selected_venue, $selected_tag_array, $selected_exclude_tag_array, $performers, $venues, $all_tags));
+		$controller->page_title = $this->page_title($search_string, $selected_performer, $selected_venue, $selected_tag_array, $selected_exclude_tag_array, $performers, $venues, $all_tags);
+		
+		//End of passing data to the view ------------------------------------------------------------------
+		
+		$this->filtered_list = $filtered_list_query; //so that the calling class itself can access this list, not just the view template
+		
+		//Should the list be paginated?
+		$paginate = true;
+		if($filter_on == true) {
+		    $paginate = false;
 		} elseif(array_key_exists("unpaginated", $query_parameters)) {
+		    $paginate = false;
+		} elseif ($this->paginate == false) {
+		    $paginate = false;
+		}
+		
+		if($paginate == false) {
 		    $controller->set('filtered_list', $filtered_list_query);
 		    $controller->set('filter_on', TRUE); //prevents the footer haveing 'next' & 'previous' buttons
 		} else {
@@ -261,13 +321,6 @@ class songlistComponent extends Component {
 		    $controller->set('filter_on', FALSE);
 		}
 
-		//for the print title
-		$controller->set('exclude_all', $exclude_all);
-		$controller->set('selected_exclude_tags', $selected_exclude_tag_array);
-
-		//for the print title
-		$controller->set('print_title', $this->print_title($search_string, $selected_performer, $selected_venue, $selected_tag_array, $selected_exclude_tag_array, $performers, $venues, $all_tags));
-		$controller->page_title = $this->page_title($search_string, $selected_performer, $selected_venue, $selected_tag_array, $selected_exclude_tag_array, $performers, $venues, $all_tags);
 	}
 
 	private function print_title($search_string = '', $selected_performer = '', $selected_venue = '', $selected_tag_array = [], $selected_exclude_tag_array = '', $performers = [], $venues = [], $all_tags = []) {

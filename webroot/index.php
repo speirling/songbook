@@ -38,68 +38,31 @@ Cake\Core\Configure::write(
     'Songbook', [
         'playlist_directory' => '/fileserver/data/playlists',
         'js_library' => [
-            'js_dependencies/jquery-1.10.2.js',
-            'js_dependencies/jquery-ui-1.10.4.custom.min.js',
+            'js_dependencies/jquery-3.7.0.min.js',
             'js_dependencies/jsrender.min.js',
-            'js_dependencies/select2-4.0.3/dist/js/select2.min.js',
+            'js_dependencies/select2-4.1.0/select2.min.js',
             'js_classes/SBK.Namespace.js',
             'js_classes/SBK.Constants.js',
             'js_classes/SBK.StaticFunctions.js',
             'js_classes/SBK.StaticFunctions.LyricChordHTML.js',
             'js_classes/SBK.CakeUI.js',
             'js_classes/SBK.Class.js',
-            //'js_classes/SBK.Class.CallbackList.js',
-            //'js_classes/SBK.Class.ApplicationState.js',
-            //'js_classes/SBK.Class.PleaseWait.js',
             'js_classes/SBK.Class.Button.js',
             'js_classes/SBK.Class.ChordEditor.js',
-            //'js_classes/SBK.Class.HTTPRequest.js',
-            //'js_classes/SBK.Class.Api.js',
-            //'js_classes/SBK.Class.SongList.js',
-            //'js_classes/SBK.Class.SongList.PlayList.js',
-            //'js_classes/SBK.Class.SongList.PlayList.Alphabetical.js',
-            //'js_classes/SBK.Class.SongList.PlayList.Book.js',
-            //'js_classes/SBK.Class.SongList.PlayList.Edit.js',
-            //'js_classes/SBK.Class.SongList.PlayList.Selector.js',
-            //'js_classes/SBK.Class.SongList.PlayList.Table.js',
-            //'js_classes/SBK.Class.SongList.PlayList.Text.js',
-            //'js_classes/SBK.Class.SongList.SongFilterList.js',
-            //'js_classes/SBK.Class.SongList.SongFilterList.Lyrics.js',
-            //'js_classes/SBK.Class.SongPicker.js',
-            //'js_classes/SBK.Class.AllPlaylists.js',
-            //'js_classes/SBK.Class.AllPlaylists.PlaylistPicker.js',
-            //'js_classes/SBK.Class.PaginatedHTML.js',
-            //'js_classes/SBK.Class.SongbookApplication.js',
-            //'js_classes/SBK.Class.SongListItemSet.js',
-            //'js_classes/SBK.Class.SongListItemSet.Edit.js',
-            //'js_classes/SBK.Class.SongListItemSet.Selector.js',
-            //'js_classes/SBK.Class.SongListItemSet.Print.js',
-            //'js_classes/SBK.Class.SongListItemSet.Book.js',
-           // 'js_classes/SBK.Class.SongListItemSong.js',
-            //'js_classes/SBK.Class.SongListItemSong.Edit',
-            //'js_classes/SBK.Class.SongListItemSong.Selector.js',
-            //'js_classes/SBK.Class.SongListItemSong.Lyrics.js',
-            //'js_classes/SBK.Class.SongListItemSong.Print.js',
-            //'js_classes/SBK.Class.SongListItemSong.Book.js',
-            //'js_classes/SBK.Class.SongLyricsDisplay.js',
-            //'js_classes/SBK.Class.SongLyricsDisplay.Book.js',
-            //'js_classes/SBK.Class.SongLyricsEdit.js',
             'index.js'
         ],
         'css_library' => [
-        	'../js/js_dependencies/select2-4.0.3/dist/css/select2.min.css',
+            '../js/js_dependencies/select2-4.1.0/select2.min.css',
             'common.css',
             'playlists-list.css',
             'songs-list.css',
-            //'playlist-book.css',
-            //'playlist-edit.css',
-            //'playlist-print.css',
             'song-edit.css',
             'song-lyrics.css',
             'baked_ui.css',
             'chord_editor.css',
+            'viewer.css',
             'printable.css'
-        ],
+        ], 
         'print_page' => [
             'A4' => [
                 "page_height" => 1000, //px
@@ -115,7 +78,7 @@ Cake\Core\Configure::write(
                     "attributions" =>  10 //px
                 ],
                 "lyric_width_per_100_characters" => 670, //px
-                "content_padding" => 30, //px  empirically this value makes the content appear on all browser sizes without scrolling. Sometimes too much of a border, but better than having to scroll to see something.
+                "content_padding" => 0, //px  empirically this value makes the content appear on all browser sizes without scrolling. Sometimes too much of a border, but better than having to scroll to see something.
                 "lyric_line_top_margin" => 8, //px
                 "font_family" => 'verdana',
                 "column_width" => [

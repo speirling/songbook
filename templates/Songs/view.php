@@ -6,29 +6,14 @@
     <script>
         $(document).ready(function(){
             SBK.StaticFunctions.set_window_size_in_URL();
-            
-            jQuery('td.title-table').prepend('<span class="button show-menu show-song-properties" showtext="Song Properties" hidetext"Hide Properties" style="display: hidden">Song Properties</span>').click(function(){
-            	var button = jQuery(this);
-            	var panel = jQuery('.hideable-dashboard');
 
-            	if(panel.hasClass('hideable-visible')) {
-            		panel.removeClass('hideable-visible');
-            		panel.addClass('hideable-hidden');
-            		button.html(button.attr('showtext'));
-            	} else {
-            		panel.removeClass('hideable-hidden');
-            		panel.addClass('hideable-visible');
-            		button.html(button.attr('hidetext'));
-            	}
-            }).show().click();
-            
+            SBK.StaticFunctions.make_hideable_panel('.hideable-dashboard', "Song Properties", "Hide Properties");
+
         });
     </script>
 <? /* ----------------------*/ ?>
 
-<div class="hideable-dashboard hideable-visible song-row"> <?php /* 
-<div class="songs hideable-dashboard hideable-visible view content lyrics-display song-row">
-.song-row required for ajax callbacks for played and vote to work. */?>
+<div class="hideable-dashboard hideable-visible song-row"> 
     <span class="button float-right top-button-set"><?= $this->Html->link(__('Dashboard'), ['controller' => 'Dashboard', 'action' => 'index']) ?></span>
     <span class="search-form float-right top-button-set">
 	    <?= $this->Form->create(null, ['url' => ['controller' => 'dashboard', 'action' => 'index']]) ?>

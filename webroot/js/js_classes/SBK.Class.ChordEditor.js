@@ -5,7 +5,7 @@ SBK.ChordEditor = SBK.Class.extend({
         self.target = lyrics_container;
         self.container = jQuery('<div class="chord-editor"></div>').prependTo(self.target.parent()).hide();
         self.on_off_switch = new SBK.Button(self.target.parent(), 'chord-mode', 'Chord mode', function () {self.enter_add_chords_mode();});
-        self.on_off_switch.position({my: "right top", at: "right top", of: self.target});
+        //self.on_off_switch.position({my: "right top", at: "right top", of: self.target}); //this depends on jQueryUI, with seems abandoned so I've removed it 20230616 
         self.chord_object = {};
         self.bass_note_requested = false;
         self.initial_value = '';
@@ -35,7 +35,7 @@ SBK.ChordEditor = SBK.Class.extend({
             self.open(self.target, event.pageX, event.pageY);
         });
         self.on_off_switch.set_text('exit chord mode');
-        self.on_off_switch.position({my: "right top", at: "right top", of: self.target});
+        //self.on_off_switch.position({my: "right top", at: "right top", of: self.target});
         self.on_off_switch.click(function () {self.exit_add_chords_mode();});
         self.on_off_switch.addClass('chord-mode-active');
     },
@@ -48,7 +48,7 @@ SBK.ChordEditor = SBK.Class.extend({
         }
         self.target.unbind('keypress').unbind('click');
         self.on_off_switch.set_text('Chord mode');
-        self.on_off_switch.position({my: "right top", at: "right top", of: self.target});
+        //self.on_off_switch.position({my: "right top", at: "right top", of: self.target});
         self.on_off_switch.click(function () {self.enter_add_chords_mode();});
         self.on_off_switch.removeClass('chord-mode-active');
     },

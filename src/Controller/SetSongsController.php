@@ -53,8 +53,8 @@ class SetSongsController extends AppController
     public function add($redirect_array = ['action' => 'index'])
     {
 	    $setSong = $this->SetSongs->newEntity([]);
-        if ($this->request->is('post')) {
-	    	$setSong = $this->SetSongs->patchEntity($setSong, $this->request->data);
+        if ($this->getRequest()->is('post')) {
+	    	$setSong = $this->SetSongs->patchEntity($setSong, $this->getRequest()->getData());
 	        if ($this->SetSongs->save($setSong)) {
 	            $this->Flash->success(__('The set song has been saved.'));
 	            return $this->redirect($redirect_array);

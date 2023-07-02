@@ -33,14 +33,16 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 
     <link href="https://fonts.googleapis.com/css?family=Raleway:400,700" rel="stylesheet">
 
-    <?= $this->Html->css(['normalize.min', 'milligram.min', 'cake']) ?>
+    <?php /*<?= $this->Html->css(['normalize.min', 'milligram.min', 'cake']) ?> */ ?>
+
+    <?= $this->Html->css('base.css') ?>
+    <?= $this->Html->css('cake.css') ?>
+    <?= $this->Html->css(Cake\Core\Configure::read('Songbook.css_library')); // defined in webroot/index.php ?>
+    <?= $this->Html->script(Cake\Core\Configure::read('Songbook.js_library')); // defined in webroot/index.php ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
-    
-    <?= $this->Html->css(Cake\Core\Configure::read('Songbook.css_library')); ?>
-    <?= $this->Html->script(Cake\Core\Configure::read('Songbook.js_library')); ?>
 </head>
 <body>
         <div class="container">

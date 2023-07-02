@@ -518,5 +518,22 @@ SBK.StaticFunctions = {
 		    return false;
 		}
                 
-    }
+    },
+
+	make_hideable_panel: function (panel, button_showtext, button_hidetext) {
+        var panel = jQuery(panel);
+		var button = jQuery('<span class="button show-menu" style="display: none">' + button_showtext + '</span>');
+		
+		jQuery(panel).before(button).hide(); //panel might be initially visible, so that select2 picks up widths properly
+		jQuery(panel).css('visibility', 'visible'); //panel might be initially be set to visiility:hidden, so that select2 picks up widths properly veven while it's not visible
+		button.click(function(){
+            	if(panel.is(":visible")) { 
+            		panel.hide();
+            		button.html(button_showtext);
+            	} else {
+            		panel.show();
+            		button.html(button_hidetext);
+            	}
+            }).show();
+	}
 };

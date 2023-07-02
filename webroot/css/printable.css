@@ -109,51 +109,6 @@ td.title-table {
 	width:40%;
 }
 
-
-td.key-capo .key-layout-holder {
-	display: inline-block;
-}
-
-td.key-capo .capo-transpose-layout-holder {
-	display: inline-block;
-	text-align: right;
-}
-
-td.key-capo .key {
-	width: auto;
-}
-
-td.key-capo .transpose.layout-holder {
-    font-size: 0.7em;
-    color: gray;
-}
-
-td.key-capo .key .heading {
-    display: none;
-}
-
-td.key-capo .key .value {
-    display: inline-block;
-    font-size: 2.2em;
-    color: gray;
-    font-weight: bold;
-    line-height: 1.8rem;
-    vertical-align: middle;
-}
-
-td.key-capo .capo {
-    display: block;
-	margin: 0;
-}
-
-td.key-capo .capo .value {
-    font-weight: bold;
-}
-
-td.key-capo .transpose .heading {
-    
-}
-
 td.key-capo .transpose .value {
     font-weight: bold;
 }
