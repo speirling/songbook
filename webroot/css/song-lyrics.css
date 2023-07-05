@@ -573,3 +573,10 @@ td.key-capo .transpose .heading {
 #embedded_lyrics_scrollable_container .song-row .tag-form form {
 	font-size: 1em;
 }
+
+.performance-direction {
+	font-size: 0.9em;
+	color: #369;
+	font-style: italic;
+	font-family: serif;
+}

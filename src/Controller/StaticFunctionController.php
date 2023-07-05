@@ -246,11 +246,22 @@ class StaticFunctionController extends AppController
 		    $exception_string = $exception_string . "\\" . $e;
 		    $ignore_string = $ignore_string . "\\" . $e . ".(*SKIP)(*FAIL)|";
         }
+        /*
+        
+        preg_match('/\{.*?\}/u', $contentHTML, $performance_directions);
+        foreach($performance_directions as $e) {
+            $exception_string = $exception_string . "\\" . str_replace(['{','}','"'],['\{','\}','\"'], $e);
+            $ignore_string = $ignore_string . "\\" . $e . ".(*SKIP)(*FAIL)|";
+        }
+        
+        debug($performance_directions);
+        debug($ignore_string);*/
         
         // ignoring html and chords first, and also &#38; then the "ignore list" above
+        //any text between {} should be ignored - it's considered a performance direction
         //a problem arose in one song with "de[G]ad.[G#dim]" at the end of a line. The ".[" ended up with a word boundary between . and [ . so add an exception for characters in front of [: \.? \[.*?\][\w]?
         //debug($ignore_string);
-        $contentHTML = preg_replace('/<.*?>(*SKIP)(*FAIL)|[' . $exception_string . '^\n]?\[.*?\][\w]?(*SKIP)(*FAIL)|' . $ignore_string . '\b/u', '</span><span class="word">', $contentHTML); 
+        $contentHTML = preg_replace('/<.*?>(*SKIP)(*FAIL)|\{.*?\}(*SKIP)(*FAIL)|[' . $exception_string . '^\n]?\[.*?\][\w]?(*SKIP)(*FAIL)|' . $ignore_string . '\b/u', '</span><span class="word">', $contentHTML); 
         //debug($contentHTML);
         //if a chord is at the start of a line, instead of inside a word, it is missed by the regex above.
         //Similarly, an apostrophe at the start of a line, or double quotes
@@ -295,6 +306,9 @@ class StaticFunctionController extends AppController
 		
 		//convert ampersand to xml character entity &#38; to avoid errors with the DOM command
 		$contentHTML = preg_replace('/&([^#n])/', '&#38;$1', $contentHTML);
+		
+		//any remaining text between curly brackets ({}) should be considered notes/comments for directions on how to play a song.
+		$contentHTML = preg_replace('/<span class="word">\{(.*?)\}/u', '<span class="performance-direction">$1', $contentHTML);
 		
 		return $contentHTML;
 	}
