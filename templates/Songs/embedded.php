@@ -78,7 +78,7 @@
                         <span class="capo">
                             <label>capo: </label>
                             <select class="data" onchange="SBK.CakeUI.form.submit_value(jQuery(this).val(), '#capo_input')" name="capo">
-                            <?php for($capo_index = 0; $capo_index < 9; $capo_index = $capo_index + 1){
+                            <?php for($capo_index = 0; $capo_index < 15; $capo_index = $capo_index + 1){
                                 echo '<option value="' . $capo_index . '"';
                                 if($capo_index == $capo) {
                                     echo ' selected';
