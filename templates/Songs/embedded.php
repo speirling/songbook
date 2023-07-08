@@ -56,6 +56,8 @@
         	            <form class="key" action="" method="get" id="key_form" style="display: none;">
         	                <input type="text" name="key" value = "<?= $current_key ?>" id="key_input"></input>
         	                <input type="text" name="capo" value = "<?= $capo ?>" id="capo_input"></input>
+        	                <input type="hidden" name="vw" value = "<?= $page_width ?>" id="vw"></input>
+        	                <input type="hidden" name="vh" value = "<?= $page_height ?>" id="vh"></input>
         	            </form>
         	             </span>
         	        </span>
@@ -142,6 +144,9 @@
                     ]);
                 ?>
                 </span>
+            </span>
+            <span class="debug-info">
+            	<?php  echo $_SERVER['REQUEST_URI']; ?>
             </span>
         </div> 
     </span>

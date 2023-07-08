@@ -590,7 +590,7 @@ class StaticFunctionController extends AppController
 	        
 	        $title_heading_html = $title_heading_html .   		"<span class=\"key layout-holder key-layout-holder\">" . "\n" ;
 	        $title_heading_html = $title_heading_html .   		"<span class=\"heading\">" . 'Key' .  "</span>"  . "\n" ;
-	        $title_heading_html = $title_heading_html .   		"<span class=\"value\">" .  StaticFunctionController::shift_note($song["current_key"], -1*$song["capo"]) . "</span>"  . "\n" ;
+	        $title_heading_html = $title_heading_html .   		"<span class=\"value\">" .  StaticFunctionController::shift_note($song["current_key"], -1*(int)$song["capo"]) . "</span>"  . "\n" ;
 	        $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
 	        
 	        $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;

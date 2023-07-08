@@ -580,3 +580,10 @@ td.key-capo .transpose .heading {
 	font-style: italic;
 	font-family: serif;
 }
+
+.hideable-dashboard .debug-info {
+	display: inline-block;
+	font-size: 12px;
+	margin-top: 10px;
+	vertical-align: bottom;
+}

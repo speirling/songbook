@@ -132,7 +132,9 @@ class SongsController extends AppController
 				    'valueField' => 'nickname'
 		        ]
 		    )
-		);
+		    );
+		$this->set('page_width', $print_page_configuration['page_width']);
+		$this->set('page_height', $print_page_configuration['page_height']);
 		
 		$this->set('title_block_html', StaticFunctionController::generate_title_html($song));
 	}
@@ -188,7 +190,9 @@ class SongsController extends AppController
 	        'valueField' => 'nickname'
 	    ]
 	        )
-	        );
+	    );
+	    $this->set('page_width', $print_page_configuration['page_width']);
+	    $this->set('page_height', $print_page_configuration['page_height']);
 	    
 	    $this->set('title_block_html', StaticFunctionController::generate_title_html($song));
 	}
