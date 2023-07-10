@@ -14,7 +14,7 @@ jQuery(document).ready(function() {
 
 	//improve any visible select boxes
 	//console.log(jQuery('select'));
-	jQuery('select').select2();
+	jQuery('select:not(.exclude-from-select2)').select2();   //on the lyrics display key/capo box at least, you don't want select2 controlling dimensions etc.'
 	
 	// Dashboard Songlist -----------------------------
 	//if there's a dashboard songlist, set it to respond to clicks

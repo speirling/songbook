@@ -572,12 +572,28 @@ class StaticFunctionController extends AppController
 	            
 	            $title_heading_html = $title_heading_html .   		"<span class=\"capo layout-holder\">"                         . "\n" ;
 	            $title_heading_html = $title_heading_html .   		"<span class=\"heading\">" . 'capo' . "</span>"               . "\n" ;
-	            $title_heading_html = $title_heading_html .   		"<span class=\"value\">" . htmlspecialchars($song["capo"]) . "</span>"  . "\n" ;
+	            //$title_heading_html = $title_heading_html .   		"<span class=\"value\">" . htmlspecialchars($song["capo"]) . "</span>"  . "\n" ;
+	            
+	            
+	            $title_heading_html = $title_heading_html .   		"<span class=\"value\">" . "\n" ;
+	            $title_heading_html = $title_heading_html .   		"<select class=\"data exclude-from-select2\" onchange=\"SBK.CakeUI.form.submit_value(jQuery(this).val(), '#capo_input')\" name=\"capo\">"; 
+	            for($capo_index = 0; $capo_index < 15; $capo_index = $capo_index + 1){
+	                $title_heading_html = $title_heading_html . '<option value="' . $capo_index . '"';
+	                if($capo_index == $song["capo"]) {
+	                    $title_heading_html = $title_heading_html . ' selected';
+	                }
+	                $title_heading_html = $title_heading_html . '>' . $capo_index . '</option>';
+	            }
+                $title_heading_html = $title_heading_html .   		"            </select>"  . "\n" ;
+	            
+	            $title_heading_html = $title_heading_html .   		 "</span>"  . "\n" ;
+	            
+	            
 	            $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
 	            
 	            $title_heading_html = $title_heading_html .   		"<span class=\"transpose layout-holder\">" . "\n" ;
 	            $title_heading_html = $title_heading_html .   		"<span class=\"heading\">" . "chords shown in " . "</span>"  . "\n" ;
-	            $title_heading_html = $title_heading_html .   		"<span class=\"value\">" . StaticFunctionController::shift_note($song["current_key"], -1 * $song["capo"]) .         "</span>"  . "\n" ;
+	            $title_heading_html = $title_heading_html .   		"<span class=\"value\">" . StaticFunctionController::shift_note($song["current_key"], -1 * (int)$song["capo"]) .         "</span>"  . "\n" ;
 	            $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
 	            
 	            $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
@@ -590,7 +606,7 @@ class StaticFunctionController extends AppController
 	        
 	        $title_heading_html = $title_heading_html .   		"<span class=\"key layout-holder key-layout-holder\">" . "\n" ;
 	        $title_heading_html = $title_heading_html .   		"<span class=\"heading\">" . 'Key' .  "</span>"  . "\n" ;
-	        $title_heading_html = $title_heading_html .   		"<span class=\"value\">" .  StaticFunctionController::shift_note($song["current_key"], -1*$song["capo"]) . "</span>"  . "\n" ;
+	        $title_heading_html = $title_heading_html .   		"<span class=\"value\">" .  $song["current_key"] . "</span>"  . "\n" ;
 	        $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
 	        
 	        $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;

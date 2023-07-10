@@ -561,6 +561,18 @@ td.key-capo .capo .value {
     font-weight: bold;
 }
 
+.song-header td.key-capo .capo.layout-holder .value select {
+	border-color: red;
+    -moz-appearance:none; /* Firefox */
+    -webkit-appearance:none; /* Safari and Chrome */
+    appearance:none;
+    border: none;
+	background: transparent;
+    width: 24;
+    text-align: center;
+    padding: 0;
+}
+
 td.key-capo .transpose .heading {
     
 }
@@ -579,4 +591,11 @@ td.key-capo .transpose .heading {
 	color: #369;
 	font-style: italic;
 	font-family: serif;
+}
+
+.hideable-dashboard .debug-info {
+	display: inline-block;
+	font-size: 12px;
+	margin-top: 10px;
+	vertical-align: bottom;
 }
