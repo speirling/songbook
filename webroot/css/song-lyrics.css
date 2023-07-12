@@ -178,6 +178,7 @@
 
 table.song-header {
 	width: 100%;
+	table-layout: fixed;
 }
 
 
@@ -187,6 +188,7 @@ table.song-header td,
     font-size: 0.8em;
     padding: 0;
     text-align: left;
+ 	height: 60px;
 }
 
 table.song-header td.capo-shown,
@@ -194,7 +196,11 @@ table.song-header td.key-capo {
   vertical-align: top;
   font-size: 20px;
   border: 0px;
-  width: 230px;
+  width: 300px;
+  text-align:right;
+}
+table.song-header td.key-capo.minor-mode {
+    width: 340px;
 }
 .key-capo .capo.layout-holder {
   line-height: 1;
@@ -204,6 +210,7 @@ table.song-header td.key-capo {
   display: inline-block;
   border: 1px solid gray;
   padding: 0.5em;
+  margin-right: 50px;
 }
 
 
@@ -211,6 +218,7 @@ table.song-header td.key-capo {
     line-height: 0.8;
     border: 0px;
     display: block;
+    white-space: nowrap;
 }
 .title-table .performed-by.written-by label,
 .title-table .performed-by.written-by span  {
@@ -244,6 +252,7 @@ table.song-header td.key-capo {
 	font-size: 2em;
 	margin-top: 0;
 	margin-bottom: 0.3em;
+	white-space: nowrap;
 }
 .button.show-menu {
 	float: right;
@@ -561,16 +570,31 @@ td.key-capo .capo .value {
     font-weight: bold;
 }
 
+.song-header td.key-capo .key.layout-holder select,
 .song-header td.key-capo .capo.layout-holder .value select {
-	border-color: red;
     -moz-appearance:none; /* Firefox */
     -webkit-appearance:none; /* Safari and Chrome */
     appearance:none;
     border: none;
 	background: transparent;
-    width: 24;
     text-align: center;
     padding: 0;
+}
+
+.song-header td.key-capo .key.layout-holder .value select {
+	height: 35px;
+	width: 60px;
+}
+.song-header td.key-capo.minor-mode .key.layout-holder .value select {
+	width: 100px;
+}
+
+.song-header td.key-capo .key.layout-holder .value select option,
+.song-header td.key-capo .capo.layout-holder .value select option {
+	font-size: 16px;
+}
+.song-header td.key-capo .capo.layout-holder .value select {
+    width: 24px;
 }
 
 td.key-capo .transpose .heading {

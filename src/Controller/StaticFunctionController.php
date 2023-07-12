@@ -179,7 +179,7 @@ class StaticFunctionController extends AppController
 			StaticFunctionController::$key_transpose_parameters = array(
 				'transpose' => false
 			);
-		} else {
+		} else { //debug("transpose - " . $base_key . "-" . $display_key . "-" . $capo);
 			StaticFunctionController::$key_transpose_parameters = array(
 				'transpose' => true,
 			    'base_key' => $base_key,
@@ -547,7 +547,6 @@ class StaticFunctionController extends AppController
 	    $title_heading_html = $title_heading_html . "<td class= \"title-table\">"                             . "\n" ;
 	    $title_heading_html = $title_heading_html . "<h3>" . htmlspecialchars($song["title"]) .     "</h3>"   . "\n" ;
 	    
-	    //itle_heading_html = $title_heading_html .    "<span class=\"button show-menu show-song-properties\" showtext=\"Song Properties\" hidetext\"Hide Properties\" style=\"display: hidden\">Song Properties</span>" . "\n" ;
 	    
 	    $title_heading_html = $title_heading_html .     "<span class=\"written-by performed-by\">"              . "\n" ;
 	    if(trim($song["written_by"]) !== "") {
@@ -562,17 +561,23 @@ class StaticFunctionController extends AppController
 	    $title_heading_html = $title_heading_html .    "</span>" . "\n" ;
 	   	    
 	    $title_heading_html = $title_heading_html .    "</td>" . "\n" ;
+	    if(strstr($song["current_key"], 'm')) {
+	        $mode = 'm';
+	        $modeclass = 'minor-mode';
+	    } else {
+	        $mode = '';
+	        $modeclass = '';
+	    }
 	    if(trim($song["current_key"]) !== "") {
 	        
 	        if(trim($song["capo"]) !== "") {
-	            $title_heading_html = $title_heading_html . "<td class= \"key-capo capo-shown\">"                                 . "\n" ;
+	            $title_heading_html = $title_heading_html . "<td class= \"key-capo capo-shown " . $modeclass . "\">"                                 . "\n" ;
 	            $title_heading_html = $title_heading_html .   		"<span class=\"capo-transpose-border\">"                      . "\n" ;
 	            
 	            $title_heading_html = $title_heading_html .   		"<span class=\"capo-transpose-layout-holder layout-holder\">" . "\n" ;
 	            
 	            $title_heading_html = $title_heading_html .   		"<span class=\"capo layout-holder\">"                         . "\n" ;
 	            $title_heading_html = $title_heading_html .   		"<span class=\"heading\">" . 'capo' . "</span>"               . "\n" ;
-	            //$title_heading_html = $title_heading_html .   		"<span class=\"value\">" . htmlspecialchars($song["capo"]) . "</span>"  . "\n" ;
 	            
 	            
 	            $title_heading_html = $title_heading_html .   		"<span class=\"value\">" . "\n" ;
@@ -598,7 +603,7 @@ class StaticFunctionController extends AppController
 	            
 	            $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
 	        } else {
-	            $title_heading_html = $title_heading_html . "<td class= \"key-capo\">"  . "\n" ;
+	            $title_heading_html = $title_heading_html . "<td class= \"key-capo " . $modeclass . "\">"  . "\n" ;
 	            $title_heading_html = $title_heading_html .   		"<span class=\"capo-transpose-border\">" . "\n" ;
 	            
 	            
@@ -606,7 +611,21 @@ class StaticFunctionController extends AppController
 	        
 	        $title_heading_html = $title_heading_html .   		"<span class=\"key layout-holder key-layout-holder\">" . "\n" ;
 	        $title_heading_html = $title_heading_html .   		"<span class=\"heading\">" . 'Key' .  "</span>"  . "\n" ;
-	        $title_heading_html = $title_heading_html .   		"<span class=\"value\">" .  $song["current_key"] . "</span>"  . "\n" ;
+	        $title_heading_html = $title_heading_html .   	        "<span class=\"value\">" . "\n" ;
+        	        $title_heading_html = $title_heading_html .   		"<select class=\"data exclude-from-select2\" onchange=\"SBK.CakeUI.form.submit_value(jQuery(this).val(), '#key_input')\">" . "\n" ;
+        	        $title_heading_html = $title_heading_html .   		"<option value=\"\"></option>" . "\n" ;
+        	        
+        	        foreach (SELF::$NOTE_VALUE_ARRAY as $key => $value) {
+        	                $title_heading_html = $title_heading_html .   '<option value="' . $key . $mode . '"';
+            	            if ($key . $mode === $song["current_key"]){
+            	                $title_heading_html = $title_heading_html .   ' selected ';
+            	            }
+            	            $title_heading_html = $title_heading_html .   '>' . $key . $mode . '</option>';
+        	            }
+        	        
+        	        $title_heading_html = $title_heading_html .   		"</select>" . "\n" ;
+	        
+	        $title_heading_html = $title_heading_html .   	       "</span>"  . "\n" ;
 	        $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
 	        
 	        $title_heading_html = $title_heading_html .   		"</span>" . "\n" ;
@@ -882,6 +901,22 @@ class StaticFunctionController extends AppController
 	public static function shift_note($note, $adjustment, $use_sharps = null) {
 	
 		if($note == '') { return ''; }
+		
+		if(strstr($note, 'm')) {
+		    $note = str_replace('m', '', $note);
+		    $mode = 'm';
+		} else {
+		    $mode = '';
+		}
+		
+		if ($use_sharps === null) {
+		    if(strstr($note, '#')) {
+		        $use_sharps = true;
+		    } elseif(strstr($note, 'b')) {
+		        $use_sharps = false;
+		    }
+		}
+		
 		$lowercase = false;
 		if(self::note_to_lower($note) === $note) {
 			$lowercase = true;
@@ -903,16 +938,34 @@ class StaticFunctionController extends AppController
             $new_note = $note;
         }
 
-        return $new_note;
+        return $new_note . $mode;
 	}
 	
 	public static function transpose_chord($chord, $base_key, $target_key, $capo = NULL) {
 		/*
 		debug([ 'chord' => $chord, 'base_key' => $base_key, 'target_key' => $target_key, 'capo' => $capo ]);
 		//*/
+	    
+		if(substr($target_key, 1, 1) == '#') {
+	        $use_sharps = true;
+		} elseif (substr($target_key, 1, 1) == 'b') {
+	        $use_sharps = false;
+		} elseif (substr($target_key, 0, 1) == 'F') {
+		    $use_sharps = false;
+		} elseif (substr($target_key, 0, 2) == 'Dm' || 'Gm') {
+		    $use_sharps = false;
+		} elseif (substr($target_key, 1, 0) == 'C') {
+		    $use_sharps = null;
+		} elseif (substr($target_key, 0, 2) == 'Am') {
+		    $use_sharps = null;
+		} else {
+	        $use_sharps = true;
+	    }
+	    
 		$chord_note = substr($chord, 0, 1);
 		$second_char = substr($chord, 1, 1);
 		$modifier_start = 1;
+		
 		if($second_char === '#' || $second_char == 'b') {
 			$chord_note = $chord_note.$second_char;
 			$modifier_start = 2;
@@ -920,6 +973,7 @@ class StaticFunctionController extends AppController
 			$modifier_start = 0;
 			$chord_note = '';
 		}
+		
 		$chord_modifier = substr($chord, $modifier_start);
 		// If a key is given as minor it isn't in the key array! Remove the m, replace it later
 		if(substr($target_key, -1) == 'm') {
@@ -937,7 +991,7 @@ class StaticFunctionController extends AppController
 		/*
 		debug(['target_key_note_value' => self::$NOTE_VALUE_ARRAY[$target_key],'base_key_note_value' => self::$NOTE_VALUE_ARRAY[$base_key]]);
 		//*/
-		
+
         if(array_key_exists($target_key, self::$NOTE_VALUE_ARRAY) && array_key_exists($base_key, self::$NOTE_VALUE_ARRAY)) {
             $target_key_note_value = self::$NOTE_VALUE_ARRAY[$target_key];
             $base_key_note_value = self::$NOTE_VALUE_ARRAY[$base_key];
@@ -950,7 +1004,7 @@ class StaticFunctionController extends AppController
 		if(self::$key_transpose_parameters['capo']) {
 			$key_conversion_value = $key_conversion_value - self::$key_transpose_parameters['capo'];
 		}
-		$new_chord = self::shift_note($chord_note, $key_conversion_value);
+		$new_chord = self::shift_note($chord_note, $key_conversion_value, $use_sharps);
 		/*
 		debug([
 		    'base_key' => $base_key, 'target_key' => $target_key, 'capo' => $capo,
