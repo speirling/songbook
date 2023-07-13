@@ -13,6 +13,12 @@
         	<?php /* -----||Button to open the dashboard (in a different tab) */ ?>
             <span class="button float-right top-button-set"><?= $this->Html->link(__('Dashboard'), ['controller' => 'Dashboard', 'action' => 'index', 'target' => '_blank']) ?></span>
             
+        	<?php /* -----||Button to open the current song in a different tab */ ?>
+            <span class="button float-right top-button-set"><?= 
+            //$this->Html->link(__('View'), ['controller' => 'Songs', 'target' => '_new'.$song['id'], 'action' => 'view/'.$song['id']])
+            '<a href="/songbook/songs/view/'.$song['id'].'?key='.$current_key.'&capo='.$capo.'" target="_new'.$song['id'].'">View</a>'
+            ?></span>
+            
             <?php /* -----||Search field */ ?><?php //NOT NEEDED in embedded version!
         /*
             <span class="search-form float-right top-button-set">
