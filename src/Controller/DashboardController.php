@@ -27,8 +27,12 @@ class DashboardController extends AppController
 	 */
 	public function index()
 	{
-		$this->loadComponent('songlist');
-		$this->songlist->filterAllSongs();
+	    $this->loadComponent('songlist');
+	    $this->set('filtered_list',
+	        $this->songlist->filterAllSongs(
+	            $this->songlist->get_filters_from_queryparams()
+            )
+        );
 		$this->set('title', $this->page_title);
 	}
 	/*
@@ -43,7 +47,11 @@ class DashboardController extends AppController
 	public function printable()
 	{
 		$this->loadComponent('songlist');
-		$this->songlist->filterAllSongs();
+		$this->set('filtered_list',
+		    $this->songlist->filterAllSongs(
+		        $this->songlist->get_filters_from_queryparams()
+	        )
+	    );
 		$this->viewBuilder()->layout('printable');
 		$this->set('title', $this->page_title);
 		$print_page = "A4";
@@ -59,11 +67,15 @@ class DashboardController extends AppController
 	public function printLyricSheets($id = null)
 	{
 	    $this->loadComponent('songlist');
-	    $this->songlist->filterAllSongs();
+	    $filtered_list = $this->songlist->filterAllSongs(
+	        $this->songlist->get_filters_from_queryparams()
+	    );
+	    $this->set('filtered_list', $filtered_list);
+	        
 	    $pages = array();
 	    //debug($this->songlist->filtered_list);	    die();
 	    
-	    foreach ($this->songlist->filtered_list as $song){
+	    foreach ($filtered_list as $song){
 	        //debug($song);
 	        //debug($song["set_songs"][0]);
 	        if(sizeof($song["set_songs"]) > 0) {

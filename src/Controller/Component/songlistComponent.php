@@ -13,7 +13,17 @@ class songlistComponent extends Component {
     public $filtered_list = null;
     private $event = null;
     private $paginate = true;
-    private $sort_definition = null;
+    private $blank_sort_definition = [
+        'param' => '',
+        'direction' => '',
+        'search_string' => '',
+        'performer_id'  => '',
+        'tag_array' => [],
+        'exclude_all' => false,
+        'exclude_tag_array' => [],
+        'selected_venue' => '',
+        'paginate' => true,
+    ];
     
     function setEvent($event) {
         $this->event = $event;
@@ -34,7 +44,85 @@ class songlistComponent extends Component {
         ];
     }
     
-	public function filterAllSongs() {
+    function is_filter_on ($sort_definition) {
+        return $sort_definition == $this->blank_sort_definition;
+    }
+    
+    public function get_filters_from_queryparams() {
+        $controller = $this->_registry->getController();
+        $sort_definition = $this->blank_sort_definition;
+
+        $filter_on = false;
+        if ($controller->getRequest()->is(array('post', 'put', 'get'))) {
+            if ($controller->getRequest()->is(array('get'))) {
+                $query_parameters = $controller->getRequest()->getQuery();
+            } else {
+                $query_parameters = $controller->getRequest()->getData();
+            }
+            
+            // Title: Song Title text search
+            if (array_key_exists('text_search', $query_parameters) && $query_parameters['text_search']) {
+                $filter_on = true;
+                $sort_definition['search_string'] = $query_parameters['text_search'];
+            }
+            
+            // Tags: Limit the result to songs that are associated with any of the passed array of tags
+            if (
+                array_key_exists('filter_tag_id', $query_parameters)
+                && $query_parameters['filter_tag_id']
+                && $query_parameters['filter_tag_id'] != 'Tag...'
+            ) {
+                $filter_on = true;
+                $sort_definition['tag_array'] = $query_parameters['filter_tag_id']; 
+            }
+            
+            // Performer: Limit the result to songs associated with a specific performer
+            if (array_key_exists('performer_id', $query_parameters) && $query_parameters['performer_id']) {
+                $filter_on = true;
+                $sort_definition['performer_id'] = $query_parameters['performer_id'];
+            }
+            
+            
+            //Exclude tags: $sort_definition['performer_id']do NOT contain ALL of the selected tags here will be displayed
+            $sort_definition['exclude_all'] = false; // there's no interface to set this yet, and it seems that it would be more effective to exclude all songs that contain any of the selected tage (smaller list)
+            if (
+                array_key_exists('exclude_tag_id', $query_parameters)
+                && $query_parameters['exclude_tag_id']
+                && $query_parameters['exclude_tag_id'] != 'Tag...'
+            ) {
+                $filter_on = true;
+                $sort_definition['exclude_tag_array'] = $query_parameters['exclude_tag_id'];
+            }
+            
+            // Venue :  limit the result to songs that were placed withtin an event at the specified venue
+            if (array_key_exists('venue', $query_parameters) && $query_parameters['venue']) {
+                $filter_on = true;
+                $sort_definition['selected_venue'] = $query_parameters['venue'];
+            }
+        } else {
+            throw ('No Query paramters available');
+        }
+        if(is_array($this->sort_definition)) {
+            $sort_definition['param'] = $this->sort_definition['param'];
+            $sort_definition['direction'] = $this->sort_definition['direction'];
+        } else if(array_key_exists('sort', $query_parameters) && $query_parameters['sort'] === 'title') {
+            $sort_definition['param'] = 'title';
+            $sort_definition['direction'] = 'ASC';
+        }
+        
+        $paginate = true;
+        if($filter_on == true) {
+            $sort_definition['paginate'] = false;
+        } elseif(array_key_exists("unpaginated", $query_parameters)) {
+            $sort_definition['paginate'] = false;
+        } elseif ($this->paginate == false) {
+            $sort_definition['paginate'] = false;
+        }
+        
+        return $sort_definition;
+    }
+    
+    public function filterAllSongs($sort_definition) {
 
 		$controller = $this->_registry->getController();
 		
@@ -116,133 +204,85 @@ class songlistComponent extends Component {
 
 		$filter_on = false;
 		// enable filtering by: title, tags, performer------------------------------------
-		if ($controller->getRequest()->is(array('post', 'put', 'get'))) {
-		    if ($controller->getRequest()->is(array('get'))) {
-			    $query_parameters = $controller->getRequest()->getQuery();
-			} else {
-			    $query_parameters = $controller->getRequest()->getData();
-			}
-			
+
 			/*
 			 * allow sorting by
 			 *              songbook/dashboard/print-lyric-sheets?unpaginated&sort=title
 			 *              songbook/dashboard?sort=title
 			 * etc.
 			 */ 
-			if(is_array($this->sort_definition)) {
-			    $filtered_list_query->order([$this->sort_definition['param'] => $this->sort_definition['direction']]);
-			} else if(array_key_exists('sort', $query_parameters) && $query_parameters['sort'] === 'title') {
-			    $filtered_list_query->order(['title' => 'ASC']);
-			}
-			    
-			// Title: Song Title text search
-			if (array_key_exists('text_search', $query_parameters) && $query_parameters['text_search']) {
-				$filter_on = true;
-				$search_string = $query_parameters['text_search'];
-				$filtered_list_query->where(['Songs.title LIKE' => '%'.$search_string.'%']);
-			} else {
-				$search_string = '';
-			}
-	
-			// Tags: Limit the result to songs that are associated with any of the passed array of tags
-			/*
-			 * This has to be done as a subquery, because a HAVING COUNT() must be used to ensure that only songs that are associated with _all_ of the specified tags will be displayed.
-			 * That statement interferes with larger more complex queries - e.g. filtered byt Tag _and_ Performer, and can filter out any records that have multiple entries in the final query.
-			 *                 $filtered_list_query->having(['COUNT(Songs.id) = ' => sizeof($selected_tag_array)]);
-			 * Keeping the HAVING COUNT() inside a subquery seems to avoid that problem
-			 */
-			if (
-					array_key_exists('filter_tag_id', $query_parameters)
-					&& $query_parameters['filter_tag_id']
-					&& $query_parameters['filter_tag_id'] != 'Tag...'
-				) {
-				$filter_on = true;
-				$selected_tag_array = $query_parameters['filter_tag_id'];
-				$subquery_SongWithAllTags = $controller->Songs->find();
-				$subquery_SongWithAllTags->matching(
-					'SongTags.Tags', function ($q) use ($selected_tag_array)  {
-					$q->where(['Tags.id IN' => $selected_tag_array]);
-					return $q;
-					}
-				);
-				$subquery_SongWithAllTags->group('Songs.id');
-				$subquery_SongWithAllTags->having(['COUNT(Songs.id) = ' => sizeof($selected_tag_array)]);
-				$filtered_list_query->Join([
-					'table' => $subquery_SongWithAllTags,
-					'alias' => 'subquery_SongWithAllTags',
-					'type' => 'INNER',
-					'conditions' => '`subquery_SongWithAllTags`.`Songs__id` = `Songs`.`id`'
-				]);
-			} else {
-				$selected_tag_array = [];
-			}
-			
-			$controller->set('filter_tag_id', $selected_tag_array);
-			
-			// Performer: Limit the result to songs associated with a specific performer
-			if (array_key_exists('performer_id', $query_parameters) && $query_parameters['performer_id']) {
-				$filter_on = true;
-				$selected_performer = $query_parameters['performer_id'];
-				$filtered_list_query->matching(
-					'SetSongs.Performers', function ($q) use($selected_performer)  {
-						return $q->where(['Performers.id' => $selected_performer]);
-					}
-				);
-			} else {
-				$selected_performer = '';
-			}
-			
-			$controller->set('performer_id', $selected_performer);
-
-            //Exclude tags:  - only songs that do NOT contain ALL of the selected tags here will be displayed
-            $exclude_all = false; // there's no interface to set this yet, and it seems that it would be more effective to exclude all songs that contain any of the selected tage (smaller list)
-            if (
-                    array_key_exists('exclude_tag_id', $query_parameters)
-                    && $query_parameters['exclude_tag_id']
-                    && $query_parameters['exclude_tag_id'] != 'Tag...'
-            ) {
-                $filter_on = true; //Can lead to Maximum execution time fatal error! .... but pagination doesn't pass filter queries so is not useful for filtered lists, so fatal error may be preferable!
-                ini_set('max_execution_time', 100); //to compensate for previous line
-                $selected_exclude_tag_array = $query_parameters['exclude_tag_id'];
-            } else {
-                $selected_exclude_tag_array = [];
-            }
-
-            // Venue :  limit the result to songs that were placed withtin an event at the specified venue
-			if (array_key_exists('venue', $query_parameters) && $query_parameters['venue']) {
-				$filter_on = true;
-				$selected_venue = $query_parameters['venue'];
-				//find all of the events that were at this venue
-				$venue_query = $controller->Events->findAllByVenue($selected_venue);
-				$event_times = $venue_query->toArray();
-	
-				//find all of the songs played during the times of the events at that venue
-				$performance_conditions = [];
-				$performance_query = $controller->SongPerformances->find();
-				foreach($venue_query->toArray() as $key => $event) {
-					$performance_query->orWhere("`SongPerformances`.`timestamp` BETWEEN \"".date("Y-m-d H:i:s", strtotime($event->timestamp) - $event->duration_hours * 60 * 60)."\" AND \"".date("Y-m-d H:i:s", strtotime($event->timestamp) + $event->duration_hours * 60 * 60)."\"");
-				}
-				$performance_query->distinct('song_id');
-				$performance_list = $performance_query->extract('song_id');
-				$song_id_list = [];
-				foreach ($performance_list as $id => $song_id) {
-					array_push($song_id_list, $song_id);
-				}
-	
-				$filtered_list_query->andWhere(['`Songs`.`id` IN' => $song_id_list]);
-	
-			} else {
-				$selected_venue = '';
-			}
-		} else {
-			//In this case, no search parameters have been passed to the song list
-			$search_string = '';
-			$selected_performer  = '';
-			$selected_tag_array = [];
-			$exclude_all = false;
-			$selected_exclude_tag_array = [];
-			$selected_venue = '';
+		if(is_array($sort_definition['param'] !== '' && $sort_definition['direction'] !== '')) {
+		    $filtered_list_query->order([$sort_definition['param'] => $sort_definition['direction']]);
 		}
+		    
+		// Title: Song Title text search
+		if ($sort_definition['search_string'] !== '') {
+			$filter_on = true;
+			$filtered_list_query->where(['Songs.title LIKE' => '%'.$sort_definition['search_string'].'%']);
+		}
+
+		// Tags: Limit the result to songs that are associated with any of the passed array of tags
+		/*
+		 * This has to be done as a subquery, because a HAVING COUNT() must be used to ensure that only songs that are associated with _all_ of the specified tags will be displayed.
+		 * That statement interferes with larger more complex queries - e.g. filtered byt Tag _and_ Performer, and can filter out any records that have multiple entries in the final query.
+		 *                 $filtered_list_query->having(['COUNT(Songs.id) = ' => sizeof($sort_definition['tag_array'])]);
+		 * Keeping the HAVING COUNT() inside a subquery seems to avoid that problem
+		 */
+		if (sizeof($sort_definition['tag_array']) > 0) {
+			$subquery_SongWithAllTags = $controller->Songs->find();
+			$selected_tag_array = $sort_definition['tag_array'];
+			$subquery_SongWithAllTags->matching(
+			    'SongTags.Tags', function ($q) use ($selected_tag_array)  {
+			    $q->where(['Tags.id IN' => $selected_tag_array]);
+				return $q;
+				}
+			);
+			$subquery_SongWithAllTags->group('Songs.id');
+			$subquery_SongWithAllTags->having(['COUNT(Songs.id) = ' => sizeof($sort_definition['tag_array'])]);
+			$filtered_list_query->Join([
+				'table' => $subquery_SongWithAllTags,
+				'alias' => 'subquery_SongWithAllTags',
+				'type' => 'INNER',
+				'conditions' => '`subquery_SongWithAllTags`.`Songs__id` = `Songs`.`id`'
+			]);
+		} 
+		
+		// Performer: Limit the result to songs associated with a specific performer
+		if ($sort_definition['performer_id'] !== '') {
+		    $selected_performer = $sort_definition['performer_id'];
+			$filtered_list_query->matching(
+			    'SetSongs.Performers', function ($q) use($selected_performer)  {
+			    return $q->where(['Performers.id' => $selected_performer]);
+				}
+			);
+		}
+
+
+
+        // Venue :  limit the result to songs that were placed withtin an event at the specified venue
+		if ($sort_definition['selected_venue'] !== '') {
+
+			//find all of the events that were at this venue
+			$venue_query = $controller->Events->findAllByVenue($sort_definition['selected_venue']);
+			$event_times = $venue_query->toArray();
+
+			//find all of the songs played during the times of the events at that venue
+			$performance_conditions = [];
+			$performance_query = $controller->SongPerformances->find();
+			foreach($venue_query->toArray() as $key => $event) {
+				$performance_query->orWhere("`SongPerformances`.`timestamp` BETWEEN \"".date("Y-m-d H:i:s", strtotime($event->timestamp) - $event->duration_hours * 60 * 60)."\" AND \"".date("Y-m-d H:i:s", strtotime($event->timestamp) + $event->duration_hours * 60 * 60)."\"");
+			}
+			$performance_query->distinct('song_id');
+			$performance_list = $performance_query->extract('song_id');
+			$song_id_list = [];
+			foreach ($performance_list as $id => $song_id) {
+				array_push($song_id_list, $song_id);
+			}
+
+			$filtered_list_query->andWhere(['`Songs`.`id` IN' => $song_id_list]);
+
+		}
+		 
 
 		//end of [title, tags, performer] filtering -------------------------
 		
@@ -286,41 +326,42 @@ class songlistComponent extends Component {
 		$setSong = new SetSong();
 		$controller->set('setSong', $setSong);
 
-		$controller->set('search_string', $search_string);
-		$controller->set('selected_performer', $selected_performer);
-		$controller->set('selected_tags', $selected_tag_array);
 		
+		$controller->set('filter_tag_id', $sort_definition['tag_array']);
+		$controller->set('performer_id', $sort_definition['performer_id']);
+		
+		$controller->set('search_string', $sort_definition['search_string']);
+		$controller->set('selected_performer', $sort_definition['performer_id']);
+		$controller->set('selected_tags', $sort_definition['tag_array']);
+		
+		$this->filter_on = $this->is_filter_on($sort_definition);
+		$controller->set('filter_on', $this->filter_on);
 		
 		//for the print title
-		$controller->set('exclude_all', $exclude_all);
-		$controller->set('selected_exclude_tags', $selected_exclude_tag_array);
+		$controller->set('exclude_all', $sort_definition['exclude_all']);
+		$controller->set('selected_exclude_tags', $sort_definition['exclude_tag_array']);
 		
 		//for the print title
-		$controller->set('print_title', $this->print_title($search_string, $selected_performer, $selected_venue, $selected_tag_array, $selected_exclude_tag_array, $performers, $venues, $all_tags));
-		$controller->page_title = $this->page_title($search_string, $selected_performer, $selected_venue, $selected_tag_array, $selected_exclude_tag_array, $performers, $venues, $all_tags);
+		$this->print_title = $this->print_title($sort_definition['search_string'], $sort_definition['performer_id'], $sort_definition['selected_venue'], $sort_definition['tag_array'], $sort_definition['exclude_tag_array'], $performers, $venues, $all_tags);
+		$controller->set('print_title', $this->print_title);
+		$this->page_title = $this->page_title($sort_definition['search_string'], $sort_definition['performer_id'], $sort_definition['selected_venue'], $sort_definition['tag_array'], $sort_definition['exclude_tag_array'], $performers, $venues, $all_tags);
+		$controller->page_title = $this->page_title;
+		$this->selected_performer= $sort_definition['performer_id'];
 		
 		//End of passing data to the view ------------------------------------------------------------------
 		
-		$this->filtered_list = $filtered_list_query; //so that the calling class itself can access this list, not just the view template
-		
 		//Should the list be paginated?
-		$paginate = true;
-		if($filter_on == true) {
-		    $paginate = false;
-		} elseif(array_key_exists("unpaginated", $query_parameters)) {
-		    $paginate = false;
-		} elseif ($this->paginate == false) {
-		    $paginate = false;
-		}
-		
-		if($paginate == false) {
+		if($sort_definition['paginate'] == false) {
 		    $controller->set('filtered_list', $filtered_list_query);
 		    $controller->set('filter_on', TRUE); //prevents the footer haveing 'next' & 'previous' buttons
 		} else {
 		    $controller->set('filtered_list', $controller->paginate($filtered_list_query));
 		    $controller->set('filter_on', FALSE);
 		}
-
+		
+		$this->filtered_list = $filtered_list_query; //so that the calling class itself can access this list, not just the view template
+		//maybe jus should return rather than setting $this->  ?
+		return $filtered_list_query;
 	}
 
 	private function print_title($search_string = '', $selected_performer = '', $selected_venue = '', $selected_tag_array = [], $selected_exclude_tag_array = '', $performers = [], $venues = [], $all_tags = []) {
