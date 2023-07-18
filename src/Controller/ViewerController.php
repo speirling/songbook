@@ -30,7 +30,11 @@ class ViewerController extends AppController
 		$this->loadComponent('songlist');
 		$this->songlist->setPagination('off');
 		$this->songlist->setSortBy('title','ASC');
-		$this->songlist->filterAllSongs();
+		$this->set('filtered_list', 
+		    $this->songlist->filterAllSongs(
+    		    $this->songlist->get_filters_from_queryparams()
+    		)
+		);
 		//now $filtered_list is available in the view.
 		$this->set('title', $this->page_title);
 	}

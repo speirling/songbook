@@ -92,49 +92,9 @@ $(document).ready(function(){
         <?php /* end of Hideable filter panel --------------------------------- */ ?>
     </span>
 
-
-
-    <ul id="songlist">
-    <?php
-    foreach ($filtered_list as $song){
-        $primary_key = $song['base_key'];
-        //debug($song);
-        /* $song: id, title, written_by, performed_by, base_key, content */
-        
-        
-        if(sizeof($song['set_songs']) > 0) {
-            $primary_key = $song['set_songs'][0]['key'];
-            $primary_capo = $song['set_songs'][0]['capo'];
-        } else {
-            $primary_key = false;
-            $primary_capo = false;
-        }
-        $performers_html='';
-        $existing_performer_keys = [];
-        foreach ($song['set_songs'] as $set_song) {
-            $performer_key = $set_song['performer']['nickname'].$set_song['key'];
-            if (!in_array($performer_key, $existing_performer_keys)) {
-                array_push($existing_performer_keys, $performer_key);
-                if($filter_on == false || $selected_performer == $set_song['performer']['id']) {
-                    $performers_html = $performers_html . '<span class="performer short-form">';
-                    $performers_html = $performers_html . '<span class="nickname">' . strtolower(substr($set_song['performer']['nickname'], 0, 1)) . '</span>';
-                    $performers_html = $performers_html . '<span class="key">' . $set_song['key'] . '</span>';
-                    $performers_html = $performers_html . '</span>';
-                    
-                    $primary_key = $set_song['key'];
-                    $primary_capo = $set_song['capo'];
-                }
-            }
-        } 
-        echo('<li data-id="' . $song['id'] . '" data-key="' . $primary_key . '" data-capo="' . $primary_capo . '">');
-        echo($song['title']);
-        echo($performers_html);
-        echo('</li>');
-    }
-    ?>
-    </ul>
-    
-</div>
+<?php 
+echo $this->element('filtered_songlist', ['filter_on'=>$filter_on, 'selected_performer'=>$selected_performer]);
+?>
 
 <div id="viewer-main" >
     <iframe src="">   
