@@ -17,11 +17,12 @@ class songlistComponent extends Component {
         'param' => '',
         'direction' => '',
         'search_string' => '',
-        'performer'  => '',
+        'performer_id'  => '',
         'tag_array' => [],
         'exclude_all' => false,
         'exclude_tag_array' => [],
         'selected_venue' => '',
+        'paginate' => true,
     ];
     
     function setEvent($event) {
@@ -43,8 +44,8 @@ class songlistComponent extends Component {
         ];
     }
     
-    function filter_on ($sort_definition) {
-        return sort_definition == $this->blank_sort_definition;
+    function is_filter_on ($sort_definition) {
+        return $sort_definition == $this->blank_sort_definition;
     }
     
     public function get_filters_from_queryparams() {
@@ -78,11 +79,11 @@ class songlistComponent extends Component {
             // Performer: Limit the result to songs associated with a specific performer
             if (array_key_exists('performer_id', $query_parameters) && $query_parameters['performer_id']) {
                 $filter_on = true;
-                $sort_definition['performer'] = $query_parameters['performer_id'];
+                $sort_definition['performer_id'] = $query_parameters['performer_id'];
             }
             
             
-            //Exclude tags: $sort_definition['performer']do NOT contain ALL of the selected tags here will be displayed
+            //Exclude tags: $sort_definition['performer_id']do NOT contain ALL of the selected tags here will be displayed
             $sort_definition['exclude_all'] = false; // there's no interface to set this yet, and it seems that it would be more effective to exclude all songs that contain any of the selected tage (smaller list)
             if (
                 array_key_exists('exclude_tag_id', $query_parameters)
@@ -247,8 +248,8 @@ class songlistComponent extends Component {
 		} 
 		
 		// Performer: Limit the result to songs associated with a specific performer
-		if ($sort_definition['performer'] !== '') {
-		    $selected_performer = $sort_definition['performer'];
+		if ($sort_definition['performer_id'] !== '') {
+		    $selected_performer = $sort_definition['performer_id'];
 			$filtered_list_query->matching(
 			    'SetSongs.Performers', function ($q) use($selected_performer)  {
 			    return $q->where(['Performers.id' => $selected_performer]);
@@ -327,20 +328,25 @@ class songlistComponent extends Component {
 
 		
 		$controller->set('filter_tag_id', $sort_definition['tag_array']);
-		$controller->set('performer_id', $sort_definition['performer']);
+		$controller->set('performer_id', $sort_definition['performer_id']);
 		
 		$controller->set('search_string', $sort_definition['search_string']);
-		$controller->set('selected_performer', $sort_definition['performer']);
+		$controller->set('selected_performer', $sort_definition['performer_id']);
 		$controller->set('selected_tags', $sort_definition['tag_array']);
 		
+		$this->filter_on = $this->is_filter_on($sort_definition);
+		$controller->set('filter_on', $this->filter_on);
 		
 		//for the print title
 		$controller->set('exclude_all', $sort_definition['exclude_all']);
 		$controller->set('selected_exclude_tags', $sort_definition['exclude_tag_array']);
 		
 		//for the print title
-		$controller->set('print_title', $this->print_title($sort_definition['search_string'], $sort_definition['performer'], $sort_definition['selected_venue'], $sort_definition['tag_array'], $sort_definition['exclude_tag_array'], $performers, $venues, $all_tags));
-		$controller->page_title = $this->page_title($sort_definition['search_string'], $sort_definition['performer'], $sort_definition['selected_venue'], $sort_definition['tag_array'], $sort_definition['exclude_tag_array'], $performers, $venues, $all_tags);
+		$this->print_title = $this->print_title($sort_definition['search_string'], $sort_definition['performer_id'], $sort_definition['selected_venue'], $sort_definition['tag_array'], $sort_definition['exclude_tag_array'], $performers, $venues, $all_tags);
+		$controller->set('print_title', $this->print_title);
+		$this->page_title = $this->page_title($sort_definition['search_string'], $sort_definition['performer_id'], $sort_definition['selected_venue'], $sort_definition['tag_array'], $sort_definition['exclude_tag_array'], $performers, $venues, $all_tags);
+		$controller->page_title = $this->page_title;
+		$this->selected_performer= $sort_definition['performer_id'];
 		
 		//End of passing data to the view ------------------------------------------------------------------
 		
