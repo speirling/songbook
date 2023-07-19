@@ -41,6 +41,65 @@ class ViewerController extends AppController
 	
 	public function palette() {
 	    
+	    /*
+	   
+	    [1, // Piano],	
+        [2, // Irish],	
+        [3, // Waltz],	
+        [5, // Rock&Roll],	
+        [6, // 60s],	
+        [13, // Lively (Fast)],	
+        [14, // 70s],	
+        [15, // AllMixedUp],	
+        [16, // 80s],	
+        [17, // Country],	
+        [18, // Rock],	
+        [19, // Soul],	
+        [20, // Slow],	
+        [21, // Christmas],	
+        [22, // Original],	
+        [24, // Swing],	
+        [25, // Ballad],	
+        [26, // Humour],	
+        [27, // Folk],	
+        [28, // Harmony],	
+        [29, // Chorus],	
+        [30, // Singalong],	
+        [31, // Gaeilge],	
+        [34, // Learn],	
+        [35, // Shanty],	
+        [36, // 10s],	
+        [37, // 50s],	
+        [38, // Australian],	
+        [39, // Blues],	
+        [40, // War],	
+        [41, // Children],	
+        [42, // Nostalgia],	
+        [43, // 90s],	
+        [44, // Solo],	
+        [45, // Latin],	
+        [46, // Positive],	
+        [47, // Show],	
+        [48, // Scottish],	
+        [49, // French],	
+        [50, // Guitar],	
+        [51, // Guitar],	
+        [52, // Jazz],	
+        [53, // Party],	
+        [54, // Protest],	
+        [55, // Harvest],	
+        [59, // 00s],	
+        [60, // Musicals],	
+        [61, // 40s],	
+        [62, // 40s],	
+        [63, // Movies],	
+        [64, // Speciality],	
+        [65, // AMU],	
+
+	   
+	     */
+	    
+	    
 	    $this->loadComponent('songlist');
 	    $tag_sets = [
 	        'Euge AMU' => [
@@ -53,6 +112,8 @@ class ViewerController extends AppController
 	            ], [
 	                 2, // Irish
 	                15, // AllMixedUp
+	                -13, // Lively (Fast)
+	                -20, // Slow
 	            ], [
 	                25, // Ballad
 	                15, // AllMixedUp
@@ -141,13 +202,20 @@ class ViewerController extends AppController
     	            'direction' => '',
     	            'search_string' => '',
     	            'performer_id'  => '1', //Euge
-    	            'tag_array' => $this_tag_set,
+    	            'tag_array' => array_filter( $this_tag_set, function( $val ) { return   (0<$val); } ),
     	            'exclude_all' => false,
-    	            'exclude_tag_array' => [],
+    	            'exclude_tag_array' => array_map(
+    	                function($n) { return ($n * -1); },
+    	                array_filter( 
+    	                    $this_tag_set, 
+    	                    function( $val ) { return   (0>$val); } 
+            	        )
+            	    ),
     	            'selected_venue' => '',
     	            'paginate' => false,
     	    ];
 	    }
+
 	    $filtered_data = [];
 	    foreach ($sort_definition_set as $this_sort_definition) {
 	        $filtered_data[] = [
