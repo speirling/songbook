@@ -91,6 +91,7 @@
                 }
 
                 $display_row = true;
+                /* Not needed? Now that I've added a clause to SQL in songlist component
                 if(sizeof($selected_exclude_tags) > 0) {
                     $no_of_excludables = 0;
                     foreach($selected_exclude_tags as $this_exclude_tag) {
@@ -110,6 +111,7 @@
 	                    }
 					}
                 }
+                */
                 if($display_row) {
                     echo $this->element('song_row', [
                         'current_song' => $song,

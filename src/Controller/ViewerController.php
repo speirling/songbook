@@ -141,6 +141,7 @@ class ViewerController extends AppController
 	            ], [
 	                14, // 70s
 	                15, // AllMixedUp
+	                -20, // Slow
 	            ], [
 	                 6, // 60s
 	                15, // AllMixedUp
