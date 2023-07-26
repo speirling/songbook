@@ -101,88 +101,159 @@ class ViewerController extends AppController
 	    
 	    
 	    $this->loadComponent('songlist');
-	    $tag_sets = [
-	        'Euge AMU' => [
-	               [
-	                13, // Lively (Fast)
-	                15, // AllMixedUp
-	            ], [
-	                20, // Slow
-	                15, // AllMixedUp
-	            ], [
-	                 2, // Irish
-	                15, // AllMixedUp
-	                -13, // Lively (Fast)
-	                -20, // Slow
-	            ], [
-	                25, // Ballad
-	                15, // AllMixedUp
-	            ], [
-	                29, // Chorus
-	                15, // AllMixedUp
-	            ], [
-	                 5, // Rock&Roll
-	                15, // AllMixedUp
-	            ], [
-	                30, // Singalong
-	                15, // AllMixedUp
-	            ], [
-	                44, // Solo
-	                15, // AllMixedUp
-	            ], [
-	                59, // 00s
-	                15, // AllMixedUp
-	            ], [
-	                43, // 90s
-	                15, // AllMixedUp
-	            ], [
-	                16, // 80s
-	                15, // AllMixedUp
-	            ], [
-	                14, // 70s
-	                15, // AllMixedUp
-	                -20, // Slow
-	            ], [
-	                 6, // 60s
-	                15, // AllMixedUp
-	            ], [
-	                27, // Folk
-	                15, // AllMixedUp
-	            ],
-	        ],
-	        'Euge Session' => [
-	            [
-	                29, // Chorus
-	            ], [
-	                30, // Singalong
-                ], [
-                    27, // Folk
-                ], [
-                    2, // Irish
-                ], [
-                    35, // Shanty
-                ], [
-                    13, // Lively (Fast)
-                ], [
-                    25, // Ballad
-                ], [
-                    44, // Solo
-                ], [
-                    38, // Australian
-                ], [
-                    53, // Party
-                ], [
-                    54, // Protest
-                ], [
-                    46, // Positive
-                ], [
-                    31, // Gaeilge
-                ], [
-                    34, // Learn
-                ],
-	                                                                    
-	        ],
+	    $sort_definition_sets = [
+    	   'Euge AMU' => [
+    	       [   
+    	           'tag_array' =>  [
+    	                13, // Lively (Fast)
+    	                15, // AllMixedUp
+    	            ],
+    	           'performer_id' => [
+    	                1,  //Euge
+    	               -3,  //midge
+    	           ],
+    	        ], [
+                   'tag_array' =>  [
+    	                20, // Slow
+    	                15, // AllMixedUp
+                   ],
+    	            'performer_id' => [
+    	                1,  //Euge
+    	                -3,  //midge
+    	            ],
+    	        ], [
+    	            'tag_array' =>  [
+    	                 2, // Irish
+    	                15, // AllMixedUp
+    	                -13, // Lively (Fast)
+    	                -20, // Slow
+    	            ],
+    	            'performer_id' => [
+    	                1,  //Euge
+    	                -3,  //midge
+    	            ],
+    	        ], [
+    	            'tag_array' =>  [
+    	                25, // Ballad
+    	                15, // AllMixedUp
+    	            ],
+    	            'performer_id' => [
+    	                1,  //Euge
+    	                -3,  //midge
+    	            ],
+    	        ], [
+    	            'tag_array' =>  [
+    	                29, // Chorus
+    	                15, // AllMixedUp
+    	            ],
+    	            'performer_id' => [
+    	                1,  //Euge
+    	                -3,  //midge
+    	            ],
+    	        ], [
+    	            'tag_array' =>  [
+    	                 5, // Rock&Roll
+    	                15, // AllMixedUp
+    	            ],
+    	            'performer_id' => [
+    	                1,  //Euge
+    	                -3,  //midge
+    	            ],
+    	        ], [
+    	            'tag_array' =>  [
+    	                30, // Singalong
+    	                15, // AllMixedUp
+    	            ],
+    	            'performer_id' => [
+    	                1,  //Euge
+    	                -3,  //midge
+    	            ],
+    	        ], [
+    	            'tag_array' =>  [
+    	                44, // Solo
+    	                15, // AllMixedUp
+    	            ],
+    	            'performer_id' => [
+    	                1,  //Euge
+    	                -3,  //midge
+    	            ],
+    	        ], [
+    	            'tag_array' =>  [
+    	                59, // 00s
+    	                15, // AllMixedUp
+    	            ],
+    	            'performer_id' => [
+    	                1,  //Euge
+    	                -3,  //midge
+    	            ],
+    	        ], [
+    	            'tag_array' =>  [
+    	                43, // 90s
+    	                15, // AllMixedUp
+    	            ],
+    	            'performer_id' => [
+    	                1,  //Euge
+    	                -3,  //midge
+    	            ],
+    	        ], [
+    	            'tag_array' =>  [
+    	                16, // 80s
+    	                15, // AllMixedUp
+    	            ],
+    	            'performer_id' => [
+    	                1,  //Euge
+    	                -3,  //midge
+    	            ],
+    	        ], [
+    	            'tag_array' =>  [
+    	                14, // 70s
+    	                15, // AllMixedUp
+    	                -20, // Slow
+    	            ],
+    	            'performer_id' => [
+    	                1,  //Euge
+    	                -3,  //midge
+    	            ],
+    	        ], [
+    	            'tag_array' =>  [
+    	                 6, // 60s
+    	                15, // AllMixedUp
+    	            ],
+    	            'performer_id' => [
+    	                1,  //Euge
+    	                -3,  //midge
+    	            ],
+    	        ], [
+    	            'tag_array' =>  [
+    	                27, // Folk
+    	                15, // AllMixedUp
+    	            ],
+    	            'performer_id' => [
+    	                1,  //Euge
+    	                -3,  //midge
+    	            ],
+    	        ], 
+    	    ],
+    	    'Euge Session' => [
+                ['tag_array' =>  [ 29, /* Chorus */        ], 'performer_id' => [ 1,  /* Euge */ ]],
+                ['tag_array' =>  [ 30, /* Singalong */     ], 'performer_id' => [ 1,  /* Euge */ ]],
+                ['tag_array' =>  [ 27, /* Folk */          ], 'performer_id' => [ 1,  /* Euge */ ]],
+                ['tag_array' =>  [  2, /* Irish */         ], 'performer_id' => [ 1,  /* Euge */ ]],
+                ['tag_array' =>  [ 35, /* Shanty */        ], 'performer_id' => [ 1,  /* Euge */ ]],
+                ['tag_array' =>  [ 13, /* Lively (Fast) */ ], 'performer_id' => [ 1,  /* Euge */ ]],
+                ['tag_array' =>  [ 25, /* Ballad */        ], 'performer_id' => [ 1,  /* Euge */ ]],
+                ['tag_array' =>  [ 44, /* Solo */          ], 'performer_id' => [ 1,  /* Euge */ ]],
+                ['tag_array' =>  [ 38, /* Australian */    ], 'performer_id' => [ 1,  /* Euge */ ]],
+                ['tag_array' =>  [ 53, /* Party */         ], 'performer_id' => [ 1,  /* Euge */ ]],
+                ['tag_array' =>  [ 46, /* Positive */      ], 'performer_id' => [ 1,  /* Euge */ ]],
+                ['tag_array' =>  [ 31, /* Gaeilge */       ], 'performer_id' => [ 1,  /* Euge */ ]],
+                ['tag_array' =>  [ 34, /* Learn */         ], 'performer_id' => [ 1,  /* Euge */ ]],
+            ],
+    	    'Midge AMU' => [
+    	        ['tag_array' =>  [ 15, /* AllMixedUp */    ], 'performer_id' => [ 3,  /* Midge */]]
+    	    ],  
 	    ];
+	    
 	    if ($this->getRequest()->is(array('post', 'put', 'get'))) {
 	        if ($this->getRequest()->is(array('get'))) {
 	            $query_parameters = $this->getRequest()->getQuery();
@@ -195,30 +266,9 @@ class ViewerController extends AppController
 	    } else {
 	        $selected_tag_set = 'Euge AMU';
 	    }
-	    
-	    $sort_definition_set = [];
-	    foreach($tag_sets[$selected_tag_set] as $this_tag_set) {
-    	    $sort_definition_set[] = [
-    	            'param' => '',
-    	            'direction' => '',
-    	            'search_string' => '',
-    	            'performer_id'  => '1', //Euge
-    	            'tag_array' => array_filter( $this_tag_set, function( $val ) { return   (0<$val); } ),
-    	            'exclude_all' => false,
-    	            'exclude_tag_array' => array_map(
-    	                function($n) { return ($n * -1); },
-    	                array_filter( 
-    	                    $this_tag_set, 
-    	                    function( $val ) { return   (0>$val); } 
-            	        )
-            	    ),
-    	            'selected_venue' => '',
-    	            'paginate' => false,
-    	    ];
-	    }
 
 	    $filtered_data = [];
-	    foreach ($sort_definition_set as $this_sort_definition) {
+	    foreach ($sort_definition_sets[$selected_tag_set] as $this_sort_definition) {
 	        $filtered_data[] = [
 	            'query' => $this->songlist->filterAllSongs($this_sort_definition),
 	            'print_title' =>$this->songlist->print_title, 

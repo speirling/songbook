@@ -17,9 +17,10 @@ class songlistComponent extends Component {
         'param' => '',
         'direction' => '',
         'search_string' => '',
-        'performer_id'  => '',
+        'performer_id'  => [],
+        'performers_exclude_all' => false,
         'tag_array' => [],
-        'exclude_all' => false,
+        'tag_exclude_all' => false,
         'exclude_tag_array' => [],
         'selected_venue' => '',
         'paginate' => true,
@@ -79,7 +80,11 @@ class songlistComponent extends Component {
             // Performer: Limit the result to songs associated with a specific performer
             if (array_key_exists('performer_id', $query_parameters) && $query_parameters['performer_id']) {
                 $filter_on = true;
-                $sort_definition['performer_id'] = $query_parameters['performer_id'];
+                if(is_array($query_parameters['performer_id'])) {
+                    $sort_definition['performer_id'] = $query_parameters['performer_id'];
+                } else {
+                    $sort_definition['performer_id'] = [$query_parameters['performer_id']];
+                }
             }
             
             
@@ -91,10 +96,10 @@ class songlistComponent extends Component {
                 && $query_parameters['exclude_tag_id'] != 'Tag...'
             ) {
                 $filter_on = true;
-                $sort_definition['exclude_tag_array'] = $query_parameters['exclude_tag_id'];
+                array_push($sort_definition['tag_array'], array_map(function($n) { return ($n * -1); },$query_parameters['exclude_tag_id']));
             }
             
-            // Venue :  limit the result to songs that were placed withtin an event at the specified venue
+            // Venue :  limit the result to songs that were placed within an event at the specified venue
             if (array_key_exists('venue', $query_parameters) && $query_parameters['venue']) {
                 $filter_on = true;
                 $sort_definition['selected_venue'] = $query_parameters['venue'];
@@ -122,8 +127,42 @@ class songlistComponent extends Component {
         return $sort_definition;
     }
     
+    function extend_sort_definition($sort_definition) {
+        $return_array = [];
+        foreach ($this->blank_sort_definition as $key => $default_value) {
+            if(array_key_exists($key, $sort_definition)) {
+                $return_array[$key] = $sort_definition[$key];
+            } else {
+                $return_array[$key] = $default_value;
+            }
+        }
+        return $return_array;
+    }
+    
+    /**
+     * 
+     * @param array $sort_definition
+     * @return CakePHP 4 Query object
+     * 
+     * $sort_definition is like:
+     * [
+    	            'param' => '',                // name of a parameter (column) to sort by
+    	            'direction' => '',            // sort direction
+    	            'search_string' => '',        // a piece of text to search all parameters for
+    	            'performer_id'  => [1, -4],     // An array of performer IDs, all positive ones must be included in the filters, any negative ones must be excluded
+    	            'performer_exclude_all' => false, 
+    	            'tag_array' => [ 2,15, -13, -20,],
+    	            'tag_exclude_all' => false, 
+    	            'selected_venue' => '',       // A venue ID
+    	            'paginate' => false,
+    	    ];
+     * 
+     */
+    
     public function filterAllSongs($sort_definition) {
 
+        $sort_definition = $this->extend_sort_definition($sort_definition);
+        
 		$controller = $this->_registry->getController();
 		
 		$controller->loadModel('Songs');
@@ -232,78 +271,234 @@ class songlistComponent extends Component {
 		 * That statement interferes with larger more complex queries - e.g. filtered byt Tag _and_ Performer, and can filter out any records that have multiple entries in the final query.
 		 *                 $filtered_list_query->having(['COUNT(Songs.id) = ' => sizeof($sort_definition['tag_array'])]);
 		 * Keeping the HAVING COUNT() inside a subquery seems to avoid that problem
+		 * 
+		 * 
+		 * Tags array can be a list of positive and negative tag IDs, any returned song must contain all positive entries and no negative entries
+		 * e.g. [ 2,15, -13, -20,]
 		 */
-		if (sizeof($sort_definition['tag_array']) > 0) {
-		    //you want to return only songs that have all of the selected tags.
-		    //Put those requred tags in an array for ease of use
-		    $selected_tag_array = $sort_definition['tag_array'];
-		    
-		    //now, start with a query that would get all songs in the database.
-			$subquery_SongWithAllTags = $controller->Songs->find();
-			
-			//Extend that query with a WHERE clause, 
-			$subquery_SongWithAllTags->matching(
-			    'SongTags.Tags', function ($q) use ($selected_tag_array)  {
-    			    $q->where(['Tags.id IN' => $selected_tag_array]);
-    				return $q;
-				}
-			);
-			
-			//That query will return a different entry each time a song arises that contains any one of the selected tags. 
-			// I think "group by" changes this so that only one entry is returned for songs ... but this seems to exclude songs that only have one or two of the tags? how does that work? 
-			$subquery_SongWithAllTags->group('Songs.id');
-			//Oh wait - the next bit only returns songs that had enough grouped entries to match the number of tags. that's where you only get songs that match _all_ selected tags
-			$subquery_SongWithAllTags->having(['COUNT(Songs.id) = ' => sizeof($selected_tag_array)]);
-			$filtered_list_query->Join([
-				'table' => $subquery_SongWithAllTags,
-				'alias' => 'subquery_SongWithAllTags',
-				'type' => 'INNER',
-				'conditions' => '`subquery_SongWithAllTags`.`Songs__id` = `Songs`.`id`'
-			]);
-		} 
 		
-		//FILTER BY: [Exclude Tags] Limit the result of previous queries to only those songs that are NOT tagged with any of these tags
-		if (sizeof($sort_definition['exclude_tag_array']) > 0) {
-		    //You wasn to DELETE any songs already returned that are associated with ANY of the tags in the exclude_tag_array
-		    $exclude_tag_array = $sort_definition['exclude_tag_array'];
-		    //So, start with a query that would get all songs in the database.
-		    $subquery_SongWithAnyExcludeTags = $controller->Songs->find();
-		    //and restrict it to songs that have ANY of the "exclude" tags
-		    //.e. Extend that query with a WHERE clause,
-		    $subquery_SongWithAnyExcludeTags->matching(
-		        'SongTags.Tags', function ($q) use ($exclude_tag_array)  {
-    		        $q->where(['Tags.id IN' => $exclude_tag_array]);
-    		        return $q;
-		        }
-		    );
-		    //That query will return a different entry each time a song arises that contains any one of the selected tags.
-		    // I think "group by" changes this so that only one entry is returned for songs
-		    $subquery_SongWithAnyExcludeTags->group('Songs.id');
-		    //Most of the time, I think you will want to exclude all saongs that contain ANY of the exclude tags.//But there could be a situation when you might want to exclude only songs that contain ALL of the exclude tags. In that case....
-		    if($sort_definition['exclude_all'] === true) {
-		      $subquery_SongWithAnyExcludeTags->having(['COUNT(Songs.id) = ' => sizeof($exclude_tag_array)]);
-		    }
-		    //OK, I think that's a list of songs you DON'T want
-		    //Join this query to the main one, excluding any of these songs from the main query
-		    //
-		    $filtered_list_query->Join([
-		        'table' => $subquery_SongWithAnyExcludeTags,
-		        'alias' => 'subquery_SongWithAnyExcludeTags',
-		        'type' => 'LEFT OUTER',
-		        'conditions' => '`subquery_SongWithAnyExcludeTags`.`Songs__id` = `Songs`.`id`'
-		    ])->where(["`subquery_SongWithAnyExcludeTags`.`Songs__id` IS null"]);
+		if (sizeof($sort_definition['tag_array']) > 0) {
+		    $selected_tag_array = array_filter( $sort_definition['tag_array'], function( $val ) { return   (0<$val); } );
+    		$exclude_tag_array = array_map(
+        	    function($n) { return ($n * -1); },
+        	    array_filter(
+        	        $sort_definition['tag_array'],
+        	        function( $val ) { return   (0>$val); }
+        	    )
+    	    );
+    		
+    		// a) FILTER BY: [Selected Tags]: Limit the result to songs that are associated with ALL of the passed array of tags
+    		if (sizeof($selected_tag_array) > 0) {
+    		    //you want to return only songs that have all of the selected tags.
+    		    
+    		    //now, start with a query that would get all songs in the database.
+    			$subquery_SongWithAllTags = $controller->Songs->find();
+    			
+    			//Extend that query with a WHERE clause, 
+    			$subquery_SongWithAllTags->matching(
+    			    'SongTags.Tags', function ($q) use ($selected_tag_array)  {
+        			    $q->where(['Tags.id IN' => $selected_tag_array]);
+        				return $q;
+    				}
+    			);
+    			
+    			//That query will return a different entry each time a song arises that contains any one of the selected tags. 
+    			// I think "group by" changes this so that only one entry is returned for songs ... but this seems to exclude songs that only have one or two of the tags? how does that work? 
+    			$subquery_SongWithAllTags->group('Songs.id');
+    			//Oh wait - the next bit only returns songs that had enough grouped entries to match the number of tags. that's where you only get songs that match _all_ selected tags
+    			$subquery_SongWithAllTags->having(['COUNT(Songs.id) = ' => sizeof($selected_tag_array)]);
+    			$filtered_list_query->Join([
+    				'table' => $subquery_SongWithAllTags,
+    				'alias' => 'subquery_SongWithAllTags',
+    				'type' => 'INNER',
+    				'conditions' => '`subquery_SongWithAllTags`.`Songs__id` = `Songs`.`id`'
+    			]);
+    		} 
+    		
+    		// b) FILTER BY: [Exclude Tags] Limit the result of previous queries to only those songs that are NOT tagged with any of these tags
+    		if (sizeof($exclude_tag_array) > 0) {
+    		    //You wasn to DELETE any songs already returned that are associated with ANY of the tags in the exclude_tag_array
+    		    //So, start with a query that would get all songs in the database.
+    		    $subquery_SongWithAnyExcludeTags = $controller->Songs->find();
+    		    //and restrict it to songs that have ANY of the "exclude" tags
+    		    //.e. Extend that query with a WHERE clause,
+    		    $subquery_SongWithAnyExcludeTags->matching(
+    		        'SongTags.Tags', function ($q) use ($exclude_tag_array)  {
+        		        $q->where(['Tags.id IN' => $exclude_tag_array]);
+        		        return $q;
+    		        }
+    		    );
+    		    //That query will return a different entry each time a song arises that contains any one of the selected tags.
+    		    // I think "group by" changes this so that only one entry is returned for songs
+    		    $subquery_SongWithAnyExcludeTags->group('Songs.id');
+    		    //Most of the time, I think you will want to exclude all saongs that contain ANY of the exclude tags.
+    		    //But there could be a situation when you might want to exclude only songs that contain ALL of the exclude tags. In that case....
+    		    if($sort_definition['tag_exclude_all'] === true) {
+    		      $subquery_SongWithAnyExcludeTags->having(['COUNT(Songs.id) = ' => sizeof($exclude_tag_array)]);
+    		    }
+    		    //OK, I think that's a list of songs you DON'T want
+    		    //Join this query to the main one, excluding any of these songs from the main query
+    		    //
+    		    $filtered_list_query->Join([
+    		        'table' => $subquery_SongWithAnyExcludeTags,
+    		        'alias' => 'subquery_SongWithAnyExcludeTags',
+    		        'type' => 'LEFT OUTER',
+    		        'conditions' => '`subquery_SongWithAnyExcludeTags`.`Songs__id` = `Songs`.`id`'
+    		    ])->where(["`subquery_SongWithAnyExcludeTags`.`Songs__id` IS null"]);
+    		}
 		}
 		
 		//-------------------
-		// FILTER BY: [Performer]: Limit the result to songs associated with a specific performer
-		if ($sort_definition['performer_id'] !== '') {
-		    $selected_performer = $sort_definition['performer_id'];
-			$filtered_list_query->matching(
-			    'SetSongs.Performers', function ($q) use($selected_performer)  {
-			    return $q->where(['Performers.id' => $selected_performer]);
-				}
-			);
-		}
+		// FILTER BY: [Performer]: Limit the result to songs associated with a specific performer		
+		if (sizeof($sort_definition['performer_id']) > 0) {
+		    
+		    $selected_performer_array = array_filter( $sort_definition['performer_id'], function( $val ) { return   (0<$val); } );
+		    $exclude_performer_array = array_map(
+		        function($n) { return ($n * -1); },
+		        array_filter(
+		            $sort_definition['performer_id'],
+		            function( $val ) { return   (0>$val); }
+		            )
+		        );
+		    //debug($selected_performer_array);
+		    //debug($exclude_performer_array);
+		    if (sizeof($selected_performer_array) > 0) {
+    		    //you want to return only songs that are associated with _all_ of the selected performers.
+    		    //start with a query that would get all songs in the database.
+    		    $subquery_SongWithAllperformers = $controller->Songs->find();
+    		    
+    		    //Extend that query with a WHERE clause,
+    		    $subquery_SongWithAllperformers->matching(
+    		        'SetSongs.Performers', function ($q) use ($selected_performer_array)  {
+        		        $q->where(['Performers.id IN' => $selected_performer_array]);
+        	          return $q;
+        	        }
+        	    );
+    		    //That query will return a different entry each time a song arises that contains any one of the selected tags.
+    		    // I think "group by" changes this so that only one entry is returned for each song
+    		    //$subquery_SongWithAllperformers->group('Songs.id');
+    		    // the next bit  returns only songs that had enough grouped entries to match the number of performers selected. that's where you only get songs that match _all_ selected performers
+    		    //NOTE:!!! THIS DOESN'T WORK satisfactorily! it eliminates songs that are requrned multiple times but are still valid.
+    		    //I think the duplications may be due to a song being in multiple SETS, not having multiple performers.
+    		    //Actually, multiple performrs = multiple sets, but you can have multiple sets with the same performer.
+    		    //So should it be group by perforemer and set?
+    		    $subquery_SongWithAllperformers->group('Songs.id, SetSongs.id');
+    		    $subquery_SongWithAllperformers->having(['COUNT(Songs.id) = ' => sizeof($selected_performer_array)]);
+    		    
+    		    /*
+    		     foreach($subquery_SongWithAllperformers as $data) {
+    		     debug($data['title']);
+    		     }
+    		    // */
+    		    
+    		    
+    		    
+    		    
+//////////////////////Alternative 2 - aame pattern as  as tags so that excludes can be handled - but doesn't seem to return the correct number of songs (17) list = 17 entries - but all unique
+///HAVING COUNT(`Songs`.`id`) = 1 removes duplicates!!
+//*
+    		    $filtered_list_query->Join([
+    		        'table' => $subquery_SongWithAllperformers,
+    		        'alias' => 'subquery_SongWithAllperformers',
+    		        'type' => 'INNER',
+    		        'conditions' => '`subquery_SongWithAllperformers`.`Songs__id` = `Songs`.`id`'
+    		    ]);
+    		    /*
+    		    e.g. (Note: song content and metadata removed to simplify the query)
+    		    SELECT `Songs`.`id` AS `Songs__id`, `Songs`.`title` AS `Songs__title`
+                FROM `songs` `Songs` 
+                INNER JOIN (
+                            SELECT `Songs`.`id` AS `Songs__id`, `Songs`.`title` AS `Songs__title`, `SongTags`.`id` AS `SongTags__id`, `SongTags`.`song_id` AS `SongTags__song_id`, `SongTags`.`tag_id` AS `SongTags__tag_id`, `Tags`.`id` AS `Tags__id`, `Tags`.`title` AS `Tags__title` 
+                            FROM `songs` `Songs` 
+                            INNER JOIN `song_tags` `SongTags` ON `Songs`.`id` = `SongTags`.`song_id` 
+                            INNER JOIN `tags` `Tags` ON (`Tags`.`id` in (13,15) AND `Tags`.`id` = `SongTags`.`tag_id`) GROUP BY `Songs`.`id`  HAVING COUNT(`Songs`.`id`) = 2 
+                )`subquery_SongWithAllTags` ON `subquery_SongWithAllTags`.`Songs__id` = `Songs`.`id` 
+                
+                
+                INNER JOIN (
+                    SELECT `Songs`.`id` AS `Songs__id`, `Songs`.`title` AS `Songs__title`, `SetSongs`.`id` AS `SetSongs__id`, `SetSongs`.`set_id` AS `SetSongs__set_id`, `SetSongs`.`song_id` AS `SetSongs__song_id`, `SetSongs`.`order` AS `SetSongs__order`, `SetSongs`.`performer_id` AS `SetSongs__performer_id`, `SetSongs`.`key` AS `SetSongs__key`, `SetSongs`.`capo` AS `SetSongs__capo`, `Performers`.`id` AS `Performers__id`, `Performers`.`name` AS `Performers__name`, `Performers`.`nickname` AS `Performers__nickname` 
+                    FROM `songs` `Songs` 
+                    INNER JOIN `set_songs` `SetSongs` ON `Songs`.`id` = `SetSongs`.`song_id` 
+                    INNER JOIN `performers` `Performers` ON (
+                        `Performers`.`id` in (1) AND `Performers`.`id` = `SetSongs`.`performer_id`
+                    ) GROUP BY `Songs`.`id`  HAVING COUNT(`Songs`.`id`) = 1 
+                ) `subquery_SongWithAllperformers` ON `subquery_SongWithAllperformers`.`Songs__id` = `Songs`.`id`
+    		     
+    		     note: subquery_SongWithAllperformers here returns 259 songs
+    		     
+    		     */
+    		    
+    		    
+    		    
+//////////////////////Alternative 1 - this seems to return the right number of songs (44), but can't be adapted to exlude performers in the same way as tags. List = 29 entries. (44 in total but many dduplicates)
+/*
+    		    $filtered_list_query->matching(
+    		        'SetSongs.Performers', function ($q) use($selected_performer_array)  {
+    		          return $q->where(['Performers.id in' => $selected_performer_array]);
+    		        }
+    		    );
+    		    
+    		    /*
+    		     e.g. (Note: song content and metadata removed to simplify the query)
+    		     SELECT `Songs`.`id` AS `Songs__id`, `Songs`.`title` AS `Songs__title` 
+    		     FROM  `songs` `Songs`
+    		     INNER JOIN (
+                		     SELECT `Songs`.`id` AS `Songs__id`, `Songs`.`title` AS `Songs__title`, `SongTags`.`id` AS `SongTags__id`, `SongTags`.`song_id` AS `SongTags__song_id`, `SongTags`.`tag_id` AS `SongTags__tag_id`, `Tags`.`id` AS `Tags__id`, `Tags`.`title` AS `Tags__title`
+                		     FROM `songs` `Songs`
+                		     INNER JOIN `song_tags` `SongTags` ON `Songs`.`id` = `SongTags`.`song_id`
+                		     INNER JOIN `tags` `Tags` ON (`Tags`.`id` in (13,15)  AND `Tags`.`id` = `SongTags`.`tag_id`) GROUP BY `Songs`.`id` HAVING COUNT(`Songs`.`id`) = 2
+    		     ) `subquery_SongWithAllTags` ON `subquery_SongWithAllTags`.`Songs__id` = `Songs`.`id`
+    		     
+    		     
+    		     INNER JOIN `set_songs` `SetSongs` ON `Songs`.`id` = `SetSongs`.`song_id`
+    		     INNER JOIN `performers` `Performers` ON (
+    		          `Performers`.`id` in (1)  AND  `Performers`.`id` = `SetSongs`.`performer_id`
+    		     )
+    		     
+    		     
+    		     
+    		     */
+    		    
+		    }
+		    //debug($filtered_list_query);
+		    
+		    
+	    
+		    // b) FILTER BY: [Exclude Tags] Limit the result of previous queries to only those songs that are NOT tagged with any of these tags
+		    if (sizeof($exclude_performer_array) > 0) {
+		        //You wasn to DELETE any songs already returned that are associated with ANY of the tags in the exclude_tag_array
+		        //So, start with a query that would get all songs in the database.
+		        $subquery_SongWithAnyExcludePerformers = $controller->Songs->find();
+		        //and restrict it to songs that have ANY of the "exclude" tags
+		        //.e. Extend that query with a WHERE clause,
+		        $subquery_SongWithAnyExcludePerformers->matching(
+		            'SetSongs.Performers', function ($q) use ($exclude_performer_array)  {
+    		            $q->where(['Performers.id IN' => $exclude_performer_array]);
+    		            return $q;
+		            }
+		        );
+		        //That query will return a different entry each time a song arises that contains any one of the selected tags.
+		        // I think "group by" changes this so that only one entry is returned for songs
+		        $subquery_SongWithAnyExcludePerformers->group('Songs.id, SetSongs.id');
+		        //Most of the time, I think you will want to exclude all songs that contain ANY of the exclude performers.
+		        //But there could be a situation when you might want to exclude only songs that contain ALL of the exclude tags. In that case....
+		        if($sort_definition['performers_exclude_all'] === true) {
+		            $subquery_SongWithAnyExcludePerformers->having(['COUNT(Songs.id) = ' => sizeof($exclude_performer_array)]);
+		        }
+		        //OK, I think that's a list of songs you DON'T want
+		        //Join this query to the main one, excluding any of these songs from the main query
+		        //
+		        $filtered_list_query->Join([
+		            'table' => $subquery_SongWithAnyExcludePerformers,
+		            'alias' => 'subquery_SongWithAnyExcludePerformers',
+		            'type' => 'LEFT OUTER',
+		            'conditions' => '`subquery_SongWithAnyExcludePerformers`.`Songs__id` = `Songs`.`id`'
+		        ])->where(["`subquery_SongWithAnyExcludePerformers`.`Songs__id` IS null"]);
+		    } else { /*debug('no exclude performers'); */}
+		    
+		} 
+		
+		
 
 		//-------------------
         // FILTER BY: [Venue] :  limit the result to songs that were placed withtin an event at the specified venue
@@ -385,13 +580,12 @@ class songlistComponent extends Component {
 		$controller->set('filter_on', $this->filter_on);
 		
 		//for the print title
-		$controller->set('exclude_all', $sort_definition['exclude_all']);
-		$controller->set('selected_exclude_tags', $sort_definition['exclude_tag_array']);
+		$controller->set('exclude_all', $sort_definition['tag_exclude_all']);
 		
 		//for the print title
-		$this->print_title = $this->print_title($sort_definition['search_string'], $sort_definition['performer_id'], $sort_definition['selected_venue'], $sort_definition['tag_array'], $sort_definition['exclude_tag_array'], $performers, $venues, $all_tags);
+		$this->print_title = $this->print_title($sort_definition['search_string'], $sort_definition['performer_id'], $sort_definition['selected_venue'], $sort_definition['tag_array'], $performers, $venues, $all_tags);
 		$controller->set('print_title', $this->print_title);
-		$this->page_title = $this->page_title($sort_definition['search_string'], $sort_definition['performer_id'], $sort_definition['selected_venue'], $sort_definition['tag_array'], $sort_definition['exclude_tag_array'], $performers, $venues, $all_tags);
+		$this->page_title = $this->page_title($sort_definition['search_string'], $sort_definition['performer_id'], $sort_definition['selected_venue'], $sort_definition['tag_array'], $performers, $venues, $all_tags);
 		$controller->page_title = $this->page_title;
 		$this->selected_performer= $sort_definition['performer_id'];
 		
@@ -411,7 +605,7 @@ class songlistComponent extends Component {
 		return $filtered_list_query;
 	}
 
-	private function print_title($search_string = '', $selected_performer = '', $selected_venue = '', $selected_tag_array = [], $selected_exclude_tag_array = '', $performers = [], $venues = [], $all_tags = []) {
+	private function print_title($search_string = '', $selected_performer = '', $selected_venue = '', $selected_tag_array = [], $performers = [], $venues = [], $all_tags = []) {
 		$print_title = '';
 		if ($search_string) {
 			$print_title = $print_title . $search_string;
@@ -439,7 +633,7 @@ class songlistComponent extends Component {
 		return substr($print_title, 0, -2);
 	}
 
-	private function page_title($search_string = '', $selected_performer = '', $selected_venue = '', $selected_tag_array = [], $selected_exclude_tag_array = '', $performers = [], $venues = [], $all_tags = []) {
+	private function page_title($search_string = '', $selected_performer = '', $selected_venue = '', $selected_tag_array = [], $performers = [], $venues = [], $all_tags = []) {
 		$page_title = '';
 		foreach($performers as $performer_id => $performer_title) {
 			if($performer_id == $selected_performer && $performer_id != 0) {
