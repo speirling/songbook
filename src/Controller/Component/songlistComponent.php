@@ -575,7 +575,7 @@ $start_time = hrtime(true);
 
 		
 		$controller->set('filter_tag_id', $f['tags']);
-		$controller->set('performers', $f['performers']);
+		$controller->set('performers', $all_performers);
 		
 		$controller->set('search_string', $f['search_string']);
 		$controller->set('selected_performer', $f['performers']);

@@ -244,7 +244,7 @@ class ViewerController extends AppController
     	        ['tags' =>  [ 25, /* Ballad */    -13, /* Lively (Fast) */ -35, /* Shanty */     -30, /* Singalong */ -29, /* Chorus */     ], 'performers' => [ 1,  /* Euge */ ]],
                 ['tags' =>  [ 44, /* Solo */          ], 'performers' => [ 1,  /* Euge */ ]],
                 ['tags' =>  [ 38, /* Australian */    ], 'performers' => [ 1,  /* Euge */ ]],
-    	        ['tags' =>  [ 53, /* Party */      -13, /* Lively (Fast) */ -35, /* Shanty */     -30, /* Singalong */ -29, /* Chorus */     ], 'performers' => [ 1,  /* Euge */ ]],
+    	      //  ['tags' =>  [ 53, /* Party */      -13, /* Lively (Fast) */ -35, /* Shanty */     -30, /* Singalong */ -29, /* Chorus */     ], 'performers' => [ 1,  /* Euge */ ]],
                 ['tags' =>  [ 46, /* Positive */      ], 'performers' => [ 1,  /* Euge */ ]],
                 ['tags' =>  [ 31, /* Gaeilge */       ], 'performers' => [ 1,  /* Euge */ ]],
                 ['tags' =>  [ 34, /* Learn */         ], 'performers' => [ 1,  /* Euge */ ]],
