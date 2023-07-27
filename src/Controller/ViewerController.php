@@ -104,153 +104,153 @@ class ViewerController extends AppController
 	    $sort_definition_sets = [
     	   'Euge AMU' => [
     	       [   
-    	           'tag_array' =>  [
+    	           'tags' =>  [
     	                13, // Lively (Fast)
     	                15, // AllMixedUp
     	            ],
-    	           'performer_id' => [
+    	           'performers' => [
     	                1,  //Euge
     	               -3,  //midge
     	           ],
     	        ], [
-                   'tag_array' =>  [
+                   'tags' =>  [
     	                20, // Slow
     	                15, // AllMixedUp
                    ],
-    	            'performer_id' => [
+    	            'performers' => [
     	                1,  //Euge
     	                -3,  //midge
     	            ],
     	        ], [
-    	            'tag_array' =>  [
+    	            'tags' =>  [
     	                 2, // Irish
     	                15, // AllMixedUp
     	                -13, // Lively (Fast)
     	                -20, // Slow
     	            ],
-    	            'performer_id' => [
+    	            'performers' => [
     	                1,  //Euge
     	                -3,  //midge
     	            ],
     	        ], [
-    	            'tag_array' =>  [
+    	            'tags' =>  [
     	                25, // Ballad
     	                15, // AllMixedUp
     	            ],
-    	            'performer_id' => [
+    	            'performers' => [
     	                1,  //Euge
     	                -3,  //midge
     	            ],
     	        ], [
-    	            'tag_array' =>  [
+    	            'tags' =>  [
     	                29, // Chorus
     	                15, // AllMixedUp
     	            ],
-    	            'performer_id' => [
+    	            'performers' => [
     	                1,  //Euge
     	                -3,  //midge
     	            ],
     	        ], [
-    	            'tag_array' =>  [
+    	            'tags' =>  [
     	                 5, // Rock&Roll
     	                15, // AllMixedUp
     	            ],
-    	            'performer_id' => [
+    	            'performers' => [
     	                1,  //Euge
     	                -3,  //midge
     	            ],
     	        ], [
-    	            'tag_array' =>  [
+    	            'tags' =>  [
     	                30, // Singalong
     	                15, // AllMixedUp
     	            ],
-    	            'performer_id' => [
+    	            'performers' => [
     	                1,  //Euge
     	                -3,  //midge
     	            ],
     	        ], [
-    	            'tag_array' =>  [
+    	            'tags' =>  [
     	                44, // Solo
     	                15, // AllMixedUp
     	            ],
-    	            'performer_id' => [
+    	            'performers' => [
     	                1,  //Euge
     	                -3,  //midge
     	            ],
     	        ], [
-    	            'tag_array' =>  [
+    	            'tags' =>  [
     	                59, // 00s
     	                15, // AllMixedUp
     	            ],
-    	            'performer_id' => [
+    	            'performers' => [
     	                1,  //Euge
     	                -3,  //midge
     	            ],
     	        ], [
-    	            'tag_array' =>  [
+    	            'tags' =>  [
     	                43, // 90s
     	                15, // AllMixedUp
     	            ],
-    	            'performer_id' => [
+    	            'performers' => [
     	                1,  //Euge
     	                -3,  //midge
     	            ],
     	        ], [
-    	            'tag_array' =>  [
+    	            'tags' =>  [
     	                16, // 80s
     	                15, // AllMixedUp
     	            ],
-    	            'performer_id' => [
+    	            'performers' => [
     	                1,  //Euge
     	                -3,  //midge
     	            ],
     	        ], [
-    	            'tag_array' =>  [
+    	            'tags' =>  [
     	                14, // 70s
     	                15, // AllMixedUp
     	                -20, // Slow
     	            ],
-    	            'performer_id' => [
+    	            'performers' => [
     	                1,  //Euge
     	                -3,  //midge
     	            ],
     	        ], [
-    	            'tag_array' =>  [
+    	            'tags' =>  [
     	                 6, // 60s
     	                15, // AllMixedUp
     	            ],
-    	            'performer_id' => [
+    	            'performers' => [
     	                1,  //Euge
     	                -3,  //midge
     	            ],
     	        ], [
-    	            'tag_array' =>  [
+    	            'tags' =>  [
     	                27, // Folk
     	                15, // AllMixedUp
     	            ],
-    	            'performer_id' => [
+    	            'performers' => [
     	                1,  //Euge
     	                -3,  //midge
     	            ],
     	        ], 
     	    ],
     	    'Euge Session' => [
-                ['tag_array' =>  [ 29, /* Chorus */        ], 'performer_id' => [ 1,  /* Euge */ ]],
-                ['tag_array' =>  [ 30, /* Singalong */     ], 'performer_id' => [ 1,  /* Euge */ ]],
-                ['tag_array' =>  [ 27, /* Folk */          ], 'performer_id' => [ 1,  /* Euge */ ]],
-                ['tag_array' =>  [  2, /* Irish */         ], 'performer_id' => [ 1,  /* Euge */ ]],
-                ['tag_array' =>  [ 35, /* Shanty */        ], 'performer_id' => [ 1,  /* Euge */ ]],
-                ['tag_array' =>  [ 13, /* Lively (Fast) */ ], 'performer_id' => [ 1,  /* Euge */ ]],
-                ['tag_array' =>  [ 25, /* Ballad */        ], 'performer_id' => [ 1,  /* Euge */ ]],
-                ['tag_array' =>  [ 44, /* Solo */          ], 'performer_id' => [ 1,  /* Euge */ ]],
-                ['tag_array' =>  [ 38, /* Australian */    ], 'performer_id' => [ 1,  /* Euge */ ]],
-                ['tag_array' =>  [ 53, /* Party */         ], 'performer_id' => [ 1,  /* Euge */ ]],
-                ['tag_array' =>  [ 46, /* Positive */      ], 'performer_id' => [ 1,  /* Euge */ ]],
-                ['tag_array' =>  [ 31, /* Gaeilge */       ], 'performer_id' => [ 1,  /* Euge */ ]],
-                ['tag_array' =>  [ 34, /* Learn */         ], 'performer_id' => [ 1,  /* Euge */ ]],
+                ['tags' =>  [ 29, /* Chorus */                          ], 'performers' => [ 1,  /* Euge */ ]],
+    	        ['tags' =>  [ 30, /* Singalong */   -29, /* Chorus */     ], 'performers' => [ 1,  /* Euge */ ]],
+    	        ['tags' =>  [ 27, /* Folk */        -30, /* Singalong */ -29, /* Chorus */        ], 'performers' => [ 1,  /* Euge */ ]],
+                ['tags' =>  [  2, /* Irish */                              ], 'performers' => [ 1,  /* Euge */ ]],
+    	        ['tags' =>  [ 35, /* Shanty */      -30, /* Singalong */ -29, /* Chorus */      ], 'performers' => [ 1,  /* Euge */ ]],
+    	        ['tags' =>  [ 13, /* Lively (Fast) */ -35, /* Shanty */     -30, /* Singalong */ -29, /* Chorus */  ], 'performers' => [ 1,  /* Euge */ ]],
+    	        ['tags' =>  [ 25, /* Ballad */    -13, /* Lively (Fast) */ -35, /* Shanty */     -30, /* Singalong */ -29, /* Chorus */     ], 'performers' => [ 1,  /* Euge */ ]],
+                ['tags' =>  [ 44, /* Solo */          ], 'performers' => [ 1,  /* Euge */ ]],
+                ['tags' =>  [ 38, /* Australian */    ], 'performers' => [ 1,  /* Euge */ ]],
+    	        ['tags' =>  [ 53, /* Party */      -13, /* Lively (Fast) */ -35, /* Shanty */     -30, /* Singalong */ -29, /* Chorus */     ], 'performers' => [ 1,  /* Euge */ ]],
+                ['tags' =>  [ 46, /* Positive */      ], 'performers' => [ 1,  /* Euge */ ]],
+                ['tags' =>  [ 31, /* Gaeilge */       ], 'performers' => [ 1,  /* Euge */ ]],
+                ['tags' =>  [ 34, /* Learn */         ], 'performers' => [ 1,  /* Euge */ ]],
             ],
     	    'Midge AMU' => [
-    	        ['tag_array' =>  [ 15, /* AllMixedUp */    ], 'performer_id' => [ 3,  /* Midge */]]
+    	        ['tags' =>  [ 15, /* AllMixedUp */    ], 'performers' => [ 3,  /* Midge */]]
     	    ],  
 	    ];
 	    

@@ -1,7 +1,9 @@
 
 <div class="filtered-songlist">
 <?php if($print_title !== '') { ?>
-	<span class="current-filter"><?php echo($print_title); ?></span></span>
+	<span class="filter-title"><?php 
+	echo($print_title); 
+	?></span>
 <?php } ?>
     <ul id="songlist">
     <?php

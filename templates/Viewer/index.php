@@ -90,6 +90,7 @@ $(document).ready(function(){
             </ul>
         	<ul>
                 <li><?= $this->Html->link(__('Palette E-AMU'), ['controller' => 'viewer', 'action' => 'palette', '?'=>['palette_set'=>'Euge AMU']], ['target'=>'_blank']) ?></li>
+                <li><?= $this->Html->link(__('Palette M-AMU'), ['controller' => 'viewer', 'action' => 'palette', '?'=>['palette_set'=>'Midge AMU']], ['target'=>'_blank']) ?></li>
                 <li><?= $this->Html->link(__('Palette E-Session'), ['controller' => 'viewer', 'action' => 'palette', '?'=>['palette_set'=>'Euge Session']], ['target'=>'_blank']) ?></li>
             </ul>
         </span>

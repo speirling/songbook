@@ -13,12 +13,22 @@ $(document).ready(function(){
 
 		link_url = '/songbook/songs/view/' + this_li.attr('data-id') + '?key=' + this_li.attr('data-key') + '&capo=' + this_li.attr('data-capo') + '';
     	
-    	console.log(this_li, link_url);
+    	//console.log(this_li, link_url);
     	window.open(link_url, "_blank");
     });
 
+
+    /* show/hide the tools panel */
+    SBK.StaticFunctions.make_hideable_panel('.container-hideable', "...", "^");
+
 });
 </script>
+
+
+<?php /* Hideable filter panel --------------------------------- */ ?>
+    	
+
+
 
 <?php
 foreach ($filtered_data as $this_dataset) {
@@ -33,6 +43,19 @@ foreach ($filtered_data as $this_dataset) {
 
 echo('</div>');
 ?>
+<span class="container-hideable"  style="visibility: hidden;">
+
+<a class="button" href = "/songbook/viewer">Viewer</a>
+<a class="button" href = "/songbook/dashboard">Dashboard</a>
+        	<ul>
+                <li><?= $this->Html->link(__('Palette E-AMU'), ['controller' => 'viewer', 'action' => 'palette', '?'=>['palette_set'=>'Euge AMU']], ['target'=>'_blank']) ?></li>
+                <li><?= $this->Html->link(__('Palette M-AMU'), ['controller' => 'viewer', 'action' => 'palette', '?'=>['palette_set'=>'Midge AMU']], ['target'=>'_blank']) ?></li>
+                <li><?= $this->Html->link(__('Palette E-Session'), ['controller' => 'viewer', 'action' => 'palette', '?'=>['palette_set'=>'Euge Session']], ['target'=>'_blank']) ?></li>
+            </ul>
+        </span>
+        <?php /* end of Hideable filter panel --------------------------------- */ ?>
+
+
 
 
         
