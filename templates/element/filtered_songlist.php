@@ -1,26 +1,13 @@
-
-<div class="filtered-songlist">
-<?php if($print_title !== '') { ?>
-	<span class="filter-title"><?php 
-	echo($print_title); 
-	?></span>
-<?php } ?>
-    <ul id="songlist">
-    <?php
+<?php
+echo ('<div class="filtered-songlist">');
+    if($print_title !== '') {
+	    echo ('<span class="filter-title">'); 
+    	echo($print_title); 
+    	echo ('</span>');
+    } 
+    echo ('<ul id="songlist">');
 
     foreach ($filtered_list as $song){
-        $primary_key = $song['base_key'];
-        //debug($song);
-        /* $song: id, title, written_by, performed_by, base_key, content */
-        
-        
-        if(sizeof($song['set_songs']) > 0) {
-            $primary_key = $song['set_songs'][0]['key'];
-            $primary_capo = $song['set_songs'][0]['capo'];
-        } else {
-            $primary_key = false;
-            $primary_capo = false;
-        }
         $performers_html='';
         $existing_performer_keys = [];
         foreach ($song['set_songs'] as $set_song) {
@@ -43,7 +30,6 @@
         echo($performers_html);
         echo('</li>');
     }
-    ?>
-    </ul>
-    
-</div>
+    echo ('</ul>');
+    echo ('</div>');
+?>

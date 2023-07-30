@@ -61,7 +61,7 @@ $(document).ready(function(){
 
     	<?php /* Hideable filter panel --------------------------------- */ ?>
     	<span class="container-hideable"  style="visibility: hidden;">
-        	<?= $this->Form->create($filtered_list, ['type' => 'get', 'url' => ['controller' => 'viewer', 'action' => 'index']]) ?>
+        	<?= $this->Form->create(null, ['type' => 'get', 'url' => ['controller' => 'viewer', 'action' => 'index']]) ?>
             <fieldset class="performer-tags-filter">
             
                 <span class="clear-filters button" onclick="SBK.CakeUI.form.clear_filters(this)">X</span>
@@ -88,17 +88,20 @@ $(document).ready(function(){
                 <li><?= $this->Html->link(__('Christmas-AMU'), ['controller' => 'viewer', 'action' => 'index', '?'=>['text_search'=>'', 'filter_tag_id'=>[15, 21]]], ['target'=>'_blank']) ?></li>
                 <li><?= $this->Html->link(__('Piano'), ['controller' => 'viewer', 'action' => 'index', '?'=>['text_search'=>'', 'filter_tag_id'=>[1]]], ['target'=>'_blank']) ?></li>
             </ul>
-        	<ul>
-                <li><?= $this->Html->link(__('Palette E-AMU'), ['controller' => 'viewer', 'action' => 'palette', '?'=>['palette_set'=>'Euge AMU']], ['target'=>'_blank']) ?></li>
-                <li><?= $this->Html->link(__('Palette M-AMU'), ['controller' => 'viewer', 'action' => 'palette', '?'=>['palette_set'=>'Midge AMU']], ['target'=>'_blank']) ?></li>
-                <li><?= $this->Html->link(__('Palette E-Session'), ['controller' => 'viewer', 'action' => 'palette', '?'=>['palette_set'=>'Euge Session']], ['target'=>'_blank']) ?></li>
+        	<ul><?php 
+        	foreach($filter_definition_sets as $filter_set_name => $filter_set_definition) {
+        	    ?>
+                <li><?php
+                    echo $this->Html->link(__($filter_set_name), ['controller' => 'viewer', 'action' => 'palette', '?'=>['filter_set'=>http_build_query($filter_set_definition)]], ['target'=>'_blank']) 
+                ?></li><?php 
+        	}
+                ?>
             </ul>
         </span>
         <?php /* end of Hideable filter panel --------------------------------- */ ?>
     </span>
-
 <?php 
-echo $this->element('filtered_songlist', ['filter_on'=>$filter_on, 'selected_performer'=>$selected_performer]);
+	echo $filtered_list;
 ?>
 </div>
 <div id="viewer-main" >

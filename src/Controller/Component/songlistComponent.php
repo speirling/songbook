@@ -8,11 +8,11 @@ use App\Model\Entity\SongTag;
 use App\Model\Entity\Tag;
 use App\Model\Entity\SetSong;
 use App\Model\Entity\Performer;
+use Cake\View\View;
 
 class songlistComponent extends Component {
-    public $filtered_list = null;
     private $event = null;
-    private $paginate = true;
+    private $paginate = false;
     private $blank_filter_definition = [
         'sortby' => '',
         'direction' => '',
@@ -23,7 +23,7 @@ class songlistComponent extends Component {
         'tag_exclude_all' => false,
         'exclude_tag_array' => [],
         'selected_venue' => '',
-        'paginate' => true,
+        'paginate' => false,
     ];
     
     function setEvent($event) {
@@ -164,8 +164,8 @@ class songlistComponent extends Component {
      */
     
     public function filterAllSongs($f) {
-$start_time = hrtime(true); 
-        $f = $this->extend_filter_definition($f);
+
+        $f = $this->extend_filter_definition($f); //$f may be a partial definition. Set all undefined options to their defaults
 
 		$controller = $this->_registry->getController();
 		
@@ -601,7 +601,7 @@ $start_time = hrtime(true);
 		//Should the list be paginated?
 		if($f['paginate'] == false) {
 		    $controller->set('filtered_list', $filtered_list_query);
-		    $controller->set('filter_on', TRUE); //prevents the footer haveing 'next' & 'previous' buttons
+		    $controller->set('filter_on', TRUE); //prevents the footer having 'next' & 'previous' buttons
 		} else {
 		    $controller->set('filtered_list', $controller->paginate($filtered_list_query));
 		    $controller->set('filter_on', FALSE);
@@ -696,6 +696,48 @@ $start_time = hrtime(true);
 		}
 
 		return $page_title;
+	}
+	
+	public function filtered_songlist_html($f = []) {
+	    $html = '';
+	    $query = $this->filterAllSongs($f);
+	 
+	    $html = $html . '<div class="filtered-songlist">';
+	    if($this->print_title !== '') {
+	        $html = $html . '<span class="filter-title">';
+	        $html = $html . $this->print_title;
+	        $html = $html . '</span>';
+	    }
+	    $html = $html . '<ul id="songlist">';
+	    $primary_key = "";
+	    $primary_capo = "";
+	    foreach ($query as $song) {
+	        $performers_html='';
+	        $existing_performer_keys = [];
+	        foreach ($song['set_songs'] as $set_song) {
+	            $performer_key = $set_song['performer']['nickname'].$set_song['key'];
+	            if (!in_array($performer_key, $existing_performer_keys)) {
+	                array_push($existing_performer_keys, $performer_key);
+	                if($this->filter_on == false || $this->selected_performer == $set_song['performer']['id']) {
+	                    $performers_html = $performers_html . '<span class="performer short-form">';
+	                    $performers_html = $performers_html . '<span class="nickname">' . strtolower(substr($set_song['performer']['nickname'], 0, 1)) . '</span>';
+	                    $performers_html = $performers_html . '<span class="key">' . $set_song['key'] . '</span>';
+	                    $performers_html = $performers_html . '</span>';
+	                    
+	                    $primary_key = $set_song['key'];
+	                    $primary_capo = $set_song['capo'];
+	                }
+	            }
+	        }
+	        $html = $html . '<li data-id="' . $song['id'] . '" data-key="' . $primary_key . '" data-capo="' . $primary_capo . '">';
+	        $html = $html . '<span class="song-title">' . $song['title'] . "</span>";
+	        $html = $html . $performers_html;
+	        $html = $html . '</li>';
+	    }
+	    $html = $html . '</ul>';
+	    $html = $html . '</div>';
+	    
+	    return $html;
 	}
 }
 ?>

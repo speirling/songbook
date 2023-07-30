@@ -1,6 +1,9 @@
 <?php /* Template/Viewer/palette.php*/  
 //debug($filter_set);
 
+
+
+
 //echo("<h1>Palette</h2><br />");
 echo('<div class="filter-palette">');
 ?>
@@ -30,15 +33,9 @@ $(document).ready(function(){
 
 
 
-<?php
-foreach ($filtered_data as $this_dataset) {
-    //debug($this_filter);
-    echo $this->element('filtered_songlist', [
-        'filtered_list' => $this_dataset['query'], 
-        'filter_on'=>$this_dataset['filter_on'],
-        'selected_performer'=>$this_dataset['selected_performer'],
-        'print_title'=>$this_dataset['print_title']
-    ]);
+<?php 
+foreach ($filtered_lists as $this_songlist) {
+    echo $this_songlist;
 }
 
 echo('</div>');
@@ -47,10 +44,21 @@ echo('</div>');
 
 <a class="button" href = "/songbook/viewer">Viewer</a>
 <a class="button" href = "/songbook/dashboard">Dashboard</a>
+
         	<ul>
-                <li><?= $this->Html->link(__('Palette E-AMU'), ['controller' => 'viewer', 'action' => 'palette', '?'=>['palette_set'=>'Euge AMU']], ['target'=>'_blank']) ?></li>
-                <li><?= $this->Html->link(__('Palette M-AMU'), ['controller' => 'viewer', 'action' => 'palette', '?'=>['palette_set'=>'Midge AMU']], ['target'=>'_blank']) ?></li>
-                <li><?= $this->Html->link(__('Palette E-Session'), ['controller' => 'viewer', 'action' => 'palette', '?'=>['palette_set'=>'Euge Session']], ['target'=>'_blank']) ?></li>
+        	<?php 
+        	foreach($filter_definition_sets as $filter_set_name => $filter_set_definition) {
+
+                echo ('<li>');
+                echo (
+                    $this->Html->link(
+                        __('$filter_set_name'), 
+                        ['controller' => 'viewer', 'action' => 'palette', '?'=>['filter_set'=>http_build_query($filter_set_definition)]], 
+                        ['target'=>'_blank'])
+                );
+                echo ('</li>');
+            }
+            ?>
             </ul>
         </span>
         <?php /* end of Hideable filter panel --------------------------------- */ ?>
