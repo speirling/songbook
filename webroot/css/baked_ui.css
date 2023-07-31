@@ -398,11 +398,11 @@ tr.song-row.ui-selected .song-title {
 }
 .songs-edit .song-input-content textarea {
 	height: 100%;
+	width: 100%;
 }
 .songs-edit .song-input-tags {
     display: inline-block;
     height: 5em;
-    
 }
 .songs-edit .song-input-tags textarea {
 	height: 2em;
