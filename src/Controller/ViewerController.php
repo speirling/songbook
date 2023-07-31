@@ -195,15 +195,6 @@ class ViewerController extends AppController
                     1,  //Euge
                     -3,  //midge
                 ],
-            ], [
-                'tags' =>  [
-                    27, // Folk
-                    15, // AllMixedUp
-                ],
-                'performers' => [
-                    1,  //Euge
-                    -3,  //midge
-                ],
             ],
         ],
         'Paette E-Session' => [
@@ -239,7 +230,9 @@ class ViewerController extends AppController
 		$this->songlist->setPagination('off');
 		$this->songlist->setSortBy('title','ASC');
 		$this->set('filtered_list', 
-		     $this->songlist->filtered_songlist_html()
+		     $this->songlist->filtered_songlist_html(
+		         $this->songlist->get_filters_from_queryparams()
+		     )
 		);
 		//now $filtered_list is available in the view.
 		$this->set('title', $this->page_title);
@@ -256,15 +249,15 @@ class ViewerController extends AppController
 	            $query_parameters = $this->getRequest()->getData();
 	        }
 	    }
-	    if(array_key_exists('palette_set', $query_parameters)) {
-	       $selected_tag_set = $query_parameters['palette_set'];
-	    } else {
-	        $selected_tag_set = 'Euge AMU';
-	    }
+
 	    if(array_key_exists('filter_set', $query_parameters)) {
 	        parse_str($query_parameters['filter_set'], $filter_set);
 	    } else {
-	       $filter_set = $sort_definition_sets[$selected_tag_set];
+	        if(array_key_exists('palette_set', $query_parameters)) {
+	            $filter_set = $sort_definition_sets[$query_parameters['palette_set']];
+	        } else {
+	            $filter_set = $sort_definition_sets['Euge AMU'];
+	        }
 	    }
 
 	    $filtered_data = [];

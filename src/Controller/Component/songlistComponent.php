@@ -14,8 +14,8 @@ class songlistComponent extends Component {
     private $event = null;
     private $paginate = false;
     private $blank_filter_definition = [
-        'sortby' => '',
-        'direction' => '',
+        'sortby' => 'title',
+        'direction' => 'ASC',
         'search_string' => '',
         'performers'  => [],
         'performers_exclude_all' => false,
@@ -46,7 +46,22 @@ class songlistComponent extends Component {
     }
     
     function is_filter_on ($f) {
-        return $f == $this->blank_filter_definition;
+        //debug($f);
+        //debug($this->blank_filter_definition);
+        //return $this->blank_filter_definition != $f;
+        $filter_on = false;
+        foreach($this->blank_filter_definition as $key => $value) {
+            if(array_key_exists($key, $f)) {
+                if($f[$key] !== $value)  {
+                    //debug("mismatch [" . $key . "]: " . $f[$key] . " vs " . $value);
+                    $filter_on = true;
+                }
+            } else {
+                
+            }
+        }
+        
+        return $filter_on;
     }
     
     public function get_filters_from_queryparams() {
@@ -70,13 +85,21 @@ class songlistComponent extends Component {
             
             // Tags: Limit the result to songs that are associated with any of the passed array of tags
             if (
-                array_key_exists('filter_tag_id', $q)
+                array_key_exists('filter_tag_id', $q) //legacy - should be "tags" now
                 && $q['filter_tag_id']
                 && $q['filter_tag_id'] != 'Tag...'
             ) {
                 $filter_on = true;
-                $f['tags'] = $q['filter_tag_id']; 
-            }
+                $f['tags'] = $q['filter_tag_id'];
+            } 
+            if (
+                array_key_exists('tags', $q)
+                && $q['tags']
+                && $q['tags'] != 'Tag...'
+           ) {
+                $filter_on = true;
+                $f['tags'] = $q['tags'];
+           }
             
             // Performer: Limit the result to songs associated with a specific performer
             if (array_key_exists('performers', $q) && $q['performers']) {
@@ -87,7 +110,10 @@ class songlistComponent extends Component {
                     $f['performers'] = [$q['performers']];
                 }
             }
-            
+            if($f['performers'] == ['']) {
+                //this is an error due to the way the filter form works.
+                $f['performers'] = [];
+            }
             
             //Exclude tags: $f['performers']do NOT contain ALL of the selected tags here will be displayed
             $f['exclude_all'] = false; // there's no interface to set this yet, and it seems that it would be more effective to exclude all songs that contain _any_ of the selected tage (smaller list)
@@ -701,16 +727,23 @@ class songlistComponent extends Component {
 	public function filtered_songlist_html($f = []) {
 	    $html = '';
 	    $query = $this->filterAllSongs($f);
-	 
+	    $performer_filter_on = sizeof($f['performers']) > 0 ?  true: false;
+
+	    //debug($filter_on);
+	    
 	    $html = $html . '<div class="filtered-songlist">';
 	    if($this->print_title !== '') {
 	        $html = $html . '<span class="filter-title">';
 	        $html = $html . $this->print_title;
+	        $html = $html . '<span class="query-count">';
+	        $html = $html . $query->count();
+	        $html = $html . '</span>';
 	        $html = $html . '</span>';
 	    }
 	    $html = $html . '<ul id="songlist">';
 	    $primary_key = "";
 	    $primary_capo = "";
+	    
 	    foreach ($query as $song) {
 	        $performers_html='';
 	        $existing_performer_keys = [];
@@ -718,7 +751,7 @@ class songlistComponent extends Component {
 	            $performer_key = $set_song['performer']['nickname'].$set_song['key'];
 	            if (!in_array($performer_key, $existing_performer_keys)) {
 	                array_push($existing_performer_keys, $performer_key);
-	                if($this->filter_on == false || $this->selected_performer == $set_song['performer']['id']) {
+	                if($performer_filter_on == false || in_array($set_song['performer']['id'], $f['performers']) == true) {
 	                    $performers_html = $performers_html . '<span class="performer short-form">';
 	                    $performers_html = $performers_html . '<span class="nickname">' . strtolower(substr($set_song['performer']['nickname'], 0, 1)) . '</span>';
 	                    $performers_html = $performers_html . '<span class="key">' . $set_song['key'] . '</span>';
@@ -736,6 +769,10 @@ class songlistComponent extends Component {
 	    }
 	    $html = $html . '</ul>';
 	    $html = $html . '</div>';
+	    
+	    if($query->count() == 0) {
+	        $html = '';
+	    }
 	    
 	    return $html;
 	}

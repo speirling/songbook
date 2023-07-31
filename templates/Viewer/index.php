@@ -67,11 +67,11 @@ $(document).ready(function(){
                 <span class="clear-filters button" onclick="SBK.CakeUI.form.clear_filters(this)">X</span>
                 <span class="performer-id tag-id">     
                 	<h3>Performer</h3>                     
-               		<?= $this->Form->control('performer_id', ['label' => '', 'empty' => 'Please select ...', 'options' => $performers, 'default' => $selected_performer]); ?>
+               		<?= $this->Form->control('performers[]', ['label' => '', 'empty' => 'Please select ...', 'options' => $performers, 'default' => $selected_performer]); ?>
                 </span>
                 <span class="tag-id">
                 	<h3>Tags</h3>
-                    <?= $this->Form->control('filter_tag_id', ['label' => 'Include songs with these:', 'options' => $all_tags, 'multiple' => true, 'default' => $selected_tags]); ?>
+                    <?= $this->Form->control('tags', ['label' => 'Include songs with these:', 'options' => $all_tags, 'multiple' => true, 'default' => $selected_tags]); ?>
                     <?= $this->Form->control('exclude_tag_id', ['label' => 'Exclude songs with any of these:', 'options' => $all_tags, 'multiple' => true, 'default' => $selected_exclude_tags]); ?>
                 </span>
                 

@@ -60,6 +60,11 @@ html, body, div.container, table#viewer{
 	text-decoration: line-through;
 }
 
+.filtered-songlist .filter-title .query-count {
+	font-size: 0.8em;
+	color: white;
+}
+
 .filtered-songlist .performer.short-form {
 	display: inline-block;
 	margin-left: 0.3em;
