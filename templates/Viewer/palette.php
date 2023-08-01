@@ -45,20 +45,18 @@ echo('</div>');
 <a class="button" href = "/songbook/viewer">Viewer</a>
 <a class="button" href = "/songbook/dashboard">Dashboard</a>
 
-        	<ul>
-        	<?php 
+        	<ul><?php 
         	foreach($filter_definition_sets as $filter_set_name => $filter_set_definition) {
-
-                echo ('<li>');
-                echo (
-                    $this->Html->link(
-                        __('$filter_set_name'), 
-                        ['controller' => 'viewer', 'action' => 'palette', '?'=>['filter_set'=>http_build_query($filter_set_definition)]], 
-                        ['target'=>'_blank'])
-                );
-                echo ('</li>');
-            }
-            ?>
+        	    ?>
+                <li><?php
+                    echo $this->Html->link(__($filter_set_name), ['controller' => 'viewer', 'action' => 'palette', '?'=>['filter_set'=>http_build_query($filter_set_definition)]], ['target'=>'_blank']) 
+                ?></li><?php 
+        	}
+                ?>
+            </ul>
+            <ul>
+                <li><?= $this->Html->link(__('New Song'  ), ['controller' => 'Songs',      'action' => 'add'  ]) ?></li>
+                <li><?= $this->Html->link(__('Dashboard' ), ['controller' => 'Dashboard',      'action' => 'index']) ?></li>
             </ul>
         </span>
         <?php /* end of Hideable filter panel --------------------------------- */ ?>

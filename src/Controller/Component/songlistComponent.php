@@ -278,11 +278,9 @@ class songlistComponent extends Component {
 			 *              songbook/dashboard?sort=title
 			 * etc.
 			 */ 
-		if(is_array($f['sortby'] !== '' && $f['direction'] !== '')) {
+		if($f['sortby'] !== '' && $f['direction'] !== '') {
 		    $filtered_list_query->order([$f['sortby'] => $f['direction']]);
 		}
-		
-		
 		
 		//===========================================================================
 		$filter_on = false;

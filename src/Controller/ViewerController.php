@@ -95,10 +95,8 @@ class ViewerController extends AppController
                 ],
             ], [
                 'tags' =>  [
-                    2, // Irish
+                    25, // Ballad
                     15, // AllMixedUp
-                    -13, // Lively (Fast)
-                    -20, // Slow
                 ],
                 'performers' => [
                     1,  //Euge
@@ -106,8 +104,11 @@ class ViewerController extends AppController
                 ],
             ], [
                 'tags' =>  [
-                    25, // Ballad
+                    2, // Irish
                     15, // AllMixedUp
+                    -13, // Lively (Fast)
+                    -20, // Slow
+                    -25, // Ballad
                 ],
                 'performers' => [
                     1,  //Euge
@@ -124,25 +125,7 @@ class ViewerController extends AppController
                 ],
             ], [
                 'tags' =>  [
-                    5, // Rock&Roll
-                    15, // AllMixedUp
-                ],
-                'performers' => [
-                    1,  //Euge
-                    -3,  //midge
-                ],
-            ], [
-                'tags' =>  [
                     30, // Singalong
-                    15, // AllMixedUp
-                ],
-                'performers' => [
-                    1,  //Euge
-                    -3,  //midge
-                ],
-            ], [
-                'tags' =>  [
-                    44, // Solo
                     15, // AllMixedUp
                 ],
                 'performers' => [
@@ -195,7 +178,16 @@ class ViewerController extends AppController
                     1,  //Euge
                     -3,  //midge
                 ],
-            ],
+            ],[
+                'tags' =>  [
+                    44, // Solo
+                    15, // AllMixedUp
+                ],
+                'performers' => [
+                    1,  //Euge
+                    -3,  //midge
+                ],
+            ], 
         ],
         'Paette E-Session' => [
             ['tags' =>  [ 29, /* Chorus */                          ], 'performers' => [ 1,  /* Euge */ ]],

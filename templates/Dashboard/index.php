@@ -27,13 +27,13 @@
     <?= $this->Form->end() ?>
 
     <ul class="side-nav">
-        <li><?= $this->Html->link(__('Viewer'), ['controller' => 'viewer']) ?></li>
-        <li><?= $this->Html->link(__('New Song'), ['controller' => 'Songs', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('New Event'), ['controller' => 'Events', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('Songs'), ['controller' => 'Songs', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('Playlists'), ['controller' => 'Playlists', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('Viewer'    ), ['controller' => 'viewer']) ?></li>
+        <li><?= $this->Html->link(__('New Song'  ), ['controller' => 'Songs',      'action' => 'add'  ]) ?></li>
+        <li><?= $this->Html->link(__('New Event' ), ['controller' => 'Events',     'action' => 'add'  ]) ?></li>
+        <li><?= $this->Html->link(__('Songs'     ), ['controller' => 'Songs',      'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('Playlists' ), ['controller' => 'Playlists',  'action' => 'index']) ?></li>
         <li><?= $this->Html->link(__('Performers'), ['controller' => 'Performers', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('Events'), ['controller' => 'Events', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('Events'    ), ['controller' => 'Events',     'action' => 'index']) ?></li>
         <hr>
         <?= $this->Html->link(__('Printable'), ['controller' => 'dashboard', 'action' => 'printable', '?'=>['text_search'=>'', 'performer_id'=>$selected_performer, 'filter_tag_id'=>$filter_tag_id]], ['target'=>'_blank']) ?>
         <br>
