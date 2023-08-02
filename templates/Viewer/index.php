@@ -67,7 +67,7 @@ $(document).ready(function(){
                 <span class="clear-filters button" onclick="SBK.CakeUI.form.clear_filters(this)">X</span>
                 <span class="performer-id tag-id">     
                 	<h3>Performer</h3>                     
-               		<?= $this->Form->control('performers[]', ['label' => '', 'empty' => 'Please select ...', 'options' => $performers, 'default' => $selected_performer]); ?>
+               		<?= $this->Form->control('performers[]', ['label' => '', 'empty' => 'Please select ...', 'options' => $performers, 'class'=>'exclude-from-select2', 'default' => $selected_performer]); ?>
                 </span>
                 <span class="tag-id">
                 	<h3>Tags</h3>
@@ -97,8 +97,8 @@ $(document).ready(function(){
                 ?>
             </ul>
             <ul>
-                <li><?= $this->Html->link(__('New Song'  ), ['controller' => 'Songs',      'action' => 'add'  ]) ?></li>
-                <li><?= $this->Html->link(__('Dashboard' ), ['controller' => 'Dashboard',      'action' => 'index']) ?></li>
+                <li><?= $this->Html->link(__('New Song'  ), ['controller' => 'Songs',      'action' => 'add'  ], ['target'=>'_blank']) ?></li>
+                <li><?= $this->Html->link(__('Dashboard' ), ['controller' => 'Dashboard',      'action' => 'index'], ['target'=>'_blank']) ?></li>
             </ul>
         </span>
         <?php /* end of Hideable filter panel --------------------------------- */ ?>

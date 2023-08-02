@@ -159,6 +159,12 @@ span.container-hideable {
 span.container-hideable select {
 	width: 240px;
 }
+span.container-hideable select#performers {
+	width: 210px;
+	background-color: transparent;
+	border: 1px solid silver;
+	padding: 10px;
+}
 
 .button  {
 	line-height: 1em;
