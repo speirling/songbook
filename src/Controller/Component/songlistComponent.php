@@ -739,10 +739,10 @@ class songlistComponent extends Component {
 	        $html = $html . '</span>';
 	    }
 	    $html = $html . '<ul id="songlist">';
-	    $primary_key = "";
-	    $primary_capo = "";
 	    
 	    foreach ($query as $song) {
+	        $primary_key = "";
+	        $primary_capo = "";
 	        $performers_html='';
 	        $existing_performer_keys = [];
 	        foreach ($song['set_songs'] as $set_song) {
