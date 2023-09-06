@@ -24,6 +24,8 @@ $(document).ready(function(){
     /* show/hide the tools panel */
     SBK.StaticFunctions.make_hideable_panel('.container-hideable', "...", "^");
 
+    /* allow songlist title to be examined */
+    jQuery('.filter-title').on('click', function(){jQuery(this).toggleClass('expanded')});
 });
 </script>
 

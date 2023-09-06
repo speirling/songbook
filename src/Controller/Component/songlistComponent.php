@@ -659,6 +659,8 @@ class songlistComponent extends Component {
 		    }
 		    $print_title = $print_title . '">';
 		    
+		    $print_title = $print_title . '<label>Performers:</label>';
+		    
 		    $print_title = $print_title . $all_performers_array[abs($this_performer_id)];
 		    $print_title = $print_title . '</span>';
 		}
@@ -669,7 +671,7 @@ class songlistComponent extends Component {
     		    $all_venues_array[$id] = $value;
     		}
     		
-    		$print_title = $print_title . '<span class="venue">' . $all_venues_array[$f['selected_venue']] . '</span>';
+    		$print_title = $print_title . '<span class="venue"><label>Venue:</label>' . $all_venues_array[$f['selected_venue']] . '</span>';
 		}
 
 		$all_tags_array = []; //$all_tags is a query object, not an array
@@ -677,6 +679,7 @@ class songlistComponent extends Component {
 		    $all_tags_array[$id] = $value;
 		}
 		
+		$print_title = $print_title . '<label>Tags:</label>';
 		foreach($f['tags'] as $this_tag_id) {
 		    $print_title = $print_title . '<span class="tag ';
 		    if($this_tag_id > 0) {
@@ -686,6 +689,7 @@ class songlistComponent extends Component {
 		    }
 		        $print_title = $print_title . '">';
 		        
+		    
 		        $print_title = $print_title . $all_tags_array[abs($this_tag_id)];
 		        $print_title = $print_title . '</span>';
 		}
@@ -734,6 +738,7 @@ class songlistComponent extends Component {
 	        $html = $html . '<span class="filter-title">';
 	        $html = $html . $this->print_title;
 	        $html = $html . '<span class="query-count">';
+	        $html = $html . '<label>Number of songs</label>';
 	        $html = $html . $query->count();
 	        $html = $html . '</span>';
 	        $html = $html . '</span>';
