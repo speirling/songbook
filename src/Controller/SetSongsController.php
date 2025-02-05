@@ -86,7 +86,7 @@ class SetSongsController extends AppController
         $this->response->type('json');
         //and avoid rendering a CakePHP View:
         $this->autoRender = false;
-        $request_data = $this->request->query;
+        $request_data = $this->getRequest()->query;
 
         $setSong = $this->SetSongs->newEntity([]);
 
@@ -131,20 +131,20 @@ class SetSongsController extends AppController
     {
     	$redirect_array = ['controller' => $ret_controller, 'action' => $ret_action, $ret_id];
     	
-    	if ($this->request->is('post')) {
+    	if ($this->getRequest()->is('post')) {
     		$data = [
-    			'set_id' => $this->request->data['set_id'],
+    			'set_id' => $this->getRequest()->getData()['set_id'],
     			'song' => [
-    				'title' => $this->request->data['title'],
-    				'performed_by' => $this->request->data['performed_by']
+    				'title' => $this->getRequest()->getData()['title'],
+    				'performed_by' => $this->getRequest()->getData()['performed_by']
     			],
-    			'key' => $this->request->data['key'],
-    			'order' => $this->request->data['order'],
-    			'performer_id' => $this->request->data['performer_id']
+    			'key' => $this->getRequest()->getData()['key'],
+    			'order' => $this->getRequest()->getData()['order'],
+    			'performer_id' => $this->getRequest()->getData()['performer_id']
     		];
 
-			if(array_key_exists('performed_by', $this->request->data)) {
-				$data['song']['performed_by'] = $this->request->data['performed_by'];
+			if(array_key_exists('performed_by', $this->getRequest()->getData())) {
+				$data['song']['performed_by'] = $this->getRequest()->getData()['performed_by'];
 			}
 
     		$setSong = $this->SetSongs->newEntity($data);
@@ -173,8 +173,8 @@ class SetSongsController extends AppController
         $setSong = $this->SetSongs->get($id, [
             'contain' => []
         ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $setSong = $this->SetSongs->patchEntity($setSong, $this->request->data);
+        if ($this->getRequest()->is(['patch', 'post', 'put'])) {
+            $setSong = $this->SetSongs->patchEntity($setSong, $this->getRequest()->getData());
             if ($this->SetSongs->save($setSong)) {
 		        // In case the sort order has been changed using javascript - giving fractional ranking values
 		        $this->rerank($setSong['set_id']);
@@ -220,7 +220,7 @@ class SetSongsController extends AppController
      */
     public function delete($id = null, $redirect_array = ['action' => 'index'])
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->getRequest()->allowMethod(['post', 'delete']);
         $setSong = $this->SetSongs->get($id);
         if ($this->SetSongs->delete($setSong)) {
             $this->Flash->success(__('The set song has been deleted.'));
