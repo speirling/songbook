@@ -24,8 +24,9 @@ class songlistComponent extends Component {
         'exclude_tag_array' => [],
         'selected_venue' => '',
         'paginate' => false,
+        'custom_list' => [],
     ];
-    
+   
     function setEvent($event) {
         $this->event = $event;
     }
@@ -134,6 +135,14 @@ class songlistComponent extends Component {
                 $filter_on = true;
                 $f['selected_venue'] = $q['venue'];
             }
+                        
+            // Custom List :  limit the list to (at most) a specified list of song IDs
+            if (array_key_exists('custom', $q) && $q['custom']) {
+                $filter_on = true;
+                $f['custom_list'] = $q['custom'];
+            }
+            
+            
         } else {
             throw ('No Query paramters available');
         }
@@ -528,32 +537,40 @@ class songlistComponent extends Component {
 		} 
 		
 		
-
+		
 		//-------------------
-        // FILTER BY: [Venue] :  limit the result to songs that were placed withtin an event at the specified venue
+		// FILTER BY: [Venue] :  limit the result to songs that were placed within an event at the specified venue
 		if ($f['selected_venue'] !== '') {
-
-			//find all of the events that were at this venue
-			$venue_query = $controller->Events->findAllByVenue($f['selected_venue']);
-			$event_times = $venue_query->toArray();
-
-			//find all of the songs played during the times of the events at that venue
-			$performance_conditions = [];
-			$performance_query = $controller->SongPerformances->find();
-			foreach($venue_query->toArray() as $key => $event) {
-				$performance_query->orWhere("`SongPerformances`.`timestamp` BETWEEN \"".date("Y-m-d H:i:s", strtotime($event->timestamp) - $event->duration_hours * 60 * 60)."\" AND \"".date("Y-m-d H:i:s", strtotime($event->timestamp) + $event->duration_hours * 60 * 60)."\"");
-			}
-			$performance_query->distinct('song_id');
-			$performance_list = $performance_query->extract('song_id');
-			$song_id_list = [];
-			foreach ($performance_list as $id => $song_id) {
-				array_push($song_id_list, $song_id);
-			}
-
-			$filtered_list_query->andWhere(['`Songs`.`id` IN' => $song_id_list]);
-
+		    
+		    //find all of the events that were at this venue
+		    $venue_query = $controller->Events->findAllByVenue($f['selected_venue']);
+		    $event_times = $venue_query->toArray();
+		    
+		    //find all of the songs played during the times of the events at that venue
+		    $performance_conditions = [];
+		    $performance_query = $controller->SongPerformances->find();
+		    foreach($venue_query->toArray() as $key => $event) {
+		        $performance_query->orWhere("`SongPerformances`.`timestamp` BETWEEN \"".date("Y-m-d H:i:s", strtotime($event->timestamp) - $event->duration_hours * 60 * 60)."\" AND \"".date("Y-m-d H:i:s", strtotime($event->timestamp) + $event->duration_hours * 60 * 60)."\"");
+		    }
+		    $performance_query->distinct('song_id');
+		    $performance_list = $performance_query->extract('song_id');
+		    $song_id_list = [];
+		    foreach ($performance_list as $id => $song_id) {
+		        array_push($song_id_list, $song_id);
+		    }
+		    
+		    $filtered_list_query->andWhere(['`Songs`.`id` IN' => $song_id_list]);
+		    
 		}
-		 
+		
+		//-------------------
+		// FILTER BY: [custom_list] :  limit the result to songs that are included in a specified set of IDs
+		if ($f['custom_list'] !== []) {
+		    
+		    $filtered_list_query->andWhere(['`Songs`.`id` IN' => $f['custom_list'] ]);
+		    
+		}
+		
 
 		//end of [title, tags, performer] filtering -------------------------
 		//===========================================================================

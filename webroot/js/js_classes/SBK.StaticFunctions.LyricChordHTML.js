@@ -98,7 +98,7 @@ SBK.StaticFunctions.LyricChordHTML = {
         // What_I_want_to_avoid(*SKIP)(*FAIL)|What_I_want_to_match
         
         //-----------------------------------------------------------
-        //NOTE: THere is no equivalent of PCRE (SKIP) in Javascript. You'd have to rework this whole section
+        //NOTE: There is no equivalent of PCRE (SKIP) in Javascript. You'd have to rework this whole section
         //-----------------------------------------------------------
         //var REPLACESTRING = '<.*?>(*SKIP)(*FAIL)|\{.*?\}(*SKIP)(*FAIL)|[' + $exception_string + '^\n]?\[.*?\][\w]?(*SKIP)(*FAIL)|' + $ignore_string + '\b';
         
@@ -174,10 +174,11 @@ SBK.StaticFunctions.LyricChordHTML = {
         
         
         
-
+        //&#38; is the xml-compatible version of &amp;
+        //replace apmpersands with this... unless, of course, they are part of a character entity, i.e. followed by a # and a number
         $contentHTML = $contentHTML.replace(/&([^#n])/g, '&#38;$1');
-    
-        $contentHTML = $contentHTML.replace(/\n/g,'</span></div><div class="line"><span class="text">');
+    	//Wrap remaining lines in divs and spans. Was this not already done??
+        //$contentHTML = $contentHTML.replace(/\n/g,'</span></div><div class="line"><span class="text">');
         
         //*/
         

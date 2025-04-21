@@ -6,7 +6,8 @@ html, body, div.container, table#viewer{
 
 	
 #viewer-sidebar,
-#viewer-main {	
+#viewer-main,
+#custom-list-display {	
 	border: 1px solid gray;
 	vertical-align: top;
 	overflow: scroll;
@@ -151,17 +152,17 @@ html, body, div.container, table#viewer{
 	margin-left: 0.2em;
 }
 
-.filtered-songlist #songlist {
+ .filtered-songlist ul {
 	list-style-type: none; 
     padding: 15px; 
     padding-top: 0;
     margin: 0; 
 }
 
-.filtered-songlist #songlist li {
+.filtered-songlist ul li{
 	margin-top:0.5em;
 }
-.filtered-songlist #songlist li .song-title {
+.filtered-songlist ul li .song-title {
 	display: inline-block;
 	max-width: 200px;
 	overflow:hidden;
@@ -174,7 +175,8 @@ html, body, div.container, table#viewer{
 	padding-top: 75px;
 }
 
-#viewer-main {
+#viewer-main,
+#custom-list-display {
 	left: 300px;
 	right: 0;
 }
@@ -214,7 +216,8 @@ html, body, div.container, table#viewer{
 	/*width: 50px;*/
 	/*padding: 0;*/
 }
-#songlist {
+#songlist,
+#customlist  {
 	display: block;
 }
 

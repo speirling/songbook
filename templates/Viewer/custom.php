@@ -1,4 +1,7 @@
-<?php /* Template/Viewer/index.php*/  
+<?php /* Template/Viewer/custom.php*/  
+//An interface for defining custom lists
+//Accessed at https://fps.epeelo.com:9134/songbook/viewer/custom
+
     $filter_on = false;
 
     if ($this->getRequest()->is(array('post', 'put', 'get'))) {
@@ -16,16 +19,23 @@
 ?>
 <script>
 $(document).ready(function(){
-	/* Make songnames into links, opening the song in the viewer panel */
+	/* Make songnames into links, adding the song in the custom list panel */
     jQuery('#songlist>li').on('click', function (event) {
-    	this_li = jQuery(event.target).closest('li');
-        target_iframe = jQuery('#viewer-main>iframe');
 
-		link_url = '/songbook/songs/embedded/' + encodeURIComponent(this_li.attr('data-id')) + '?vw=' + target_iframe.width() + '&vh=' + target_iframe.height() + '&key=' + encodeURIComponent(this_li.attr('data-key')) + '&capo=' + this_li.attr('data-capo') + '';
+    	this_li = jQuery(event.target).closest('li');
     	
-    	console.log(this_li, link_url);
-    	target_iframe.attr('src', link_url);
+    	targetlist_id = (this_li.parent().attr('id') === 'songlist') ? 'customlist' : 'songlist';
+    	
+    	jQuery('ul#' + targetlist_id).append(this_li);
 		
+    });
+    jQuery('#display-custom-url').on('click', function() {
+    	var url= '';
+        jQuery.each(jQuery('#customlist li'), function(i, val){
+        	url = url + 'custom[]=' + jQuery(val).attr('data-id') + '&';
+        });
+        console.log(url);
+        window.open('https://fps.epeelo.com:9134/songbook/viewer?' + url, '_blank')
     });
 
 	/* put a filter textbox at the top of the list */
@@ -61,7 +71,7 @@ $(document).ready(function(){
 
     	<?php /* Hideable filter panel --------------------------------- */ ?>
     	<span class="container-hideable"  style="visibility: hidden;">
-        	<?= $this->Form->create(null, ['type' => 'get', 'url' => ['controller' => 'viewer', 'action' => 'index']]) ?>
+        	<?= $this->Form->create(null, ['type' => 'get', 'url' => ['controller' => 'viewer', 'action' => 'custom']]) ?>
             <fieldset class="performer-tags-filter">
             
                 <span class="clear-filters button" onclick="SBK.CakeUI.form.clear_filters(this)">X</span>
@@ -74,44 +84,27 @@ $(document).ready(function(){
                     <?= $this->Form->control('tags', ['label' => 'Include songs with these:', 'options' => $all_tags, 'multiple' => true, 'default' => $selected_tags]); ?>
                     <?= $this->Form->control('exclude_tag_id', ['label' => 'Exclude songs with any of these:', 'options' => $all_tags, 'multiple' => true, 'default' => $selected_exclude_tags]); ?>
                 </span>
-                
+                <span class="selected-custom">
+                	<?= $this->Form->control('customselect', ['type' => 'textarea']); ?>
+                </span>
                 <span class="selected-tags-and-performer button"><?= $this->Form->button(__('Filter the list')) ?></span>
                 </span>
+                
             </fieldset>
             <?= $this->Form->end() ?>
-        	<ul>
-                <li><?= $this->Html->link(__('E-AMU'), ['controller' => 'viewer', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'1', 'tags'=>[15], 'exclude_tag_id'=>[21]]], ['target'=>'_blank']) ?></li>
-                <li><?= $this->Html->link(__('M-AMU'), ['controller' => 'viewer', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'3', 'tags'=>[15], 'exclude_tag_id'=>[21]]], ['target'=>'_blank']) ?></li>
-                <li><?= $this->Html->link(__('E-Irish'), ['controller' => 'viewer', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'1', 'tags'=>[2, 25]]], ['target'=>'_blank']) ?></li>
-                <li><?= $this->Html->link(__('E-Lively-AMU'), ['controller' => 'viewer', 'action' => 'index', '?'=>['text_search'=>'', 'performer_id'=>'1', 'filter_tag_id'=>[13, 15]]], ['target'=>'_blank']) ?></li>
-                <li><?= $this->Html->link(__('Christmas-AMU'), ['controller' => 'viewer', 'action' => 'index', '?'=>['text_search'=>'', 'filter_tag_id'=>[15, 21]]], ['target'=>'_blank']) ?></li>
-                <li><?= $this->Html->link(__('Piano'), ['controller' => 'viewer', 'action' => 'index', '?'=>['text_search'=>'', 'filter_tag_id'=>[1]]], ['target'=>'_blank']) ?></li>
-            </ul>
-        	<ul><?php 
-        	foreach($filter_definition_sets as $filter_set_name => $filter_set_definition) {
-        	    ?>
-                <li><?php
-                    echo $this->Html->link(__($filter_set_name), ['controller' => 'viewer', 'action' => 'palette', '?'=>['filter_set'=>http_build_query($filter_set_definition)]], ['target'=>'_blank']) 
-                ?></li><?php 
-        	}
-                ?>
-            </ul>
-            <ul>
-                <li><?= $this->Html->link(__('New Song'  ), ['controller' => 'Songs',      'action' => 'add'  ], ['target'=>'_blank']) ?></li>
-                <li><?= $this->Html->link(__('Dashboard' ), ['controller' => 'Dashboard',  'action' => 'index'], ['target'=>'_blank']) ?></li>
-                <li><?= $this->Html->link(__('Custom List Builder' ), ['controller' => 'viewer',  'action' => 'custom'], ['target'=>'_blank']) ?></li>                
-            </ul>
+        	
+        	
         </span>
         <?php /* end of Hideable filter panel --------------------------------- */ ?>
     </span>
 <?php 
 	echo $filtered_list;
 ?>
+
 </div>
-<div id="viewer-main" >
-    <iframe src="">   
-    
-    </iframe>
+<div id="custom-list-display" class='filtered-songlist'>
+<div class='button' id='display-custom-url'>Display the custom list URL</div>
+<ul id="customlist"></ul>
 </div>
         
         

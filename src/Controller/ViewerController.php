@@ -212,6 +212,9 @@ class ViewerController extends AppController
 	public $paginate = [
 			'limit' => 35
 	];
+	
+	//Each of the methods below has a corresponding Template, for which the method sets the required variables
+	
 	/**
 	 * Index method
 	 *
@@ -251,6 +254,8 @@ class ViewerController extends AppController
 	            $filter_set = $sort_definition_sets['Euge AMU'];
 	        }
 	    }
+	    
+	   
 
 	    $filtered_data = [];
 	    foreach ($filter_set as $filter_definition) {
@@ -261,4 +266,11 @@ class ViewerController extends AppController
 	    $this->set('filter_definition_sets', $this->filter_definition_sets);
 	}
 	
+	
+	//For selecting songs to define a custom list
+	public function custom() {
+	    //set up the left-hand side index - set title and filter_definition_sets variables
+	    $this->index();
+	    
+	}
 }
