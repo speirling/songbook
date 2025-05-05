@@ -196,6 +196,8 @@ html, body, div.container, table#viewer{
 	border: 1px solid green;
 	background-color: white;
 	width:300px;
+	max-height: 90%;
+	overflow: scroll;
 }
 #filter_container li {
 	line-height: 1.5;

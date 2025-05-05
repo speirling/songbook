@@ -25,6 +25,7 @@ class songlistComponent extends Component {
         'selected_venue' => '',
         'paginate' => false,
         'custom_list' => [],
+        'custom_list_already_selected' => [],
     ];
    
     function setEvent($event) {
@@ -137,11 +138,11 @@ class songlistComponent extends Component {
             }
                         
             // Custom List :  limit the list to (at most) a specified list of song IDs
-            if (array_key_exists('custom', $q) && $q['custom']) {
-                $filter_on = true;
-                $f['custom_list'] = $q['custom'];
-            }
-            
+            //for brevity, "custom" ids are in the url as an array simply named "c"
+             if (array_key_exists('c', $q) && $q['c']) {
+                 $filter_on = true;
+                 $f['custom_list'] = $q['c'];
+             }
             
         } else {
             throw ('No Query paramters available');
@@ -305,7 +306,7 @@ class songlistComponent extends Component {
 		// FILTER BY: [Tags]: Limit the result to songs that are associated with ALL of the passed array of tags
 		/*
 		 * This has to be done as a subquery, because a HAVING COUNT() must be used to ensure that only songs that are associated with _all_ of the specified tags will be displayed.
-		 * That statement interferes with larger more complex queries - e.g. filtered byt Tag _and_ Performer, and can filter out any records that have multiple entries in the final query.
+		 * That statement interferes with larger more complex queries - e.g. filtered by Tag _and_ Performer, and can filter out any records that have multiple entries in the final query.
 		 *                 $filtered_list_query->having(['COUNT(Songs.id) = ' => sizeof($f['tags'])]);
 		 * Keeping the HAVING COUNT() inside a subquery seems to avoid that problem
 		 * 
@@ -355,7 +356,7 @@ class songlistComponent extends Component {
     		
     		// b) FILTER BY: [Exclude Tags] Limit the result of previous queries to only those songs that are NOT tagged with any of these tags
     		if (sizeof($exclude_tag_array) > 0) {
-    		    //You wasn to DELETE any songs already returned that are associated with ANY of the tags in the exclude_tag_array
+    		    //You want to DELETE any songs already returned that are associated with ANY of the tags in the exclude_tag_array
     		    //So, start with a query that would get all songs in the database.
     		    $subquery_SongWithAnyExcludeTags = $controller->Songs->find();
     		    //and restrict it to songs that have ANY of the "exclude" tags
@@ -432,7 +433,7 @@ class songlistComponent extends Component {
     		    
     		    
     		    
-//////////////////////Alternative 2 - aame pattern as  as tags so that excludes can be handled - but doesn't seem to return the correct number of songs (17) list = 17 entries - but all unique
+//////////////////////Alternative 2 - same pattern as  as tags so that excludes can be handled - but doesn't seem to return the correct number of songs (17) list = 17 entries - but all unique
 ///HAVING COUNT(`Songs`.`id`) = 1 removes duplicates!!
 //*
     		    $filtered_list_query->Join([
@@ -570,7 +571,6 @@ class songlistComponent extends Component {
 		    $filtered_list_query->andWhere(['`Songs`.`id` IN' => $f['custom_list'] ]);
 		    
 		}
-		
 
 		//end of [title, tags, performer] filtering -------------------------
 		//===========================================================================
@@ -587,7 +587,6 @@ class songlistComponent extends Component {
         
         //------------------------------------------------------------
         //Pass data to the View, separate from the list
-        
 
 		//pass the list of all tags to the view
 		$controller->loadModel('Tags');
@@ -636,6 +635,7 @@ class songlistComponent extends Component {
 		$this->page_title = $this->page_title($f, $all_performers, $all_venues, $all_tags);
 		$controller->page_title = $this->page_title;
 		$this->selected_performer= $f['performers'];
+		
 		
 		//End of passing data to the view ------------------------------------------------------------------
 		

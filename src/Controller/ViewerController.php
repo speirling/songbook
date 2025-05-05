@@ -269,6 +269,42 @@ class ViewerController extends AppController
 	
 	//For selecting songs to define a custom list
 	public function custom() {
+	    
+	    if ($this->getRequest()->is(array('post', 'put', 'get'))) {
+	        if ($this->getRequest()->is(array('get'))) {
+	            $q = $this->getRequest()->getQuery();
+	        } else {
+	            $q = $this->getRequest()->getData();
+	        }
+	        
+	        //in order to be able to edit the custom list and still use the filter 
+	        //if the filter is applied, then songs that have already been added to the custom list might be omitted
+	        //so add them to the songlist after the filter
+	        
+	        //When using the customlist builder interface, you have to be able to access songs that the filter would exclued,
+	        //i.e. those defined by the ['custom_list_already_selected'] list
+	        //extend the result to include those songs specified in custom_list_already_selected
+	        if (array_key_exists('f', $q) && $q['f'] && $q['f'] !== []) {
+	            $f['custom_list_already_selected'] = $q['f'];
+	            
+	            $this->loadModel('Songs');
+	            $this->loadModel('Events');
+	            $this->loadModel('SongPerformances');
+	            $this->loadModel('SongVotes');
+	            
+	            //basic query
+	            $filtered_list_query = $this->Songs->find();
+                //just the selected custom list
+	            $filtered_list_query->Where(['`Songs`.`id` IN' => $f['custom_list_already_selected'] ]);
+	            
+	            //send these songs to the custom.php view
+ 	            $this->set('custom_list', $filtered_list_query);
+	        }
+	        
+	        
+	        
+	    }
+	    
 	    //set up the left-hand side index - set title and filter_definition_sets variables
 	    $this->index();
 	    
