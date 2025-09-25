@@ -162,6 +162,12 @@ $(document).ready(function(){
 <div class='button' id='display-custom-url'>Display the custom list URL</div>
 <ul id="customlist"><?php 
 if(isset($custom_list)) {
+    //This should prefill the current/selected custom list
+    //but where is $custom_list set?? -> set in ViewerController
+    //the Editable custom list is set to include any songs specified by "f" in the URL
+    //  e.g. f[]=1155&f[]=1172&f[]=1164&f[]=1143&f[]=750
+    // Note, if the URL contains both "f" and "c", then the existing custom list will be displayed (f) in the edit pane, and only those songs specified by "c" will be available to select for adding to the custom list.
+    // so you can create a new custom list from an existing custom list if you really want to
     $html = '';
     foreach ($custom_list as $song) {
         $primary_key = "";

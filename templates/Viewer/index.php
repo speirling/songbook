@@ -1,4 +1,14 @@
 <?php /* Template/Viewer/index.php*/  
+   /*
+    * SHows the list of all available solngs in a left-hand list. 
+    * Clicking on a song displays the lyrics in the right-hand pane.
+    * Custom Lists: The list of songs can be filtered by the URL having a variable "c" set like this:
+    * 
+            c[]=1155&c[]=1172&c[]=1164&c[]=1143&c[]=750&c[]=764&c[]=974&c[]=1078&c[]=1142
+    * (this is processed in SonglistComponent, wher $f['custom_list'] is set)
+
+    */
+
     $filter_on = false;
 
     if ($this->getRequest()->is(array('post', 'put', 'get'))) {
@@ -99,13 +109,13 @@ $(document).ready(function(){
             <ul>
                 <li><?= $this->Html->link(__('New Song'  ), ['controller' => 'Songs',      'action' => 'add'  ], ['target'=>'_blank']) ?></li>
                 <li><?= $this->Html->link(__('Dashboard' ), ['controller' => 'Dashboard',  'action' => 'index'], ['target'=>'_blank']) ?></li>
-                <li><?= $this->Html->link(__('Custom List Builder' ), ['controller' => 'viewer',  'action' => 'custom'], ['target'=>'_blank']) ?></li>                
+                <li><?= $this->Html->link(__('Custom List Builder' ), ['controller' => 'viewer',  'action' => 'custom', '?' => ['f'=>$current_custom_list]], ['target'=>'_blank']) ?></li>                
             </ul>
         </span>
         <?php /* end of Hideable filter panel --------------------------------- */ ?>
     </span>
 <?php 
-	echo $filtered_list;
+	echo $filtered_list; //set in ViewerController
 ?>
 </div>
 <div id="viewer-main" >

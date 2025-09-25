@@ -86,45 +86,6 @@ class ViewerController extends AppController
                 ],
             ], [
                 'tags' =>  [
-                    20, // Slow
-                    15, // AllMixedUp
-                ],
-                'performers' => [
-                    1,  //Euge
-                    -3,  //midge
-                ],
-            ], [
-                'tags' =>  [
-                    25, // Ballad
-                    15, // AllMixedUp
-                ],
-                'performers' => [
-                    1,  //Euge
-                    -3,  //midge
-                ],
-            ], [
-                'tags' =>  [
-                    2, // Irish
-                    15, // AllMixedUp
-                    -13, // Lively (Fast)
-                    -20, // Slow
-                    -25, // Ballad
-                ],
-                'performers' => [
-                    1,  //Euge
-                    -3,  //midge
-                ],
-            ], [
-                'tags' =>  [
-                    29, // Chorus
-                    15, // AllMixedUp
-                ],
-                'performers' => [
-                    1,  //Euge
-                    -3,  //midge
-                ],
-            ], [
-                'tags' =>  [
                     30, // Singalong
                     15, // AllMixedUp
                 ],
@@ -134,7 +95,8 @@ class ViewerController extends AppController
                 ],
             ], [
                 'tags' =>  [
-                    59, // 00s
+                    20, // Slow
+                    -30, // Singalong
                     15, // AllMixedUp
                 ],
                 'performers' => [
@@ -143,7 +105,8 @@ class ViewerController extends AppController
                 ],
             ], [
                 'tags' =>  [
-                    43, // 90s
+                    25, // Ballad
+                    -30, // Singalong
                     15, // AllMixedUp
                 ],
                 'performers' => [
@@ -152,7 +115,8 @@ class ViewerController extends AppController
                 ],
             ], [
                 'tags' =>  [
-                    16, // 80s
+                    29, // Chorus
+                    -30, // Singalong
                     15, // AllMixedUp
                 ],
                 'performers' => [
@@ -160,27 +124,23 @@ class ViewerController extends AppController
                     -3,  //midge
                 ],
             ], [
-                'tags' =>  [
-                    14, // 70s
-                    15, // AllMixedUp
-                    -20, // Slow
-                ],
-                'performers' => [
-                    1,  //Euge
-                    -3,  //midge
-                ],
-            ], [
-                'tags' =>  [
-                    6, // 60s
-                    15, // AllMixedUp
-                ],
-                'performers' => [
-                    1,  //Euge
-                    -3,  //midge
-                ],
-            ],[
                 'tags' =>  [
                     44, // Solo
+                    15, // AllMixedUp
+                ],
+                'performers' => [
+                    1,  //Euge
+                    -3,  //midge
+                ],
+            ], [
+                'tags' =>  [ //anything that fell through the cracks of the above....
+                    -13, // Lively (Fast)
+                    -20, // Slow
+                    -25, // Ballad
+                    -29, // Chorus
+                    -30, // Singalong
+                    -44, // Solo
+                    -21, // Christmas,
                     15, // AllMixedUp
                 ],
                 'performers' => [
@@ -224,14 +184,17 @@ class ViewerController extends AppController
 		$this->loadComponent('songlist');
 		$this->songlist->setPagination('off');
 		$this->songlist->setSortBy('title','ASC');
+		$filters_from_queryparams = $this->songlist->get_filters_from_queryparams();
 		$this->set('filtered_list', 
 		     $this->songlist->filtered_songlist_html(
-		         $this->songlist->get_filters_from_queryparams()
+		         $filters_from_queryparams
 		     )
 		);
 		//now $filtered_list is available in the view.
 		$this->set('title', $this->page_title);
 		$this->set('filter_definition_sets', $this->filter_definition_sets);
+		//in order to pass custom list to custom list editor, pass the current custom list to the index template
+		$this->set('current_custom_list', $filters_from_queryparams['custom_list']);
 	}
 	
 	public function palette() {
@@ -281,7 +244,7 @@ class ViewerController extends AppController
 	        //if the filter is applied, then songs that have already been added to the custom list might be omitted
 	        //so add them to the songlist after the filter
 	        
-	        //When using the customlist builder interface, you have to be able to access songs that the filter would exclued,
+	        //When using the customlist builder interface, you have to be able to access songs that the filter would exclude,
 	        //i.e. those defined by the ['custom_list_already_selected'] list
 	        //extend the result to include those songs specified in custom_list_already_selected
 	        if (array_key_exists('f', $q) && $q['f'] && $q['f'] !== []) {
