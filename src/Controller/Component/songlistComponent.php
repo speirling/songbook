@@ -3,6 +3,7 @@ namespace App\Controller\Component;
 
 use Cake\Controller\Component;
 use App\Controller\StaticFunctionController;
+use App\Controller\CustomlistsController;
 use App\Model\Entity\Song;
 use App\Model\Entity\SongTag;
 use App\Model\Entity\Tag;
@@ -24,8 +25,7 @@ class songlistComponent extends Component {
         'exclude_tag_array' => [],
         'selected_venue' => '',
         'paginate' => false,
-        'custom_list' => [],
-        'custom_list_already_selected' => [],
+        'cl_data' => ['id' => null, 'title' => '', 'comment' => '', 'url' => '', 'data' => null, 'viewer_method' => 'view'],
     ];
    
     function setEvent($event) {
@@ -70,7 +70,7 @@ class songlistComponent extends Component {
 
         $controller = $this->_registry->getController();
         $f = $this->blank_filter_definition;
-
+        
         $filter_on = false;
         if ($controller->getRequest()->is(array('post', 'put', 'get'))) {
             if ($controller->getRequest()->is(array('get'))) {
@@ -138,12 +138,117 @@ class songlistComponent extends Component {
             }
                         
             // Custom List :  limit the list to (at most) a specified list of song IDs
-            //for brevity, "custom" ids are in the url as an array simply named "c"
-             if (array_key_exists('c', $q) && $q['c']) {
-                 $filter_on = true;
-                 $f['custom_list'] = $q['c'];
-             }
+            //for brevity, "custom" ids are in the url as an array simply named "c"           
+             //also the custom lists form requires a set of data that might be passed along with everything else in URL query string.
+             //the parameter "c" used above indicates that the sidebar list is to be filtered. 'f' denotes the same data, but intended for the custom list edit form, in the right-hand pane
+             //Both panes can be filtered
+             //the main songlist can be filtered so that you can step through the limited songs.
+             //the right-hand pane can show a different list for editing, and you can only select songs to add to this edited list from the filtered left-hand songlist
+             //currently I think the edited custom list, and the customlist that the [filtered songlist (left pane)] follow may want to be different.
+             //probably most likely usecase is edit custom list in the right pane, full songlist in left-hand pane.
+             //so.... best to customise left-hand (filtered) songlist on "c" parameter only, and the list in the right-hand pane by "f" parameter only 
+             //
+             //in the edit form, the custom list may already be in the database, and so have an id - "custom_id"
+             //the database expects title comment and url
+             //in this case the "url" (really the songlist as represented in the url, not the complete url) is represented in the 'real' url as "f" parameters
+             //but, when you store the url, and when you call it up in the system, it will contain "c" parameters so that the main songlist will be filtered - the original intent of the custom list
+
             
+             $cl_data = ['id' => null, 'title' => '', 'comment' => '', 'url' => '', 'data' => null, 'viewer_method' => 'view'];
+             if(basename($_SERVER['REQUEST_URI'], '?' . $_SERVER['QUERY_STRING']) == 'custom') {
+                 $cl_data['viewer_method'] = 'custom';
+             }
+             if (array_key_exists('custom_id', $q) && $q['custom_id'] !== '') {
+                 
+                 //an ID is specified, so that custom list has already been saved - edit the latest version regardless what songs were passed in the url. It may be a saved link with outdated data.
+                 $customlistscontroller = new CustomlistsController;
+                 try {
+                     $stored_customlist =  $customlistscontroller->Customlists->get($q['custom_id'], ['contain' => [],]);
+
+                     $cl_data['id'] = $stored_customlist->id;
+                     $cl_data['title'] = $stored_customlist->title;
+                     $cl_data['comment'] = $stored_customlist->comment; 
+                     $cl_data['url'] = $stored_customlist->url;
+                     
+                     parse_str($cl_data['url'], $parsed);
+                     $cl_data['data'] = $parsed['c'];
+                     
+                     $cl_data['action'] = "edit";
+                     //debug($cl_data);
+                 } catch (\Exception $e) {
+                     //debug($e);
+                     $cl_data['action'] = "add";
+                     
+                     
+                     if (array_key_exists('custom_title', $q) && $q['custom_title'] !== '') {
+                         $cl_data["title"] = $q['custom_title'];
+                     }
+                     if (array_key_exists('custom_comment', $q) && $q['custom_comment'] !== '') {
+                         $cl_data["comment"] = $q['custom_comment'];
+                     }
+                     
+                     //if there's both "f" and "c", then use "f" for the edit list.
+                     //if there's only "f" for the edit list.
+                     //if there's only "c" ... surely you're viewing the custom list, not editing it?
+                     
+                     $c_string = '';
+                     if (array_key_exists('f', $q) && $q['f'] && $q['f'] !== []) { //you might have f instead of c if it's an edited list
+                         //$cl_data["cl_as_passed"]["edit_list"] = $q['f'];
+                         $cl_data['data'] = $q['f'];
+                         foreach ($q['f'] as $this_c) {//it has to go in the new url as "c" not "f" because it will be saved as a 'source' list, not an edit
+                             $c_string = $c_string . 'c[]=' . $this_c . '&';
+                         }
+                     } elseif (array_key_exists('c', $q) && $q['c'] && $q['c'] !== []) {
+                         //$cl_data["cl_as_passed"]["source_list"] = $q['c'];
+                         $cl_data['data'] = $q['c'];
+                         $c_string = '';
+                         foreach ($q['c'] as $this_c) {
+                             $c_string = $c_string . 'c[]=' . $this_c . '&';
+                         }
+                     }
+                     $c_string = rtrim($c_string, '&');
+                     $cl_data["url"] = $c_string;
+                     
+                 } 
+             } else {
+                 $cl_data['action'] = "add";
+             
+             
+                 if (array_key_exists('custom_title', $q) && $q['custom_title'] !== '') {
+                     $cl_data["title"] = $q['custom_title'];
+                 }
+                 if (array_key_exists('custom_comment', $q) && $q['custom_comment'] !== '') {
+                     $cl_data["comment"] = $q['custom_comment'];
+                 } 
+                 
+                 //if there's both "f" and "c", then use "f" for the edit list.
+                 //if there's only "f" for the edit list.
+                 //if there's only "c" ... surely you're viewing the custom list, not editing it?
+                 
+                 $c_string = '';
+                 if (array_key_exists('f', $q) && $q['f'] && $q['f'] !== []) { //you might have f instead of c if it's an edited list
+                     //$cl_data["cl_as_passed"]["edit_list"] = $q['f'];
+                     $cl_data['data'] = $q['f'];
+                     foreach ($q['f'] as $this_c) {//it has to go in the new url as "c" not "f" because it will be saved as a 'source' list, not an edit
+                         $c_string = $c_string . 'c[]=' . $this_c . '&';
+                     }
+                 } elseif (array_key_exists('c', $q) && $q['c'] && $q['c'] !== []) {
+                     //$cl_data["cl_as_passed"]["source_list"] = $q['c'];
+                     $cl_data['data'] = $q['c'];
+                     $c_string = '';
+                     foreach ($q['c'] as $this_c) {
+                         $c_string = $c_string . 'c[]=' . $this_c . '&';
+                     }
+                 } else {
+                     //no ID, no c[], no f[] ... no custom list requested
+                     //this arises when you're creating a new list
+                     $cl_data['action'] = "add";
+                 }
+                 $c_string = rtrim($c_string, '&');
+                 $cl_data["url"] = $c_string;
+             }
+             $f['cl_data'] = $cl_data;
+             //debug($f);
         } else {
             throw ('No Query paramters available');
         }
@@ -565,13 +670,14 @@ class songlistComponent extends Component {
 		}
 		
 		//-------------------
-		// FILTER BY: [custom_list] :  limit the result to songs that are included in a specified set of IDs
-		if ($f['custom_list'] !== []) {
-		    
-		    $filtered_list_query->andWhere(['`Songs`.`id` IN' => $f['custom_list'] ]);
-		    
+		// FILTER BY: ['cl_data']['cl_as_passed'] : (custom list) limit the result to songs that are included in a specified set of IDs
+        // No!!!! add cl filter in the view, so that the sidebar songlist and the edit cl songlist cna be filtered differently if required
+        //actually, view filter has to be set up here, not in the view->index() method, so add it here if it's a view situation.
+        //if it's an edit situation then the full list will be shown, unless I can find a way to add another filter at some later stage
+		if ($f['cl_data']['action'] != 'add' && $f['cl_data']['viewer_method'] == 'view') {
+		    $filtered_list_query->andWhere(['`Songs`.`id` IN' => $f['cl_data']['data'] ]);
 		}
-
+        
 		//end of [title, tags, performer] filtering -------------------------
 		//===========================================================================
 		

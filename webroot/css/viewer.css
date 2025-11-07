@@ -282,6 +282,43 @@ span.container-hideable select#performers {
 }
 
 
+/* ******************************************* */
+
+.customlists .container-url,
+.customlists .container-id,
+.customlists legend {
+	display: none;
+}
+.customlists.form.content {
+	
+}
+.customlists.form.content fieldset {
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+#viewer-sidebar ul.custom-lists {
+	display: block;
+	max-height: 200px;
+	padding: 10px;
+	margin: 10px;
+	overflow-y: scroll;
+	border: 1px solid gray;
+}
+#viewer-sidebar ul.custom-lists .link-edit {
+	list-style-type:none;
+}
+#viewer-sidebar ul.custom-lists .link-view {
+	margin-left:10px;
+}
+
+ul#customlist .song-title {
+	max-width: 500px;
+}
+
+/* ******************************************* */
+
 @media (max-width: 2400px) {
 	.filter-palette {   
 	    -webkit-column-count: 6;

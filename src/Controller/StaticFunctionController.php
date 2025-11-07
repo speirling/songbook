@@ -378,7 +378,7 @@ class StaticFunctionController extends AppController
 	        $song, 
 	        $page_parameters
 	    ) {
-	    
+	        //debug($song['content']);
 		$doc = new \DOMDocument('1.0', 'UTF-8');
 		$doc->loadHTML(mb_convert_encoding($song['content'], 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 		$xpath = new \DOMXPath($doc);

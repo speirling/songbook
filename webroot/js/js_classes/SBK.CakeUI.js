@@ -310,6 +310,9 @@
             var song_row = button.closest('.song-row');
 
             song_row.addClass('voted');
+        },
+        custom_lists: function (response, form) {
+            console.log(respone,form);
         }
     },
 

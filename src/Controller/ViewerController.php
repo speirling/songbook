@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use App\Controller\AppController;
 use App\Controller\StaticFunctionController;
+use App\Controller\CustomlistsController;
 use App\Model\Entity\Song;
 use App\Model\Entity\SongTag;
 use App\Model\Entity\Tag;
@@ -193,8 +194,14 @@ class ViewerController extends AppController
 		//now $filtered_list is available in the view.
 		$this->set('title', $this->page_title);
 		$this->set('filter_definition_sets', $this->filter_definition_sets);
-		//in order to pass custom list to custom list editor, pass the current custom list to the index template
-		$this->set('current_custom_list', $filters_from_queryparams['custom_list']);
+		//pass cl_data to the sidebar in a way that won't clear the data sent to the edit pane, when the custom() method calls the index() method 
+		$this->set('cl_sidebar_data', $filters_from_queryparams['cl_data']);
+
+		//make customlists available for selection
+		$customlistscontroller = new CustomlistsController;
+		$customlists = $this->paginate($customlistscontroller->Customlists);
+
+		$this->set(compact('customlists'));
 	}
 	
 	public function palette() {
@@ -217,8 +224,6 @@ class ViewerController extends AppController
 	            $filter_set = $sort_definition_sets['Euge AMU'];
 	        }
 	    }
-	    
-	   
 
 	    $filtered_data = [];
 	    foreach ($filter_set as $filter_definition) {
@@ -231,42 +236,36 @@ class ViewerController extends AppController
 	
 	
 	//For selecting songs to define a custom list
-	public function custom() {
+	public function custom() {	    
+	    $this->loadComponent('songlist');
+	    $filters_from_queryparams = $this->songlist->get_filters_from_queryparams();
 	    
-	    if ($this->getRequest()->is(array('post', 'put', 'get'))) {
-	        if ($this->getRequest()->is(array('get'))) {
-	            $q = $this->getRequest()->getQuery();
-	        } else {
-	            $q = $this->getRequest()->getData();
-	        }
-	        
-	        //in order to be able to edit the custom list and still use the filter 
-	        //if the filter is applied, then songs that have already been added to the custom list might be omitted
-	        //so add them to the songlist after the filter
-	        
-	        //When using the customlist builder interface, you have to be able to access songs that the filter would exclude,
-	        //i.e. those defined by the ['custom_list_already_selected'] list
-	        //extend the result to include those songs specified in custom_list_already_selected
-	        if (array_key_exists('f', $q) && $q['f'] && $q['f'] !== []) {
-	            $f['custom_list_already_selected'] = $q['f'];
-	            
-	            $this->loadModel('Songs');
-	            $this->loadModel('Events');
-	            $this->loadModel('SongPerformances');
-	            $this->loadModel('SongVotes');
-	            
-	            //basic query
-	            $filtered_list_query = $this->Songs->find();
-                //just the selected custom list
-	            $filtered_list_query->Where(['`Songs`.`id` IN' => $f['custom_list_already_selected'] ]);
-	            
-	            //send these songs to the custom.php view
- 	            $this->set('custom_list', $filtered_list_query);
-	        }
-	        
-	        
-	        
+	    //generate the custom list, with all the attributes of the songs in the edit (right-hand) pane
+	    //first load all required models, set up the basic query, then later extend the query to include only the relevant songs
+	    $this->loadModel('Songs');
+	    $this->loadModel('Events');
+	    $this->loadModel('SongPerformances');
+	    $this->loadModel('SongVotes');
+	    
+	    //basic query
+	    $custom_list_songs_query = $this->Songs->find();
+        //if the cl_data includes an id (which it almost certainly will) get the latest stored version of that custom list and relace cl_data with it.
+            //an ID is specified, so that custom list has already been saved - edit the latest version regardless what songs were passed in the url. It may be a saved link with outdated data.
+            //just the selected custom list
+            
+	    if($filters_from_queryparams['cl_data']['action'] == 'edit') {
+	       $custom_list_songs_query->Where(['`Songs`.`id` IN' =>  $filters_from_queryparams['cl_data']['data']]);
 	    }
+	    //Note an ID won't be passed if it's a blank custom builder!!! $filters_from_queryparams['cl_data']['action'] == 'add' In which cases you want no songs in $custom_list_songs_query
+	    if($filters_from_queryparams['cl_data']['action'] == 'add') {
+	        $custom_list_songs_query = null;
+	    }
+         
+	    //send these songs to the custom.php view
+	    $this->set('custom_list_songs', $custom_list_songs_query);
+	    //also send the cl_data to the view
+	    $this->set('cl_data', $filters_from_queryparams['cl_data']);
+	    
 	    
 	    //set up the left-hand side index - set title and filter_definition_sets variables
 	    $this->index();
