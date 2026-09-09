@@ -78,14 +78,24 @@ class ViewerController extends AppController
         'Palette E-AMU' => [
             [
                 'tags' =>  [
-                    13, // Lively (Fast)
+                    68, // Banker
                     15, // AllMixedUp
                 ],
                 'performers' => [
                     1,  //Euge
                     -3,  //midge
                 ],
-            ], [
+            ],[
+                'tags' =>  [
+                    13, // Lively (Fast)
+                    -68, // Banker
+                    15, // AllMixedUp
+                ],
+                'performers' => [
+                    1,  //Euge
+                    -3,  //midge
+                ],
+            ],[
                 'tags' =>  [
                     30, // Singalong
                     15, // AllMixedUp
@@ -218,6 +228,7 @@ class ViewerController extends AppController
 	    if(array_key_exists('filter_set', $query_parameters)) {
 	        parse_str($query_parameters['filter_set'], $filter_set);
 	    } else {
+	        debug("Filter_set not defined. Halting script"); die();
 	        if(array_key_exists('palette_set', $query_parameters)) {
 	            $filter_set = $sort_definition_sets[$query_parameters['palette_set']];
 	        } else {
@@ -252,15 +263,15 @@ class ViewerController extends AppController
         //if the cl_data includes an id (which it almost certainly will) get the latest stored version of that custom list and relace cl_data with it.
             //an ID is specified, so that custom list has already been saved - edit the latest version regardless what songs were passed in the url. It may be a saved link with outdated data.
             //just the selected custom list
-            
+
 	    if($filters_from_queryparams['cl_data']['action'] == 'edit') {
-	       $custom_list_songs_query->Where(['`Songs`.`id` IN' =>  $filters_from_queryparams['cl_data']['data']]);
+	        $custom_list_songs_query->Where(['`Songs`.`id` IN' =>  $filters_from_queryparams['cl_data']['data']]);
+	        $custom_list_songs_query->order(['title' => 'ASC']);
 	    }
 	    //Note an ID won't be passed if it's a blank custom builder!!! $filters_from_queryparams['cl_data']['action'] == 'add' In which cases you want no songs in $custom_list_songs_query
 	    if($filters_from_queryparams['cl_data']['action'] == 'add') {
 	        $custom_list_songs_query = null;
 	    }
-         
 	    //send these songs to the custom.php view
 	    $this->set('custom_list_songs', $custom_list_songs_query);
 	    //also send the cl_data to the view

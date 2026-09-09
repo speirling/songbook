@@ -76,7 +76,11 @@ class CustomlistsController extends AppController
             if ($this->Customlists->save($customlist)) {
                 $this->Flash->success(__('The customlist has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect([
+                    'controller' => 'viewer', 
+                    'action' => 'custom',
+                    '?' => ['custom_id' => $id]
+                ]);
             }
             $this->Flash->error(__('The customlist could not be saved. Please, try again.'));
         }
