@@ -171,6 +171,8 @@ class StaticFunctionController extends AppController
 	}
 	
     public static function convert_song_content_to_HTML($content, $base_key = NULL, $display_key = NULL, $capo = NULL) {
+        
+        //Set the transpose parameters
 		if (is_null($base_key)) {
 			StaticFunctionController::$key_transpose_parameters = array(
 				'transpose' => false
@@ -190,7 +192,10 @@ class StaticFunctionController extends AppController
 		/*
 		debug(StaticFunctionController::$key_transpose_parameters);
 		// */
+		
+		
 		$contentHTML = $content;
+		
 		//if special characters have found their way into  lyrics in the database, get rid of them
 		$contentHTML = preg_replace('/&nbsp;/', ' ', $contentHTML);
 		$contentHTML = preg_replace('/<br>/', "
@@ -234,11 +239,11 @@ class StaticFunctionController extends AppController
 		    "{",
 		    "}",
 		    "x{0040}",   //at symbol (commat)    @
-		    "x{00A9}",   //Copyright symbol      ©
-		    "x{2018}",   //OpenCurlyQuote        ‘
-		    "x{2019}",   //CloseCurlyQuote       ’
-		    "x{201C}",   //OpenCurlyDoubleQuote  “
-		    "x{201D}"    //CloseCurlyDoubleQuote ”
+		    "x{00A9}",   //Copyright symbol      ï¿½
+		    "x{2018}",   //OpenCurlyQuote        ï¿½
+		    "x{2019}",   //CloseCurlyQuote       ï¿½
+		    "x{201C}",   //OpenCurlyDoubleQuote  ï¿½
+		    "x{201D}"    //CloseCurlyDoubleQuote ï¿½
 		);
 		$exception_string = "";
 		$ignore_string = "";
@@ -260,7 +265,14 @@ class StaticFunctionController extends AppController
         // ignoring html and chords first, and also &#38; then the "ignore list" above
         //any text between {} should be ignored - it's considered a performance direction
         //a problem arose in one song with "de[G]ad.[G#dim]" at the end of a line. The ".[" ended up with a word boundary between . and [ . so add an exception for characters in front of [: \.? \[.*?\][\w]?
-        //debug($ignore_string);
+
+        //https://stackoverflow.com/questions/24534782/how-do-skip-or-f-work-on-regex
+        // The idea of the (*SKIP)(*FAIL) trick is to consume characters that you want to avoid, and that must not be a part of the match result.
+        //
+        // A classical pattern that uses of this trick looks like that:
+        //
+        // What_I_want_to_avoid(*SKIP)(*FAIL)|What_I_want_to_match
+        
         $contentHTML = preg_replace('/<.*?>(*SKIP)(*FAIL)|\{.*?\}(*SKIP)(*FAIL)|[' . $exception_string . '^\n]?\[.*?\][\w]?(*SKIP)(*FAIL)|' . $ignore_string . '\b/u', '</span><span class="word">', $contentHTML); 
         //debug($contentHTML);
         //if a chord is at the start of a line, instead of inside a word, it is missed by the regex above.
@@ -366,7 +378,7 @@ class StaticFunctionController extends AppController
 	        $song, 
 	        $page_parameters
 	    ) {
-	    
+	        //debug($song['content']);
 		$doc = new \DOMDocument('1.0', 'UTF-8');
 		$doc->loadHTML(mb_convert_encoding($song['content'], 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 		$xpath = new \DOMXPath($doc);
@@ -393,10 +405,13 @@ class StaticFunctionController extends AppController
             $line_with_chords_removed = $xpath->query("span[not (@class='chord')]",         $this_line);
 			
 			//does this line have an image?
-			$image = $xpath->query(".//img/@src", $this_line);
-			if($image->length) {
-			    $imagesize = getimagesize(str_replace('/songbook/score/', WWW_ROOT . 'score/', $image[0]->textContent));
+			$image_src = $xpath->query(".//img/@src", $this_line);
+			if($image_src->length) {
+			    $imagesize = getimagesize(str_replace('/songbook/score/', WWW_ROOT . 'score/', $image_src[0]->textContent));
 			    $line_height_px = ($line_stats['px_per_column']/$imagesize[0]) * $imagesize[1];
+			    $image = $xpath->query(".//img", $this_line);
+			    //debug($image[0]);
+			    $image[0]->setAttribute("style", "width: " . $line_stats['px_per_column'] . "px;");
 			} else {
 			    if ($line_contains_chords > 0){
 			        $line_height_px = $page_parameters["height_of_line_with_chords"];
@@ -703,7 +718,10 @@ class StaticFunctionController extends AppController
 	        $image = $xpath->query(".//img/@src", $this_line);
 	        if($image->length) {
 	            $imagesize = getimagesize(str_replace('/songbook/score/', WWW_ROOT . 'score/', $image[0]->textContent));
-	            $line_height_px = ($line_stats['px_per_column']/$imagesize[0]) * $imagesize[1];
+	            //20231205 using $max_columns because I have no way of knowing what the actual number of columns will be.
+	            $line_height_px = ($column_params[1]["width (px)"]/$imagesize[0]) * $imagesize[1];
+	            //20231205 using image = 10 lines high because I have no way of knowing the actual width so there fore th actual height
+	            $line_height_lines = 10;
 	        } else {
 	            if ($line_contains_chords > 0){ 
 	                $line_height_px = $page_parameters["height_of_line_with_chords"];
@@ -952,7 +970,9 @@ class StaticFunctionController extends AppController
 	        $use_sharps = false;
 		} elseif (substr($target_key, 0, 1) == 'F') {
 		    $use_sharps = false;
-		} elseif (substr($target_key, 0, 2) == 'Dm' || 'Gm') {
+		} elseif (substr($target_key, 0, 2) == 'Dm') {
+		    $use_sharps = false;
+		} elseif (substr($target_key, 0, 2) == 'Gm') {
 		    $use_sharps = false;
 		} elseif (substr($target_key, 1, 0) == 'C') {
 		    $use_sharps = null;
